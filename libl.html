@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>LibL — the libc face of the standard library — Loment</title>
-<meta name="description" content="LibL is the libc face of Loment's standard library: libc names, libc argument order, libc return semantics — judged against the system's real glibc, byte for byte, rather than against Python. Not in a release yet.">
+<meta name="description" content="LibL is the libc face of Loment's standard library: libc names, libc argument order, libc return semantics — judged against the system's real glibc, byte for byte, rather than against Python. Shipped in 0.1.4.6.">
 <link rel="icon" href="mark.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -51,7 +51,7 @@
           <li><a href="libl.html" aria-current="page">LibL</a></li>
         </ul>
       </details>
-      <a href="https://github.com/FujoJTOP/loment">GitHub</a>
+      <a href="https://github.com/Loment-Lang/loment">GitHub</a>
     </nav>
     <details class="lang" name="bar">
       <summary>EN</summary>
@@ -70,7 +70,7 @@
 
 <section class="head">
   <div class="wrap">
-    <p class="eyebrow">System · unreleased</p>
+    <p class="eyebrow">System · shipped in 0.1.4.6</p>
     <h1>LibL</h1>
     <p class="lede">
       Loment's standard library, in C's shape: <strong>the same function names, the same
@@ -82,18 +82,17 @@
 
 <section class="sec">
   <div class="wrap">
-    <h2>Not available yet</h2>
+    <h2>Available since 0.1.4.6</h2>
     <p class="body">
-      The library is written and the code is <strong>on the main branch</strong>. <strong>It is not
-      available in a release</strong> &mdash; the release note for the version now being cut lists
-      it, with libc, as not available &mdash; so nothing on this page is something you can use
-      today.
+      A <strong>release</strong> build accepts <code>use libl</code> as of 0.1.4.6, and a release
+      build can link the system's real <code>libc.so.6</code> and run it end to end. The lock that
+      held both back in 0.1.4.5 is open, and the release note says so.
     </p>
     <p class="limit">
-      <strong>Why it is on this site at all.</strong> Because it is the first answer to a question
-      the language had left open: what the standard library looks like to someone arriving from C.
-      "Written" is not the same as "ready", and the two are far enough apart here that saying only
-      the first would be misleading.
+      <strong>"Available" is not "complete".</strong> Every name here is checked against the
+      system's glibc, and the set that is missing is written out below rather than left for a
+      reader to discover at the link step. The page also keeps the reasons, because a face of libc
+      without them is a promise nobody can audit.
     </p>
   </div>
 </section>
@@ -193,8 +192,13 @@
       <div class="row">
         <h3><code>&lt;stdio.h&gt;</code></h3>
         <p>
-          The formatting half only: <code>snprintf</code> and <code>sprintf</code>. There is no
-          <code>FILE</code> in this release, and the reasons are below.
+          The formatting half: <code>snprintf</code>, <code>sprintf</code>, and the rest of the
+          <code>printf</code> formats. The file half arrived in 0.1.4.6 as a separate
+          <code>host</code> module &mdash; <code>fopen</code>, <code>fclose</code>,
+          <code>fread</code>, <code>fwrite</code>, <code>fseek</code>, <code>ftell</code>,
+          <code>fflush</code>, <code>feof</code>, <code>fgets</code>, <code>fputs</code>,
+          <code>puts</code>, <code>putchar</code>, <code>getchar</code> &mdash; because those need
+          system calls, and the core library makes none.
         </p>
       </div>
     </div>
@@ -307,14 +311,18 @@
       <div class="row">
         <h3>Not the whole of libc</h3>
         <p>
-          No <code>malloc</code>, <code>calloc</code>, <code>realloc</code> or <code>free</code>
-          &mdash; libc's rely on a heap handle kept in a global slot the language has nowhere to
-          put, the library here takes its arena from the caller, and the compiler's own heap
-          layout is private: reaching into it from a library would pin an implementation detail
-          into the library. No <code>FILE</code>, no <code>fopen</code> or <code>fread</code>.
-          Nothing from the process or environment families: <code>exit</code>,
-          <code>abort</code>, <code>getenv</code>. And no floating-point formatting, because the
-          language has no floating-point type.
+          <code>realloc</code> and <code>free</code> are missing on purpose. <code>realloc</code>
+          needs the old length, and the old length lives in a heap header private to the
+          compiler; <code>free</code>'s name is already taken by the builtin, so a library
+          function by that name would not resolve at the call site. <code>malloc</code> and
+          <code>calloc</code> are here as of 0.1.4.6 &mdash; spellings over the builtin heap with
+          no length header of their own, which is what lets the builtin <code>free</code> accept
+          what they return. <code>stdin</code>, <code>stdout</code> and <code>stderr</code> would
+          be module-level mutable globals, and the language has none. Beyond <code>exit</code>
+          and <code>abort</code>, nothing from the process or environment families. And
+          <code>%f</code>/<code>%e</code>/<code>%g</code> are not "not done" but "cannot be done
+          yet": the upstream formatter is software floating point whose parse direction needs a
+          wide division the layer deliberately does not have.
         </p>
       </div>
       <div class="row">
@@ -336,15 +344,15 @@
   <div class="wrap">
     <h2>Where it is written down</h2>
     <div style="margin-top: var(--s4)">
-      <a class="doclink" href="https://github.com/FujoJTOP/loment/blob/main/docs/232-libl.md">
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/blob/main/docs/232-libl.md">
         <span class="who">docs/232</span>
         <span class="what">The design record: the four faces, the heading-to-module mapping, and every place the language forced a deviation. Written in Chinese.</span>
       </a>
-      <a class="doclink" href="https://github.com/FujoJTOP/loment/pull/245">
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/pull/245">
         <span class="who">Pull request #245</span>
         <span class="what">Where it landed &mdash; the library, the criterion run against glibc, and the argument. Merged.</span>
       </a>
-      <a class="doclink" href="https://github.com/FujoJTOP/loment/issues/246">
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/issues/246">
         <span class="who">Issue #246</span>
         <span class="what">One of the defects it turned up &mdash; a dependency check that reports an innocent leaf module. Filed separately, not fixed here.</span>
       </a>
@@ -366,11 +374,11 @@
   <div class="wrap">
     <span>Loment is released under the Loment-Open License. Program by Fujo.</span>
     <nav>
-      <a href="https://github.com/FujoJTOP/loment">Source</a>
-      <a href="https://github.com/FujoJTOP/loment/releases/latest">Releases</a>
+      <a href="https://github.com/Loment-Lang/loment">Source</a>
+      <a href="https://github.com/Loment-Lang/loment/releases/latest">Releases</a>
       <a href="https://github.com/FujoJTOP/lompi">lompi</a>
       <a href="https://loment.fandom.com/">Wiki</a>
-      <a href="https://github.com/FujoJTOP/loment/issues">Issues</a>
+      <a href="https://github.com/Loment-Lang/loment/issues">Issues</a>
       <a class="mast" href="https://mastodon.social/@Loment" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z"/></svg>Mastodon</a>
     </nav>
   </div>

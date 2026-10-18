@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>LVM — Loment VM — Loment</title>
-<meta name="description" content="The Loment VM is not a faster path and not a way to write programs more easily. It is a second way to run one: an artifact an executor can adopt on demand, judging it by what it already carries. The engine does not exist yet.">
+<meta name="description" content="The Loment VM is not a faster path and not a way to write programs more easily. It is a second way to run one: an artifact an executor can adopt on demand, judging it by what it already carries. A working interpreter exists in the repository; the package does not ship it yet.">
 <link rel="icon" href="mark.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -51,7 +51,7 @@
           <li><a href="libl.html">LibL</a></li>
         </ul>
       </details>
-      <a href="https://github.com/FujoJTOP/loment">GitHub</a>
+      <a href="https://github.com/Loment-Lang/loment">GitHub</a>
     </nav>
     <details class="lang" name="bar">
       <summary>EN</summary>
@@ -76,32 +76,35 @@
       A <strong>second way to run a program</strong>. The binary can be handed to an executor
       that adopts it on demand and decides whether to adopt it by reading what the binary
       already carries. It is not a faster path, and it is not a way to write programs more
-      easily. <strong>The engine does not exist yet.</strong>
+      easily. <strong>A working interpreter now exists in the repository — the package does not
+      ship it, and the setting does not change what the compiler emits.</strong>
     </p>
   </div>
 </section>
 
 <section class="sec">
   <div class="wrap">
-    <h2>There is no engine</h2>
+    <h2>What exists, and what does not</h2>
     <p class="body">
-      No bytecode format, no interpreter, no executor of any kind. That goes at the top rather
-      than in a footnote, because a page about a plan is the easiest place for a reader to
-      mistake the plan for the product.
+      The repository now carries a working <strong>interpreter tier, T0 through T3</strong>,
+      reading the same intermediate form the linker does. T0 executes that form directly; T1
+      records a feedback profile without changing a byte of output; T2 decodes instruction by
+      instruction ahead of the execution loop and runs <strong>6.1&times; T0</strong> on the
+      corpus with byte-identical output; the compact serialisation is <strong>28.5%</strong> of
+      the text form for the same unit; T3 adds guarded specialisation and a way back.
     </p>
     <p class="body">
-      What exists is the first slice: <strong>the <code>vm</code> setting, and the check that
-      refuses it, are on the main branch</strong> &mdash; and neither is in any release or in
-      any installed toolchain. All that slice does is decide whether a program may <em>ask</em>
-      for the VM; it runs nothing. Everything below this line is the design &mdash; what the
-      thing is meant to be, and what it is meant not to be &mdash; and none of it is a feature
-      you can use.
+      What does not exist is any of that <strong>in the package</strong>. The interpreter is the
+      repository's <code>tools/lvm.py</code> family, written in Python. It is not among the
+      binaries a release ships, so an installed toolchain cannot run a program this way. Nor
+      does the setting change the artifact: <code>choose vm</code> and <code>no_vm</code>
+      produce byte-identical output today.
     </p>
     <p class="limit">
       <strong>A debt the project has carried before.</strong> The <code>runtime</code> setting
       was declared in the binary for a while before it did anything, and was later brought up
-      to what it claimed. This is that shape again: declared, carried, owed. The design says so
-      itself rather than leaving a reader to find out.
+      to what it claimed. This is that shape again: the engine exists, the shipping does not.
+      The page says which half is which rather than leaving a reader to find out.
     </p>
   </div>
 </section>
@@ -121,7 +124,7 @@
         <p>
           Backwards. Loment's native path already trades speed for independence, and it is not
           fast to begin with: against C <code>-O2</code> on the array benchmark in
-          <a href="https://github.com/FujoJTOP/loment/blob/main/docs/212-loment-offload.md">docs/212</a>
+          <a href="https://github.com/Loment-Lang/loment/blob/main/docs/212-loment-offload.md">docs/212</a>
           it runs <strong>10.7&times; behind</strong> &mdash; a recorded measurement, not a
           standing promise. A VM is a layer on top of that. <strong>The axis of this line is not
           performance</strong>, and the escape hatch is a different line entirely.
@@ -173,8 +176,8 @@
           may use, how it reclaims memory, whether the binary may carry a runtime, and whether it
           may reach outside itself. <code>vm</code> is the fifth, and it answers <strong>which
           execution model is this program for?</strong> Left unwritten it is <code>no_vm</code>,
-          which is what everything was before the setting existed. It is on the main branch; it
-          is in no release.
+          which is what everything was before the setting existed. A release build accepts it
+          as of 0.1.4.6; what that buys today is a declaration, not a different artifact.
         </p>
         <p>
           The value says <em>whether</em>, never <em>which</em>. That is the rule the
@@ -183,13 +186,19 @@
         </p>
       </div>
       <div class="row">
-        <h3>A gate, not a feature</h3>
+        <h3>The gate, and why it opened</h3>
         <p>
-          In a <strong>release</strong> build, <code>choose vm</code> would be a compile-time
-          error; only the development channel would accept it. The rule is blunt &mdash; until
-          the first usable engine exists, every call to it is illegal in a release &mdash; so
-          that an installed toolchain can never accept a promise it cannot keep.
+          Until 0.1.4.6, a <strong>release</strong> build refused <code>choose vm</code> at
+          compile time; only the development channel accepted it. The rule was blunt &mdash;
+          until the first usable engine exists, every call to it is illegal in a release &mdash;
+          so that an installed toolchain can never accept a promise it cannot keep.
           <strong>A promise that falls through is worse than a refusal.</strong>
+        </p>
+        <p>
+          0.1.4.6 opens it, because the refusal's premise stopped being true: the first usable
+          engine arrived. The setting is a declaration in both channels now, and the correction
+          is recorded rather than deleted &mdash; the check that used to demand a refusal now
+          demands acceptance, so "this gate existed, and here is when it went" stays visible.
         </p>
         <p>
           The gate needs a notion the repository did not have: is this compiler a release build,
@@ -221,29 +230,32 @@
       <div class="row">
         <h3>T0 &mdash; bytecode and a direct interpreter</h3>
         <p>
-          The floor. <strong>Criterion:</strong> a program run this way produces byte-identical
-          output and the same exit code as the native artifact.
+          The floor. <strong>Built in the repository.</strong> <strong>Criterion:</strong> a
+          program run this way produces byte-identical output and the same exit code as the
+          native artifact.
         </p>
       </div>
       <div class="row">
         <h3>T1 &mdash; feedback</h3>
         <p>
-          Profiles of types, branches and call sites. <strong>Criterion:</strong> the profile
-          lands <em>in the artifact</em> and a third party can read it &mdash; and switching it
-          off leaves the artifact byte-identical.
+          Profiles of types, branches and call sites. <strong>Built in the repository.</strong>
+          <strong>Criterion:</strong> the profile lands <em>in the artifact</em> and a third
+          party can read it &mdash; and switching it off leaves the artifact byte-identical.
         </p>
       </div>
       <div class="row">
         <h3>T2 &mdash; a baseline compiler</h3>
         <p>
-          Removes the cost of interpretation without optimising. <strong>Criterion:</strong>
+          Removes the cost of interpretation without optimising. <strong>Built in the
+          repository &mdash; 6.1&times; T0 on the corpus.</strong> <strong>Criterion:</strong>
           measurably faster than T0, semantically identical.
         </p>
       </div>
       <div class="row">
         <h3>T3 &mdash; an optimising compiler with a way back</h3>
         <p>
-          A guess that turns out wrong has to be given up. <strong>That is the only hard
+          A guess that turns out wrong has to be given up. <strong>Built in the repository, for
+          the one optimisation that carries a guess.</strong> <strong>That is the only hard
           criterion at this rung:</strong> after a guess is abandoned, the program's result
           matches the native artifact.
         </p>
@@ -263,9 +275,9 @@
     </div>
 
     <p class="limit">
-      <strong>The first release that would carry any of this lands at T0</strong> &mdash;
-      bytecode and an interpreter, nothing more. The rungs above it are the shape of the plan,
-      not a schedule.
+      <strong>The repository carries T0 through T3; the package carries none of them.</strong>
+      Building the interpreter and shipping it in the distribution are two different steps, and
+      only the first is done. The rungs above are the shape of the plan, not a schedule.
     </p>
   </div>
 </section>
@@ -368,13 +380,29 @@
         <span class="who">LVM</span>
         <span class="what">The same ground on the wiki, beside the rest of the language.</span>
       </a>
-      <a class="doclink" href="https://github.com/FujoJTOP/loment/blob/main/docs/232-loment-vm.md">
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/blob/main/docs/232-loment-vm.md">
         <span class="who">docs/232</span>
         <span class="what">The design record. Written in Chinese, and it says so itself about which parts are settled and which are not.</span>
       </a>
-      <a class="doclink" href="https://github.com/FujoJTOP/loment/blob/main/docs/231-lvm-channel-and-vm-dimension.md">
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/blob/main/docs/231-lvm-channel-and-vm-dimension.md">
         <span class="who">docs/231</span>
-        <span class="what">The channel and the <code>vm</code> setting — the slice that is on the main branch.</span>
+        <span class="what">The channel and the <code>vm</code> setting — and the record of that gate opening.</span>
+      </a>
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/blob/main/docs/243-lvm-t0-interpreter.md">
+        <span class="who">docs/243</span>
+        <span class="what">T0: the bytecode is the existing intermediate form, and what executing it means.</span>
+      </a>
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/blob/main/docs/259-lvm-t2-baseline.md">
+        <span class="who">docs/259</span>
+        <span class="what">T2: moving decoding out of the execution loop, and the criterion that counts decodes.</span>
+      </a>
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/blob/main/docs/250-lvm-compact-form.md">
+        <span class="who">docs/250</span>
+        <span class="what">The compact serialisation: the same form, 28.5% of the size.</span>
+      </a>
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/blob/main/docs/261-lvm-t3-implemented.md">
+        <span class="who">docs/261</span>
+        <span class="what">T3: guarded specialisation, and why deoptimisation is cheap on a slot machine.</span>
       </a>
       <a class="doclink" href="https://loment.fandom.com/wiki/Versions_and_roadmap">
         <span class="who">Roadmap</span>
@@ -398,11 +426,11 @@
   <div class="wrap">
     <span>Loment is released under the Loment-Open License. Program by Fujo.</span>
     <nav>
-      <a href="https://github.com/FujoJTOP/loment">Source</a>
-      <a href="https://github.com/FujoJTOP/loment/releases/latest">Releases</a>
+      <a href="https://github.com/Loment-Lang/loment">Source</a>
+      <a href="https://github.com/Loment-Lang/loment/releases/latest">Releases</a>
       <a href="https://github.com/FujoJTOP/lompi">lompi</a>
       <a href="https://loment.fandom.com/">Wiki</a>
-      <a href="https://github.com/FujoJTOP/loment/issues">Issues</a>
+      <a href="https://github.com/Loment-Lang/loment/issues">Issues</a>
       <a class="mast" href="https://mastodon.social/@Loment" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z"/></svg>Mastodon</a>
     </nav>
   </div>

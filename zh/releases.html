@@ -1,6 +1,6 @@
 <!doctype html>
 <!-- translated-from: releases.html -->
-<!-- source-sha256: bceff69467b07a849d9544bafc9320fa9bb80f04b925c9c43c78d124ca8e32e7 -->
+<!-- source-sha256: 75d9167c6c89b126f3e90a9ac83f32c94d7ae942a1bd85787cfa227a3b304649 -->
 <html lang="zh-Hans">
 <head>
 <meta charset="utf-8">
@@ -53,7 +53,7 @@
           <li><a href="libl.html">LibL</a></li>
         </ul>
       </details>
-      <a href="https://github.com/FujoJTOP/loment">GitHub</a>
+      <a href="https://github.com/Loment-Lang/loment">GitHub</a>
     </nav>
     <details class="lang" name="bar">
       <summary>中文</summary>
@@ -79,7 +79,7 @@
       它的记录在哪里，因为最早的那些版本是从另一个仓库发布的，而这个仓库并不带着它们的标签。
     </p>
     <p class="actions">
-      <a class="btn btn-solid" href="https://github.com/FujoJTOP/loment/releases/latest">下载</a>
+      <a class="btn btn-solid" href="https://github.com/Loment-Lang/loment/releases/latest">下载</a>
       <a class="btn btn-quiet" href="start.html">入门</a>
     </p>
     <p class="limit">
@@ -151,215 +151,134 @@
 
 <section class="sec">
   <div class="wrap">
-    <h2>0.1.4 Pre</h2>
+    <h2>来自这个仓库</h2>
     <p class="body">
-      <strong>2026-09-22。</strong>从这个仓库发布的第一个版本，也是第一个不用自己构建就能
-      安装的 Loment。它被当作预发布挂出来只有一个原因：让"这个仓库是有版本的"不再是一句
-      声称，而变成一件你看得见的事实。
+      在这个仓库里发布过、并且排在此刻这一版之前的三版。每一版都只占一行，而不是一节，
+      理由是一份记录应该给出的：细节在它链去的那张发布页上，而一份不断完整生长下去的历史
+      就不再是历史，而是档案的第二份副本。
     </p>
-    <p class="note">
-      如果你要去翻，有一处制作上的细节值得知道：标签指向的 commit 比归档包所构建自
-      的那个更早。GitHub 自动生成的源码归档包跟着标签走，所以你那样下载到的源码，是那次
-      构建之前的树。
-    </p>
+
+    <div class="rows">
+      <div class="row">
+        <h3>0.1.4 Pre —— 第一个装得上的 Loment</h3>
+        <p>
+          <strong>2026-09-22。</strong>它被当作预发布挂出来只有一个原因：让"这个仓库是有版本
+          的"不再是一句声称，而变成一件你看得见的事实。有一处制作上的细节留到了今天 —— 标签
+          指向的 commit 比归档包所构建自的那个更早，所以 GitHub 自动生成的源码归档包，是那次
+          构建之前的树。
+        </p>
+      </div>
+      <div class="row">
+        <h3>0.1.4 —— 可用</h3>
+        <p>
+          <strong>2026-09-23。</strong>主题是<em>可用</em>，而不是往里塞更多东西：语法面完全
+          没有变，力气都花在把解释器最后一点从必经之路上拿掉。它的 Windows 安装器在那些把
+          Windows 配置成不搜索当前目录的机器上什么也不做；<strong>要这一版请从 zip
+          安装</strong>。
+        </p>
+      </div>
+      <div class="row">
+        <h3>0.1.4.5 —— 回收，以及一个成为保证的运行时</h3>
+        <p>
+          <strong>2026-10-13。</strong>四级回收阶梯，带一个自适应的一半和一个分代的一半；
+          <code>no_runtime</code> 从声明变成了保证；两个目标上都有网络；第五个维度
+          <code>vm</code> 到来，而它的发行闸是关着的。同一天的一个补丁只改了 Windows
+          安装器。
+        </p>
+      </div>
+    </div>
   </div>
 </section>
 
 <section class="sec">
   <div class="wrap">
-    <h2>0.1.4 —— 可用</h2>
+    <h2>0.1.4.6 —— 闸门落下</h2>
     <p class="body">
-      <strong>2026-09-23。</strong>这一版的主题是<em>可用</em>，而不是往里塞更多东西。语法面
-      完全没有变 —— 没有新语法，没有新内建 —— 力气都花在把解释器最后一点从必经之路上拿掉：
-      包管理器和那个生成底层接口文件的生成器都获得了 Loment 实现，而判断它们的方式只有一个
-      才算数，就是与它们所取代的 Python 实现逐字节对比。
-    </p>
-    <p class="body">
-      兼容性在当初就说明过，值得再说一遍，因为这是那种会被版本号盖住的事：<strong>用 Loment
-      写的任何东西都不必改</strong>，而生成出来的底层文件逐字节相同。自举种子确实变了，所以
-      任何从种子重建工具链的人都需要新的那一个。包文件名带着版本号，这是必须的。
-    </p>
-    <p class="limit">
-      <strong>随这一版发布的 Windows 安装器并不是在每台机器上都能用，而且它不会被重打。</strong>
-      在某些系统上，双击它会既不弹窗、也不报错 —— 进程直接退出。原因已经清楚：这个自解压包
-      按名字、不带路径去运行安装脚本，而在那些把 Windows 配置成不搜索当前目录的机器上，这个
-      名字找不到。于是同一个文件在一台机器上能正常安装，在另一台上却悄无声息地什么也不做。
-      <strong>改为从 zip 压缩包安装</strong>，里面装的是同一个东西。修复已经写好，会随之后的
-      某个版本发出；那个已发布的安装器是有意留着不动的，因为重打它会改动一个已经附上版本号的
-      文件里的字节。见 <a href="https://github.com/FujoJTOP/loment/issues/117">issue #117</a>。
-    </p>
-  </div>
-</section>
-
-<section class="sec">
-  <div class="wrap">
-    <h2>0.1.4.5</h2>
-    <p class="body">
-      <strong>2026-10-13。</strong>预发布期宣布的那些东西全在里面，加上自 0.1.4 以来累积的修复。
-      同一天还发了一个补丁，只改 Windows 安装器 —— 两个包里的工具链逐字节相同 ——
-      上面那个下载按钮指向的就是它。
+      <strong>2026-10-17。</strong>四样早就建好、却一直被挡在发布之外的东西，在这一版里一起
+      到手：编译器旁边的一层解释器、libc 与 LibL，以及 <code>vm</code> 这个维度。剩下的部分
+      是这个项目至今最大的一轮缺陷清扫；仓库里那些 issue 编号大多出自它。
     </p>
 
     <h3>新增</h3>
     <ol class="notes">
       <li>
-        <strong>回收已经完成。</strong>四级阶梯 —— 静态提升、定活、块纪元，以及运行时收集器
-        —— 两边都有实现，每一级都有一条判据；为需要它的那一档所做的一个<em>自适应</em>收集器；
-        以及<em>分代</em>的那一半，带一张卡表和一道写屏障。收集器对一个程序负责多少，是产物
-        随身带着的一个数字，两个独立的校验器不看一行源码就能核对它。见
-        <a href="lgc.html">LomentGC</a>。
+        <strong>LVM —— 解释器层，T0 到 T3。</strong>它读的是链接器读的同一份中间形式，所以
+        一个程序永远不会多出第二个真源。T0 是那份形式的第四个读者；T1 记下一份反馈剖面，
+        而不改动一个字节的输出；T2 把指令解码搬出执行循环，在语料上达到 <strong>T0 的
+        6.1&times;</strong>，输出逐字节相同；紧凑形让同一个单元从
+        <strong>375.9&nbsp;KB 变成 107.0&nbsp;KB</strong>；T3 加上带守卫的特化与去优化。
+        <strong>这一版接受 <code>choose vm</code></strong> —— 0.1.4.5 在发布构建里拒绝它，
+        那道闸是在这里打开的。这<em>不</em>意味着：解释器是仓库里的
+        <code>tools/lvm.py</code> 那一族，包里并不带它，而且这个维度还不改变编译器发出的
+        东西。这一行是一条<strong>声明，不是保证</strong> —— 与 <code>no_runtime</code> 在
+        0.1.4.5 里的分量相同。
       </li>
       <li>
-        <strong><code>no_runtime</code> 是保证，不是声明。</strong>这个默认值过去的意思是
-        "这个程序没有请求运行时"。它现在的意思是<em>产物没有运行时</em>：任何会把运行时拖进来
-        的构造都在编译期被拒。<code>choose runtime</code> 是另一半 —— 它不管程序是否用到
-        运行时，都把运行时放进去。<strong>这是这里唯一一处可能影响你已有程序的改动：</strong>
-        任何用到除法、分配或字符串拼接的东西，都需要在它的根单元里加一行。
+        <strong>libc 与 LibL。</strong>发布构建链上真正的 <code>libc.so.6</code> 并跑通到底。
+        LibL 那一面 —— <code>fopen</code>/<code>fread</code>/<code>fwrite</code>/
+        <code>fseek</code>、其余 <code>printf</code> 格式、作为内建堆拼写的
+        <code>malloc</code>/<code>calloc</code> —— 是拿系统里真的 glibc 判的。0.1.4.5 对
+        <code>use libl</code> 和对 libc 的锁已经开了。
       </li>
       <li>
-        <strong>第五个维度：<code>vm</code>。</strong>程序现在可以说它是为哪种执行模型而写的。
-        在<strong>发布</strong>构建里，那一行是一个编译错误；只有开发通道接受它，而那个通道
-        产出的东西与 <code>no_vm</code> 逐字节相同。维度与闸门是真的，引擎不是 ——
-        <a href="lvm.html">那一页</a>说明了哪一半是哪一半。
+        <strong>线程。</strong>语言里的 <code>thread_spawn</code>，加上一个
+        <code>os/thread</code> 库，它的系统调用号是从头文件里读的，不是背下来的。
       </li>
       <li>
-        <strong>网络，在两个目标上。</strong>同一份源码在 Linux 和 Windows 上从同样的字节
-        打开套接字。随它一起到来的两处边界，正是仍然缺掉的部分：<strong>没有网络库</strong>
-        —— 系统调用要你自己写 —— 以及<strong>没有准入闸门</strong>，所以一个声明自己不会请求
-        网络访问的单元，实际上并没有被阻止去调套接字。能力检查比对的是域的<em>名字</em>，
-        从不看行为。
+        <strong>四个随包发出的库，每一个都拿真实现判过。</strong><code>os</code> —— 五个
+        模块对着同一个 Linux 环境里的 CPython；<code>internet</code> —— 七个模块对着真的
+        解析器与服务器。
       </li>
       <li>
-        <strong><code>--opt</code>。</strong>装了 clang 之后，构建可以把 IR 交给它并开
-        <code>-O2</code>，而不是用自带链接器。这是快的那条路，代价是自带那条路存在的理由：
-        不需要外部工具链。
+        <strong>LMS 第 1 级</strong> —— 收集器之外的第二套内存架构：它的检查器
+        （E028/E029）与它的第 3 级入口，两个实现都有。
+      </li>
+      <li>
+        <strong>一道能看见运行时的闸，以及分发。</strong>104 条需要产出二进制的判据现在在
+        Linux runner 上原生运行，而不是跳过；没跑过的判据不再算作通过。四个宿主上的只读
+        镜像；一份简体中文 README；VS Code 扩展上了 Marketplace。
       </li>
     </ol>
 
     <h3>修复</h3>
-    <p class="body">
-      最后一组来自对表层语法的那轮扫面 —— 也就是一个单元还能被写出来的另外六种方式。每一条
-      都是前端可能把你写下的东西弄丢的单独一种方式，所以逐条列出，各附其 issue。
-    </p>
     <ol class="notes">
       <li>
-        <strong>Windows 安装器。</strong>随 0.1.4 发布的那一个，在被配置成不搜索当前目录找
-        可执行文件的机器上什么都不做。那一个保持原样；这一版带的是修好了的安装器。
+        <strong>回收。</strong>清扫器不再对每个被释放的块清掉四个标记字节 —— 那曾让活块在
+        垃圾旁边被一并收走；<code>free</code> 检查归属，拒绝二次释放；块内精确是逐站点的槽
+        掩码；白名单系统调用的实参算作借出；一次收集不再清空空闲链表；收集触发挂在"字节被
+        要"的地方，计的是分配器真正吃掉的数量；复用的块保留它记录下来的尺寸；被提升的缓冲区
+        的字进入根扫描；L2 的纪元在下一个同名 <code>let</code> 处停下，于是两个相邻的循环
+        不再互相挡。
       </li>
       <li>
-        <strong>一条从不复用任何东西的空闲链表。</strong>自带链接器对每个 phi 只指派一条
-        入边，于是分配器的空闲链表终生是空的。
+        <strong>那些曾经静默或报错的诊断。</strong>语句开头的 <code>@</code>、二进制字面量
+        与"走到函数末尾"规则，都按参考实现的方式拒绝；未知类型是 E030 而不是 E002；七处
+        曾经静默、报错或致命的场合现在说出与参考实现相同的话；同一个程序在每一门表层语法里
+        算出同样的数；<code>use std</code> 不再崩溃；格式化器保留注释，也把声明修饰符留在
+        声明那一行。
       </li>
       <li>
-        <strong>汇编器拒绝的产物。</strong>两个 IR 缺陷让数组下标的产物成了非法的 LLVM。
-        而收集器自己输出里缺掉的一个块终结符，是项目当时所有判据都看不见的。
+        <strong>发射器拒绝它表达不了的东西。</strong>混合宽度运算、自举编译器里的
+        <code>bool != bool</code>、11 个以上参数、最后一个字段没有尾逗号的结构体，以及放不进
+        其声明类型的整数字面量，都成为错误，而不是非法 IR。
       </li>
       <li>
-        <strong>语言服务器与格式化器。</strong>服务器不再对一份解析不了的文件崩溃，自举的
-        格式化器也不再拒绝另外六门表层语法。
+        <strong>运行时与命令行。</strong>数组下标与算术都做了检查；除零是一个带消息的陷阱；
+        默认档的拒绝报出正确的设置名；<code>let x = 1;</code>、<code>let a: f64</code>、
+        一个裸的 <code>return;</code>、<code>brk</code> 用的编译器自己的堆、250 项表达式与
+        400 层嵌套块，都被诊断而不是崩溃；Windows 出的是 PE 而不是 ELF；
+        <code>loment check</code> 不再为一个建不出来的文件以 0 退出。
       </li>
       <li>
-        <strong>入口点处的栈对齐。</strong>进程入口并没有拿到调用约定所假定的那个对齐，所以
-        <code>_start</code> 把它重新对齐。
-      </li>
-      <li>
-        <strong>C 表层语法里的若干修复</strong>，针对前端把某个东西吞掉、或把它报成了别的东西
-        的那些地方。每一条都有自己的 issue；标签信息把它们列了出来。
-      </li>
-      <li>
-        用另一种语法写成的单元可能静默丢掉整个函数：前端把转写侧关于它跳过了什么的报告扔掉了。 <a href="https://github.com/FujoJTOP/loment/issues/74">#74</a>
-      </li>
-      <li>
-        <code>loment fmt --write</code> 会毁掉用另一种语法写的文件 —— 它把声明行并进下一行、删掉原本在那里的函数，然后以退出码 0 结束。 <a href="https://github.com/FujoJTOP/loment/issues/115">#115</a>
-      </li>
-      <li>
-        <code>loment doc</code> 会在这种文件上崩溃，或者生成出以生成行号、而不是你写下的那些行号为键的文档。 <a href="https://github.com/FujoJTOP/loment/issues/116">#116</a>
-      </li>
-      <li>
-        函数内的 <code>static</code> 被丢弃，于是那个值在两次调用之间留不下来。 <a href="https://github.com/FujoJTOP/loment/issues/118">#118</a>
-      </li>
-      <li>
-        一个局部变量与 <code>for</code> 体外的某个东西同名，会让转写出来的单元无限循环。 <a href="https://github.com/FujoJTOP/loment/issues/119">#119</a>
-      </li>
-      <li>
-        定义在同一行上的第二个函数被静默丢弃。 <a href="https://github.com/FujoJTOP/loment/issues/122">#122</a>
-      </li>
-      <li>
-        一个未加括号的布尔转换生成了一个不再能解析的单元。 <a href="https://github.com/FujoJTOP/loment/issues/124">#124</a>
-      </li>
-      <li>
-        顶层的 <code>typedef</code>、全局变量、<code>union</code>、<code>#include</code> 与 <code>#define</code> 既没被转写也没被报告 —— 检查仍然打印 OK。 <a href="https://github.com/FujoJTOP/loment/issues/126">#126</a>
-      </li>
-      <li>
-        一个八进制字面量让两个命令行工具都打印出了栈回溯。 <a href="https://github.com/FujoJTOP/loment/issues/127">#127</a>
-      </li>
-      <li>
-        外部符号表塌缩成了它的最后一条，于是跨单元那条路根本无法工作。 <a href="https://github.com/FujoJTOP/loment/issues/128">#128</a>
-      </li>
-      <li>
-        一个 K&amp;R 风格的函数定义静默消失 —— 没有条目，没有 [skip] 行，退出码 0。 <a href="https://github.com/FujoJTOP/loment/issues/129">#129</a>
-      </li>
-      <li>
-        一个名为 <code>true</code> 或 <code>false</code> 的变量在它声明的地方被改名了，在它被使用的地方却没有。 <a href="https://github.com/FujoJTOP/loment/issues/130">#130</a>
-      </li>
-      <li>
-        两个标识符在改名之后可能塌缩成一个，丢掉一次赋值。 <a href="https://github.com/FujoJTOP/loment/issues/134">#134</a>
-      </li>
-      <li>
-        一个名字与关键字冲突的函数生成了一个无法做词法分析的单元。 <a href="https://github.com/FujoJTOP/loment/issues/135">#135</a>
-      </li>
-      <li>
-        开头的一个字节序标记让语法声明变得不可见。 <a href="https://github.com/FujoJTOP/loment/issues/136">#136</a>
-      </li>
-      <li>
-        前端接受了词法分析器拒绝的标识符，并把错误报在了一个生成文件上。 <a href="https://github.com/FujoJTOP/loment/issues/137">#137</a>
-      </li>
-      <li>
-        一个没有显式指定语言的 <code>.c</code> 文件被当成 JSON 读了。 <a href="https://github.com/FujoJTOP/loment/issues/140">#140</a>
-      </li>
-      <li>
-        在这种文件里发一次跳转到定义请求会让语言服务器终止。 <a href="https://github.com/FujoJTOP/loment/issues/142">#142</a>
-      </li>
-      <li>
-        诊断工具与前端对哪些语法是原生的意见不一致，于是其中一个撤回了它本应提供的修复。 <a href="https://github.com/FujoJTOP/loment/issues/145">#145</a>
-      </li>
-      <li>
-        <code>loment dbg</code> 报告了一个并不存在的文件和行号。 <a href="https://github.com/FujoJTOP/loment/issues/146">#146</a>
-      </li>
-      <li>
-        一个被当作语句使用的调用绕过了跨单元闸门并被丢弃；同一个调用放在值的位置上却被拒绝了。 <a href="https://github.com/FujoJTOP/loment/issues/147">#147</a>
-      </li>
-      <li>
-        一个拼错的语法关键字静默回退到了 Loment，而不是报错。 <a href="https://github.com/FujoJTOP/loment/issues/148">#148</a>
-      </li>
-      <li>
-        一元 <code>~</code> 在文档里被说成受支持，却被转写器拒绝。 <a href="https://github.com/FujoJTOP/loment/issues/150">#150</a>
-      </li>
-      <li>
-        表达式语句在文档里被说成受支持、却解析不了 —— 而且报错信息归咎于操作数。 <a href="https://github.com/FujoJTOP/loment/issues/151">#151</a>
-      </li>
-      <li>
-        一个映射不了的返回类型让函数消失了，而错误归咎于它下方好几行处的一个调用点。 <a href="https://github.com/FujoJTOP/loment/issues/152">#152</a>
-      </li>
-      <li>
-        一个函数原型会依它所在的位置，给出三种各不相同、而且都是错的诊断。 <a href="https://github.com/FujoJTOP/loment/issues/153">#153</a>
-      </li>
-      <li>
-        一条越界（不在子集内）诊断在它承诺给出函数名的地方，给的是一个行号和一个函数计数。 <a href="https://github.com/FujoJTOP/loment/issues/154">#154</a>
-      </li>
-      <li>
-        示例附注仍然把 C 那条支线说成链接，而它已经变成了转写。 <a href="https://github.com/FujoJTOP/loment/issues/155">#155</a>
-      </li>
-      <li>
-        一处跨单元名称冲突被用错误的名称报告出来，而且指到了错误的 <code>use</code> 行。 <a href="https://github.com/FujoJTOP/loment/issues/221">#221</a>
+        <strong>链接器。</strong>负下标做符号扩展；自举链接器读得懂 64 位全局量与多行 case 表。
       </li>
     </ol>
 
-    <h3>本版没有</h3>
-    <p class="limit">
-      <strong>libc 与 LibL 都不可用。</strong>libc 这条线在把 C 库所需的部件一件一件地造
-      出来，而标准库那个 C 形状的面还没准备好被使用。今天这两样都不是可以拿来规划的东西
-      —— <a href="libl.html">LibL 那一页</a>自己带着一条状态说明。
+    <h3>新增 issue</h3>
+    <p class="body">
+      这一版自己的新增所引入、并且仍然开着的缺陷，只有一条：
+      <a href="https://github.com/Loment-Lang/loment/issues/442">#442</a>。早于这一版的缺陷
+      在仓库的 issue 列表里，不在这里。
     </p>
   </div>
 </section>
@@ -372,13 +291,13 @@
       什么，在路线图上 —— 它是按一份计划来写的，并且自己这么说。
     </p>
     <div style="margin-top: var(--s4)">
-      <a class="doclink" href="https://github.com/FujoJTOP/loment/releases/latest">
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/releases/latest">
         <span class="who">最新发布</span>
         <span class="what">要安装的版本。永远用这个链接，绝不把一个版本号抄到页面上。</span>
       </a>
       <a class="doclink" href="https://loment.fandom.com/wiki/Versions_and_roadmap">
         <span class="who">路线图</span>
-        <span class="what">0.1.4.5 之后是什么，按一份计划来说，而不是按一个功能来说。</span>
+        <span class="what">0.1.4.6 之后是什么，按一份计划来说，而不是按一个功能来说。</span>
       </a>
       <a class="doclink" href="start.html">
         <span class="who">入门</span>
@@ -398,11 +317,11 @@
   <div class="wrap">
     <span>Loment 依据 Loment-Open License 发布。由 Fujo 编写。</span>
     <nav>
-      <a href="https://github.com/FujoJTOP/loment">源码</a>
-      <a href="https://github.com/FujoJTOP/loment/releases/latest">发布</a>
+      <a href="https://github.com/Loment-Lang/loment">源码</a>
+      <a href="https://github.com/Loment-Lang/loment/releases/latest">发布</a>
       <a href="https://github.com/FujoJTOP/lompi">lompi</a>
       <a href="https://loment.fandom.com/">Wiki</a>
-      <a href="https://github.com/FujoJTOP/loment/issues">Issues</a>
+      <a href="https://github.com/Loment-Lang/loment/issues">Issues</a>
       <a class="mast" href="https://mastodon.social/@Loment" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z"/></svg>Mastodon</a>
     </nav>
   </div>

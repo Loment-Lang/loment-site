@@ -275,7 +275,7 @@ issue 追踪器里**（记成仓里带编号的设计文档，**那些文档是�
 
 ```bash
 # 用发布版（用户实际会拿到的那个）
-#   https://github.com/FujoJTOP/loment/releases/latest → linux-x64.tar.gz
+#   https://github.com/Loment-Lang/loment/releases/latest → linux-x64.tar.gz
 loment run examples/hello.lomt
 ```
 

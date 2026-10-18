@@ -1,12 +1,12 @@
 <!doctype html>
 <!-- translated-from: libl.html -->
-<!-- source-sha256: 0100f9cc406fa6a851e18ef5c3f332e24d2ab4261b2154f121625cabdeb03e87 -->
+<!-- source-sha256: 417ab893f78750da3c386eb83701bf22238102f47393d046fafbf02961c9c7d7 -->
 <html lang="ja">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>LibL — 標準ライブラリの libc の面 — Loment</title>
-<meta name="description" content="LibL は Loment の標準ライブラリの libc の面である: libc の名前、libc の引数順、libc の戻り値の意味論 —— 判定基準は Python ではなく、システムの実物の glibc とのバイト単位の比較である。まだリリースには入っていない。">
+<meta name="description" content="LibL は Loment の標準ライブラリの libc の面である: libc の名前、libc の引数順、libc の戻り値の意味論 —— 判定基準は Python ではなく、システムの実物の glibc とのバイト単位の比較である。0.1.4.6 から同梱されている。">
 <link rel="icon" href="../mark.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -53,7 +53,7 @@
           <li><a href="libl.html" aria-current="page">LibL</a></li>
         </ul>
       </details>
-      <a href="https://github.com/FujoJTOP/loment">GitHub</a>
+      <a href="https://github.com/Loment-Lang/loment">GitHub</a>
     </nav>
     <details class="lang" name="bar">
       <summary>日本語</summary>
@@ -72,7 +72,7 @@
 
 <section class="head">
   <div class="wrap">
-    <p class="eyebrow">システム · 未リリース</p>
+    <p class="eyebrow">システム · 0.1.4.6 から出荷</p>
     <h1>LibL</h1>
     <p class="lede">
       Loment の標準ライブラリの<strong>libc の面</strong>である。libc と同じ名前、同じ
@@ -84,18 +84,16 @@
 
 <section class="sec">
   <div class="wrap">
-    <h2>まだ利用できない</h2>
+    <h2>0.1.4.6 から利用できる</h2>
     <p class="body">
-      ライブラリは書かれており、そのコードは<strong>main ブランチにある</strong>。<strong>リリース
-      では利用できない</strong> —— いま切られつつある版のリリースノートは、これを libc とともに
-      利用できないものとして挙げている —— だからこのページの何ものも、今日あなたが使えるもの
-      ではない。
+      0.1.4.6 から、<strong>リリース</strong>ビルドは <code>use libl</code> を受け入れ、さらに
+      システムの本物の <code>libc.so.6</code> をリンクして最後まで動かせる。0.1.4.5 でこの二つを
+      止めていた錠は開いており、リリースノートがそう述べている。
     </p>
     <p class="limit">
-      <strong>そもそもなぜこれがこのサイトにあるのか。</strong>それは、言語が開いたままにしていた
-      問いへの最初の答えだからである: C からやって来た人に標準ライブラリがどう見えるか。
-      「書かれた」ことと「使える」ことは同じではなく、ここではその隔たりが、片方だけを言えば
-      誤解を招くほど大きい。
+      <strong>「利用できる」は「揃っている」ではない。</strong>ここにある名前はすべてシステムの
+      glibc に対して判定され、欠けている組は読者がリンクの段で発見するのではなく、下に書かれて
+      いる。このページは理由も残している。理由のない libc の面は、誰も監査できない約束だからだ。
     </p>
   </div>
 </section>
@@ -195,8 +193,13 @@
       <div class="row">
         <h3><code>&lt;stdio.h&gt;</code></h3>
         <p>
-          整形の半分だけ: <code>snprintf</code> と <code>sprintf</code>。このリリースには
-          <code>FILE</code> がない。その理由は下にある。
+          書式の半分: <code>snprintf</code>、<code>sprintf</code>、そして残りの
+          <code>printf</code> 書式。ファイルの半分は 0.1.4.6 に別の <code>host</code> モジュール
+          として到来した —— <code>fopen</code>、<code>fclose</code>、<code>fread</code>、
+          <code>fwrite</code>、<code>fseek</code>、<code>ftell</code>、<code>fflush</code>、
+          <code>feof</code>、<code>fgets</code>、<code>fputs</code>、<code>puts</code>、
+          <code>putchar</code>、<code>getchar</code> —— これらはシステムコールを必要とし、
+          コアライブラリは一つも発しないからだ。
         </p>
       </div>
     </div>
@@ -305,14 +308,17 @@
       <div class="row">
         <h3>libc の全体ではない</h3>
         <p>
-          <code>malloc</code>、<code>calloc</code>、<code>realloc</code>、<code>free</code> は
-          ない —— libc のものは、言語に置き場所のないグローバルスロットに保たれたヒープハンドルに
-          依っており、ここのライブラリはアリーナを呼び出し側から取り、そしてコンパイラ自身の
-          ヒープレイアウトは非公開である: ライブラリからそれに手を伸ばすことは、実装の細部を
-          ライブラリに固定してしまう。<code>FILE</code> も、<code>fopen</code> も
-          <code>fread</code> もない。プロセスや環境の一族からは何もない: <code>exit</code>、
-          <code>abort</code>、<code>getenv</code>。そして浮動小数点の整形もない。言語に
-          浮動小数点型がないからである。
+          <code>realloc</code> と <code>free</code> は意図的に欠けている: <code>realloc</code>
+          は古い長さを必要とし、その古い長さはコンパイラ私有のヒープヘッダにある。
+          <code>free</code> の名前はすでに組み込みが取っているので、ライブラリに同名の関数を
+          置いても呼び出し地点で解決されない。<code>malloc</code> と <code>calloc</code> は
+          0.1.4.6 からある —— 組み込みヒープへの綴りで、自前の長さヘッダを持たない。だから
+          組み込みの <code>free</code> が、それらが返したものを受け取れる。<code>stdin</code>、
+          <code>stdout</code>、<code>stderr</code> はモジュールレベルの可変グローバルになるが、
+          言語にそれはない。プロセスや環境の一族では、<code>exit</code> と <code>abort</code>
+          以外は一つもない。そして <code>%f</code>/<code>%e</code>/<code>%g</code> は「未実装」
+          ではなく「まだできない」である: 上流のフォーマッタはソフトウェア浮動小数点で、その逆方向は
+          この層が意図的に持たない広い除算を必要とする。
         </p>
       </div>
       <div class="row">
@@ -334,15 +340,15 @@
   <div class="wrap">
     <h2>どこに書き留められているか</h2>
     <div style="margin-top: var(--s4)">
-      <a class="doclink" href="https://github.com/FujoJTOP/loment/blob/main/docs/232-libl.md">
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/blob/main/docs/232-libl.md">
         <span class="who">docs/232</span>
         <span class="what">設計記録: 四つの面、見出しからモジュールへの対応、そして言語が逸脱を強いいた箇所すべて。中国語で書かれている。</span>
       </a>
-      <a class="doclink" href="https://github.com/FujoJTOP/loment/pull/245">
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/pull/245">
         <span class="who">プルリクエスト #245</span>
         <span class="what">これが着地した場所 —— ライブラリ、glibc に対して走らせる判定基準、そして論証。マージ済み。</span>
       </a>
-      <a class="doclink" href="https://github.com/FujoJTOP/loment/issues/246">
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/issues/246">
         <span class="who">イシュー #246</span>
         <span class="what">それが露わにした欠陥のひとつ —— 無実の葉モジュールを報告する依存検査。別に起票されており、ここでは直されていない。</span>
       </a>
@@ -364,11 +370,11 @@
   <div class="wrap">
     <span>Loment は Loment-Open License の下で公開されている。制作: Fujo。</span>
     <nav>
-      <a href="https://github.com/FujoJTOP/loment">ソース</a>
-      <a href="https://github.com/FujoJTOP/loment/releases/latest">リリース</a>
+      <a href="https://github.com/Loment-Lang/loment">ソース</a>
+      <a href="https://github.com/Loment-Lang/loment/releases/latest">リリース</a>
       <a href="https://github.com/FujoJTOP/lompi">lompi</a>
       <a href="https://loment.fandom.com/">Wiki</a>
-      <a href="https://github.com/FujoJTOP/loment/issues">イシュー</a>
+      <a href="https://github.com/Loment-Lang/loment/issues">イシュー</a>
       <a class="mast" href="https://mastodon.social/@Loment" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z"/></svg>Mastodon</a>
     </nav>
   </div>

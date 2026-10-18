@@ -1,12 +1,12 @@
 <!doctype html>
 <!-- translated-from: lvm.html -->
-<!-- source-sha256: 6aaa7e646d595832e18a99d8b30ac4cc6cbcc9335a8012d8121544ca973f0fd5 -->
+<!-- source-sha256: 3b5bf39eb61b7a4272359b1665d09ad7bb39180fd80ca312d3a1ef89147f1a13 -->
 <html lang="es">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>LVM — la VM de Loment — Loment</title>
-<meta name="description" content="La VM de Loment no es una ruta más rápida ni una forma de escribir programas con más facilidad. Es una segunda forma de ejecutar uno: un artefacto que un ejecutor puede adoptar bajo demanda, juzgándolo por lo que ya lleva. El motor todavía no existe.">
+<meta name="description" content="La VM de Loment no es una ruta más rápida ni una forma de escribir programas con más facilidad. Es una segunda forma de ejecutar uno: un artefacto que un ejecutor puede adoptar bajo demanda, juzgándolo por lo que ya lleva. Ya existe un intérprete funcional en el repositorio; el paquete no lo incluye, y el ajuste no cambia lo que emite el compilador.">
 <link rel="icon" href="../mark.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -53,7 +53,7 @@
           <li><a href="libl.html">LibL</a></li>
         </ul>
       </details>
-      <a href="https://github.com/FujoJTOP/loment">GitHub</a>
+      <a href="https://github.com/Loment-Lang/loment">GitHub</a>
     </nav>
     <details class="lang" name="bar">
       <summary>ES</summary>
@@ -78,33 +78,34 @@
       Una <strong>segunda forma de ejecutar un programa</strong>. El binario puede entregarse a
       un ejecutor que lo adopta bajo demanda y decide si adoptarlo leyendo lo que el binario ya
       lleva. No es una ruta más rápida, ni una forma de escribir programas con más facilidad.
-      <strong>El motor todavía no existe.</strong>
+      <strong>Ya existe un intérprete funcional en el repositorio — el paquete no lo incluye, y el ajuste no cambia lo que emite el compilador.</strong>
     </p>
   </div>
 </section>
 
 <section class="sec">
   <div class="wrap">
-    <h2>No hay ningún motor</h2>
+    <h2>Lo que existe y lo que no</h2>
     <p class="body">
-      Ningún formato de bytecode, ningún intérprete, ningún ejecutor de ninguna clase. Eso va
-      arriba en lugar de en una nota al pie, porque una página sobre un plan es el lugar más fácil
-      para que quien lee confunda el plan con el producto.
+      El repositorio ahora lleva una <strong>capa de intérprete funcional, de T0 a T3</strong>, que lee
+      la misma forma intermedia que el enlazador. T0 ejecuta esa forma directamente; T1 registra un
+      perfil de retroalimentación sin cambiar un byte de salida; T2 decodifica las instrucciones antes
+      del bucle de ejecución y corre <strong>6.1&times; T0</strong> en el corpus con salida idéntica
+      byte a byte; la serialización compacta es el <strong>28.5%</strong> de la forma de texto para la
+      misma unidad; T3 añade especialización con guardas y una forma de volver.
     </p>
     <p class="body">
-      Lo que existe es la primera porción: <strong>el ajuste <code>vm</code>, y la comprobación
-      que lo rechaza, están en la rama principal</strong> &mdash; y ninguna de las dos está en
-      ninguna versión ni en ningún conjunto de herramientas instalado. Lo único que hace esa
-      porción es decidir si un programa puede <em>pedir</em> la VM; no ejecuta nada. Todo lo que
-      hay debajo de esta línea es el diseño &mdash; lo que la cosa pretende ser, y lo que pretende
-      no ser &mdash; y nada de ello es una función que se pueda usar.
+      Lo que no existe es nada de eso <strong>en el paquete</strong>. El intérprete es la familia
+      <code>tools/lvm.py</code> del repositorio, escrita en Python. No está entre los binarios que
+      envía una versión, así que una herramienta instalada no puede ejecutar un programa de esta
+      manera. El ajuste tampoco cambia el artefacto: hoy <code>choose vm</code> y <code>no_vm</code>
+      producen una salida idéntica byte a byte.
     </p>
     <p class="limit">
-      <strong>Una deuda que el proyecto ya arrastró antes.</strong> El ajuste
-      <code>runtime</code> se declaró en el artefacto durante un tiempo antes de hacer nada, y
-      después se puso a la altura de lo que prometía. Esta es otra vez esa forma: declarada,
-      arrastrada, debida. El diseño lo dice por sí mismo en lugar de dejar que quien lee lo
-      descubra.
+      <strong>Una deuda que el proyecto ya cargó antes.</strong> El ajuste <code>runtime</code> estuvo
+      declarado en el binario un tiempo sin hacer nada, y luego se elevó hasta lo que afirmaba. Esta es
+      otra vez esa forma: el motor existe, el envío no. La página dice qué mitad es cuál en vez de
+      dejar que el lector lo descubra.
     </p>
   </div>
 </section>
@@ -123,7 +124,7 @@
         <p>
           Al revés. La ruta nativa de Loment ya cambia velocidad por independencia, y no es rápida
           de por sí: frente a C <code>-O2</code> en el benchmark de arrays de
-          <a href="https://github.com/FujoJTOP/loment/blob/main/docs/212-loment-offload.md">docs/212</a>
+          <a href="https://github.com/Loment-Lang/loment/blob/main/docs/212-loment-offload.md">docs/212</a>
           va <strong>10.7&times; por detrás</strong> &mdash; una medición registrada, no una
           promesa en pie. Una VM es una capa por encima de eso. <strong>El eje de esta línea no es
           el rendimiento</strong>, y la vía de escape es una línea completamente distinta.
@@ -176,8 +177,8 @@
           programa, cómo recupera memoria, si el binario puede llevar un runtime, y si puede
           alcanzar fuera de sí mismo. <code>vm</code> es el quinto, y responde a <strong>¿para qué
           modelo de ejecución es este programa?</strong> Sin escribirlo es <code>no_vm</code>, que
-          es lo que todo era antes de que el ajuste existiera. Está en la rama principal; no está
-          en ninguna versión.
+          es lo que todo era antes de que el ajuste existiera. Desde 0.1.4.6 lo acepta también una compilación de
+          versión; lo que eso compra hoy es una declaración, no un artefacto distinto.
         </p>
         <p>
           El valor dice <em>si</em>, nunca <em>cuál</em>. Esa es la regla que el ajuste
@@ -186,25 +187,29 @@
         </p>
       </div>
       <div class="row">
-        <h3>Una compuerta, no una función</h3>
+        <h3>La compuerta, y por qué se abrió</h3>
         <p>
-          En una compilación de <strong>versión</strong>, <code>choose vm</code> sería un error de
-          tiempo de compilación; solo el canal de desarrollo lo aceptaría. La regla es tajante
-          &mdash; hasta que exista el primer motor utilizable, cada llamada a él es ilegal en una
-          versión &mdash; de modo que un conjunto de herramientas instalado nunca pueda aceptar una
-          promesa que no puede cumplir. <strong>Una promesa incumplida es peor que una
-          negativa.</strong>
+          Hasta 0.1.4.6, una compilación de <strong>versión</strong> rechazaba <code>choose vm</code>
+          en tiempo de compilación; solo el canal de desarrollo lo aceptaba. La regla era tajante —
+          hasta que exista un motor usable, toda llamada a él es ilegal en una versión — para que una
+          herramienta instalada no pueda aceptar nunca una promesa que no puede cumplir. <strong>Una
+          promesa que se cae es peor que un rechazo.</strong>
         </p>
         <p>
-          La compuerta necesita una noción que el repositorio no tenía: ¿es este compilador una
+          0.1.4.6 la abre, porque la premisa del rechazo dejó de ser cierta: llegó el primer motor
+          usable. El ajuste es ahora una declaración en ambos canales, y la corrección se registra en
+          vez de borrarse — la comprobación que exigía un rechazo ahora exige aceptación, así que
+          «esta compuerta existió, y aquí está cuándo se abrió» sigue visible.
+        </p>
+        <p>
+          La compuerta necesitaba una noción que el repositorio no tenía: ¿este compilador es una
           compilación de versión o una de desarrollo? El diseño la reduce a <strong>una
-          constante</strong>, un valor por lado, cambiada en el momento del empaquetado. Que sea
-          una sola línea es deliberado &mdash; la guía del lenguaje empaquetada se copia en una
-          distribución sin modificar, de modo que "la copia del paquete es la copia del repositorio"
-          siga siendo comprobable, y una línea es la forma más pequeña de doblar esa regla. El coste
-          se enuncia junto con ella: la semilla del compilador enviada ya no sería igual a la del
-          repositorio byte por byte, así que el criterio baja de <em>idéntica</em> a
-          <em>reproduciblemente igual, y la diferencia es exactamente esa única constante</em>.
+          constante</strong>, un valor por lado, invertida al empaquetar. Una línea es deliberada — la
+          guía del lenguaje empaquetada se copia a la distribución sin modificar, para que «la copia
+          del paquete es la copia del repositorio» siga siendo comprobable, y una línea es la forma más
+          pequeña de doblar esa regla. El coste se dice con ella: la semilla del compilador enviada ya
+          no es idéntica byte a byte a la del repositorio, así que el criterio baja de <em>idéntica</em>
+          a <em>reproduciblemente igual, y la diferencia es exactamente esa constante</em>.
         </p>
       </div>
     </div>
@@ -215,62 +220,64 @@
   <div class="wrap">
     <h2>La escala</h2>
     <p class="body">
-      La VM se lee como peldaños, no como una sola cosa que construir. Cada peldaño tiene que ser
-      superable y cada uno tiene que ser falsable &mdash; "escribe un JIT" no es un peldaño, porque
-      nada podría refutarlo. La lista de piezas se toma de dos sistemas que han hecho esto a
-      escala; la implementación sería la propia del proyecto, y si se mantiene así es una decisión
-      abierta.
+      Lee la VM como peldaños, no como una sola cosa que construir. Cada peldaño tiene que poder
+      alcanzarse y cada uno tiene que poder refutarse — «escribir un JIT» no es un peldaño, porque
+      nada podría refutarlo. La lista de piezas está tomada de dos sistemas que lo han hecho a escala;
+      la implementación sería del propio proyecto, y si sigue siéndolo es una decisión abierta.
     </p>
 
     <div class="rows">
       <div class="row">
         <h3>T0 &mdash; bytecode y un intérprete directo</h3>
         <p>
-          El suelo. <strong>Criterio:</strong> un programa ejecutado así produce una salida idéntica
-          byte a byte y el mismo código de salida que el artefacto nativo.
+          El suelo. <strong>Construido en el repositorio.</strong> <strong>Criterio:</strong> un
+          programa ejecutado así produce una salida idéntica byte a byte y el mismo código de salida
+          que el artefacto nativo.
         </p>
       </div>
       <div class="row">
         <h3>T1 &mdash; retroalimentación</h3>
         <p>
-          Perfiles de tipos, ramas y puntos de llamada. <strong>Criterio:</strong> el perfil
-          aterriza <em>en el artefacto</em> y un tercero puede leerlo &mdash; y desactivarlo deja el
-          artefacto idéntico byte a byte.
+          Perfiles de tipos, ramas y puntos de llamada. <strong>Construido en el repositorio.</strong>
+          <strong>Criterio:</strong> el perfil llega <em>al artefacto</em> y un tercero puede leerlo —
+          y apagarlo deja el artefacto idéntico byte a byte.
         </p>
       </div>
       <div class="row">
         <h3>T2 &mdash; un compilador base</h3>
         <p>
-          Elimina el coste de la interpretación sin optimizar. <strong>Criterio:</strong> mediblemente
-          más rápido que T0, semánticamente idéntico.
+          Quita el coste de la interpretación sin optimizar. <strong>Construido en el repositorio —
+          6.1&times; T0 en el corpus.</strong> <strong>Criterio:</strong> mediblemente más rápido que
+          T0, semánticamente idéntico.
         </p>
       </div>
       <div class="row">
         <h3>T3 &mdash; un compilador optimizador con una forma de volver</h3>
         <p>
-          Una conjetura que resulta equivocada tiene que abandonarse. <strong>Ese es el único
-          criterio duro en este peldaño:</strong> después de abandonar una conjetura, el resultado
-          del programa coincide con el artefacto nativo.
+          Una conjetura que resulta equivocada tiene que poder abandonarse. <strong>Construido en el
+          repositorio, para la única optimización que carga una conjetura.</strong> <strong>Ese es el
+          único criterio duro de este peldaño:</strong> después de abandonar una conjetura, el
+          resultado del programa coincide con el artefacto nativo.
         </p>
       </div>
       <div class="row">
         <h3>T4 &mdash; recuperación generacional y concurrente</h3>
         <p>
-          El único peldaño que no es una extensión de los demás. El diseño de recuperación decía
-          antes que esto no podía hacerse aquí en absoluto: el back end guardaba los punteros solo
-          en variables locales y ranuras de parámetros, y eso descarta la barrera de escritura
-          habitual. <strong>Esa razón ya no se sostiene</strong> &mdash; llegó una forma de
-          convertir un puntero en un entero, y la mitad generacional aterrizó del lado de la
-          <a href="lgc.html">recuperación</a>, con una tabla de tarjetas y una barrera de
-          escritura. Lo que queda por delante es hacerlo <em>dentro de la VM</em>, que es un
-          problema distinto de hacerlo por adelantado.
+          El único peldaño que no es una extensión de los demás. El diseño de recuperación solía decir
+          que esto no podía hacerse aquí en absoluto: el backend guardaba punteros solo en locales y
+          ranuras de parámetros, y eso descarta la barrera de escritura habitual. <strong>Esa razón ya
+          no se sostiene</strong> — llegó una forma de convertir un puntero en un entero, y la mitad
+          generacional aterrizó en <a href="lgc.html">el lado de la recuperación</a>, con una tabla de
+          tarjetas y una barrera de escritura. Lo que sigue por delante es hacerlo <em>dentro de la
+          VM</em>, que es un problema distinto de hacerlo por adelantado.
         </p>
       </div>
     </div>
 
     <p class="limit">
-      <strong>La primera versión que llevaría algo de esto aterriza en T0</strong> &mdash; bytecode
-      y un intérprete, nada más. Los peldaños por encima son la forma del plan, no un calendario.
+      <strong>El repositorio lleva T0 a T3; el paquete no lleva ninguno.</strong> Construir el
+      intérprete y enviarlo en la distribución son dos pasos distintos, y solo está hecho el primero.
+      Los peldaños de arriba son la forma del plan, no un calendario.
     </p>
   </div>
 </section>
@@ -376,13 +383,29 @@
         <span class="who">LVM</span>
         <span class="what">El mismo terreno en la wiki, junto al resto del lenguaje.</span>
       </a>
-      <a class="doclink" href="https://github.com/FujoJTOP/loment/blob/main/docs/232-loment-vm.md">
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/blob/main/docs/232-loment-vm.md">
         <span class="who">docs/232</span>
         <span class="what">El registro de diseño. Escrito en chino, y él mismo lo dice sobre qué partes están asentadas y cuáles no.</span>
       </a>
-      <a class="doclink" href="https://github.com/FujoJTOP/loment/blob/main/docs/231-lvm-channel-and-vm-dimension.md">
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/blob/main/docs/231-lvm-channel-and-vm-dimension.md">
         <span class="who">docs/231</span>
-        <span class="what">El canal y el ajuste <code>vm</code> — la porción que está en la rama principal.</span>
+        <span class="what">El canal y el ajuste <code>vm</code> — y el registro de cuándo se abrió esa compuerta.</span>
+      </a>
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/blob/main/docs/243-lvm-t0-interpreter.md">
+        <span class="who">docs/243</span>
+        <span class="what">T0: el bytecode es la forma intermedia existente, y qué significa ejecutarla.</span>
+      </a>
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/blob/main/docs/259-lvm-t2-baseline.md">
+        <span class="who">docs/259</span>
+        <span class="what">T2: sacar la decodificación del bucle de ejecución, y el criterio que cuenta decodificaciones.</span>
+      </a>
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/blob/main/docs/250-lvm-compact-form.md">
+        <span class="who">docs/250</span>
+        <span class="what">La forma compacta: la misma forma, el 28.5% del tamaño.</span>
+      </a>
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/blob/main/docs/261-lvm-t3-implemented.md">
+        <span class="who">docs/261</span>
+        <span class="what">T3: especialización con guardas y por qué la desoptimización es barata en una máquina de pila.</span>
       </a>
       <a class="doclink" href="https://loment.fandom.com/wiki/Versions_and_roadmap">
         <span class="who">Roadmap</span>
@@ -406,11 +429,11 @@
   <div class="wrap">
     <span>Loment se publica bajo la licencia Loment-Open. Programa de Fujo.</span>
     <nav>
-      <a href="https://github.com/FujoJTOP/loment">Código fuente</a>
-      <a href="https://github.com/FujoJTOP/loment/releases/latest">Versiones</a>
+      <a href="https://github.com/Loment-Lang/loment">Código fuente</a>
+      <a href="https://github.com/Loment-Lang/loment/releases/latest">Versiones</a>
       <a href="https://github.com/FujoJTOP/lompi">lompi</a>
       <a href="https://loment.fandom.com/">Wiki</a>
-      <a href="https://github.com/FujoJTOP/loment/issues">Incidencias</a>
+      <a href="https://github.com/Loment-Lang/loment/issues">Incidencias</a>
       <a class="mast" href="https://mastodon.social/@Loment" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z"/></svg>Mastodon</a>
     </nav>
   </div>

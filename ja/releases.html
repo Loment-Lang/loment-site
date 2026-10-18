@@ -1,6 +1,6 @@
 <!doctype html>
 <!-- translated-from: releases.html -->
-<!-- source-sha256: bceff69467b07a849d9544bafc9320fa9bb80f04b925c9c43c78d124ca8e32e7 -->
+<!-- source-sha256: 75d9167c6c89b126f3e90a9ac83f32c94d7ae942a1bd85787cfa227a3b304649 -->
 <html lang="ja">
 <head>
 <meta charset="utf-8">
@@ -53,7 +53,7 @@
           <li><a href="libl.html">LibL</a></li>
         </ul>
       </details>
-      <a href="https://github.com/FujoJTOP/loment">GitHub</a>
+      <a href="https://github.com/Loment-Lang/loment">GitHub</a>
     </nav>
     <details class="lang" name="bar">
       <summary>日本語</summary>
@@ -80,7 +80,7 @@
       別のリポジトリからリリースされており、このリポジトリはそれらのタグを持っていないからである。
     </p>
     <p class="actions">
-      <a class="btn btn-solid" href="https://github.com/FujoJTOP/loment/releases/latest">ダウンロード</a>
+      <a class="btn btn-solid" href="https://github.com/Loment-Lang/loment/releases/latest">ダウンロード</a>
       <a class="btn btn-quiet" href="start.html">はじめに</a>
     </p>
     <p class="limit">
@@ -157,265 +157,142 @@
 
 <section class="sec">
   <div class="wrap">
-    <h2>0.1.4 Pre</h2>
+    <h2>このリポジトリから</h2>
     <p class="body">
-      <strong>2026-09-22.</strong> このリポジトリからの最初のリリースであり、ビルドせずに
-      インストールできる最初の Loment。ひとつの理由でプレリリースとして置かれた:
-      「リポジトリにバージョンがある」が主張であることをやめ、見ることのできる事実になるように。
+      いま出荷されているものより前に、このリポジトリから出た三つのバージョン。それぞれが節ではなく
+      一行になっているのは、記録が果たすべき理由からである —— 細部はリンク先のリリースページにあり、
+      完全なまま育ち続ける履歴はもはや履歴ではなく、アーカイブの二つ目の写しになる。
     </p>
-    <p class="note">
-      それがどう作られたかのひとつの痕跡は、探しに行くなら知っておく価値がある: タグは
-      アーカイブがビルドされたコミットより前のコミットを指している。GitHub が自動生成する
-      ソースアーカイブはタグに従うので、その方法でダウンロードしたソースはそのビルドより前の
-      ツリーである。
-    </p>
+
+    <div class="rows">
+      <div class="row">
+        <h3>0.1.4 Pre —— 最初のインストールできる Loment</h3>
+        <p>
+          <strong>2026-09-22。</strong>プレリリースとして置かれた理由は一つだけである ——
+          「このリポジトリにはバージョンがある」という主張を、主張ではなく、目で見られる事実に
+          するため。作られ方について一つだけ残っていることがある: タグはアーカイブが構築された
+          commit より前の commit を指しており、GitHub が生成するソースアーカイブはそのビルドの
+          前の木になる。
+        </p>
+      </div>
+      <div class="row">
+        <h3>0.1.4 —— 使える</h3>
+        <p>
+          <strong>2026-09-23。</strong>主題は中身を増やすことではなく<em>使えること</em>だった:
+          構文面はまったく変わらず、作業はインタプリタの最後の部分を経路から外すことに注がれた。
+          このバージョンの Windows インストーラは、カレントディレクトリを検索しない設定の機械では
+          何もしない。<strong>このバージョンが欲しい場合は zip からインストールする</strong>こと。
+        </p>
+      </div>
+      <div class="row">
+        <h3>0.1.4.5 —— 回収、そして保証になったランタイム</h3>
+        <p>
+          <strong>2026-10-13。</strong>四段の回収のはしご。適応型の半分と世代別の半分を伴う。
+          <code>no_runtime</code> は宣言から保証になった。両方のターゲットでネットワークが動く。
+          五つ目の次元 <code>vm</code> が、リリースゲートを閉じたまま到来した。同日のパッチは
+          Windows インストーラだけを変えた。
+        </p>
+      </div>
+    </div>
   </div>
 </section>
 
 <section class="sec">
   <div class="wrap">
-    <h2>0.1.4 —— 使える</h2>
+    <h2>0.1.4.6 —— ゲートが下りる</h2>
     <p class="body">
-      <strong>2026-09-23.</strong> 主題が<em>より多くを持つこと</em>ではなく<em>使えること</em>
-      だったバージョン。言語の表層はまったく変わらなかった —— 新しい構文も、新しい組み込みも
-      ない —— そして作業は、最後のインタプリタを経路から追い出すことに注がれた: パッケージ
-      マネージャと低レベルインターフェースファイルの生成器が Loment の実装を得て、それが意味を
-      持つ唯一の方法で、置き換えた Python のものとバイト単位で比較して判定された。
-    </p>
-    <p class="body">
-      互換性は当時述べられ、繰り返す価値がある。それはバージョン番号が隠してしまう類のもの
-      だからである: <strong>Loment で書かれたものは何ひとつ変える必要がなかった</strong>、
-      そして生成された低レベルの成果物はバイト単位で同一に出た。ブートストラップの種は変わった
-      ので、種からツールチェインを再構築する者には新しいものが必要である。パッケージの
-      ファイル名は、そうでなければならない通り、バージョンを運んでいる。
-    </p>
-    <p class="limit">
-      <strong>このバージョンで公開された Windows インストーラは、すべてのマシンで動くわけでは
-      なく、置き換えられもしない。</strong>一部のシステムでは、ダブルクリックしてもウィンドウも
-      エラーも出ない —— プロセスはただ終了する。原因は判明している: 自己展開パッケージが
-      インストーラスクリプトをパスなしで名前だけによって走らせるので、Windows がカレント
-      ディレクトリを検索しないよう構成されたマシンでは、その名前が見つからない。だから同じ
-      ファイルが、あるマシンでは正常にインストールし、別のマシンでは黙って何もしない。
-      <strong>代わりに zip アーカイブからインストールすること</strong>。それには同じものが
-      入っている。修正は書かれ、後のバージョンとともに出荷される。公開済みのインストーラは
-      意図的にそのままにされる。再構築すると、すでにバージョン番号が付いているファイルの
-      バイトが変わってしまうからである。 <a href="https://github.com/FujoJTOP/loment/issues/117">イシュー #117</a> を見よ。
-    </p>
-  </div>
-</section>
-
-<section class="sec">
-  <div class="wrap">
-    <h2>0.1.4.5</h2>
-    <p class="body">
-      <strong>2026-10-13。</strong>ビルド中に予告として告知されていたものすべてに加え、0.1.4 以降に
-      積み上がった修正が入っている。同じ日に出たパッチは Windows インストーラだけを変える ——
-      二つのパッケージのツールチェインは逐バイト同一である —— 上のダウンロードボタンが指すのは
-      そちらである。
+      <strong>2026-10-17。</strong>すでに作られていながらリリースの外に保たれていた四つのものが、
+      この版で一度に手の届くところへ来た: コンパイラの隣のインタプリタ層、libc と LibL、そして
+      <code>vm</code> という設定である。残りはこのプロジェクトが経験した最大の欠陥掃討であり、
+      リポジトリにある issue 番号の多くがそこから来ている。
     </p>
 
     <h3>新規</h3>
     <ol class="notes">
       <li>
-        <strong>回収は完了した。</strong>四段のはしご —— 静的昇格、最終使用、ブロックエポック、
-        そして実行時コレクタ —— は、両側に実装を持ち、それぞれに判据を持つ。それを必要とした
-        段階のための<em>適応的</em>コレクタ; そしてカードテーブルとライトバリアを備えた
-        <em>世代別</em>の半身。コレクタがプログラムのどれだけに責任を持つかは成果物が運ぶ数で
-        あり、二つの独立した検証器がソースを一行も読まずにそれを確かめる。
-        <a href="lgc.html">LomentGC</a> を見よ。
+        <strong>LVM —— インタプリタ層、T0 から T3。</strong>リンカが読むのと同じ中間形式を読むので、
+        プログラムが二つ目の真実の源を持つことはない。T0 はその形式の四人目の読者だった。T1 は
+        出力を一バイトも変えずにフィードバックプロファイルを記録する。T2 は命令のデコードを実行
+        ループの外へ移し、コーパス上で <strong>T0 の 6.1&times;</strong>、出力はバイト単位で同一。
+        コンパクト形式は同じユニットを <strong>375.9&nbsp;KB から 107.0&nbsp;KB</strong> にする。
+        T3 はガード付きの特化と脱最適化を加える。<strong>このリリースは
+        <code>choose vm</code> を受け入れる</strong> —— 0.1.4.5 はリリースビルドでこれを拒否
+        しており、そのゲートがここで開いた。そう<em>ではない</em>こと: インタプリタはリポジトリの
+        <code>tools/lvm.py</code> 一族であり、パッケージはそれを同梱していない。そしてこの設定は
+        コンパイラが出すものをまだ変えない。この一行は<strong>宣言であり、保証ではない</strong>
+        —— 0.1.4.5 における <code>no_runtime</code> と同じ重みである。
       </li>
       <li>
-        <strong><code>no_runtime</code> は宣言ではなく保証である。</strong>既定はかつて
-        「このプログラムは runtime を求めなかった」という意味だった。いまは<em>成果物が
-        それを一切持たない</em>という意味である: runtime を引き込んでしまう構文はコンパイル時に
-        拒否される。<code>choose runtime</code> はその反対の半身である —— プログラムが使うか
-        どうかに関わらず runtime を入れ込む。<strong>ここで唯一、あなたがすでに持っている
-        プログラムに影響しうる変更がこれである:</strong> 除算、確保、または文字列構築を使う
-        ものは、そのルートユニットに一行を足す必要がある。
+        <strong>libc と LibL。</strong>リリースビルドは本物の <code>libc.so.6</code> をリンクし、
+        最後まで動かす。LibL の面 —— <code>fopen</code>/<code>fread</code>/<code>fwrite</code>/
+        <code>fseek</code>、残りの <code>printf</code> 書式、内蔵ヒープへの綴りとしての
+        <code>malloc</code>/<code>calloc</code> —— は、システムの本物の glibc に対して判定される。
+        0.1.4.5 の <code>use libl</code> と libc に対する錠は開いた。
       </li>
       <li>
-        <strong>第五の次元: <code>vm</code>。</strong>プログラムは、自分がどの実行モデル向けかを
-        いま言える。<strong>リリース</strong>ビルドではその行はコンパイルエラーであり、開発
-        チャネルだけがそれを受け入れる —— そしてそのチャネルが生むものは <code>no_vm</code> と
-        バイト単位で同一である。次元とゲートは実在し、エンジンは実在しない ——
-        <a href="lvm.html">あのページ</a>がどちらの半身がどちらかを述べている。
+        <strong>スレッド。</strong>言語の <code>thread_spawn</code>、そしてシステムコール番号を
+        覚えるのではなくヘッダから読む <code>os/thread</code> ライブラリ。
       </li>
       <li>
-        <strong>ネットワーキング、両方のターゲットで。</strong>同じソースが Linux でも Windows でも、
-        同じバイトからソケットを開く。それとともに二つの境界が来る。そしてそれらは依然として
-        欠けている部分である: <strong>ネットワーキングライブラリは存在しない</strong> ——
-        システムコールは自分で書く —— そして<strong>受け入れゲートは存在しない</strong>。だから
-        ネットワークアクセスを要求しないと宣言した単位が、ソケットを呼ぶことを実際に止められては
-        いない。ケイパビリティ検査はドメインの<em>名前</em>を比較するだけで、振る舞いを決して
-        見ない。
+        <strong>同梱される四つのライブラリ、それぞれ本物の実装に対して判定済み。</strong>
+        <code>os</code> —— 同じ Linux 環境の CPython に対して五つのモジュール。
+        <code>internet</code> —— 本物のリゾルバとサーバに対して七つのモジュール。
       </li>
       <li>
-        <strong><code>--opt</code>。</strong>clang がインストールされていれば、ビルドは同梱の
-        リンカを使う代わりに、IR を <code>-O2</code> で clang に渡せる。それは速い道であり、
-        同梱の道が存在する理由である性質を犠牲にする: 外部ツールチェインを必要としないこと。
+        <strong>LMS レベル 1</strong> —— コレクタの隣の二つ目のメモリアーキテクチャ: その検査器
+        （E028/E029）とレベル 3 の入口が、両方の実装にある。
+      </li>
+      <li>
+        <strong>ランタイムを見られるゲート、そして配布。</strong>生成されたバイナリを必要とする
+        104 の判定が、スキップではなく Linux ランナー上でネイティブに走るようになった。走らなかった
+        判定はもう合格として数えられない。四つのホスト上の読み取り専用ミラー。簡体字中国語の
+        README。VS Code 拡張は Marketplace に載った。
       </li>
     </ol>
 
     <h3>修正</h3>
-    <p class="body">
-      最後の一群は、表層文法をひと巡りしたことから出てきた —— ユニットを綴ることのできる六つの
-      別の方法である。それぞれが、フロントエンドがあなたの書いたものを落としうる別々の形であり、
-      だからそれぞれが、そのイシューとともに列挙されている。
-    </p>
     <ol class="notes">
       <li>
-        <strong>Windows インストーラ。</strong>0.1.4 とともに公開されたものは、実行ファイルを
-        カレントディレクトリから探さないよう設定されたマシンでは、まったく何もしない。それは
-        そのままにされる; 本リリースは修正済みのインストーラを運ぶ。
+        <strong>回収。</strong>スイーパは解放されたブロックごとに四つのマークバイトを消さなくなった
+        —— それが生きたブロックをゴミの隣で回収させていた。<code>free</code> は所有を確認し、二重
+        解放を拒否する。ブロック内部の精度はサイトごとのスロットマスクである。ホワイトリストの
+        システムコールへの引数は借用として数えられる。回収はもうフリーリストを空にしない。回収の
+        トリガはバイトが求められる場所に付き、アロケータが実際に消費する量を数える。再利用された
+        ブロックは記録されたサイズを保つ。昇格したバッファのワードはルート走査に届く。そして L2 の
+        エポックは次の同名の <code>let</code> で止まるので、隣り合う二つのループはもう互いを
+        妨げない。
       </li>
       <li>
-        <strong>何も再利用しなかったフリーリスト。</strong>同梱のリンカが phi ごとに入ってくる
-        辺をひとつしか代入していなかったので、アロケータのフリーリストはその全生涯を通じて
-        空のままだった。
+        <strong>かつて沈黙していた、あるいは誤っていた診断。</strong>文の先頭の <code>@</code>、
+        二進リテラル、そして関数の終端に落ちる規則は、参照実装が拒否するのと同じように拒否される。
+        未知の型は E002 ではなく E030。沈黙・誤り・致命的だった七つの場合が、参照実装と同じことを
+        言うようになった。同じプログラムがどの表層構文でも同じ数を計算する。<code>use std</code>
+        はもうクラッシュしない。フォーマッタはコメントを保ち、宣言の修飾子を宣言の行に保つ。
       </li>
       <li>
-        <strong>アセンブラが拒否した成果物。</strong>二つの IR の欠陥が、配列添字の成果物を
-        不正な LLVM にしていた。そしてコレクタ自身の出力に欠けていたブロック終端は、
-        プロジェクトが持っていたあらゆる判据に対して不可視だった。
+        <strong>エミッタは表現できないものを拒否する。</strong>幅の異なる演算、セルフホスト
+        コンパイラの <code>bool != bool</code>、11 個以上の引数、最後のフィールドに末尾カンマが
+        ない構造体、宣言された型に収まらない整数リテラルは、不正な IR ではなくエラーになる。
       </li>
       <li>
-        <strong>言語サーバーとフォーマッタ。</strong>サーバーはもはや、解析できないファイルで
-        クラッシュしない。そして自己ホストのフォーマッタはもはや、他の六つの表層文法を
-        拒まない。
+        <strong>ランタイムと CLI。</strong>配列の添字と算術は検査される。ゼロ除算はメッセージ付きの
+        トラップになる。既定の段の拒否は正しい設定名を挙げる。<code>let x = 1;</code>、
+        <code>let a: f64</code>、裸の <code>return;</code>、<code>brk</code> に対するコンパイラ
+        自身のヒープ、250 項の式、400 層の入れ子ブロックは、クラッシュせずに診断される。Windows は
+        ELF ではなく PE を出す。<code>loment check</code> はビルドできないファイルに対して 0 で
+        終了しなくなった。
       </li>
       <li>
-        <strong>エントリポイントでのスタック整列。</strong>プロセスのエントリには、呼び出し規約が
-        前提とする整列が与えられないため、<code>_start</code> がそれを整列し直す。
-      </li>
-      <li>
-        <strong>C の表層文法におけるいくつかの修正</strong> —— フロントエンドが何かを呑み込んだり、
-        別の何かとして報告したりした箇所のための。それぞれに独自のイシューがあり、タグの
-        メッセージがそれらを列挙している。
-      </li>
-      <li>
-        別の構文で書かれたユニットが、関数まるごとを黙って落とすことがあった: フロントエンドが、
-        転記側のスキップ報告を捨てていた。 <a href="https://github.com/FujoJTOP/loment/issues/74">#74</a>
-      </li>
-      <li>
-        <code>loment fmt --write</code> が、別の構文で書かれたファイルを破壊した —— 宣言の行を
-        次の行に併合し、そこにあった関数を削除し、そして終了コード 0 で終わった。
-        <a href="https://github.com/FujoJTOP/loment/issues/115">#115</a>
-      </li>
-      <li>
-        <code>loment doc</code> がそうしたファイルで死ぬか、あなたが書いた行番号ではなく、
-        生成された行番号に紐づいたドキュメントを出力した。 <a href="https://github.com/FujoJTOP/loment/issues/116">#116</a>
-      </li>
-      <li>
-        関数ローカルの <code>static</code> が落ちたので、その値は呼び出しの間で生き残らなかった。
-        <a href="https://github.com/FujoJTOP/loment/issues/118">#118</a>
-      </li>
-      <li>
-        <code>for</code> 本体の外の何かと名前を共有するローカルが、翻訳されたユニットを永遠に
-        ループさせた。 <a href="https://github.com/FujoJTOP/loment/issues/119">#119</a>
-      </li>
-      <li>
-        同じ行に定義された二つ目の関数が黙って落ちた。 <a href="https://github.com/FujoJTOP/loment/issues/122">#122</a>
-      </li>
-      <li>
-        括弧で括られていない真偽値変換が、もはや解析できないユニットを生んだ。
-        <a href="https://github.com/FujoJTOP/loment/issues/124">#124</a>
-      </li>
-      <li>
-        トップレベルの <code>typedef</code>、グローバル変数、<code>union</code>、<code>#include</code>、
-        <code>#define</code> は、翻訳も報告もされなかった —— それでも検査は OK を印字した。
-        <a href="https://github.com/FujoJTOP/loment/issues/126">#126</a>
-      </li>
-      <li>
-        8 進リテラルが、両方のコマンドラインツールからスタックトレースを印字した。
-        <a href="https://github.com/FujoJTOP/loment/issues/127">#127</a>
-      </li>
-      <li>
-        外部シンボル表が最後のエントリに潰れてしまい、ユニット間の経路はまったく働けなかった。
-        <a href="https://github.com/FujoJTOP/loment/issues/128">#128</a>
-      </li>
-      <li>
-        K&amp;R 形式の関数定義が黙って消えた —— エントリも、[skip] 行もなく、終了コード 0。
-        <a href="https://github.com/FujoJTOP/loment/issues/129">#129</a>
-      </li>
-      <li>
-        <code>true</code> あるいは <code>false</code> という名前の変数が、宣言された場所では
-        改名され、使われた場所ではされなかった。 <a href="https://github.com/FujoJTOP/loment/issues/130">#130</a>
-      </li>
-      <li>
-        二つの識別子が改名後にひとつに潰れ、代入が失われることがあった。
-        <a href="https://github.com/FujoJTOP/loment/issues/134">#134</a>
-      </li>
-      <li>
-        名前がキーワードと衝突する関数が、字句解析できないユニットを生んだ。
-        <a href="https://github.com/FujoJTOP/loment/issues/135">#135</a>
-      </li>
-      <li>
-        先頭のバイト順マークが、文法宣言を見えなくした。 <a href="https://github.com/FujoJTOP/loment/issues/136">#136</a>
-      </li>
-      <li>
-        フロントエンドが、字句解析器が拒む識別子を受け入れ、その誤りを生成されたファイルに
-        対して報告した。 <a href="https://github.com/FujoJTOP/loment/issues/137">#137</a>
-      </li>
-      <li>
-        明示的な言語なしで与えられた <code>.c</code> ファイルが JSON として読まれた。
-        <a href="https://github.com/FujoJTOP/loment/issues/140">#140</a>
-      </li>
-      <li>
-        そうしたファイルでの定義へ移動の要求が、ランゲージサーバを終了させた。
-        <a href="https://github.com/FujoJTOP/loment/issues/142">#142</a>
-      </li>
-      <li>
-        診断ツールとフロントエンドが、どの文法がネイティブかについて食い違い、その一方が、
-        差し出すべきだった修正を取り下げた。 <a href="https://github.com/FujoJTOP/loment/issues/145">#145</a>
-      </li>
-      <li>
-        <code>loment dbg</code> が、存在しないファイルと行を報告した。
-        <a href="https://github.com/FujoJTOP/loment/issues/146">#146</a>
-      </li>
-      <li>
-        文として使われた呼び出しが、ユニット間のゲートを迂回して落ちた。値の位置にある同じ
-        呼び出しは拒否された。 <a href="https://github.com/FujoJTOP/loment/issues/147">#147</a>
-      </li>
-      <li>
-        綴りを間違えた文法キーワードが、エラーになる代わりに黙って Loment にフォールバックした。
-        <a href="https://github.com/FujoJTOP/loment/issues/148">#148</a>
-      </li>
-      <li>
-        単項 <code>~</code> が、対応済みとして文書化され、翻訳器に拒否された。
-        <a href="https://github.com/FujoJTOP/loment/issues/150">#150</a>
-      </li>
-      <li>
-        式文が、対応済みとして文書化され、解析できなかった —— そしてメッセージはオペランドを
-        咎めた。 <a href="https://github.com/FujoJTOP/loment/issues/151">#151</a>
-      </li>
-      <li>
-        対応づけられない戻り型が関数を消し去り、そして誤りは、その数行下の呼び出し地点を
-        咎めた。 <a href="https://github.com/FujoJTOP/loment/issues/152">#152</a>
-      </li>
-      <li>
-        関数プロトタイプが、置かれた場所に応じて三つの異なる誤った診断を生んだ。
-        <a href="https://github.com/FujoJTOP/loment/issues/153">#153</a>
-      </li>
-      <li>
-        部分集合外の診断が、関数の名前を約束していた場所で、行番号と関数の数を与えた。
-        <a href="https://github.com/FujoJTOP/loment/issues/154">#154</a>
-      </li>
-      <li>
-        例の注記が、C の脚を依然としてリンクとして説明していたが、それは翻訳になっていた。
-        <a href="https://github.com/FujoJTOP/loment/issues/155">#155</a>
-      </li>
-      <li>
-        ユニット間の名前衝突が、誤った名前で報告され、誤った <code>use</code> 行を指した。
-        <a href="https://github.com/FujoJTOP/loment/issues/221">#221</a>
+        <strong>リンカ。</strong>負の添字は符号拡張される。ミラーリンカは 64 ビットのグローバルと
+        複数行の case テーブルを読む。
       </li>
     </ol>
 
-    <h3>本版には入っていない</h3>
-    <p class="limit">
-      <strong>libc と LibL は利用できない。</strong>libc の線は、C ライブラリが必要とする部品を
-      ひとつずつ組み立てており、標準ライブラリの libc の形をした面は、使える状態にはなっていない。
-      どちらも今日計画を立てる対象ではない —— <a href="libl.html">LibL のページ</a>が独自の
-      状態行を携えている。
+    <h3>新規 issue</h3>
+    <p class="body">
+      この版自身の追加が導入し、まだ開いている欠陥は一つだけである:
+      <a href="https://github.com/Loment-Lang/loment/issues/442">#442</a>。この版より前から
+      ある欠陥はリポジトリの issue 一覧にあり、ここにはない。
     </p>
   </div>
 </section>
@@ -429,13 +306,13 @@
       そう述べている。
     </p>
     <div style="margin-top: var(--s4)">
-      <a class="doclink" href="https://github.com/FujoJTOP/loment/releases/latest">
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/releases/latest">
         <span class="who">最新リリース</span>
         <span class="what">インストールすべきバージョン。つねにこのリンクであり、ページに書き写されたバージョン番号ではない。</span>
       </a>
       <a class="doclink" href="https://loment.fandom.com/wiki/Versions_and_roadmap">
         <span class="who">ロードマップ</span>
-        <span class="what">0.1.4.5 の後に来るもの。機能としてではなく、計画として述べられている。</span>
+        <span class="what">0.1.4.6 の後に来るもの。機能としてではなく、計画として述べられている。</span>
       </a>
       <a class="doclink" href="start.html">
         <span class="who">はじめに</span>
@@ -455,11 +332,11 @@
   <div class="wrap">
     <span>Loment は Loment-Open License の下で公開されている。制作: Fujo。</span>
     <nav>
-      <a href="https://github.com/FujoJTOP/loment">ソース</a>
-      <a href="https://github.com/FujoJTOP/loment/releases/latest">リリース</a>
+      <a href="https://github.com/Loment-Lang/loment">ソース</a>
+      <a href="https://github.com/Loment-Lang/loment/releases/latest">リリース</a>
       <a href="https://github.com/FujoJTOP/lompi">lompi</a>
       <a href="https://loment.fandom.com/">Wiki</a>
-      <a href="https://github.com/FujoJTOP/loment/issues">イシュー</a>
+      <a href="https://github.com/Loment-Lang/loment/issues">イシュー</a>
       <a class="mast" href="https://mastodon.social/@Loment" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z"/></svg>Mastodon</a>
     </nav>
   </div>

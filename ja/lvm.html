@@ -1,12 +1,12 @@
 <!doctype html>
 <!-- translated-from: lvm.html -->
-<!-- source-sha256: 6aaa7e646d595832e18a99d8b30ac4cc6cbcc9335a8012d8121544ca973f0fd5 -->
+<!-- source-sha256: 3b5bf39eb61b7a4272359b1665d09ad7bb39180fd80ca312d3a1ef89147f1a13 -->
 <html lang="ja">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>LVM — Loment VM — Loment</title>
-<meta name="description" content="Loment VM は、速い道でも、プログラムを書きやすくする方法でもない。プログラムを走らせる第二の方法である: 実行者が要求に応じて採用し、すでに携えているものだけを読んで判定する成果物。エンジンはまだ存在しない。">
+<meta name="description" content="Loment VM は、速い道でも、プログラムを書きやすくする方法でもない。プログラムを走らせる第二の方法である: 実行者が要求に応じて採用し、すでに携えているものだけを読んで判定する成果物。リポジトリには動くインタプリタが存在する。パッケージはまだそれを同梱しておらず、この設定はコンパイラが出すものを変えない。">
 <link rel="icon" href="../mark.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -53,7 +53,7 @@
           <li><a href="libl.html">LibL</a></li>
         </ul>
       </details>
-      <a href="https://github.com/FujoJTOP/loment">GitHub</a>
+      <a href="https://github.com/Loment-Lang/loment">GitHub</a>
     </nav>
     <details class="lang" name="bar">
       <summary>日本語</summary>
@@ -77,31 +77,36 @@
     <p class="lede">
       プログラムを走らせる<strong>第二の方法</strong>。バイナリは、それを要求に応じて採用し、
       採用するかどうかをバイナリがすでに携えているものだけを読んで決める実行者に手渡せる。
-      速い道ではなく、プログラムを書きやすくする方法でもない。<strong>エンジンはまだ存在
-      しない。</strong>
+      速い道ではなく、プログラムを書きやすくする方法でもない。<strong>リポジトリには動く
+      インタプリタが存在する —— パッケージはまだそれを同梱しておらず、この設定は
+      コンパイラが出すものを変えない。</strong>
     </p>
   </div>
 </section>
 
 <section class="sec">
   <div class="wrap">
-    <h2>エンジンは存在しない</h2>
+    <h2>存在するもの、存在しないもの</h2>
     <p class="body">
-      バイトコード形式も、インタプリタも、いかなる種類の実行者もない。このことを脚注ではなく
-      冒頭に置く。計画についてのページは、読者が計画を製品と取り違える最も容易な場所だからだ。
+      リポジトリは今、<strong>動くインタプリタ層、T0 から T3</strong> を携えている。リンカが
+      読むのと同じ中間形式を読む。T0 はその形式を直接実行する。T1 は出力を一バイトも変えずに
+      フィードバックプロファイルを記録する。T2 は実行ループの手前で命令をひとつずつデコードし、
+      コーパス上で <strong>T0 の 6.1&times;</strong>、出力はバイト単位で同一。コンパクトな
+      直列化は同じユニットのテキスト形式の <strong>28.5%</strong>。T3 はガード付きの特化と
+      戻り道を加える。
     </p>
     <p class="body">
-      存在するのは最初の一片である: <strong><code>vm</code> の設定と、それを拒む検査は main
-      ブランチにあり</strong>、どちらもどのリリースにも、どのインストール済みツールチェインにも
-      ない。その一片がすることは、プログラムが VM を<em>要求</em>してよいかを決めることであって、
-      何かを走らせることではない。この線より下はすべて設計である —— そのものが何であるべきか、
-      何であってはならないか —— そしてそのどれも、使える機能ではない。
+      存在しないのは、そのどれもが<strong>パッケージの中に</strong>ないことである。インタプリタは
+      リポジトリの <code>tools/lvm.py</code> 一族で、Python で書かれている。リリースが同梱する
+      バイナリの中にはなく、インストール済みツールチェインでこの方法でプログラムを走らせることは
+      できない。設定も成果物を変えない: 今日 <code>choose vm</code> と <code>no_vm</code> の出力は
+      バイト単位で同一である。
     </p>
     <p class="limit">
       <strong>プロジェクトが以前にも抱えた借りである。</strong><code>runtime</code> 設定は、
       何もしないまましばらくの間成果物に宣言され、後にその主張に見合うところまで引き上げられた。
-      これはその形の再来である: 宣言され、運ばれ、借りがある。設計はそれを、読者に見つけさせる
-      のではなく、自分でそう言う。
+      これはその形の再来である: エンジンはある、出荷はない。このページはどちらがどちらかを、
+      読者に見つけさせるのではなく、自分で言う。
     </p>
   </div>
 </section>
@@ -120,7 +125,7 @@
         <h3>速い道ではない</h3>
         <p>
           逆である。Loment のネイティブな道はすでに、独立性と引き換えに速度を手放しており、
-          そもそも速くない: <a href="https://github.com/FujoJTOP/loment/blob/main/docs/212-loment-offload.md">docs/212</a>
+          そもそも速くない: <a href="https://github.com/Loment-Lang/loment/blob/main/docs/212-loment-offload.md">docs/212</a>
           の配列ベンチマークで C の <code>-O2</code> に対して <strong>10.7 倍遅れている</strong>
           —— 記録された測定値であり、常時の約束ではない。VM はその上に載る層である。
           <strong>この線の軸は性能ではない。</strong>逃げ道はまったく別の線にある。
@@ -171,7 +176,7 @@
           バイナリが runtime を積んでよいか、自分自身の外に届いてよいか。<code>vm</code> が第五であり、
           <strong>このプログラムはどの実行モデル向けか?</strong> に答える。書かなければ
           <code>no_vm</code> になり、それはこの設定が存在する前にはすべてがそうだったものである。
-          それは main ブランチにあり、どのリリースにも入っていない。
+          0.1.4.6 からはリリースビルドもこれを受け入れる。今日それで買えるのは宣言であって、異なる成果物ではない。
         </p>
         <p>
           その値は<em>あるかどうか</em>を述べ、決して<em>どれか</em>を述べない。それは
@@ -181,23 +186,29 @@
         </p>
       </div>
       <div class="row">
-        <h3>機能ではなくゲート</h3>
+        <h3>ゲート、そしてそれが開いた理由</h3>
         <p>
-          <strong>リリース</strong>ビルドでは、<code>choose vm</code> はコンパイル時エラーに
-          なるだろう。それを受け入れるのは開発チャネルだけである。規則はぶっきらぼうだ ——
-          使える最初のエンジンが存在するまでは、それへのあらゆる呼び出しはリリースでは不正で
-          ある —— そうすれば、インストール済みのツールチェインが、守れない約束を受け入れることは
-          決してない。<strong>果たされない約束は、拒否よりも悪い。</strong>
+          0.1.4.6 まで、<strong>リリース</strong>ビルドは <code>choose vm</code> をコンパイル時に
+          拒否した。開発チャネルだけが受け入れた。規則は乱暴だった —— 使えるエンジンが存在する
+          まで、リリースではそれへの呼び出しはすべて違法 —— それにより、インストール済みの
+          ツールチェインは決して果たせない約束を受け入れることがない。<strong>果たされない約束は
+          拒否より悪い。</strong>
         </p>
         <p>
-          ゲートには、リポジトリが持っていなかった概念が要る: このコンパイラはリリースビルドか、
-          開発ビルドか?設計はそれを<strong>ひとつの定数</strong>に置く。側ごとにひとつの値で、
-          パッケージング時に反転される。一行に留めるのは意図的である —— パッケージされた言語
-          ガイドは配布物へそのままコピーされ、「パッケージの中のコピーはリポジトリの中のコピーで
-          ある」は検査可能なままであり、一行はその規則を曲げる最小の方法である。その代償も
-          一緒に述べられている: 出荷されるコンパイラのシードは、リポジトリのものとバイト単位では
-          等しくなくなるので、判据は<em>同一</em>から<em>再現可能に等しく、相違はちょうどその
-          ひとつの定数</em>へと下がる。
+          0.1.4.6 はそれを開く。拒否の前提が真でなくなったからである: 最初の使えるエンジンが
+          来た。設定は今、両方のチャネルで宣言であり、訂正は削除ではなく記録される —— かつて
+          拒否を要求した検査は今、受容を要求する。だから「このゲートは存在した、そしてこれが
+          開いたときだ」が可視のまま残る。
+        </p>
+        <p>
+          ゲートはリポジトリが持っていなかった概念を必要とした: このコンパイラはリリースビルドか、
+          開発のものか? 設計はそれを<strong>ひとつの定数</strong>に収める。片側にひとつの値、
+          パッケージ時に反転する。一行なのは意図的である —— パッケージされた言語ガイドは変更
+          なしにディストリビューションへコピーされるので、「パッケージ内のコピーはリポジトリ内の
+          コピーである」が検査可能なまま残り、一行はその規則を曲げる最小の方法だからだ。代価も
+          一緒に述べられる: 出荷されるコンパイラの種はもはやリポジトリのものとバイト単位で等しく
+          ないので、判定基準は<em>同一</em>から<em>再現可能に等しく、その差はちょうどその一つの
+          定数</em>へと下がる。
         </p>
       </div>
     </div>
@@ -208,60 +219,61 @@
   <div class="wrap">
     <h2>はしご</h2>
     <p class="body">
-      VM は、ひとつの作り物としてではなく、段として読む。それぞれの段は打ち破りうるもので
-      なければならず、それぞれ反証可能でなければならない —— 「JIT を書く」は段ではない、
-      何もそれを反証できないからだ。部品表は、これを大規模にやった二つのシステムから取られて
-      いる。実装はプロジェクト自身のものになるだろうし、それがそのままであり続けるかは
-      未決である。
+      VM は一つのものとしてではなく、段として読む。それぞれの段は到達可能でなければならず、
+      反証可能でなければならない —— 「JIT を書く」は段ではない。何もそれを反証できないからだ。
+      部品表はこれを大規模にやった二つのシステムから取られている。実装はプロジェクト自身のものに
+      なり、それがそうであり続けるかは未決である。
     </p>
 
     <div class="rows">
       <div class="row">
         <h3>T0 —— バイトコードと直接インタプリタ</h3>
         <p>
-          最下段。<strong>判据:</strong>このやり方で走らせたプログラムは、ネイティブの成果物と
-          バイト単位で同一の出力と、同じ終了コードを生む。
+          床。<strong>リポジトリに構築済み。</strong><strong>判定基準:</strong> この方法で走らせた
+          プログラムは、原生成物とバイト単位で同じ出力と同じ終了コードを生む。
         </p>
       </div>
       <div class="row">
         <h3>T1 —— フィードバック</h3>
         <p>
-          型、分岐、呼び出し地点のプロファイル。<strong>判据:</strong>プロファイルは
-          <em>成果物の中に</em>収まり、第三者がそれを読める —— そしてそれを切っても成果物は
-          バイト単位で同一のままである。
+          型、分岐、呼び出し地点のプロファイル。<strong>リポジトリに構築済み。</strong>
+          <strong>判定基準:</strong> プロファイルが<em>成果物の中に</em>入り、第三者が読める ——
+          そしてそれを切ると成果物はバイト単位で変わらない。
         </p>
       </div>
       <div class="row">
         <h3>T2 —— ベースラインコンパイラ</h3>
         <p>
-          最適化することなく、解釈のコストを取り除く。<strong>判据:</strong>T0 より測定可能な
-          ほど速く、意味的に同一である。
+          最適化せずに解釈のコストを取り除く。<strong>リポジトリに構築済み —— コーパス上で
+          T0 の 6.1&times;。</strong><strong>判定基準:</strong> 測定可能に T0 より速く、意味論的
+          に同一。
         </p>
       </div>
       <div class="row">
         <h3>T3 —— 戻り道のある最適化コンパイラ</h3>
         <p>
-          誤りと分かった推測は手放さなければならない。<strong>それがこの段で唯一の厳しい判据で
-          ある:</strong>推測が放棄された後、プログラムの結果はネイティブの成果物と一致する。
+          間違っていたと分かった推測は、放棄できなければならない。<strong>リポジトリに構築済み。
+          対象は推測を背負う唯一の最適化。</strong><strong>これがこの段で唯一の厳しい判定基準:
+          </strong>推測が放棄された後、プログラムの結果は原生成物と一致する。
         </p>
       </div>
       <div class="row">
         <h3>T4 —— 世代別かつ並行の回収</h3>
         <p>
-          他の段の延長ではない唯一の段。かつて回収設計は、これがここではまったくできない、と
-          述べていた: バックエンドはポインタをローカルとパラメータスロットにしか保たず、それが
-          通常のライトバリアを排除する。<strong>その理由はもはや成り立たない</strong> ——
-          ポインタを整数に変える道が到来し、世代別の半分は
-          <a href="lgc.html">回収側</a>に着地した —— カードテーブルとライトバリアを伴って。
-          まだ先にあるのは、それを<em>VM の内側で</em>行うことであり、それは事前に行うこととは
-          別の問題である。
+          他の段の延長ではない唯一の段。回収の設計は、これがここでは全くできないと以前は言って
+          いた: バックエンドはポインタをローカルと引数スロットにしか置かず、それが通常の
+          ライトバリアを排除する。<strong>その理由はもう成り立たない</strong> —— ポインタを整数に
+          する方法が現れ、世代別の半分は<a href="lgc.html">回収の側</a>にカードテーブルと
+          ライトバリアを伴って着地した。まだ先にあるのは、それを<em>VM の内部で</em>行うことで
+          あり、事前に行うのとは別の問題である。
         </p>
       </div>
     </div>
 
     <p class="limit">
-      <strong>これらいずれかを積む最初のリリースは T0 に着地する</strong> —— バイトコードと
-      インタプリタ、それ以上ではない。その上の段は計画の形であり、予定表ではない。
+      <strong>リポジトリは T0 から T3 を携えている。パッケージはそのどれも携えていない。</strong>
+      インタプリタを構築することと、それを配布物に載せることは二つの別の段階であり、終わっている
+      のは最初の一つだけである。上の段は計画の形であり、予定表ではない。
     </p>
   </div>
 </section>
@@ -366,13 +378,29 @@
         <span class="who">LVM</span>
         <span class="what">同じ領域を、言語の残りの話題と並べて wiki に。</span>
       </a>
-      <a class="doclink" href="https://github.com/FujoJTOP/loment/blob/main/docs/232-loment-vm.md">
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/blob/main/docs/232-loment-vm.md">
         <span class="who">docs/232</span>
         <span class="what">設計記録。中国語で書かれており、どの部分が固まっていてどれがそうでないかを、それ自身が語っている。</span>
       </a>
-      <a class="doclink" href="https://github.com/FujoJTOP/loment/blob/main/docs/231-lvm-channel-and-vm-dimension.md">
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/blob/main/docs/231-lvm-channel-and-vm-dimension.md">
         <span class="who">docs/231</span>
-        <span class="what">チャネルと <code>vm</code> の設定 —— main ブランチにあるその一片。</span>
+        <span class="what">チャネルと <code>vm</code> の設定 —— そしてそのゲートが開いた記録。</span>
+      </a>
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/blob/main/docs/243-lvm-t0-interpreter.md">
+        <span class="who">docs/243</span>
+        <span class="what">T0: バイトコードは既存の中間形式であり、それを実行するとはどういうことか。</span>
+      </a>
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/blob/main/docs/259-lvm-t2-baseline.md">
+        <span class="who">docs/259</span>
+        <span class="what">T2: デコードを実行ループの外へ出し、デコード回数を数える判定基準。</span>
+      </a>
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/blob/main/docs/250-lvm-compact-form.md">
+        <span class="who">docs/250</span>
+        <span class="what">コンパクト形: 同じ形式で、28.5% の大きさ。</span>
+      </a>
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/blob/main/docs/261-lvm-t3-implemented.md">
+        <span class="who">docs/261</span>
+        <span class="what">T3: ガード付き特化と、なぜスタックマシンでは脱最適化が安いのか。</span>
       </a>
       <a class="doclink" href="https://loment.fandom.com/wiki/Versions_and_roadmap">
         <span class="who">ロードマップ</span>
@@ -396,11 +424,11 @@
   <div class="wrap">
     <span>Loment は Loment-Open License の下で公開されている。制作: Fujo。</span>
     <nav>
-      <a href="https://github.com/FujoJTOP/loment">ソース</a>
-      <a href="https://github.com/FujoJTOP/loment/releases/latest">リリース</a>
+      <a href="https://github.com/Loment-Lang/loment">ソース</a>
+      <a href="https://github.com/Loment-Lang/loment/releases/latest">リリース</a>
       <a href="https://github.com/FujoJTOP/lompi">lompi</a>
       <a href="https://loment.fandom.com/">Wiki</a>
-      <a href="https://github.com/FujoJTOP/loment/issues">イシュー</a>
+      <a href="https://github.com/Loment-Lang/loment/issues">イシュー</a>
       <a class="mast" href="https://mastodon.social/@Loment" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z"/></svg>Mastodon</a>
     </nav>
   </div>

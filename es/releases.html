@@ -1,6 +1,6 @@
 <!doctype html>
 <!-- translated-from: releases.html -->
-<!-- source-sha256: bceff69467b07a849d9544bafc9320fa9bb80f04b925c9c43c78d124ca8e32e7 -->
+<!-- source-sha256: 75d9167c6c89b126f3e90a9ac83f32c94d7ae942a1bd85787cfa227a3b304649 -->
 <html lang="es">
 <head>
 <meta charset="utf-8">
@@ -53,7 +53,7 @@
           <li><a href="libl.html">LibL</a></li>
         </ul>
       </details>
-      <a href="https://github.com/FujoJTOP/loment">GitHub</a>
+      <a href="https://github.com/Loment-Lang/loment">GitHub</a>
     </nav>
     <details class="lang" name="bar">
       <summary>ES</summary>
@@ -80,7 +80,7 @@
       publicaron desde otro repositorio y este no lleva sus etiquetas.
     </p>
     <p class="actions">
-      <a class="btn btn-solid" href="https://github.com/FujoJTOP/loment/releases/latest">Descargar</a>
+      <a class="btn btn-solid" href="https://github.com/Loment-Lang/loment/releases/latest">Descargar</a>
       <a class="btn btn-quiet" href="start.html">Primeros pasos</a>
     </p>
     <p class="limit">
@@ -163,244 +163,152 @@
 
 <section class="sec">
   <div class="wrap">
-    <h2>0.1.4 Pre</h2>
+    <h2>De este repositorio</h2>
     <p class="body">
-      <strong>2026-09-22.</strong> La primera versión publicada desde este repositorio, y el primer
-      Loment que se podía instalar sin compilarlo. Se publicó como prelanzamiento por una sola
-      razón: para que "el repositorio tiene versiones" deje de ser una afirmación y se convierta en
-      un hecho que se puede mirar.
+      Las tres versiones que salieron de este repositorio antes de la que se publica ahora. Cada una
+      es una fila y no una sección por la razón que un registro debe dar: el detalle está en la
+      página de la versión a la que enlaza, y una historia que sigue creciendo entera deja de ser
+      historia y se convierte en una segunda copia del archivo.
     </p>
-    <p class="note">
-      Un detalle de cómo se hizo merece conocerse si uno va a mirar: la etiqueta apunta a un
-      commit anterior a aquel desde el que se construyeron los archivos comprimidos. Los archivos
-      de código fuente que GitHub genera automáticamente siguen la etiqueta, así que el código que
-      se descarga por esa vía es el árbol anterior a esa compilación.
-    </p>
+
+    <div class="rows">
+      <div class="row">
+        <h3>0.1.4 Pre — el primer Loment instalable</h3>
+        <p>
+          <strong>2026-09-22.</strong> Se publicó como prelanzamiento por una sola razón: para que
+          «el repositorio tiene versiones» deje de ser una afirmación y pase a ser algo que se puede
+          mirar. Un detalle de cómo se hizo sigue en pie — la etiqueta apunta a un commit anterior al
+          que se usó para construir los archivos, así que los archivos de código fuente que genera
+          GitHub son el árbol previo a esa compilación.
+        </p>
+      </div>
+      <div class="row">
+        <h3>0.1.4 — usable</h3>
+        <p>
+          <strong>2026-09-23.</strong> El tema era <em>ser usable</em>, no tener más cosas: no cambió
+          la sintaxis, y el esfuerzo se fue en sacar del camino lo último del intérprete. Su
+          instalador de Windows no hace nada en máquinas configuradas para no buscar en el directorio
+          actual; <strong>instala desde el zip</strong> si quieres esta versión.
+        </p>
+      </div>
+      <div class="row">
+        <h3>0.1.4.5 — reclamación, y un runtime que es una garantía</h3>
+        <p>
+          <strong>2026-10-13.</strong> La escalera de reclamación de cuatro peldaños con una mitad
+          adaptativa y otra generacional; <code>no_runtime</code> pasó de declaración a garantía; red
+          en ambos objetivos; y la quinta dimensión, <code>vm</code>, llegó con su compuerta de
+          versión cerrada. Un parche del mismo día cambió solo el instalador de Windows.
+        </p>
+      </div>
+    </div>
   </div>
 </section>
 
 <section class="sec">
   <div class="wrap">
-    <h2>0.1.4 — usable</h2>
+    <h2>0.1.4.6 — las compuertas bajan</h2>
     <p class="body">
-      <strong>2026-09-23.</strong> La versión cuyo tema era <em>ser usable</em> y no tener más
-      cosas dentro. La superficie del lenguaje no cambió en absoluto — ni sintaxis nueva, ni
-      funciones incorporadas nuevas — y el trabajo se dedicó a sacar del camino lo último que
-      quedaba del intérprete: el gestor de paquetes y el generador de los archivos de interfaz de
-      bajo nivel obtuvieron implementaciones en Loment, juzgadas de la única forma que significa
-      algo, byte a byte contra las de Python que reemplazaron.
-    </p>
-    <p class="body">
-      La compatibilidad se declaró en su momento y merece repetirse, porque es el tipo de cosa que
-      un número de versión oculta: <strong>nada de lo escrito en Loment tuvo que cambiar</strong>,
-      y los archivos de bajo nivel generados salieron idénticos byte a byte. La semilla de
-      arranque sí cambió, así que quien reconstruya un conjunto de herramientas a partir de una
-      semilla necesita la nueva. Los nombres de archivo de los paquetes llevan la versión, como es
-      obligatorio.
-    </p>
-    <p class="limit">
-      <strong>El instalador de Windows publicado con esta versión no funciona en todas las
-      máquinas, y no se va a reemplazar.</strong> En algunos sistemas, hacer doble clic sobre él no
-      produce ninguna ventana ni ningún error — el proceso simplemente termina. La causa se
-      conoce: el paquete autoextraíble ejecuta el script del instalador por su nombre, sin una
-      ruta, y en las máquinas donde Windows está configurado para no buscar en el directorio
-      actual, ese nombre no se encuentra. El mismo archivo, por tanto, se instala con normalidad en
-      una máquina y no hace nada en silencio en otra. <strong>Instalar desde el archivo comprimido
-      zip</strong>, que contiene lo mismo. La corrección está escrita y llega con una versión
-      posterior; el instalador publicado se deja intacto a propósito, porque reconstruirlo
-      cambiaría los bytes de un archivo que ya tiene un número de versión asociado. Ver
-      <a href="https://github.com/FujoJTOP/loment/issues/117">incidencia #117</a>.
-    </p>
-  </div>
-</section>
-
-<section class="sec">
-  <div class="wrap">
-    <h2>0.1.4.5</h2>
-    <p class="body">
-      <strong>2026-10-13.</strong> Todo lo que se anunció en la prepublicación mientras se
-      construía, más las correcciones acumuladas desde 0.1.4. Un parche publicado el mismo día
-      cambia solo el instalador de Windows — el conjunto de herramientas de los dos paquetes es
-      idéntico byte a byte — y el botón de descarga de arriba lleva a ese.
+      <strong>2026-10-17.</strong> Cuatro cosas que estaban construidas pero se mantenían fuera de
+      una versión quedaron accesibles a la vez: una capa de intérprete junto al compilador, libc y
+      LibL, y el ajuste <code>vm</code>. El resto es la mayor barrida de defectos que ha tenido el
+      proyecto; la mayoría de los números de issue del repositorio vienen de ella.
     </p>
 
     <h3>Nuevo</h3>
     <ol class="notes">
       <li>
-        <strong>La recuperación está completa.</strong> La escala de cuatro peldaños — promoción
-        estática, último uso, épocas de bloque y el recolector en tiempo de ejecución — tiene
-        implementaciones en ambos lados y un criterio para cada uno; un recolector <em>adaptativo</em>
-        para el nivel que lo quería; y una mitad <em>generacional</em>, con una tabla de tarjetas y
-        una barrera de escritura. Cuánto de un programa es responsabilidad del recolector es un
-        número que el artefacto lleva, y dos validadores independientes lo comprueban sin leer una
-        línea de código fuente. Ver <a href="lgc.html">LomentGC</a>.
+        <strong>LVM — la capa de intérprete, de T0 a T3.</strong> Lee la misma forma intermedia que
+        el enlazador, así que un programa nunca gana una segunda fuente de verdad. T0 fue el cuarto
+        lector de esa forma; T1 registra un perfil de retroalimentación sin cambiar un byte de salida;
+        T2 saca la decodificación de instrucciones del bucle de ejecución — <strong>6.1&times;
+        T0</strong> en el corpus con salida idéntica byte a byte; la forma compacta es
+        <strong>375.9&nbsp;KB &rarr; 107.0&nbsp;KB</strong> para la misma unidad; T3 añade
+        especialización con guardas y desoptimización. <strong>Esta versión acepta
+        <code>choose vm</code></strong> — 0.1.4.5 lo rechazaba en una compilación de versión, y esa
+        compuerta se abrió aquí. Lo que eso <em>no</em> significa: el intérprete es la familia
+        <code>tools/lvm.py</code> del repositorio, que el paquete no incluye, y el ajuste todavía no
+        cambia lo que emite el compilador. La línea es una <strong>declaración, no una
+        garantía</strong>, con el mismo peso que <code>no_runtime</code> tenía en 0.1.4.5.
       </li>
       <li>
-        <strong><code>no_runtime</code> es una garantía, no una declaración.</strong> El valor por
-        defecto antes significaba «este programa no pidió un runtime». Ahora significa <em>el
-        artefacto no tiene ninguno</em>: una construcción que arrastraría uno se rechaza en tiempo
-        de compilación. <code>choose runtime</code> es la otra mitad — pone el runtime dentro, lo
-        use el programa o no. <strong>Este es el único cambio de aquí que puede afectar a un
-        programa que ya se tenga:</strong> cualquier cosa que use división, asignación de memoria o
-        construcción de cadenas necesita una línea añadida a su unidad raíz.
+        <strong>libc y LibL.</strong> Una compilación de versión enlaza un <code>libc.so.6</code>
+        real y lo ejecuta de principio a fin. La cara LibL — <code>fopen</code>/<code>fread</code>/
+        <code>fwrite</code>/<code>fseek</code>, el resto de formatos de <code>printf</code>,
+        <code>malloc</code>/<code>calloc</code> como escrituras sobre el montón integrado — se juzga
+        contra la glibc real del sistema. El cierre de 0.1.4.5 sobre <code>use libl</code> y sobre
+        libc está abierto.
       </li>
       <li>
-        <strong>Una quinta dimensión: <code>vm</code>.</strong> Un programa puede decir ahora para
-        qué modelo de ejecución es. En una compilación de <strong>versión</strong> esa línea es un
-        error de compilación; solo el canal de desarrollo la acepta, y lo que ese canal produce es
-        idéntico byte a byte a <code>no_vm</code>. La dimensión y la puerta son reales, y el motor
-        no lo es — <a href="lvm.html">esa página</a> dice qué mitad es cuál.
+        <strong>Hilos.</strong> <code>thread_spawn</code> en el lenguaje, más una biblioteca
+        <code>os/thread</code> cuyos números de llamada al sistema se leen de la cabecera en vez de
+        recordarse.
       </li>
       <li>
-        <strong>Redes, en ambos objetivos.</strong> El mismo código abre un socket en Linux y en
-        Windows, a partir de los mismos bytes. Con ello vienen dos límites, y son las partes que
-        todavía faltan: <strong>no hay biblioteca de red</strong> — las llamadas al sistema se
-        escriben uno mismo — y <strong>no hay puerta de admisión</strong>, de modo que una unidad
-        que declara que no solicitará acceso a la red no queda realmente impedida de llamar a un
-        socket. La comprobación de capacidades compara los <em>nombres</em> de los dominios, y nunca
-        mira el comportamiento.
+        <strong>Cuatro bibliotecas enviadas, cada una juzgada contra una implementación real.</strong>
+        <code>os</code> — cinco módulos contra CPython en el mismo entorno Linux;
+        <code>internet</code> — siete módulos contra resolutores y servidores reales.
       </li>
       <li>
-        <strong><code>--opt</code>.</strong> Cuando clang está instalado, la compilación puede
-        entregarle el IR a <code>-O2</code> en lugar de usar el enlazador incluido. Es la vía rápida,
-        y cuesta la propiedad por la que existe la vía incluida: no requerir ninguna cadena de
-        herramientas externa.
+        <strong>LMS nivel 1</strong> — una segunda arquitectura de memoria junto al recolector: su
+        comprobador (E028/E029) y su entrada de nivel 3, en ambas implementaciones.
+      </li>
+      <li>
+        <strong>Una compuerta que ve el runtime, y distribución.</strong> Los 104 criterios que
+        necesitan un binario producido ahora corren de forma nativa en el runner de Linux en vez de
+        saltarse, y un criterio que no se ejecutó ya no cuenta como aprobado. Réplicas de solo
+        lectura en cuatro hosts; un README en chino simplificado; la extensión de VS Code en el
+        Marketplace.
       </li>
     </ol>
 
     <h3>Corregido</h3>
-    <p class="body">
-      El último grupo surgió del barrido de las gramáticas superficiales — las otras seis formas en
-      que se puede escribir una unidad. Cada una es una forma distinta en que el front end podía
-      perder algo que se había escrito, así que cada una figura aquí, con su incidencia.
-    </p>
     <ol class="notes">
       <li>
-        <strong>El instalador de Windows.</strong> El publicado con 0.1.4 no hace absolutamente nada
-        en una máquina configurada para no buscar un ejecutable en el directorio actual. Ese se queda
-        como está; esta versión trae el instalador corregido.
+        <strong>Reclamación.</strong> El barredor ya no borra cuatro bytes de marca por cada bloque
+        liberado, lo que había estado recolectando bloques vivos junto a la basura; <code>free</code>
+        comprueba la propiedad y rechaza una doble liberación; la precisión dentro del bloque son
+        máscaras de ranura por sitio; un argumento de una llamada al sistema en la lista blanca
+        cuenta como préstamo; una recolección ya no vacía la lista de libres; el disparador de
+        recolección va donde se piden los bytes y cuenta lo que consume el asignador; un bloque
+        reciclado conserva su tamaño registrado; las palabras de un búfer promovido llegan al
+        escaneo de raíces; y la época de L2 se detiene en el siguiente <code>let</code> con el mismo
+        nombre, así que dos bucles hermanos ya no se bloquean entre sí.
       </li>
       <li>
-        <strong>Una lista de bloques libres que nunca reutilizaba nada.</strong> El enlazador
-        incluido asignaba solo una arista entrante por phi, así que la lista de bloques libres del
-        asignador se quedó vacía durante toda su vida.
+        <strong>Diagnósticos que antes callaban o estaban mal.</strong> <code>@</code> al inicio de
+        una sentencia, los literales binarios y la regla de caer por el final se rechazan como los
+        rechaza la referencia; un tipo desconocido es E030 y no E002; siete casos que callaban,
+        erraban o eran fatales ahora dicen lo que dice la referencia; el mismo programa calcula los
+        mismos números en cada gramática de superficie; <code>use std</code> ya no se cae; el
+        formateador conserva los comentarios y mantiene los modificadores de declaración en la línea
+        de la declaración.
       </li>
       <li>
-        <strong>Artefactos que el ensamblador rechazaba.</strong> Dos errores del IR hacían que los
-        artefactos con subíndices de matriz fueran LLVM no válido. Y un terminador de bloque ausente
-        en la propia salida del recolector era invisible para todos los criterios que el proyecto
-        tenía.
+        <strong>El emisor rechaza lo que no puede expresar.</strong> La aritmética de anchos
+        mezclados, <code>bool != bool</code> en el compilador autoalojado, 11+ parámetros, una
+        estructura cuyo último campo no lleva coma final y los literales enteros que no caben en su
+        tipo declarado son errores en vez de IR inválido.
       </li>
       <li>
-        <strong>El servidor de lenguaje y el formateador.</strong> El servidor ya no se cae con un
-        archivo que no puede analizar, y el formateador autoalojado ya no rechaza las otras seis
-        gramáticas superficiales.
+        <strong>Runtime y CLI.</strong> La indexación de arrays y la aritmética se comprueban; la
+        división por cero es una trampa con mensaje; el rechazo del nivel por defecto nombra el
+        ajuste correcto; <code>let x = 1;</code>, <code>let a: f64</code>, un
+        <code>return;</code> desnudo, el montón propio del compilador para <code>brk</code>, la
+        expresión de 250 términos y los 400 bloques anidados se diagnostican en vez de romper;
+        Windows construye un PE y no un ELF; <code>loment check</code> ya no sale con 0 para un
+        archivo que no se puede construir.
       </li>
       <li>
-        <strong>La alineación de pila en el punto de entrada.</strong> A la entrada de un proceso no
-        se le da la alineación que la convención de llamada supone, así que <code>_start</code> la
-        realinea.
-      </li>
-      <li>
-        <strong>Varias correcciones en la gramática superficial de C</strong> para los lugares donde
-        el front end se tragaba algo o lo reportaba como otra cosa. Cada una tiene su propia
-        incidencia; el mensaje de la etiqueta las enumera.
-      </li>
-      <li>
-        Una unidad escrita en otra sintaxis podía perder funciones enteras en silencio: el front end descartaba el informe de omisiones del lado de transcripción. <a href="https://github.com/FujoJTOP/loment/issues/74">#74</a>
-      </li>
-      <li>
-        <code>loment fmt --write</code> destruía un archivo escrito en otra sintaxis — fusionaba la línea de declaración con la siguiente y borraba la función que había allí, y terminaba con salida 0. <a href="https://github.com/FujoJTOP/loment/issues/115">#115</a>
-      </li>
-      <li>
-        <code>loment doc</code> se caía con un archivo así, o producía documentación referida a números de línea generados en vez de a los que se habían escrito. <a href="https://github.com/FujoJTOP/loment/issues/116">#116</a>
-      </li>
-      <li>
-        Un <code>static</code> local a una función se descartaba, así que el valor no sobrevivía entre llamadas. <a href="https://github.com/FujoJTOP/loment/issues/118">#118</a>
-      </li>
-      <li>
-        Una variable local que compartía nombre con algo fuera de un cuerpo <code>for</code> hacía que la unidad traducida entrara en un bucle infinito. <a href="https://github.com/FujoJTOP/loment/issues/119">#119</a>
-      </li>
-      <li>
-        Una segunda función definida en la misma línea se perdía en silencio. <a href="https://github.com/FujoJTOP/loment/issues/122">#122</a>
-      </li>
-      <li>
-        Una conversión booleana sin paréntesis producía una unidad que ya no se podía analizar sintácticamente. <a href="https://github.com/FujoJTOP/loment/issues/124">#124</a>
-      </li>
-      <li>
-        Los <code>typedef</code> de nivel superior, una variable global, <code>union</code>, <code>#include</code> y <code>#define</code> ni se traducían ni se reportaban — la comprobación seguía imprimiendo OK. <a href="https://github.com/FujoJTOP/loment/issues/126">#126</a>
-      </li>
-      <li>
-        Un literal octal hacía que ambas herramientas de línea de comandos imprimieran una traza de pila. <a href="https://github.com/FujoJTOP/loment/issues/127">#127</a>
-      </li>
-      <li>
-        La tabla de símbolos externos colapsaba a su última entrada, así que la ruta entre unidades no podía funcionar en absoluto. <a href="https://github.com/FujoJTOP/loment/issues/128">#128</a>
-      </li>
-      <li>
-        Una definición de función al estilo K&amp;R desaparecía en silencio — sin entrada, sin línea [skip], salida 0. <a href="https://github.com/FujoJTOP/loment/issues/129">#129</a>
-      </li>
-      <li>
-        Una variable llamada <code>true</code> o <code>false</code> se renombraba donde estaba declarada y no donde se usaba. <a href="https://github.com/FujoJTOP/loment/issues/130">#130</a>
-      </li>
-      <li>
-        Dos identificadores podían colapsar en uno tras el renombrado, perdiendo una asignación. <a href="https://github.com/FujoJTOP/loment/issues/134">#134</a>
-      </li>
-      <li>
-        Una función cuyo nombre chocaba con una palabra clave producía una unidad que no se podía analizar léxicamente. <a href="https://github.com/FujoJTOP/loment/issues/135">#135</a>
-      </li>
-      <li>
-        Una marca de orden de bytes al principio hacía invisible la declaración de gramática. <a href="https://github.com/FujoJTOP/loment/issues/136">#136</a>
-      </li>
-      <li>
-        El front end aceptaba identificadores que el analizador léxico rechaza, y reportaba el error contra un archivo generado. <a href="https://github.com/FujoJTOP/loment/issues/137">#137</a>
-      </li>
-      <li>
-        Un archivo <code>.c</code> dado sin un lenguaje explícito se leía como JSON. <a href="https://github.com/FujoJTOP/loment/issues/140">#140</a>
-      </li>
-      <li>
-        Una solicitud de ir a la definición en un archivo así hacía terminar el servidor de lenguaje. <a href="https://github.com/FujoJTOP/loment/issues/142">#142</a>
-      </li>
-      <li>
-        La herramienta de diagnósticos y el front end no coincidían sobre qué gramáticas son nativas, así que una de ellas retiraba una corrección que debería haber ofrecido. <a href="https://github.com/FujoJTOP/loment/issues/145">#145</a>
-      </li>
-      <li>
-        <code>loment dbg</code> reportaba un archivo y una línea que no existían. <a href="https://github.com/FujoJTOP/loment/issues/146">#146</a>
-      </li>
-      <li>
-        Una llamada usada como sentencia eludía la puerta entre unidades y se descartaba; la misma llamada en posición de valor se rechazaba. <a href="https://github.com/FujoJTOP/loment/issues/147">#147</a>
-      </li>
-      <li>
-        Una palabra clave de gramática mal escrita recaía en silencio sobre Loment en vez de dar error. <a href="https://github.com/FujoJTOP/loment/issues/148">#148</a>
-      </li>
-      <li>
-        El <code>~</code> unario estaba documentado como soportado y el traductor lo rechazaba. <a href="https://github.com/FujoJTOP/loment/issues/150">#150</a>
-      </li>
-      <li>
-        Una sentencia de expresión estaba documentada como soportada y no se analizaba — y el mensaje culpaba al operando. <a href="https://github.com/FujoJTOP/loment/issues/151">#151</a>
-      </li>
-      <li>
-        Un tipo de retorno no traducible hacía desaparecer la función, y el error culpaba a un punto de llamada varias líneas más abajo. <a href="https://github.com/FujoJTOP/loment/issues/152">#152</a>
-      </li>
-      <li>
-        Un prototipo de función producía tres diagnósticos erróneos distintos según dónde estuviera. <a href="https://github.com/FujoJTOP/loment/issues/153">#153</a>
-      </li>
-      <li>
-        Un diagnóstico fuera del subconjunto daba un número de línea y un recuento de funciones donde había prometido el nombre de la función. <a href="https://github.com/FujoJTOP/loment/issues/154">#154</a>
-      </li>
-      <li>
-        Las notas del ejemplo todavía describían el tramo de C como enlazado, cuando había pasado a ser traducción. <a href="https://github.com/FujoJTOP/loment/issues/155">#155</a>
-      </li>
-      <li>
-        Un choque de nombres entre unidades se reportaba con los nombres equivocados y apuntaba a la línea <code>use</code> equivocada. <a href="https://github.com/FujoJTOP/loment/issues/221">#221</a>
+        <strong>Enlazador.</strong> Un índice negativo se extiende con signo; el enlazador espejo
+        lee globales de 64 bits y tablas <code>case</code> de varias líneas.
       </li>
     </ol>
 
-    <h3>Lo que no trae esta versión</h3>
-    <p class="limit">
-      <strong>libc y LibL no están disponibles.</strong> La línea de libc está construyendo las
-      piezas que una biblioteca de C necesita, una a una, y la cara con forma de C de la
-      biblioteca estándar no está lista para usarse. Ninguna de las dos es algo con lo que planear
-      hoy — <a href="libl.html">la página de LibL</a> lleva su propia línea de estado.
+    <h3>Issues nuevos</h3>
+    <p class="body">
+      Un solo defecto introducido por las propias adiciones de esta versión, y sigue abierto:
+      <a href="https://github.com/Loment-Lang/loment/issues/442">#442</a>. Los defectos anteriores a
+      esta versión están en la lista de issues del repositorio, no aquí.
     </p>
   </div>
 </section>
@@ -414,13 +322,13 @@
       está escrita como un plan y lo dice.
     </p>
     <div style="margin-top: var(--s4)">
-      <a class="doclink" href="https://github.com/FujoJTOP/loment/releases/latest">
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/releases/latest">
         <span class="who">Última versión</span>
         <span class="what">La versión que hay que instalar. Siempre este enlace, nunca un número de versión copiado en una página.</span>
       </a>
       <a class="doclink" href="https://loment.fandom.com/wiki/Versions_and_roadmap">
         <span class="who">Roadmap</span>
-        <span class="what">Lo que viene después de 0.1.4.5, enunciado como un plan y no como una función.</span>
+        <span class="what">Lo que viene después de 0.1.4.6, enunciado como un plan y no como una función.</span>
       </a>
       <a class="doclink" href="start.html">
         <span class="who">Primeros pasos</span>
@@ -440,11 +348,11 @@
   <div class="wrap">
     <span>Loment se publica bajo la licencia Loment-Open. Programa de Fujo.</span>
     <nav>
-      <a href="https://github.com/FujoJTOP/loment">Código fuente</a>
-      <a href="https://github.com/FujoJTOP/loment/releases/latest">Versiones</a>
+      <a href="https://github.com/Loment-Lang/loment">Código fuente</a>
+      <a href="https://github.com/Loment-Lang/loment/releases/latest">Versiones</a>
       <a href="https://github.com/FujoJTOP/lompi">lompi</a>
       <a href="https://loment.fandom.com/">Wiki</a>
-      <a href="https://github.com/FujoJTOP/loment/issues">Incidencias</a>
+      <a href="https://github.com/Loment-Lang/loment/issues">Incidencias</a>
       <a class="mast" href="https://mastodon.social/@Loment" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z"/></svg>Mastodon</a>
     </nav>
   </div>
