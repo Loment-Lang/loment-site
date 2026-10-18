@@ -1,6 +1,6 @@
 <!doctype html>
 <!-- translated-from: releases.html -->
-<!-- source-sha256: 9cdc255d5569e5c4a7b46521929f185a64e1e28ccd16d107a9187a2d428a6589 -->
+<!-- source-sha256: d5ccb324be11c64bb7975b07add7bff111c24449b627010d69c9c96485a25e70 -->
 <html lang="es">
 <head>
 <meta charset="utf-8">
@@ -166,7 +166,7 @@
   <div class="wrap">
     <h2>De este repositorio</h2>
     <p class="body">
-      Las tres versiones que salieron de este repositorio antes de la que se publica ahora. Cada una
+      Las cuatro versiones que salieron de este repositorio antes de la que se publica ahora. Cada una
       es una fila y no una sección por la razón que un registro debe dar: el detalle está en la
       página de la versión a la que enlaza, y una historia que sigue creciendo entera deja de ser
       historia y se convierte en una segunda copia del archivo.
@@ -201,115 +201,75 @@
           versión cerrada. Un parche del mismo día cambió solo el instalador de Windows.
         </p>
       </div>
+      <div class="row">
+        <h3>0.1.4.6 — las compuertas bajan</h3>
+        <p>
+          <strong>2026-10-17.</strong> Cuatro cosas que estaban construidas pero se mantenían
+          fuera de una versión se volvieron alcanzables de una vez: un nivel de intérprete junto
+          al compilador, libc y LibL, y el ajuste <code>vm</code>. El resto fue el mayor barrido
+          de defectos anterior a 0.1.4.7.
+        </p>
+      </div>
     </div>
   </div>
 </section>
 
 <section class="sec">
   <div class="wrap">
-    <h2>0.1.4.6 — las compuertas bajan</h2>
+    <h2>0.1.4.7 — las bibliotecas se vuelven gemelas</h2>
     <p class="body">
-      <strong>2026-10-17.</strong> Cuatro cosas que estaban construidas pero se mantenían fuera de
-      una versión quedaron accesibles a la vez: una capa de intérprete junto al compilador, libc y
-      LibL, y el ajuste <code>vm</code>. El resto es la mayor barrida de defectos que ha tenido el
-      proyecto; la mayoría de los números de issue del repositorio vienen de ella.
+      <strong>2026-10-18.</strong> Una versión de defectos, y el titular no es una función: cada
+      biblioteca que envía el paquete compila ahora a <strong>IR idéntico byte a byte en las dos
+      implementaciones</strong> — 155 módulos, ninguno omitido, sin huecos conocidos, fijado por
+      un criterio que se pone rojo cuando la lista crece. Llegar ahí destapó errores de estado
+      silenciosos, no la divergencia que parecían desde fuera.
     </p>
 
     <h3>Nuevo</h3>
     <ol class="notes">
       <li>
-        <strong>LVM — la capa de intérprete, de T0 a T3.</strong> Lee la misma forma intermedia que
-        el enlazador, así que un programa nunca gana una segunda fuente de verdad. T0 fue el cuarto
-        lector de esa forma; T1 registra un perfil de retroalimentación sin cambiar un byte de salida;
-        T2 saca la decodificación de instrucciones del bucle de ejecución — <strong>6.1&times;
-        T0</strong> en el corpus con salida idéntica byte a byte; la forma compacta es
-        <strong>375.9&nbsp;KB &rarr; 107.0&nbsp;KB</strong> para la misma unidad; T3 añade
-        especialización con guardas y desoptimización. <strong>Esta versión acepta
-        <code>choose vm</code></strong> — 0.1.4.5 lo rechazaba en una compilación de versión, y esa
-        compuerta se abrió aquí. Lo que eso <em>no</em> significa: el intérprete es la familia
-        <code>tools/lvm.py</code> del repositorio, que el paquete no incluye, y el ajuste todavía no
-        cambia lo que emite el compilador. La línea es una <strong>declaración, no una
-        garantía</strong>, con el mismo peso que <code>no_runtime</code> tenía en 0.1.4.5.
+        <strong>Las bibliotecas enviadas son gemelas.</strong> Cada módulo del almacén se compila
+        como raíz con ambos compiladores y el IR se compara byte a byte. La fachada
+        <code>std</code> queda excluida por nombre y por criterio — no tiene funciones, y sus 127
+        módulos se comparan por separado.
       </li>
       <li>
-        <strong>libc y LibL.</strong> Una compilación de versión enlaza un <code>libc.so.6</code>
-        real y lo ejecuta de principio a fin. La cara LibL — <code>fopen</code>/<code>fread</code>/
-        <code>fwrite</code>/<code>fseek</code>, el resto de formatos de <code>printf</code>,
-        <code>malloc</code>/<code>calloc</code> como escrituras sobre el montón integrado — se juzga
-        contra la glibc real del sistema. El cierre de 0.1.4.5 sobre <code>use libl</code> y sobre
-        libc está abierto.
-      </li>
-      <li>
-        <strong>Hilos.</strong> <code>thread_spawn</code> en el lenguaje, más una biblioteca
-        <code>os/thread</code> cuyos números de llamada al sistema se leen de la cabecera en vez de
-        recordarse.
-      </li>
-      <li>
-        <strong>Cuatro bibliotecas enviadas, cada una juzgada contra una implementación real.</strong>
-        <code>os</code> — cinco módulos contra CPython en el mismo entorno Linux;
-        <code>internet</code> — siete módulos contra resolutores y servidores reales.
-      </li>
-      <li>
-        <strong>LMS nivel 1</strong> — una segunda arquitectura de memoria junto al recolector: su
-        comprobador (E028/E029) y su entrada de nivel 3, en ambas implementaciones.
-      </li>
-      <li>
-        <strong>Una compuerta que ve el runtime, y distribución.</strong> Los 104 criterios que
-        necesitan un binario producido ahora corren de forma nativa en el runner de Linux en vez de
-        saltarse, y un criterio que no se ejecutó ya no cuenta como aprobado. Réplicas de solo
-        lectura en cuatro hosts; un README en chino simplificado; la extensión de VS Code en el
-        Marketplace.
+        <strong>Una tabla de constantes en el compilador autoalojado.</strong>
+        <code>find_const</code> ya no recorre la unidad entera por identificador, que es lo que
+        hacía que la fachada tardara decenas de minutos en compilar.
       </li>
     </ol>
 
     <h3>Corregido</h3>
     <ol class="notes">
       <li>
-        <strong>Reclamación.</strong> El barredor ya no borra cuatro bytes de marca por cada bloque
-        liberado, lo que había estado recolectando bloques vivos junto a la basura; <code>free</code>
-        comprueba la propiedad y rechaza una doble liberación; la precisión dentro del bloque son
-        máscaras de ranura por sitio; un argumento de una llamada al sistema en la lista blanca
-        cuenta como préstamo; una recolección ya no vacía la lista de libres; el disparador de
-        recolección va donde se piden los bytes y cuenta lo que consume el asignador; un bloque
-        reciclado conserva su tamaño registrado; las palabras de un búfer promovido llegan al
-        escaneo de raíces; y la época de L2 se detiene en el siguiente <code>let</code> con el mismo
-        nombre, así que dos bucles hermanos ya no se bloquean entre sí.
+        <strong>Los errores de estado que destapó el criterio de gemelos.</strong> Un
+        <code>match</code> de cuatro brazos sobrescribía el indicador <code>gc_auto_alpha</code>,
+        así que una unidad que no era alpha se compilaba como alpha; las conversiones encadenadas
+        hacían solo el primer paso; los literales decimales de 64 bits no se envolvían; las
+        llamadas a intrínsecos no tenían tipo de retorno en la inferencia; los operandos de
+        desplazamiento heredaban la expectativa de 64 bits externa; y los centinelas de tipo
+        virtual se confundían con índices de token.
       </li>
       <li>
-        <strong>Diagnósticos que antes callaban o estaban mal.</strong> <code>@</code> al inicio de
-        una sentencia, los literales binarios y la regla de caer por el final se rechazan como los
-        rechaza la referencia; un tipo desconocido es E030 y no E002; siete casos que callaban,
-        erraban o eran fatales ahora dicen lo que dice la referencia; el mismo programa calcula los
-        mismos números en cada gramática de superficie; <code>use std</code> ya no se cae; el
-        formateador conserva los comentarios y mantiene los modificadores de declaración en la línea
-        de la declaración.
+        <strong>Treinta y cinco defectos del barrido, cada uno con un criterio que se ponía rojo
+        primero.</strong> La biblioteca estándar, diez analizadores de <code>internet</code>, el
+        decodificador de la forma compacta de la VM, cuatro casos del servidor de lenguaje,
+        JSON/CSV/rutas/formato, tres correcciones en las fronteras de nivel del runtime de la VM,
+        y un paso de dependencias que entregaba a cada unidad el programa entero en lugar de su
+        propio cierre.
       </li>
       <li>
-        <strong>El emisor rechaza lo que no puede expresar.</strong> La aritmética de anchos
-        mezclados, <code>bool != bool</code> en el compilador autoalojado, 11+ parámetros, una
-        estructura cuyo último campo no lleva coma final y los literales enteros que no caben en su
-        tipo declarado son errores en vez de IR inválido.
-      </li>
-      <li>
-        <strong>Runtime y CLI.</strong> La indexación de arrays y la aritmética se comprueban; la
-        división por cero es una trampa con mensaje; el rechazo del nivel por defecto nombra el
-        ajuste correcto; <code>let x = 1;</code>, <code>let a: f64</code>, un
-        <code>return;</code> desnudo, el montón propio del compilador para <code>brk</code>, la
-        expresión de 250 términos y los 400 bloques anidados se diagnostican en vez de romper;
-        Windows construye un PE y no un ELF; <code>loment check</code> ya no sale con 0 para un
-        archivo que no se puede construir.
-      </li>
-      <li>
-        <strong>Enlazador.</strong> Un índice negativo se extiende con signo; el enlazador espejo
-        lee globales de 64 bits y tablas <code>case</code> de varias líneas.
+        <strong>Capacidad que se agotó.</strong> La tabla de símbolos del verificador ahora
+        aloja 5200 entradas; el cierre de la fachada <code>std</code> tiene 4956 nombres de nivel
+        superior.
       </li>
     </ol>
-
-    <h3>Issues nuevos</h3>
+    <h3>Lo que no trae esta versión</h3>
     <p class="body">
-      Un solo defecto introducido por las propias adiciones de esta versión, y sigue abierto:
-      <a href="https://github.com/Loment-Lang/loment/issues/442">#442</a>. Los defectos anteriores a
-      esta versión están en la lista de issues del repositorio, no aquí.
+      Nada de lo ya construido se abre en esta versión &mdash; no levanta ninguna compuerta. El
+      intérprete <strong>sigue sin estar en el paquete</strong>: <code>choose vm</code> continúa
+      siendo una declaración, y es 0.1.5 donde un artefacto podrá entregarse de verdad a un motor.
     </p>
   </div>
 </section>
@@ -329,7 +289,7 @@
       </a>
       <a class="doclink" href="https://loment.fandom.com/wiki/Versions_and_roadmap">
         <span class="who">Roadmap</span>
-        <span class="what">Lo que viene después de 0.1.4.6, enunciado como un plan y no como una función.</span>
+        <span class="what">Lo que viene después de 0.1.4.7, enunciado como un plan y no como una función.</span>
       </a>
       <a class="doclink" href="start.html">
         <span class="who">Primeros pasos</span>

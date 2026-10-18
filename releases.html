@@ -162,7 +162,7 @@
   <div class="wrap">
     <h2>From this repository</h2>
     <p class="body">
-      The three versions that came out of this repository before the one shipping now. Each is a
+      The four versions that came out of this repository before the one shipping now. Each is a
       row rather than a section for the reason a record should give: the detail is on the
       release page it links to, and a history that keeps growing in full stops being a history
       and becomes a second copy of the archive.
@@ -197,111 +197,70 @@
           installer.
         </p>
       </div>
+      <div class="row">
+        <h3>0.1.4.6 — the gates come down</h3>
+        <p>
+          <strong>2026-10-17.</strong> Four things that had been built but kept out of a release
+          became reachable from one: an interpreter tier beside the compiler, libc and LibL, and
+          the <code>vm</code> setting. The rest was the largest defect sweep before 0.1.4.7.
+        </p>
+      </div>
     </div>
   </div>
 </section>
 
 <section class="sec">
   <div class="wrap">
-    <h2>0.1.4.6 — the gates come down</h2>
+    <h2>0.1.4.7 — the libraries become twins</h2>
     <p class="body">
-      <strong>2026-10-17.</strong> Four things that had been built but kept out of a release
-      became reachable from one: an interpreter tier beside the compiler, libc and LibL, and the
-      <code>vm</code> setting. The rest is the largest defect sweep this project has had; most
-      of the issue numbers in the repository come from it.
+      <strong>2026-10-18.</strong> A defect release, and the headline is not a feature: every
+      library the package ships now compiles to <strong>byte-identical IR in both
+      implementations</strong> — 155 modules, none skipped, no known gap, pinned by a criterion
+      that fails when the list grows. What it took to get there was a set of silent state bugs
+      rather than the divergence they had looked like from outside.
     </p>
 
     <h3>New</h3>
     <ol class="notes">
       <li>
-        <strong>LVM — the interpreter tier, T0 to T3.</strong> It reads the same intermediate
-        form the linker does, so a program never gains a second source of truth. T0 was the
-        fourth reader of that form; T1 records a feedback profile without changing a byte of
-        output; T2 moves instruction decoding out of the execution loop, <strong>6.1&times;
-        T0</strong> on the corpus with byte-identical output; the compact form is
-        <strong>375.9&nbsp;KB &rarr; 107.0&nbsp;KB</strong> for the same unit; T3 adds guarded
-        specialisation and deoptimisation. <strong><code>choose vm</code> is accepted by this
-        release</strong> — 0.1.4.5 refused it in a release build, and that gate opened here.
-        What that does <em>not</em> mean: the interpreter is the repository's
-        <code>tools/lvm.py</code> family, which the package does not ship, and the setting does
-        not change what the compiler emits. The line is a <strong>declaration, not a
-        guarantee</strong> — the same standing <code>no_runtime</code> had in 0.1.4.5.
+        <strong>The shipped libraries are twins.</strong> Every module under the library store is
+        compiled as a root by both compilers and the IR compared byte for byte. The
+        <code>std</code> facade is excluded by name and by a criterion — it has no functions, and
+        its 127 modules are compared individually.
       </li>
       <li>
-        <strong>libc and LibL.</strong> A release build links a real <code>libc.so.6</code> and
-        runs it end to end. The LibL face — <code>fopen</code>/<code>fread</code>/
-        <code>fwrite</code>/<code>fseek</code>, the remaining <code>printf</code> formats,
-        <code>malloc</code>/<code>calloc</code> as spellings over the builtin heap — is judged
-        against the system's real glibc. The 0.1.4.5 lock on <code>use libl</code> and on libc
-        is open.
-      </li>
-      <li>
-        <strong>Threads.</strong> <code>thread_spawn</code> in the language, plus an
-        <code>os/thread</code> library whose system-call numbers are read from the header
-        rather than remembered.
-      </li>
-      <li>
-        <strong>Four libraries, each judged against a real implementation.</strong>
-        <code>os</code> — five modules against CPython in the same Linux environment;
-        <code>internet</code> — seven modules against real resolvers and servers.
-      </li>
-      <li>
-        <strong>LMS level 1</strong> — a second memory architecture beside the collector: its
-        checker (E028/E029) and its level-3 entry, in both implementations.
-      </li>
-      <li>
-        <strong>A gate that can see the runtime, and distribution.</strong> The 104 criteria
-        that need a produced binary now run natively on the Linux runner instead of skipping,
-        and a criterion that did not run no longer counts as a pass. Read-only mirrors on four
-        hosts; a Simplified Chinese README; the VS Code extension on the Marketplace.
+        <strong>A constant table in the self-hosted compiler.</strong> <code>find_const</code>
+        no longer scans the whole unit per identifier, which is what made the facade take tens of
+        minutes to compile.
       </li>
     </ol>
 
     <h3>Fixed</h3>
     <ol class="notes">
       <li>
-        <strong>Reclamation.</strong> The sweeper no longer clears four mark bytes per freed
-        block, which had been collecting live blocks next to garbage; <code>free</code> checks
-        ownership and refuses a double free; block-interior precision is per-site slot masks;
-        an argument to a whitelisted system call counts as a borrow; a collection no longer
-        empties the free list; the collection trigger is attached where the bytes are asked for
-        and counts what the allocator consumes; a recycled block keeps its recorded size; a
-        promoted buffer's words reach the root scan; and L2's epoch stops at the next same-name
-        <code>let</code>, so two sibling loops no longer block each other.
+        <strong>The state bugs the twin criterion exposed.</strong> A four-arm <code>match</code>
+        overwrote the <code>gc_auto_alpha</code> flag, so a non-alpha unit was compiled as alpha;
+        chained casts did only the first step; 64-bit decimal literals were not wrapped; builtin
+        calls had no return type in inference; shift operands inherited the outer 64-bit
+        expectation; and virtual type sentinels were mistaken for token indices.
       </li>
       <li>
-        <strong>Diagnostics that used to be silent or wrong.</strong> <code>@</code> at
-        statement start, binary literals and the fall-off-the-end rule are rejected the way the
-        reference rejects them; an unknown type is E030 rather than E002; seven cases that were
-        silent, wrong or fatal now say what the reference says; the same program computes the
-        same numbers in every surface grammar; <code>use std</code> no longer crashes; the
-        formatter keeps comments and keeps declaration modifiers on the declaration's line.
+        <strong>Thirty-five swept defects, each with a criterion that was red first.</strong> The
+        standard library, ten <code>internet</code> parsers, the compact VM form's decoder, four
+        language-server cases, JSON/CSV/path/formatting, three tier-boundary fixes in the VM
+        runtime, and a dependency pass that handed each unit the whole program instead of its own
+        closure.
       </li>
       <li>
-        <strong>The emitter refuses what it cannot express.</strong> Mixed-width arithmetic,
-        <code>bool != bool</code> in the self-hosted compiler, 11+ parameters, a struct whose
-        last field has no trailing comma, and integer literals that do not fit their declared
-        type are errors rather than invalid IR.
-      </li>
-      <li>
-        <strong>Runtime and CLI.</strong> Array indexing and arithmetic are checked; division by
-        zero is a trap with a message; the default tier's refusal names the right setting;
-        <code>let x = 1;</code>, <code>let a: f64</code>, a bare <code>return;</code>, the
-        compiler's own heap for <code>brk</code>, the 250-term expression and 400 nested blocks
-        are diagnosed instead of crashing; Windows builds a PE rather than an ELF;
-        <code>loment check</code> no longer exits 0 for a file that cannot be built.
-      </li>
-      <li>
-        <strong>Linker.</strong> A negative index is sign-extended; the mirror linker reads
-        64-bit globals and multi-line case tables.
+        <strong>Capacity that ran out.</strong> The checker's symbol table now holds 5200
+        entries; the <code>std</code> facade closure has 4956 top-level names.
       </li>
     </ol>
-
-    <h3>New issues</h3>
+    <h3>Not in this release</h3>
     <p class="body">
-      One defect that this version's own additions introduced, and that is open:
-      <a href="https://github.com/Loment-Lang/loment/issues/442">#442</a>. Defects that predate
-      this version are in the repository's issue list, not here.
+      Nothing that was already built is still being withheld &mdash; this release opens no gate.
+      The interpreter is <strong>still not in the package</strong>: <code>choose vm</code>
+      remains a declaration, and 0.1.5 is where an artifact can actually be handed to an engine.
     </p>
   </div>
 </section>
@@ -321,7 +280,7 @@
       </a>
       <a class="doclink" href="https://loment.fandom.com/wiki/Versions_and_roadmap">
         <span class="who">Roadmap</span>
-        <span class="what">What comes after 0.1.4.6, stated as a plan rather than as a feature.</span>
+        <span class="what">What comes after 0.1.4.7, stated as a plan rather than as a feature.</span>
       </a>
       <a class="doclink" href="start.html">
         <span class="who">Get started</span>

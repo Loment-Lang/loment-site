@@ -1,6 +1,6 @@
 <!doctype html>
 <!-- translated-from: releases.html -->
-<!-- source-sha256: 9cdc255d5569e5c4a7b46521929f185a64e1e28ccd16d107a9187a2d428a6589 -->
+<!-- source-sha256: d5ccb324be11c64bb7975b07add7bff111c24449b627010d69c9c96485a25e70 -->
 <html lang="zh-Hans">
 <head>
 <meta charset="utf-8">
@@ -154,7 +154,7 @@
   <div class="wrap">
     <h2>来自这个仓库</h2>
     <p class="body">
-      在这个仓库里发布过、并且排在此刻这一版之前的三版。每一版都只占一行，而不是一节，
+      在这个仓库里发布过、并且排在此刻这一版之前的四版。每一版都只占一行，而不是一节，
       理由是一份记录应该给出的：细节在它链去的那张发布页上，而一份不断完整生长下去的历史
       就不再是历史，而是档案的第二份副本。
     </p>
@@ -187,99 +187,65 @@
           安装器。
         </p>
       </div>
+      <div class="row">
+        <h3>0.1.4.6 —— 闸门落下</h3>
+        <p>
+          <strong>2026-10-17。</strong>四件建好了、却一直被挡在发行版之外的东西同时变得可达：
+          编译器旁边的解释器档、libc 与 LibL、以及 <code>vm</code> 这一维。其余是 0.1.4.7
+          之前最大的一次缺陷清扫。
+        </p>
+      </div>
     </div>
   </div>
 </section>
 
 <section class="sec">
   <div class="wrap">
-    <h2>0.1.4.6 —— 闸门落下</h2>
+    <h2>0.1.4.7 —— 库成为孪生</h2>
     <p class="body">
-      <strong>2026-10-17。</strong>四样早就建好、却一直被挡在发布之外的东西，在这一版里一起
-      到手：编译器旁边的一层解释器、libc 与 LibL，以及 <code>vm</code> 这个维度。剩下的部分
-      是这个项目至今最大的一轮缺陷清扫；仓库里那些 issue 编号大多出自它。
+      <strong>2026-10-18。</strong>一次缺陷发布，而头条不是一个功能：包里随附的每一个库，现在
+      在两个实现里编出<strong>逐字节相同的 IR</strong> —— 155 个模块，没有一个被跳过，没有
+      已知缺口，而且有一条判据在名单变长时会红。为了走到这里翻出来的是一批静默的状态 bug，
+      而不是它们从外面看起来的那种「分歧」。
     </p>
 
     <h3>新增</h3>
     <ol class="notes">
       <li>
-        <strong>LVM —— 解释器层，T0 到 T3。</strong>它读的是链接器读的同一份中间形式，所以
-        一个程序永远不会多出第二个真源。T0 是那份形式的第四个读者；T1 记下一份反馈剖面，
-        而不改动一个字节的输出；T2 把指令解码搬出执行循环，在语料上达到 <strong>T0 的
-        6.1&times;</strong>，输出逐字节相同；紧凑形让同一个单元从
-        <strong>375.9&nbsp;KB 变成 107.0&nbsp;KB</strong>；T3 加上带守卫的特化与去优化。
-        <strong>这一版接受 <code>choose vm</code></strong> —— 0.1.4.5 在发布构建里拒绝它，
-        那道闸是在这里打开的。这<em>不</em>意味着：解释器是仓库里的
-        <code>tools/lvm.py</code> 那一族，包里并不带它，而且这个维度还不改变编译器发出的
-        东西。这一行是一条<strong>声明，不是保证</strong> —— 与 <code>no_runtime</code> 在
-        0.1.4.5 里的分量相同。
+        <strong>随附的库是孪生。</strong>库目录下的每个模块都被两个编译器各当作根编一遍，
+        IR 逐字节比。门面 <code>std</code> 按名字、并且按一条判据排除在外 —— 它没有函数，
+        它的 127 个模块是逐个比的。
       </li>
       <li>
-        <strong>libc 与 LibL。</strong>发布构建链上真正的 <code>libc.so.6</code> 并跑通到底。
-        LibL 那一面 —— <code>fopen</code>/<code>fread</code>/<code>fwrite</code>/
-        <code>fseek</code>、其余 <code>printf</code> 格式、作为内建堆拼写的
-        <code>malloc</code>/<code>calloc</code> —— 是拿系统里真的 glibc 判的。0.1.4.5 对
-        <code>use libl</code> 和对 libc 的锁已经开了。
-      </li>
-      <li>
-        <strong>线程。</strong>语言里的 <code>thread_spawn</code>，加上一个
-        <code>os/thread</code> 库，它的系统调用号是从头文件里读的，不是背下来的。
-      </li>
-      <li>
-        <strong>四个随包发出的库，每一个都拿真实现判过。</strong><code>os</code> —— 五个
-        模块对着同一个 Linux 环境里的 CPython；<code>internet</code> —— 七个模块对着真的
-        解析器与服务器。
-      </li>
-      <li>
-        <strong>LMS 第 1 级</strong> —— 收集器之外的第二套内存架构：它的检查器
-        （E028/E029）与它的第 3 级入口，两个实现都有。
-      </li>
-      <li>
-        <strong>一道能看见运行时的闸，以及分发。</strong>104 条需要产出二进制的判据现在在
-        Linux runner 上原生运行，而不是跳过；没跑过的判据不再算作通过。四个宿主上的只读
-        镜像；一份简体中文 README；VS Code 扩展上了 Marketplace。
+        <strong>自举编译器里的常量表。</strong><code>find_const</code> 不再为每个标识符扫一遍
+        整个单元 —— 那正是门面要编译几十分钟的原因。
       </li>
     </ol>
 
     <h3>修复</h3>
     <ol class="notes">
       <li>
-        <strong>回收。</strong>清扫器不再对每个被释放的块清掉四个标记字节 —— 那曾让活块在
-        垃圾旁边被一并收走；<code>free</code> 检查归属，拒绝二次释放；块内精确是逐站点的槽
-        掩码；白名单系统调用的实参算作借出；一次收集不再清空空闲链表；收集触发挂在"字节被
-        要"的地方，计的是分配器真正吃掉的数量；复用的块保留它记录下来的尺寸；被提升的缓冲区
-        的字进入根扫描；L2 的纪元在下一个同名 <code>let</code> 处停下，于是两个相邻的循环
-        不再互相挡。
+        <strong>孪生判据翻出来的状态 bug。</strong>四臂 <code>match</code> 覆盖了
+        <code>gc_auto_alpha</code> 标志，于是非 alpha 的单元被按 alpha 编；链式转换只做了
+        第一步；64 位十进制字面量没有回绕；类型推断里内建调用没有返回类型；移位的操作数
+        继承了外层的 64 位期望；虚拟类型哨兵被当成了 token 下标。
       </li>
       <li>
-        <strong>那些曾经静默或报错的诊断。</strong>语句开头的 <code>@</code>、二进制字面量
-        与"走到函数末尾"规则，都按参考实现的方式拒绝；未知类型是 E030 而不是 E002；七处
-        曾经静默、报错或致命的场合现在说出与参考实现相同的话；同一个程序在每一门表层语法里
-        算出同样的数；<code>use std</code> 不再崩溃；格式化器保留注释，也把声明修饰符留在
-        声明那一行。
+        <strong>清扫出的三十五条缺陷，每条都先有一条红的判据。</strong>标准库、
+        <code>internet</code> 的十个解析器、紧凑 VM 形式的解码器、语言服务的四处、
+        JSON/CSV/路径/格式化、VM 运行时的三处档边界，以及一趟把「整份程序」当成「这个单元
+        自己的闭包」递下去的依赖检查。
       </li>
       <li>
-        <strong>发射器拒绝它表达不了的东西。</strong>混合宽度运算、自举编译器里的
-        <code>bool != bool</code>、11 个以上参数、最后一个字段没有尾逗号的结构体，以及放不进
-        其声明类型的整数字面量，都成为错误，而不是非法 IR。
-      </li>
-      <li>
-        <strong>运行时与命令行。</strong>数组下标与算术都做了检查；除零是一个带消息的陷阱；
-        默认档的拒绝报出正确的设置名；<code>let x = 1;</code>、<code>let a: f64</code>、
-        一个裸的 <code>return;</code>、<code>brk</code> 用的编译器自己的堆、250 项表达式与
-        400 层嵌套块，都被诊断而不是崩溃；Windows 出的是 PE 而不是 ELF；
-        <code>loment check</code> 不再为一个建不出来的文件以 0 退出。
-      </li>
-      <li>
-        <strong>链接器。</strong>负下标做符号扩展；自举链接器读得懂 64 位全局量与多行 case 表。
+        <strong>容量不够了。</strong>检查器的符号表现在是 5200 条；<code>std</code> 门面的
+        闭包有 4956 个顶层名字。
       </li>
     </ol>
-
-    <h3>新增 issue</h3>
+    <h3>这一版没有</h3>
     <p class="body">
-      这一版自己的新增所引入、并且仍然开着的缺陷，只有一条：
-      <a href="https://github.com/Loment-Lang/loment/issues/442">#442</a>。早于这一版的缺陷
-      在仓库的 issue 列表里，不在这里。
+      已经建好、却还被挡在外面的东西，这一版一件也没有放行 &mdash; 它不开闸。解释器
+      <strong>仍然不在包里</strong>：<code>choose vm</code> 仍只是一句声明，真把产物交给引擎是
+      0.1.5 的事。
     </p>
   </div>
 </section>
@@ -298,7 +264,7 @@
       </a>
       <a class="doclink" href="https://loment.fandom.com/wiki/Versions_and_roadmap">
         <span class="who">路线图</span>
-        <span class="what">0.1.4.6 之后是什么，按一份计划来说，而不是按一个功能来说。</span>
+        <span class="what">0.1.4.7 之后是什么，按一份计划来说，而不是按一个功能来说。</span>
       </a>
       <a class="doclink" href="start.html">
         <span class="who">入门</span>
