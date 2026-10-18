@@ -57,6 +57,7 @@ PAGES = ["index.html", "start.html", "examples.html", "standard.html", "lgc.html
          "lvm.html",
          "lompi.html",
          "libl.html",
+         "lspe.html",
          "releases.html",
          "roadmap.html",
          "learn.html"]

@@ -1,0 +1,265 @@
+<!doctype html>
+<!-- translated-from: lspe.html -->
+<!-- source-sha256: d215cee50b7fd82346d9de1ba81bc578005e0cf5d1b3716c543e9255980d892a -->
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LSPE — el compilador se audita a sí mismo — Loment</title>
+<meta name="description" content="LSPE obliga al compilador a responder por sus propios juicios: busca la fuente de cada uno, te hace una pregunta registrada cuando no la encuentra y escribe el intercambio en el binario. Un diseño, no una versión.">
+<link rel="icon" href="../mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=JetBrains+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../style.css">
+<link rel="alternate" hreflang="en" href="https://loment-lang.github.io/loment-site/lspe.html">
+<link rel="alternate" hreflang="zh-Hans" href="https://loment-lang.github.io/loment-site/zh/lspe.html">
+<link rel="alternate" hreflang="ja" href="https://loment-lang.github.io/loment-site/ja/lspe.html">
+<link rel="alternate" hreflang="ru" href="https://loment-lang.github.io/loment-site/ru/lspe.html">
+<link rel="alternate" hreflang="es" href="https://loment-lang.github.io/loment-site/es/lspe.html">
+<link rel="alternate" hreflang="x-default" href="https://loment-lang.github.io/loment-site/lspe.html">
+</head>
+<body>
+
+<a class="skip" href="#main">Ir al contenido</a>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="index.html">
+      <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true">
+        <rect width="64" height="64" rx="14" fill="#2f4bff"/>
+        <path d="M18 14h12v24h16v12H18z" fill="#fff"/>
+      </svg>
+      Loment
+    </a>
+        <nav>
+      <a href="learn.html">Aprender</a>
+      <a href="start.html">Primeros pasos</a>
+      <a href="examples.html">Ejemplos</a>
+      <a href="standard.html">Estándar</a>
+      <details class="navmenu" name="bar">
+        <summary>Versiones</summary>
+        <ul>
+          <li><a href="releases.html">Historial de versiones</a></li>
+          <li><a href="roadmap.html">Hoja de ruta</a></li>
+        </ul>
+      </details>
+      <details class="navmenu" name="bar">
+        <summary aria-current="page">Sistemas</summary>
+        <ul>
+          <li><a href="lgc.html">LGC</a></li>
+          <li><a href="lvm.html">LVM</a></li>
+          <li><a href="lompi.html">lompi</a></li>
+          <li><a href="libl.html">LibL</a></li>
+          <li><a href="lspe.html" aria-current="page">LSPE</a></li>
+        </ul>
+      </details>
+      <a href="https://github.com/Loment-Lang/loment">GitHub</a>
+    </nav>
+    <details class="lang" name="bar">
+      <summary>ES</summary>
+      <ul>
+        <li><a href="../lspe.html" hreflang="en">English</a></li>
+        <li><a href="../zh/lspe.html" hreflang="zh-Hans">简体中文</a></li>
+        <li><a href="../ja/lspe.html" hreflang="ja">日本語</a></li>
+        <li><a href="../ru/lspe.html" hreflang="ru">Русский</a></li>
+        <li><a href="lspe.html" hreflang="es" aria-current="true">Español</a></li>
+      </ul>
+    </details>
+  </div>
+</header>
+
+<main id="main">
+
+<section class="head">
+  <div class="wrap">
+    <p class="eyebrow">Sistema &middot; diseño, no está en ninguna versión</p>
+    <h1>LSPE</h1>
+    <p class="lede">
+      Cada compilación es un conjunto de juicios sobre tu programa. LSPE obliga al compilador a responder
+      por ellos: busca la fuente de cada juicio, te hace una pregunta registrada cuando no la encuentra y
+      escribe el intercambio en el binario. No promete que tu programa sea correcto. Promete que
+      <strong>ninguna excepción pasa en silencio</strong>.
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Un diseño, no algo que se descarga</h2>
+    <p class="body">
+      A 2026-10-18, LSPE es un diseño. Ninguna versión lo incluye, no hay nada que instalar y esta página
+      no pone fecha a su llegada. El diseño está escrito en el repositorio como <code>docs/262</code>
+      &mdash; en chino, como los demás documentos de diseño numerados: este proyecto guarda sus planes
+      ahí, no en un gestor público de incidencias.
+    </p>
+    <p class="body">
+      Lo que sigue es para qué sirve el diseño y qué se niega a afirmar. No es el anuncio de una función
+      que puedas activar.
+    </p>
+    <p class="limit">
+      <strong>Un diseño no es una promesa.</strong> Ya se sabe que dos cosas son imposibles, y el diseño
+      las escribe en lugar de rodearlas: ningún compilador puede demostrar que un programa está libre de
+      defectos, y ninguno puede resolver todas las preguntas que no sabe responder. Todo lo de abajo está
+      moldeado por esos dos hechos.
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Un recibo por cada decisión</h2>
+    <p class="body">
+      Hoy un compilador te da un solo bit: el programa se acepta o se rechaza. Las razones se quedan
+      dentro del compilador, y las suposiciones que hizo para llegar a «aceptado» no están escritas en
+      ningún sitio que puedas revisar.
+    </p>
+    <p class="body">
+      LSPE añade un registro. Cada vez que el compilador deja pasar algo que no pudo demostrar, el
+      binario anota qué decisión era, en qué evidencia se apoyaba y — cuando una persona respondió a una
+      pregunta — quién respondió. El binario lleva un hash de ese registro; la derivación queda al lado,
+      fuera del binario, así que el binario no crece con ella.
+    </p>
+    <p class="limit">
+      <strong>Eso no es «sin defectos».</strong> Si un programa está libre de defectos no lo puede decidir
+      un compilador; si cada excepción quedó escrita, sí. Lo primero es indecidible. Lo segundo es una
+      propiedad del proceso, y puede comprobarla fuera de línea, a posteriori, alguien que no confíe en
+      el compilador.
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Las cuatro partes</h2>
+    <p class="body">
+      LSPE son cuatro cosas que trabajan sobre un mismo espacio: los puntos de una unidad donde se tomó
+      una decisión, las obligaciones que esos puntos cargan, la evidencia a su favor y el registro de qué
+      pasó con cada uno. No es un quinto comprobador: los comprobadores se quedan donde están.
+    </p>
+
+    <div class="rows">
+      <div class="row">
+        <h3>El que interroga</h3>
+        <p>
+          El compilador deja de ser solo un juez. Antes de aceptar una decisión, busca su fuente, intenta
+          construir un contraejemplo y la contrasta con la segunda implementación. Si fallan las tres,
+          tiene un agujero — y lo dice de <em>sí mismo</em>, no de que tu código esté mal.
+        </p>
+      </div>
+      <div class="row">
+        <h3>Las preguntas</h3>
+        <p>
+          Un agujero se convierte en una pregunta con opciones, un valor por defecto y la consecuencia de
+          cada respuesta. Tu respuesta queda registrada. Aplazar sin registrar es, en sí, un error de
+          compilación, así que «sé que esto es sospechoso pero no sé explicar por qué» deja de ser
+          conocimiento que solo vive en la cabeza de alguien.
+        </p>
+      </div>
+      <div class="row">
+        <h3>La policía (LSPC)</h3>
+        <p>
+          Antes de la compilación te pasa la cuenta: qué riesgos residuales vas a aceptar, una línea por
+          familia, con lo que ocurre si esa familia no se cumple. Por defecto no bloquea. Arreglas lo que
+          quieras y dejas el resto, y lo que dejas es lo que queda registrado.
+        </p>
+      </div>
+      <div class="row">
+        <h3>El libro mayor</h3>
+        <p>
+          Todo lo que deciden los demás componentes de seguridad — la escalera de reclamación, los
+          niveles de seguridad de memoria, los dominios de capacidad, la propiedad — llega a un mismo
+          libro mayor. Ninguno de esos componentes se sustituye ni se renombra; el libro es donde sus
+          veredictos se pueden leer juntos y contrastar.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>La carga de la prueba cambia de dirección</h2>
+    <p class="body">
+      El compilador habitual está fuera del programa y anuncia un resultado. LSPE está dentro de la
+      transacción: nombra su fuente, pone precio a lo que supone y te entrega un recibo. Cuando no puede
+      demostrar algo, no puede decir «tu código está mal»; tiene que decir «mi demostración tiene un
+      agujero aquí». Lo primero es una afirmación sobre ti, lo segundo sobre el compilador, y los dos se
+      mantienen separados a propósito.
+    </p>
+    <p class="body">
+      Esa separación tiene un costo, y el diseño lo paga: el que interroga guarda un registro de cada
+      sustitución de tipos y vuelve a demostrar sus obligaciones después de cada una. El propio historial
+      de Rust incluye un defecto de solidez exactamente de esa forma — una comprobación que se cumplía
+      antes de una sustitución y no se volvió a ejecutar después. Un compilador que solo pregunta «¿hay
+      fuente?» no lo detecta: la fuente existía, y había caducado.
+    </p>
+    <p class="limit">
+      <strong>Un dependiente no es una autoridad.</strong> La semántica pertenece al estándar y a cada
+      componente. LSPE registra decisiones y les pone precio; no decide qué es verdad.
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Lo que no hace</h2>
+
+    <div class="rows">
+      <div class="row">
+        <h3>No encuentra más errores de memoria</h3>
+        <p>
+          Encuentra excepciones sin fuente y evidencia caducada. Un programa sin esas excepciones puede
+          seguir estando mal.
+        </p>
+      </div>
+      <div class="row">
+        <h3>No hace más seguro un programa</h3>
+        <p>
+          Hace imposible aceptar un riesgo residual <em>en silencio</em>. Son dos números distintos, y el
+          diseño los mantiene separados en vez de cambiar uno por otro.
+        </p>
+      </div>
+      <div class="row">
+        <h3>No sustituye a los comprobadores</h3>
+        <p>
+          La escalera de reclamación, los niveles de seguridad de memoria, los dominios de capacidad y la
+          propiedad conservan sus nombres, sus dueños y sus criterios. LSPE lee sus veredictos.
+        </p>
+      </div>
+      <div class="row">
+        <h3>No es una forma de comprobar menos</h3>
+        <p>
+          Cerrar la auditoría es una elección registrada que firmas, no un interruptor que quita
+          comprobaciones. Las comprobaciones siguen corriendo igual; lo que cambia es si el resultado
+          queda escrito.
+        </p>
+      </div>
+    </div>
+
+    <p class="caption">
+      La escalera de reclamación se describe en <a href="lgc.html">su propia página</a>, y la autoridad
+      de cada obligación es <a href="standard.html">el estándar</a>. El documento de diseño es
+      <code>docs/262</code> en el repositorio.
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Loment se publica bajo la Loment-Open License. Program by Fujo.</span>
+    <nav>
+      <a href="https://github.com/Loment-Lang/loment">Código</a>
+      <a href="https://github.com/Loment-Lang/loment/releases/latest">Versiones</a>
+      <a href="https://github.com/FujoJTOP/lompi">lompi</a>
+      <a href="https://loment.fandom.com/">Wiki</a>
+      <a href="https://github.com/Loment-Lang/loment/issues">Issues</a>
+      <a class="mast" href="https://mastodon.social/@Loment" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z"/></svg>Mastodon</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

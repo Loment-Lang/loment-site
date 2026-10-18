@@ -16,7 +16,7 @@ Español `/es/`。**英文是唯一的源**，其余四种是它的译文 ——
 | `examples.html` | 四个短程序，各带真跑出来的输出 |
 | `releases.html` | Release 历程：从 0.1.1 到正在建的那一版。**全站唯一写版本号的一页**，理由写在页上。最新那一版按**发布说明**写：`New` / `Fixed` 两张编号列表 + `Not in this release` |
 | `roadmap.html` | 路线图：0.1.5 起各版**为了什么**。**是计划不是承诺** —— 没有日期、没有一样现在能下载，页上明写 |
-| `lgc.html` `lvm.html` `lompi.html` `libl.html` | 四个系统各一页，**各带自己的状态行**（LVM 是"引擎不存在"，LibL 是"不在任何发布里"） |
+| `lgc.html` `lvm.html` `lompi.html` `libl.html` `lspe.html` | 五个系统各一页，**各带自己的状态行**（LVM 是"引擎不存在"，LibL 是"0.1.4.6 起随包发布"，LSPE 是"设计，不在任何发布里"） |
 | `style.css` | 全部样式。配色、字体、那个"边界"母题，以及按语言关掉的那几处拉丁排印习惯，都在文件头的注释里说明了理由 |
 | `examples/*.lomt` | `examples.html` 上那四个程序的**源**，可重跑 |
 | `mark.svg` | 站点图标与顶栏的 mark |
@@ -61,7 +61,7 @@ python tools/i18n_check.py --stamp  # 重盖翻译戳
 
 | | |
 |---|---|
-| 齐全 | 五种语言 × 六个页面，没有多余页面 |
+| 齐全 | 五种语言 × 十三个页面，没有多余页面 |
 | 路径 | `<html lang>` 与目录对得上 |
 | `hreflang` | 每页六条 `<link rel="alternate">`（含 `x-default`）**逐字节**正确 |
 | 切换器 | 顶栏那个 `<details class="lang">` 逐字节正确，当前语言带 `aria-current` |

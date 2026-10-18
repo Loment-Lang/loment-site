@@ -1,0 +1,256 @@
+<!doctype html>
+<!-- translated-from: lspe.html -->
+<!-- source-sha256: d215cee50b7fd82346d9de1ba81bc578005e0cf5d1b3716c543e9255980d892a -->
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LSPE — コンパイラが自分を問いただす — Loment</title>
+<meta name="description" content="LSPE はコンパイラに自分の判断の根拠を説明させます。各判断の出所をまず自分で探し、見つからなければ記録に残る質問としてあなたに渡し、そのやり取りを成果物に書き込みます。設計であり、どのリリースにも入っていません。">
+<link rel="icon" href="../mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=JetBrains+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../style.css">
+<link rel="alternate" hreflang="en" href="https://loment-lang.github.io/loment-site/lspe.html">
+<link rel="alternate" hreflang="zh-Hans" href="https://loment-lang.github.io/loment-site/zh/lspe.html">
+<link rel="alternate" hreflang="ja" href="https://loment-lang.github.io/loment-site/ja/lspe.html">
+<link rel="alternate" hreflang="ru" href="https://loment-lang.github.io/loment-site/ru/lspe.html">
+<link rel="alternate" hreflang="es" href="https://loment-lang.github.io/loment-site/es/lspe.html">
+<link rel="alternate" hreflang="x-default" href="https://loment-lang.github.io/loment-site/lspe.html">
+</head>
+<body>
+
+<a class="skip" href="#main">本文へ</a>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="index.html">
+      <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true">
+        <rect width="64" height="64" rx="14" fill="#2f4bff"/>
+        <path d="M18 14h12v24h16v12H18z" fill="#fff"/>
+      </svg>
+      Loment
+    </a>
+        <nav>
+      <a href="learn.html">学習</a>
+      <a href="start.html">はじめに</a>
+      <a href="examples.html">サンプル</a>
+      <a href="standard.html">標準</a>
+      <details class="navmenu" name="bar">
+        <summary>バージョン</summary>
+        <ul>
+          <li><a href="releases.html">リリース履歴</a></li>
+          <li><a href="roadmap.html">ロードマップ</a></li>
+        </ul>
+      </details>
+      <details class="navmenu" name="bar">
+        <summary aria-current="page">システム</summary>
+        <ul>
+          <li><a href="lgc.html">LGC</a></li>
+          <li><a href="lvm.html">LVM</a></li>
+          <li><a href="lompi.html">lompi</a></li>
+          <li><a href="libl.html">LibL</a></li>
+          <li><a href="lspe.html" aria-current="page">LSPE</a></li>
+        </ul>
+      </details>
+      <a href="https://github.com/Loment-Lang/loment">GitHub</a>
+    </nav>
+    <details class="lang" name="bar">
+      <summary>日本語</summary>
+      <ul>
+        <li><a href="../lspe.html" hreflang="en">English</a></li>
+        <li><a href="../zh/lspe.html" hreflang="zh-Hans">简体中文</a></li>
+        <li><a href="lspe.html" hreflang="ja" aria-current="true">日本語</a></li>
+        <li><a href="../ru/lspe.html" hreflang="ru">Русский</a></li>
+        <li><a href="../es/lspe.html" hreflang="es">Español</a></li>
+      </ul>
+    </details>
+  </div>
+</header>
+
+<main id="main">
+
+<section class="head">
+  <div class="wrap">
+    <p class="eyebrow">システム &middot; 設計、どのリリースにも入っていません</p>
+    <h1>LSPE</h1>
+    <p class="lede">
+      ビルドは、プログラムについての判断の集まりです。LSPE はコンパイラにその判断の説明を求めます。
+      まず各判断の出所を自分で探し、見つからなければ記録に残る質問としてあなたに渡し、そのやり取りを
+      成果物に書き込みます。プログラムが正しいことは約束しません。約束するのは
+      <strong>黙って通した例外は一つもない</strong>ということです。
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>設計であって、ダウンロードできるものではありません</h2>
+    <p class="body">
+      2026-10-18 の時点で、LSPE は設計です。どのリリースにも入っておらず、インストールできるものも
+      なく、このページにはいつ出るかの日付も書かれていません。設計そのものはリポジトリの
+      <code>docs/262</code> にあります &mdash; 他の番号付き設計文書と同じく中国語で、このプロジェクトは
+      計画を公開の issue トラッカーではなくそこに置いています。
+    </p>
+    <p class="body">
+      以下は、この設計が何のためで、何を主張しないかです。有効にできる機能の発表ではありません。
+    </p>
+    <p class="limit">
+      <strong>設計は約束ではありません。</strong> できないと分かっていることが二つあり、設計はそれを
+      回避せずに書き留めます。プログラムに欠陥がないことを証明できるコンパイラはなく、自分が答えられない
+      問いのすべてに答えられるコンパイラもありません。以下のすべてはこの二つに形づくられています。
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>判断のたびに一枚のレシート</h2>
+    <p class="body">
+      今のコンパイラが返すのは一位の情報だけです。受け入れたか、拒否したか。理由はコンパイラの内側に
+      残り、「受け入れた」に至るまでに置いた仮定は、あなたが確かめられる場所には書かれていません。
+    </p>
+    <p class="body">
+      LSPE は記録を足します。証明できなかったのに通したとき、成果物はその判断がどれで、どんな証拠に
+      支えられ、人が答えたのなら誰が答えたかを書き留めます。成果物が持つのはその記録のハッシュで、
+      導出木は成果物の外に並べて置かれるので、成果物はそれで大きくなりません。
+    </p>
+    <p class="limit">
+      <strong>これは「欠陥がない」ではありません。</strong> プログラムに欠陥がないかはコンパイラには
+      判定できません。例外がすべて書き留められたかは判定できます。前者は決定不能で、後者はプロセスの
+      性質であり、コンパイラを信じない人でも事後にオフラインで確かめられます。
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>四つの部品</h2>
+    <p class="body">
+      LSPE は四つの部品で、ひとつの空間の上で働きます。あるユニットで判断が下された地点、その地点が
+      負う義務、それを支える証拠、そして各枠がどうなったかの記録です。五つ目の検査器ではありません。
+      検査器はみな元の場所に残ります。
+    </p>
+
+    <div class="rows">
+      <div class="row">
+        <h3>問いただす者</h3>
+        <p>
+          コンパイラは判定者であることをやめません。ある判断を受け入れる前に、その出所を探し、
+          反例を作ろうとし、もう一つの実装に突き合わせます。三つとも失敗すれば穴があります &mdash;
+          そしてそれは<em>自分</em>に穴があると言うのであって、あなたのコードが悪いとは言いません。
+        </p>
+      </div>
+      <div class="row">
+        <h3>問い返す者</h3>
+        <p>
+          穴は、選択肢・既定値・それぞれの結果を伴う問いになります。あなたの答えは記録されます。
+          記録されない先送りはそれ自体がコンパイルエラーです &mdash; 「ここは怪しいが理由を言えない」が
+          誰かの頭の中だけに住む知識ではなくなります。
+        </p>
+      </div>
+      <div class="row">
+        <h3>警察 LSPC</h3>
+        <p>
+          ビルドの前に勘定書を渡します。これから受け入れる残余リスクはどれか、一族ごとに一行、
+          その一族が成り立たないと何が起きるか付きで。既定では止めません。直したいものは直し、
+          残すものは残す。残したことが記録されます。
+        </p>
+      </div>
+      <div class="row">
+        <h3>台帳</h3>
+        <p>
+          他の安全部品が出した判定 &mdash; 回収の梯子、メモリ安全の段階、能力域、所有権 &mdash; が
+          一冊の台帳に集まります。どの部品も置き換えず、名前も変えません。台帳は、それらの判定を
+          並べて読み、突き合わせられる場所です。
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>立証責任の向きが変わる</h2>
+    <p class="body">
+      ふつうのコンパイラはプログラムの外に立ち、結果だけを告げます。LSPE は取引の内側に座ります。
+      根拠を名指しし、置いた仮定に値段を付け、レシートを渡します。証明できないとき、
+      「あなたのコードが間違っている」とは言えません。「私の証明にはここに穴がある」と言わなければ
+      なりません。前者はあなたについての主張、後者はコンパイラについての主張で、この二つは意図して
+      分けられています。
+    </p>
+    <p class="body">
+      この分離には費用がかかり、設計はそれを払います。問いただす者は型の置換のたびにログを残し、
+      置換のあとで義務を証明し直します。Rust 自身の記録にも、まさにその形の健全性の欠陥があります
+      &mdash; 置換の前に成り立っていた検査が、置換のあとにもう一度走らなかった、というものです。
+      「出所はあるか」だけを問うコンパイラには捕まえられません。出所はそのとき存在し、そして
+      期限切れになっていたからです。
+    </p>
+    <p class="limit">
+      <strong>店員は権威ではありません。</strong> 意味論は標準と各コンポーネントに属します。
+      LSPE は判断を記録し値段を付けるだけで、何が真かを決めはしません。
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>しないこと</h2>
+
+    <div class="rows">
+      <div class="row">
+        <h3>メモリの誤りをもっと見つけるわけではありません</h3>
+        <p>
+          見つけるのは、出所のない放行と、期限切れの証拠です。そういう放行がないプログラムでも、
+          間違っていることはあります。
+        </p>
+      </div>
+      <div class="row">
+        <h3>プログラムを安全にするわけではありません</h3>
+        <p>
+          残余リスクを<em>黙って</em>受け入れることを不可能にします。これは二つの別の数で、設計は
+          一方を他方と引き換えにせず、分けて持ちます。
+        </p>
+      </div>
+      <div class="row">
+        <h3>検査器を置き換えません</h3>
+        <p>
+          回収の梯子、メモリ安全の段階、能力域、所有権は、それぞれの名前・持ち主・判据を保ちます。
+          LSPE はその判定を読むだけです。
+        </p>
+      </div>
+      <div class="row">
+        <h3>検査を減らす手段ではありません</h3>
+        <p>
+          監査を閉じるのは、あなたが署名する記録された選択であって、検査を消すスイッチではありません。
+          検査はどちらでも走り続けます。変わるのは、結果が書き留められるかどうかです。
+        </p>
+      </div>
+    </div>
+
+    <p class="caption">
+      回収の梯子は<a href="lgc.html">それ自身のページ</a>に、すべての義務の権威は
+      <a href="standard.html">標準</a>にあります。設計文書はリポジトリの <code>docs/262</code> です。
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Loment は Loment-Open License で公開されています。Program by Fujo.</span>
+    <nav>
+      <a href="https://github.com/Loment-Lang/loment">ソース</a>
+      <a href="https://github.com/Loment-Lang/loment/releases/latest">リリース</a>
+      <a href="https://github.com/FujoJTOP/lompi">lompi</a>
+      <a href="https://loment.fandom.com/">Wiki</a>
+      <a href="https://github.com/Loment-Lang/loment/issues">Issues</a>
+      <a class="mast" href="https://mastodon.social/@Loment" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z"/></svg>Mastodon</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

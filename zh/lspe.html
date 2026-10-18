@@ -1,0 +1,245 @@
+<!doctype html>
+<!-- translated-from: lspe.html -->
+<!-- source-sha256: d215cee50b7fd82346d9de1ba81bc578005e0cf5d1b3716c543e9255980d892a -->
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LSPE — 编译器审问自己 — Loment</title>
+<meta name="description" content="LSPE 让编译器为自己的每一个判断给出依据：它先自己找来源，找不到就问你一个会被记录的问题，并把这张小票写进产物。这是一个设计，不在任何发布里。">
+<link rel="icon" href="../mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=JetBrains+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../style.css">
+<link rel="alternate" hreflang="en" href="https://loment-lang.github.io/loment-site/lspe.html">
+<link rel="alternate" hreflang="zh-Hans" href="https://loment-lang.github.io/loment-site/zh/lspe.html">
+<link rel="alternate" hreflang="ja" href="https://loment-lang.github.io/loment-site/ja/lspe.html">
+<link rel="alternate" hreflang="ru" href="https://loment-lang.github.io/loment-site/ru/lspe.html">
+<link rel="alternate" hreflang="es" href="https://loment-lang.github.io/loment-site/es/lspe.html">
+<link rel="alternate" hreflang="x-default" href="https://loment-lang.github.io/loment-site/lspe.html">
+</head>
+<body>
+
+<a class="skip" href="#main">跳到正文</a>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="index.html">
+      <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true">
+        <rect width="64" height="64" rx="14" fill="#2f4bff"/>
+        <path d="M18 14h12v24h16v12H18z" fill="#fff"/>
+      </svg>
+      Loment
+    </a>
+        <nav>
+      <a href="learn.html">入门</a>
+      <a href="start.html">开始使用</a>
+      <a href="examples.html">示例</a>
+      <a href="standard.html">标准</a>
+      <details class="navmenu" name="bar">
+        <summary>版本</summary>
+        <ul>
+          <li><a href="releases.html">发布历程</a></li>
+          <li><a href="roadmap.html">路线图</a></li>
+        </ul>
+      </details>
+      <details class="navmenu" name="bar">
+        <summary aria-current="page">系统</summary>
+        <ul>
+          <li><a href="lgc.html">LGC</a></li>
+          <li><a href="lvm.html">LVM</a></li>
+          <li><a href="lompi.html">lompi</a></li>
+          <li><a href="libl.html">LibL</a></li>
+          <li><a href="lspe.html" aria-current="page">LSPE</a></li>
+        </ul>
+      </details>
+      <a href="https://github.com/Loment-Lang/loment">GitHub</a>
+    </nav>
+    <details class="lang" name="bar">
+      <summary>中文</summary>
+      <ul>
+        <li><a href="../lspe.html" hreflang="en">English</a></li>
+        <li><a href="lspe.html" hreflang="zh-Hans" aria-current="true">简体中文</a></li>
+        <li><a href="../ja/lspe.html" hreflang="ja">日本語</a></li>
+        <li><a href="../ru/lspe.html" hreflang="ru">Русский</a></li>
+        <li><a href="../es/lspe.html" hreflang="es">Español</a></li>
+      </ul>
+    </details>
+  </div>
+</header>
+
+<main id="main">
+
+<section class="head">
+  <div class="wrap">
+    <p class="eyebrow">系统 &middot; 设计，不在任何发布里</p>
+    <h1>LSPE</h1>
+    <p class="lede">
+      每一次构建，都是对程序的一串判断。LSPE 让编译器为这些判断给出依据：它先为每一个判断找来源，
+      找不到就把一个会被记录的问题交给你，并把这次往来写进产物。它不承诺你的程序是对的。
+      它承诺的是<strong>没有一次放行是无声的</strong>。
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>这是一个设计，不是能下载的东西</h2>
+    <p class="body">
+      截至 2026-10-18，LSPE 是一个设计。没有任何一个发布包含它，没有东西可以安装，这一页也不写
+      它会在哪天到来。设计本身写在仓里的 <code>docs/262</code> —— 和其它带编号的设计文档一样是
+      中文的，这个项目把计划放在那里，而不是放在公开的 issue 追踪器里。
+    </p>
+    <p class="body">
+      下面说的是这个设计为了什么，以及它拒绝声称什么。它不是一篇"某个功能可以打开了"的公告。
+    </p>
+    <p class="limit">
+      <strong>设计不是承诺。</strong> 有两件事已经知道做不到，设计把它们写下来，而不是绕开：
+      没有编译器能证明一个程序没有缺陷，也没有编译器能回答它自己答不出的每一个问题。
+      下面每一条都由这两件事塑形。
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>每一个判断都有一张小票</h2>
+    <p class="body">
+      今天的编译器只给你一位信息：接受，或者拒绝。理由留在编译器里，而它为了走到"接受"所做的
+      假设，没有写在任何你能查的地方。
+    </p>
+    <p class="body">
+      LSPE 加一份记录。每当编译器放行一件它证明不了的事，产物就记下：那是哪一个判断、依据了
+      什么证据，以及 —— 如果是人回答了一个问题 —— 是谁回答的。产物里带的是这份记录的哈希；
+      推导树留在产物旁边、不进产物，所以产物不会因为它而变大。
+    </p>
+    <p class="limit">
+      <strong>这不是"没有缺陷"。</strong> 一个程序有没有缺陷，编译器判不了；每一次放行有没有
+      被写下来，判得了。前者不可判定；后者是过程的一条性质，可以由一个不信任这个编译器的人，
+      事后离线核对。
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>四件东西</h2>
+    <p class="body">
+      LSPE 是四件东西，作用在同一个空间里：一个单元里做过判断的站点、这些站点背着的义务、
+      支持它们的证据，以及每一格最后怎么了的记录。它不是第五套检查器 —— 检查器都留在原地。
+    </p>
+
+    <div class="rows">
+      <div class="row">
+        <h3>质疑器</h3>
+        <p>
+          编译器不再只是判定者。在接受一个判断之前，它先为它找来源、试着构造反例，并拿去和
+          另一套实现对照。三样都失败，它就有一个洞 —— 而且它说的是<em>自己</em>有洞，
+          不是你的代码有问题。
+        </p>
+      </div>
+      <div class="row">
+        <h3>反问器</h3>
+        <p>
+          一个洞会变成一个带选项的问题：每个选项的默认值是什么、选了会有什么后果。你的回答
+          会被记录。没有记录的推迟本身就是编译错误 —— 于是"我知道这里可疑，但说不清为什么"
+          不再只活在某个人的脑子里。
+        </p>
+      </div>
+      <div class="row">
+        <h3>警察 LSPC</h3>
+        <p>
+          在构建之前，它把账单递给你：你接下来要接受哪些残余风险，一行一族，并写明这一族
+          不成立时会怎样。它默认不拦。你想修的修，不想修的留着，而你留下的那部分会被记下来。
+        </p>
+      </div>
+      <div class="row">
+        <h3>台账</h3>
+        <p>
+          其它安全组件做出的判决 —— 回收梯、内存安全等级、能力域、所有权 —— 都汇到同一本台账里。
+          那些组件一个都不替换、不改名；台账是它们的判决可以放在一起读、互相对账的地方。
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>举证责任换了方向</h2>
+    <p class="body">
+      通常的编译器站在程序之外，宣布一个结果。LSPE 站在交易之内：它点名自己的依据，给自己
+      做的假设标价，再递给你一张小票。它证不出来的时候，不可以说"你的代码有问题"；它必须说
+      "我的证明在这里有个洞"。前者是对你的主张，后者是对编译器的主张 —— 这两件事被刻意分开。
+    </p>
+    <p class="body">
+      这个分开有代价，设计认这笔账：质疑器给每一次类型替换留日志，并在每次替换之后把义务重新
+      证一遍。Rust 自己的记录里就有一条正是这个形状的健全性缺陷 —— 一条在替换前成立的检查，
+      替换之后没有再跑。只问"有没有来源"的编译器抓不到它，因为来源当时存在，只是过期了。
+    </p>
+    <p class="limit">
+      <strong>店员不是权威。</strong> 语义归标准、归各个组件。LSPE 记录判断并给它标价；
+      它不决定什么是真的。
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>它不做什么</h2>
+
+    <div class="rows">
+      <div class="row">
+        <h3>它不会找出更多内存错误</h3>
+        <p>
+          它找的是没有来源的放行，和已经过期的证据。一个没有这类放行的程序仍然可能是错的。
+        </p>
+      </div>
+      <div class="row">
+        <h3>它不会让程序更安全</h3>
+        <p>
+          它让残余风险无法被<em>无声地</em>接受。这是两个不同的数，设计把它们分开记，
+          而不是拿一个换另一个。
+        </p>
+      </div>
+      <div class="row">
+        <h3>它不替换任何检查器</h3>
+        <p>
+          回收梯、内存安全等级、能力域与所有权，各自保留名字、归属与判据。LSPE 只是读它们的判决。
+        </p>
+      </div>
+      <div class="row">
+        <h3>它不是少检查一点的办法</h3>
+        <p>
+          关掉审计是一次由你签字的、被记录的选择，不是一个删掉检查的开关。检查照旧运行；
+          变的只是结果有没有被写下来。
+        </p>
+      </div>
+    </div>
+
+    <p class="caption">
+      回收梯在<a href="lgc.html">它自己那一页</a>；每一条义务的权威是<a href="standard.html">标准</a>。
+      设计文档是仓里的 <code>docs/262</code>。
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Loment 以 Loment-Open License 发布。Program by Fujo.</span>
+    <nav>
+      <a href="https://github.com/Loment-Lang/loment">源码</a>
+      <a href="https://github.com/Loment-Lang/loment/releases/latest">发布</a>
+      <a href="https://github.com/FujoJTOP/lompi">lompi</a>
+      <a href="https://loment.fandom.com/">Wiki</a>
+      <a href="https://github.com/Loment-Lang/loment/issues">Issues</a>
+      <a class="mast" href="https://mastodon.social/@Loment" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z"/></svg>Mastodon</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>
