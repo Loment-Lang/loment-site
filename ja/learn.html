@@ -1,6 +1,6 @@
 <!doctype html>
 <!-- translated-from: learn.html -->
-<!-- source-sha256: c67cb35006df9d1ee5e938ef79b317173f729a54606ced50afdbf40c6946c7dd -->
+<!-- source-sha256: 21b3f0a5e34fa088f278eb1e00bff710ce0f3bb2d16cfcba7e8a1f468740bb6a -->
 <html lang="ja">
 <head>
 <meta charset="utf-8">
@@ -76,17 +76,41 @@
     <p class="eyebrow">学習</p>
     <h1>Loment を学ぶ</h1>
     <p class="lede">
-      見るべき場所は三つあり、その中最も強いのは<strong>自分自身を説明するツールチェイン</strong>
-      である: 言語全体を出力し、存在するすべての組み込み関数を列挙し、与えられたエラーコードが
-      何を意味するかを教えてくれる。このページは筋の通った順序を示し、各段に足りないものを
-      その段の隣に置く。
+      まずは学び方に合うコースを選んでください：<strong>本</strong>、<strong>サンプル集</strong>、または<strong>演習</strong>のコース。どれもビルドが検査します。その下にはもう一人の教師がいます——<strong>自分自身を説明するツールチェーン</strong>です。言語全体を印字し、すべての組み込み関数を列挙し、どのエラーコードが何を意味するかを教えてくれます。このページは合理的な順序を示し、各ステップに何が欠けているかを横に書きます。
     </p>
     <p class="limit">
-      <strong>足りないのは教材であって、材料ではない。</strong>マニュアルはチュートリアルでは
-      なくリファレンスで、中国語で書かれている; 設計記録もそうだ。以下のリソースが不完全で
-      あるか、あなたがこれから使おうとしている仕方で一度も使われたことがないとき、このページは
-      あなたに自分で見つけさせるのではなく、そう述べる。
+      <strong>足りないのは翻訳で、教材ではありません。</strong> 『Loment Book』『Loment by Example』『Lomentlings』は英語です。リファレンスマニュアルと設計記録は今も中国語です。以下のリソースが不完全なとき、またはあなたが使おうとしている方法で使われたことがないときは、このページがそう書きます。
     </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Loment を始める</h2>
+    <p class="body">3 つのコース、1 つの言語。学び方に合うものを選んでください。どれもリポジトリに入っていて、中のプログラムはすべてゲートが実際にコンパイルして実行します。章が壊れればビルドが赤くなります。</p>
+    <div class="rows">
+      <div class="row">
+        <h3>『Loment Book』</h3>
+        <div>
+          <p>「あの本」の愛称で呼ばれる長編ガイド。基本原理から言語全体を説明し、途中でいくつかのプロジェクトを作ります — ストリーミング <code>wc</code>、セルフテストの骨組み、パッケージ同一性を持つ小さなライブラリ。読み終えるころには、構文・ケイパビリティ領域・コンパイラがソースに何をするのかの実用的なモデルができます。</p>
+          <p><a class="btn btn-solid" href="https://github.com/Loment-Lang/Loment/blob/main/book/src/00-introduction.md">本を読む</a></p>
+        </div>
+      </div>
+      <div class="row">
+        <h3>『Loment by Example』</h3>
+        <div>
+          <p>何百ページも読むのが好みでなければ、こちら。1 ファイルに 1 概念、注釈付きで実際にコンパイルして動く短いプログラムです。説明より「動く形」が欲しいときに。</p>
+          <p><a class="btn btn-solid" href="https://github.com/Loment-Lang/Loment/blob/main/book/by-example/README.md">サンプルを見る</a></p>
+        </div>
+      </div>
+      <div class="row">
+        <h3>『Lomentlings』</h3>
+        <div>
+          <p>直すべき小さなプログラム集。1 つずつアイデアを学び、ランナーが終わったことを教えてくれます: <code>python tools/lomentlings.py</code>。読む代わりに手を動かしたいときの選択肢です。</p>
+          <p><a class="btn btn-solid" href="https://github.com/Loment-Lang/Loment/blob/main/exercises/README.md">Lomentlings をやる</a></p>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
