@@ -162,7 +162,7 @@
   <div class="wrap">
     <h2>From this repository</h2>
     <p class="body">
-      The four versions that came out of this repository before the one shipping now. Each is a
+      The versions that came out of this repository before the one shipping now. Each is a
       row rather than a section for the reason a record should give: the detail is on the
       release page it links to, and a history that keeps growing in full stops being a history
       and becomes a second copy of the archive.
@@ -205,62 +205,139 @@
           the <code>vm</code> setting. The rest was the largest defect sweep before 0.1.4.7.
         </p>
       </div>
+      <div class="row">
+        <h3>0.1.4.7 — the libraries become twins</h3>
+        <p>
+          <strong>2026-10-18.</strong> A defect release whose headline is not a feature: every
+          library the package ships compiles to byte-identical IR in both implementations —
+          155 modules, none skipped. What it took to get there was a set of silent state bugs
+          rather than the divergence they had looked like from outside.
+        </p>
+      </div>
     </div>
   </div>
 </section>
 
 <section class="sec">
   <div class="wrap">
-    <h2>0.1.4.7 — the libraries become twins</h2>
+    <h2>0.1.5 — the matrix, and the last gate opens</h2>
     <p class="body">
-      <strong>2026-10-18.</strong> A defect release, and the headline is not a feature: every
-      library the package ships now compiles to <strong>byte-identical IR in both
-      implementations</strong> — 155 modules, none skipped, no known gap, pinned by a criterion
-      that fails when the list grows. What it took to get there was a set of silent state bugs
-      rather than the divergence they had looked like from outside.
+      <strong>2026-10-20.</strong> The release is about turning promises into artifacts you can
+      inspect. <code>choose</code> became a <strong>seven-dimension matrix</strong> whose every
+      legal cell is compiled by both implementations and compared byte for byte; the safe memory
+      manager and the audit ledger ship; the interpreter ships with the toolchain; and the last
+      release gate — the one that kept the audit subsystem out of a release build — is gone.
     </p>
 
     <h3>New</h3>
     <ol class="notes">
       <li>
-        <strong>The shipped libraries are twins.</strong> Every module under the library store is
-        compiled as a root by both compilers and the IR compared byte for byte. The
-        <code>std</code> facade is excluded by name and by a criterion — it has no functions, and
-        its 127 modules are compared individually.
+        <strong>Seven settings, and every legal combination is compiled.</strong>
+        <code>mode</code>, <code>gc</code>, <code>runtime</code>, <code>port</code>,
+        <code>vm</code>, <code>lms</code> and <code>lspe</code>; the artifact-level rows are
+        judged on the linked image rather than on the IR alone (17 criteria).
       </li>
       <li>
-        <strong>A constant table in the self-hosted compiler.</strong> <code>find_const</code>
-        no longer scans the whole unit per identifier, which is what made the facade take tens of
-        minutes to compile.
+        <strong>The hosted layer is named.</strong> <code>std</code> may carry hosted names
+        (<code>libc</code>, filesystem, threads, time, network) and <code>no_std</code> may not;
+        <code>std</code> + <code>hosted</code> links the real <code>libc.so.6</code> and runs;
+        both front ends refuse <code>no_std</code> + <code>hosted</code>; and the IR itself
+        declares the row, so the linker checks a claim it did not write.
+      </li>
+      <li>
+        <strong><code>no_gc</code> is a checked claim.</strong> The artifact says “no collector”,
+        and the linker fails it if a collector is in the image.
+      </li>
+      <li>
+        <strong>The safe memory manager ships.</strong> Seven levels — compile-time checks, a
+        memory map, a guard, a rejector, a crasher, an out-of-process restarter, and a minimal
+        floor — with <code>lms_full</code> as the default and four tiers on the setting.
+      </li>
+      <li>
+        <strong>The audit subsystem ships.</strong> LSPE is the seventh setting: a ledger of what
+        each judgement rests on, a census of the sites that need one, an obligation system with
+        local and interprocedural engines, and <code>lspe pass "reason" { … }</code> as a counted,
+        lexical bypass. A release build accepts it.
+      </li>
+      <li>
+        <strong>The gate says what it skips.</strong> The known-red list names a criterion rather
+        than a suite; budgets are checked against the base branch, so a change cannot lower a
+        floor or add a skip; the capacity scanner covers literal bounds and fixed-size arrays in
+        the whole tree; and the bootstrap root carries a provenance record a rebuild can falsify.
+      </li>
+      <li>
+        <strong>The interpreter ships with the toolchain.</strong> T0 through T3, the compact
+        serialisation, a cached artifact and a performance ceiling, all measured against a
+        recorded ledger.
+      </li>
+      <li>
+        <strong>The shipped linker matches the reference on the parts libc needs.</strong>
+        Position-independent code, TLS relocations and weak objects close out the C surface;
+        IFUNC and <code>STT_NOTYPE</code> imports, SONAME-less shared objects and
+        <code>PT_GNU_RELRO</code> round it out.
+      </li>
+      <li>
+        <strong>Security, stated as behaviour.</strong> <code>free</code> scrubs the payload
+        before reuse; the HTTP request builder rejects CR, LF and NUL; installers verify every
+        file they copy and invoke PowerShell by absolute path; and the release publishes a
+        detached signature over <code>SHA256SUMS</code>, outside the archives it describes.
       </li>
     </ol>
 
     <h3>Fixed</h3>
     <ol class="notes">
       <li>
-        <strong>The state bugs the twin criterion exposed.</strong> A four-arm <code>match</code>
-        overwrote the <code>gc_auto_alpha</code> flag, so a non-alpha unit was compiled as alpha;
-        chained casts did only the first step; 64-bit decimal literals were not wrapped; builtin
-        calls had no return type in inference; shift operands inherited the outer 64-bit
-        expectation; and virtual type sentinels were mistaken for token indices.
+        <strong>State slots that overwrote each other inside the self-hosted compiler.</strong> A
+        <code>match</code> arm label clobbered the collector tier flag, and the emitter's
+        diagnostic slot clobbered the thread-spawn flag — which surfaced as a bogus “more than 20
+        arguments” error on a thread probe. Both have their own slots now, pinned by criteria.
       </li>
       <li>
-        <strong>Thirty-five swept defects, each with a criterion that was red first.</strong> The
-        standard library, ten <code>internet</code> parsers, the compact VM form's decoder, four
-        language-server cases, JSON/CSV/path/formatting, three tier-boundary fixes in the VM
-        runtime, and a dependency pass that handed each unit the whole program instead of its own
-        closure.
+        <strong>Fixed tables that corrupted instead of refusing.</strong> The checker's name
+        environment had no bound (2048 bytes, 256 entries) — 515 <code>let</code>s in one function
+        segfaulted on Linux and silently wrote through on Windows. It now holds 4096 entries and
+        stops at the cap; the emitter's tables gained guards and named diagnostics.
       </li>
       <li>
-        <strong>Capacity that ran out.</strong> The checker's symbol table now holds 5200
-        entries; the <code>std</code> facade closure has 4956 top-level names.
+        <strong>Crashes replaced by diagnostics.</strong> The self-hosted lexer no longer reads
+        past a full token buffer, the parser's nesting limits are one pass over
+        <code>(</code> <code>[</code> <code>{</code> plus unary chains, and the admission tool
+        reports an oversized input instead of truncating it.
+      </li>
+      <li>
+        <strong>Linker failures that named the wrong thing.</strong> Two messages still described
+        gates that no longer existed; the input buffer grew to 6 MiB; and the archive,
+        relocation and import tables were fixed rather than widened.
+      </li>
+      <li>
+        <strong>Front-end and CLI silences.</strong> Six checker fixes, ten user-visible CLI
+        cases, a C-translation pass, and thirteen renderer/linker fixes — each one a place where
+        input could be lost without a word.
+      </li>
+      <li>
+        <strong>The two formatters now agree on comments inside a multi-line
+        <code>||</code> expression.</strong> A criterion compares every corpus file byte for byte.
+      </li>
+      <li>
+        <strong>lompi's network layer is the <code>internet</code> package.</strong> The
+        hand-rolled HTTP names are gone; the registry index is pinned out of band; and a
+        fetch-complete marker is checked by its consumers.
+      </li>
+      <li>
+        <strong>All 134 bug-labelled issues in the milestone are closed</strong>, and every fix
+        that changed behaviour carries a criterion that was red before it and green after. The
+        list, with the issue that named each one, is on the
+        <a href="https://github.com/Loment-Lang/Loment/milestone/2">milestone page</a>.
       </li>
     </ol>
     <h3>Not in this release</h3>
     <p class="body">
-      Nothing that was already built is still being withheld &mdash; this release opens no gate.
-      The interpreter is <strong>still not in the package</strong>: <code>choose vm</code>
-      remains a declaration, and 0.1.5 is where an artifact can actually be handed to an engine.
+      The audit subsystem is <strong>in the package but not yet split out of it</strong>: the
+      packaging split is 0.1.5.1. Full capability-chain reporting for <code>no_std</code> is a
+      loader rule and remains <a href="https://github.com/Loment-Lang/Loment/issues/536">#536</a>.
+      <code>choose vm</code> still does not change what the compiler emits — the interpreter is a
+      program you run, not a compiler mode. And the audit ledger does not yet ingest the memory
+      manager's guard checks; that seam is written down in <code>docs/270</code>.
     </p>
   </div>
 </section>
@@ -280,7 +357,7 @@
       </a>
       <a class="doclink" href="https://loment.fandom.com/wiki/Versions_and_roadmap">
         <span class="who">Roadmap</span>
-        <span class="what">What comes after 0.1.4.7, stated as a plan rather than as a feature.</span>
+        <span class="what">What comes after 0.1.5, stated as a plan rather than as a feature.</span>
       </a>
       <a class="doclink" href="start.html">
         <span class="who">Get started</span>

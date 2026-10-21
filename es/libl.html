@@ -1,12 +1,12 @@
 <!doctype html>
 <!-- translated-from: libl.html -->
-<!-- source-sha256: 4c5aef7203d0f9e20d5d6d9d14a5e9efe04066591dd649b2615cd82bb59cc22e -->
+<!-- source-sha256: 85312dc9a0cd8e353ce32f7eab95a962bef9879cd2acea6df418bd6cc96a2fe3 -->
 <html lang="es">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>LibL — la cara libc de la biblioteca estándar — Loment</title>
-<meta name="description" content="LibL es la cara libc de la biblioteca estándar de Loment: los nombres de libc, el orden de argumentos de libc, la semántica de retorno de libc — juzgados contra la glibc real del sistema, byte a byte, en vez de contra Python. Se envía desde 0.1.4.6.">
+<meta name="description" content="LibL es la cara libc de la biblioteca estándar de Loment: los nombres de libc, el orden de argumentos de libc, la semántica de retorno de libc — juzgados contra la glibc real del sistema, byte a byte, en vez de contra Python. Se envía desde 0.1.4.6; la superficie de C quedó cerrada en 0.1.5.">
 <link rel="icon" href="../mark.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -73,7 +73,7 @@
 
 <section class="head">
   <div class="wrap">
-    <p class="eyebrow">Sistema · publicado en 0.1.4.6</p>
+    <p class="eyebrow">Sistema · publicado desde 0.1.4.6</p>
     <h1>LibL</h1>
     <p class="lede">
       La biblioteca estándar de Loment, con la forma de C: <strong>los mismos nombres de función,
@@ -91,6 +91,13 @@
       compilación de versión puede enlazar el <code>libc.so.6</code> real del sistema y ejecutarlo de
       principio a fin. El cierre que retenía ambas cosas en 0.1.4.5 está abierto, y la nota de la
       versión lo dice.
+    </p>
+    <p class="body">
+      0.1.5 cerró las piezas que una biblioteca de C realmente necesita: objetos independientes de
+      posición, relocalizaciones de TLS y objetos débiles, además de importaciones IFUNC y
+      <code>STT_NOTYPE</code>, objetos compartidos sin SONAME y <code>PT_GNU_RELRO</code>. El
+      enlazador que se envía y el enlazador de referencia producen productos idénticos byte a byte
+      con las mismas entradas.
     </p>
     <p class="limit">
       <strong>«Disponible» no es «completo».</strong> Cada nombre de aquí se comprueba contra la glibc

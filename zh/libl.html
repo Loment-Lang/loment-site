@@ -1,12 +1,12 @@
 <!doctype html>
 <!-- translated-from: libl.html -->
-<!-- source-sha256: 4c5aef7203d0f9e20d5d6d9d14a5e9efe04066591dd649b2615cd82bb59cc22e -->
+<!-- source-sha256: 85312dc9a0cd8e353ce32f7eab95a962bef9879cd2acea6df418bd6cc96a2fe3 -->
 <html lang="zh-Hans">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>LibL — 标准库的 libc 那一面 — Loment</title>
-<meta name="description" content="LibL 是 Loment 标准库的 libc 那一面：libc 的名字、libc 的参数序、libc 的返回语义 —— 判据拿系统的真 glibc 逐字节对跑，而不是拿 Python。0.1.4.6 起随包发布。">
+<meta name="description" content="LibL 是 Loment 标准库的 libc 那一面：libc 的名字、libc 的参数序、libc 的返回语义 —— 判据拿系统的真 glibc 逐字节对跑，而不是拿 Python。0.1.4.6 起随包发布；C 那一面在 0.1.5 收尾。">
 <link rel="icon" href="../mark.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -73,7 +73,7 @@
 
 <section class="head">
   <div class="wrap">
-    <p class="eyebrow">系统 · 0.1.4.6 起发布</p>
+    <p class="eyebrow">系统 · 自 0.1.4.6 起发布</p>
     <h1>LibL</h1>
     <p class="lede">
       Loment 的标准库，做成 C 的形状：<strong>与 libc 相同的函数名、相同的参数序、相同的
@@ -89,6 +89,11 @@
       自 0.1.4.6 起，<strong>发布</strong>构建接受 <code>use libl</code>，而且发布构建可以链上
       系统真正的 <code>libc.so.6</code> 并跑通到底。0.1.4.5 里挡住这两样东西的那把锁已经打开，
       发布说明写明了这一点。
+    </p>
+    <p class="body">
+      0.1.5 补齐了一个 C 库真正需要的那些部分：位置无关对象、TLS 重定位与弱对象，再加上
+      IFUNC 与 <code>STT_NOTYPE</code> 导入、没有 SONAME 的共享对象，以及
+      <code>PT_GNU_RELRO</code>。在同一批输入上，随包链接器与参考链接器产出的东西逐字节相同。
     </p>
     <p class="limit">
       <strong>"可用"不是"齐全"。</strong>这里的每一个名字都对着系统的 glibc 判过，而缺掉的那一组

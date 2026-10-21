@@ -1,12 +1,12 @@
 <!doctype html>
 <!-- translated-from: lvm.html -->
-<!-- source-sha256: 4fa1e82e9117226af1ed4f1ffd15a826675d3311d29c70463ad5e2ef2ebfdf81 -->
+<!-- source-sha256: 8a40eee303016797ce2a71ce3839da667319c12d2fac03b876f241a057b971ba -->
 <html lang="es">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>LVM — la VM de Loment — Loment</title>
-<meta name="description" content="La VM de Loment no es una ruta más rápida ni una forma de escribir programas con más facilidad. Es una segunda forma de ejecutar uno: un artefacto que un ejecutor puede adoptar bajo demanda, juzgándolo por lo que ya lleva. Ya existe un intérprete funcional en el repositorio; el paquete no lo incluye, y el ajuste no cambia lo que emite el compilador.">
+<meta name="description" content="La VM de Loment no es una ruta más rápida ni una forma de escribir programas con más facilidad. Es una segunda forma de ejecutar uno: un artefacto que un ejecutor puede adoptar bajo demanda, juzgándolo por lo que ya lleva. El intérprete se envía con el conjunto de herramientas como loment-lvm; el ajuste sigue sin cambiar lo que emite el compilador.">
 <link rel="icon" href="../mark.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -73,13 +73,13 @@
 
 <section class="head">
   <div class="wrap">
-    <p class="eyebrow">Sistema · en curso</p>
+    <p class="eyebrow">Sistema · publicado en 0.1.5</p>
     <h1>Loment VM</h1>
     <p class="lede">
       Una <strong>segunda forma de ejecutar un programa</strong>. El binario puede entregarse a
       un ejecutor que lo adopta bajo demanda y decide si adoptarlo leyendo lo que el binario ya
       lleva. No es una ruta más rápida, ni una forma de escribir programas con más facilidad.
-      <strong>Ya existe un intérprete funcional en el repositorio — el paquete no lo incluye, y el ajuste no cambia lo que emite el compilador.</strong>
+      <strong>El intérprete se envía con el conjunto de herramientas como <code>loment-lvm</code> &mdash; pero el ajuste aún no cambia lo que emite el compilador.</strong>
     </p>
   </div>
 </section>
@@ -96,17 +96,17 @@
       misma unidad; T3 añade especialización con guardas y una forma de volver.
     </p>
     <p class="body">
-      Lo que no existe es nada de eso <strong>en el paquete</strong>. El intérprete es la familia
-      <code>tools/lvm.py</code> del repositorio, escrita en Python. No está entre los binarios que
-      envía una versión, así que una herramienta instalada no puede ejecutar un programa de esta
-      manera. El ajuste tampoco cambia el artefacto: hoy <code>choose vm</code> y <code>no_vm</code>
-      producen una salida idéntica byte a byte.
+      Lo que se envía es el intérprete mismo, como <code>loment-lvm</code> junto al compilador, así
+      que un conjunto de herramientas instalado puede ejecutar un programa de esta manera. Lo que
+      no se envía es un <em>modo de compilador</em>: <code>choose vm</code> y <code>no_vm</code>
+      todavía producen una salida idéntica byte a byte, así que el ajuste dice cómo piensas
+      ejecutar el programa, no lo que emite el compilador.
     </p>
     <p class="limit">
-      <strong>Una deuda que el proyecto ya cargó antes.</strong> El ajuste <code>runtime</code> estuvo
-      declarado en el binario un tiempo sin hacer nada, y luego se elevó hasta lo que afirmaba. Esta es
-      otra vez esa forma: el motor existe, el envío no. La página dice qué mitad es cuál en vez de
-      dejar que el lector lo descubra.
+      <strong>Una deuda pagada a medias.</strong> El ajuste <code>runtime</code> tuvo una vez esta
+      misma forma: declarado antes de hacer nada, y luego elevado hasta lo que afirmaba. Aquí el
+      motor y el envío existen ambos; lo que sigue siendo una declaración es el propio ajuste. La
+      página dice qué mitad es cuál en vez de dejar que el lector lo descubra.
     </p>
   </div>
 </section>

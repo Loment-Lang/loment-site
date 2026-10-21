@@ -1,12 +1,12 @@
 <!doctype html>
 <!-- translated-from: lvm.html -->
-<!-- source-sha256: 4fa1e82e9117226af1ed4f1ffd15a826675d3311d29c70463ad5e2ef2ebfdf81 -->
+<!-- source-sha256: 8a40eee303016797ce2a71ce3839da667319c12d2fac03b876f241a057b971ba -->
 <html lang="zh-Hans">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>LVM — Loment VM — Loment</title>
-<meta name="description" content="Loment VM 不是一条更快的路，也不是一种把程序写得更省事的办法。它是运行程序的第二种方式：一份可以被执行器按需接纳的产物，执行器凭它已经携带的东西来加以判断。仓库里现在有一个能用的解释器；包里还不带它，而这个设置也不改变编译器发出的东西。">
+<meta name="description" content="Loment VM 不是一条更快的路，也不是一种把程序写得更省事的办法。它是运行程序的第二种方式：一份可以被执行器按需接纳的产物，执行器凭它已经携带的东西来加以判断。解释器作为 loment-lvm 随工具链一起发布；而这个设置仍然不改变编译器发出的东西。">
 <link rel="icon" href="../mark.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -73,13 +73,13 @@
 
 <section class="head">
   <div class="wrap">
-    <p class="eyebrow">系统 · 进行中</p>
+    <p class="eyebrow">系统 · 0.1.5 起发布</p>
     <h1>Loment VM</h1>
     <p class="lede">
       它是<strong>运行程序的第二种方式</strong>：一份产物可以交给一个执行器，由它按需接纳，
       而它决定要不要接纳，靠的是读这份产物已经携带的东西。它不是一条更快的路，也不是一种把
-      程序写得更省事的办法。<strong>仓库里现在有一个能用的解释器 —— 包里还不带它，而这个
-      设置也不改变编译器发出的东西。</strong>
+      程序写得更省事的办法。<strong>解释器作为 <code>loment-lvm</code> 随工具链一起发布 &mdash;
+      但这个设置仍然不改变编译器发出的东西。</strong>
     </p>
   </div>
 </section>
@@ -94,15 +94,15 @@
       序列化形式是同一单元文本形式的 <strong>28.5%</strong>；T3 加上带守卫的特化，以及一条回头路。
     </p>
     <p class="body">
-      没有的，是这一切<strong>在包里</strong>。解释器是仓库里的 <code>tools/lvm.py</code> 一族，
-      用 Python 写成。它不在一次发布所带的那些二进制里，所以一套已安装的工具链不能用这种方式跑
-      程序。这个设置也不改变产物：今天 <code>choose vm</code> 与 <code>no_vm</code> 的产出逐字节
-      相同。
+      随包发布的是解释器本身，作为编译器旁边的 <code>loment-lvm</code>，所以一套已安装的工具链
+      可以用这种方式跑程序。没有发布的是一种<em>编译器模式</em>：<code>choose vm</code> 与
+      <code>no_vm</code> 仍然产出逐字节相同的输出，所以这个设置说的是你打算怎么运行这个程序，
+      而不是编译器发出什么。
     </p>
     <p class="limit">
-      <strong>项目以前就背过的一笔债。</strong><code>runtime</code> 设置曾在一段时间里被声明在
-      产物里，却什么也不做，后来才被补齐到它声称的样子。这又是同一种形状：引擎在了，发布没有。
-      这一页把哪一半是哪一半说出来，而不是留给读的人去发现。
+      <strong>一笔还了一半的债。</strong><code>runtime</code> 设置曾有过同样的形状：在被声明之后
+      什么也不做，后来才被补齐到它声称的样子。而在这里，引擎和发布都已存在；仍然只是一句声明的，
+      是这个设置本身。这一页把哪一半是哪一半说出来，而不是留给读的人去发现。
     </p>
   </div>
 </section>

@@ -1,6 +1,6 @@
 <!doctype html>
 <!-- translated-from: releases.html -->
-<!-- source-sha256: a20b20e0f393045adc09b87355b0805c2de1ed4f7e98a22044ba73dacd3138c3 -->
+<!-- source-sha256: 4d72192fadf605da5db78a7c178aead60852a273d37217f89909bbccb2f859e7 -->
 <html lang="zh-Hans">
 <head>
 <meta charset="utf-8">
@@ -154,7 +154,7 @@
   <div class="wrap">
     <h2>来自这个仓库</h2>
     <p class="body">
-      在这个仓库里发布过、并且排在此刻这一版之前的四版。每一版都只占一行，而不是一节，
+      在这个仓库里发布过、并且排在此刻这一版之前的那几版。每一版都只占一行，而不是一节，
       理由是一份记录应该给出的：细节在它链去的那张发布页上，而一份不断完整生长下去的历史
       就不再是历史，而是档案的第二份副本。
     </p>
@@ -195,57 +195,127 @@
           之前最大的一次缺陷清扫。
         </p>
       </div>
+      <div class="row">
+        <h3>0.1.4.7 —— 库成为孪生</h3>
+        <p>
+          <strong>2026-10-18。</strong>一次缺陷发布，而头条不是一个功能：包里随附的每一个库，
+          在两个实现里都编出逐字节相同的 IR —— 155 个模块，没有一个被跳过。为了走到这里翻出来
+          的是一批静默的状态 bug，而不是它们从外面看起来的那种「分歧」。
+        </p>
+      </div>
     </div>
   </div>
 </section>
 
 <section class="sec">
   <div class="wrap">
-    <h2>0.1.4.7 —— 库成为孪生</h2>
+    <h2>0.1.5 —— 矩阵，以及最后一道闸打开</h2>
     <p class="body">
-      <strong>2026-10-18。</strong>一次缺陷发布，而头条不是一个功能：包里随附的每一个库，现在
-      在两个实现里编出<strong>逐字节相同的 IR</strong> —— 155 个模块，没有一个被跳过，没有
-      已知缺口，而且有一条判据在名单变长时会红。为了走到这里翻出来的是一批静默的状态 bug，
-      而不是它们从外面看起来的那种「分歧」。
+      <strong>2026-10-20。</strong>这一版讲的是把承诺变成你能查看的产物。<code>choose</code>
+      成了一个<strong>七维矩阵</strong>，其中每一个合法的格子都由两个实现各编一遍、再逐字节
+      比对；安全内存管理器与审计账本发布；解释器随工具链一起发布；而最后一道发行闸 —— 那道把
+      审计子系统挡在发布构建之外的闸 —— 已经不在了。
     </p>
 
     <h3>新增</h3>
     <ol class="notes">
       <li>
-        <strong>随附的库是孪生。</strong>库目录下的每个模块都被两个编译器各当作根编一遍，
-        IR 逐字节比。门面 <code>std</code> 按名字、并且按一条判据排除在外 —— 它没有函数，
-        它的 127 个模块是逐个比的。
+        <strong>七个设置，每一个合法组合都被编译。</strong><code>mode</code>、<code>gc</code>、
+        <code>runtime</code>、<code>port</code>、<code>vm</code>、<code>lms</code> 与
+        <code>lspe</code>；产物层面的几行，判在链接后的映像上，而不只是判在 IR 上（17 条
+        判据）。
       </li>
       <li>
-        <strong>自举编译器里的常量表。</strong><code>find_const</code> 不再为每个标识符扫一遍
-        整个单元 —— 那正是门面要编译几十分钟的原因。
+        <strong>hosted 那一层被点名了。</strong><code>std</code> 可以带 hosted 的名字
+        （<code>libc</code>、文件系统、线程、时间、网络），<code>no_std</code> 不可以；
+        <code>std</code> + <code>hosted</code> 链上真正的 <code>libc.so.6</code> 并跑起来；
+        两个前端都拒绝 <code>no_std</code> + <code>hosted</code>；而 IR 自己声明了那一行，
+        所以链接器核对的是它没有写下的那条声称。
+      </li>
+      <li>
+        <strong><code>no_gc</code> 是一条被核对的声称。</strong>产物写着「没有收集器」，而
+        如果映像里有一个收集器，链接器就让这条声称失败。
+      </li>
+      <li>
+        <strong>安全内存管理器发布。</strong>七个级别 —— 编译期检查、内存映射图、守卫、
+        拒绝器、崩溃器、进程外重启器，以及一个最低限度的底 —— 默认是 <code>lms_full</code>，
+        设置上有四档。
+      </li>
+      <li>
+        <strong>审计子系统发布。</strong>LSPE 是第七个设置：记录每个判断依据什么的账本、
+        需要判断的站点的清点、带有局部与过程间引擎的义务系统，以及
+        <code>lspe pass "reason" { … }</code>，作为一种会被计数、按词法生效的绕过。发布构建
+        接受它。
+      </li>
+      <li>
+        <strong>这道闸说出它跳过了什么。</strong>已知红的名单点名的是判据，而不是一整个套件；
+        预算是对着基线分支核的，所以一次改动不能降低一条地板、也不能新增一条跳过；容量扫描器
+        覆盖整棵树里的字面量边界与定长数组；而自举的根带着一份重建可以证伪的来源记录。
+      </li>
+      <li>
+        <strong>解释器随工具链一起发布。</strong>T0 到 T3、紧凑序列化形式、一份缓存的产物与
+        一条性能上限，全都对着记录在案的账本量过。
+      </li>
+      <li>
+        <strong>随包链接器在 libc 需要的那些部分上与参考一致。</strong>位置无关代码、TLS
+        重定位与弱对象把 C 那一面收尾；IFUNC 与 <code>STT_NOTYPE</code> 导入、没有 SONAME 的
+        共享对象以及 <code>PT_GNU_RELRO</code> 把它补齐。
+      </li>
+      <li>
+        <strong>安全，按行为来说。</strong><code>free</code> 在复用之前把那块载荷擦干净；HTTP
+        请求构造器拒绝 CR、LF 与 NUL；安装器核对它复制的每一个文件，并且用绝对路径调用
+        PowerShell；而发布会对 <code>SHA256SUMS</code> 发布一份分离的签名，放在它所描述的那些
+        归档包之外。
       </li>
     </ol>
 
     <h3>修复</h3>
     <ol class="notes">
       <li>
-        <strong>孪生判据翻出来的状态 bug。</strong>四臂 <code>match</code> 覆盖了
-        <code>gc_auto_alpha</code> 标志，于是非 alpha 的单元被按 alpha 编；链式转换只做了
-        第一步；64 位十进制字面量没有回绕；类型推断里内建调用没有返回类型；移位的操作数
-        继承了外层的 64 位期望；虚拟类型哨兵被当成了 token 下标。
+        <strong>自举编译器里互相覆盖的状态槽。</strong>一个 <code>match</code> 臂的标签覆盖了
+        收集器档位的标志，而发射器的诊断槽又覆盖了线程创建的标志 —— 在一条线程探针上表现为
+        一条假的「超过 20 个参数」错误。两者现在各有自己的槽，并由判据钉住。
       </li>
       <li>
-        <strong>清扫出的三十五条缺陷，每条都先有一条红的判据。</strong>标准库、
-        <code>internet</code> 的十个解析器、紧凑 VM 形式的解码器、语言服务的四处、
-        JSON/CSV/路径/格式化、VM 运行时的三处档边界，以及一趟把「整份程序」当成「这个单元
-        自己的闭包」递下去的依赖检查。
+        <strong>固定容量的表越界时不是拒绝，而是被写坏。</strong>检查器的名字环境没有边界
+        （2048 字节、256 条）—— 一个函数里 515 个 <code>let</code> 在 Linux 上段错误，在
+        Windows 上则静默地写了出去。它现在容纳 4096 条，并在到达上限时停下；发射器的几张表
+        加上了守卫和点名的诊断。
       </li>
       <li>
-        <strong>容量不够了。</strong>检查器的符号表现在是 5200 条；<code>std</code> 门面的
-        闭包有 4956 个顶层名字。
+        <strong>崩溃换成了诊断。</strong>自举词法分析器不再读过 token 缓冲区的末尾，解析器的
+        嵌套上限是对 <code>(</code> <code>[</code> <code>{</code> 加一元链的一趟扫描，而准入
+        工具对过大的输入报错，而不是把它截断。
+      </li>
+      <li>
+        <strong>点错了东西的链接器失败。</strong>有两条消息还在描述已经不存在的闸；输入缓冲区
+        长到 6 MiB；而归档表、重定位表与导入表是被固定住，而不是被加宽。
+      </li>
+      <li>
+        <strong>前端与 CLI 上的沉默。</strong>六处检查器修复、十个用户看得见的 CLI 情形、
+        一趟 C 翻译，以及十三处渲染器/链接器修复 —— 每一处都是输入可能一声不响地丢掉的地方。
+      </li>
+      <li>
+        <strong>两个格式化器现在对多行 <code>||</code> 表达式里的注释达成一致。</strong>
+        有一条判据把语料里的每个文件逐字节比一遍。
+      </li>
+      <li>
+        <strong>lompi 的网络层就是 <code>internet</code> 包。</strong>手写的那些 HTTP 名字
+        没有了；注册表索引在带外被钉住；而一个「拉取完成」的标记由它的消费者核对。
+      </li>
+      <li>
+        <strong>里程碑里 134 条带 bug 标签的 issue 全部关闭</strong>，而每一处改变了行为的
+        修复都带着一条判据：修之前是红的，修之后是绿的。名单连同点名每一条的那个 issue，在
+        <a href="https://github.com/Loment-Lang/Loment/milestone/2">里程碑页面</a>上。
       </li>
     </ol>
     <h3>这一版没有</h3>
     <p class="body">
-      已经建好、却还被挡在外面的东西，这一版一件也没有放行 &mdash; 它不开闸。解释器
-      <strong>仍然不在包里</strong>：<code>choose vm</code> 仍只是一句声明，真把产物交给引擎是
-      0.1.5 的事。
+      审计子系统<strong>在包里，但还没有从包里拆出去</strong>：打包的拆分是 0.1.5.1 的事。
+      <code>no_std</code> 的完整能力链报告是一条加载器规则，仍然留在
+      <a href="https://github.com/Loment-Lang/Loment/issues/536">#536</a>。<code>choose vm</code>
+      仍然不改变编译器发出的东西 —— 解释器是你能运行的一个程序，而不是一种编译器模式。而
+      审计账本还没有吃进内存管理器的守卫检查；那条接缝写在 <code>docs/270</code> 里。
     </p>
   </div>
 </section>
@@ -264,7 +334,7 @@
       </a>
       <a class="doclink" href="https://loment.fandom.com/wiki/Versions_and_roadmap">
         <span class="who">路线图</span>
-        <span class="what">0.1.4.7 之后是什么，按一份计划来说，而不是按一个功能来说。</span>
+        <span class="what">0.1.5 之后是什么，按一份计划来说，而不是按一个功能来说。</span>
       </a>
       <a class="doclink" href="start.html">
         <span class="who">入门</span>

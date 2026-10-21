@@ -1,12 +1,12 @@
 <!doctype html>
 <!-- translated-from: libl.html -->
-<!-- source-sha256: 4c5aef7203d0f9e20d5d6d9d14a5e9efe04066591dd649b2615cd82bb59cc22e -->
+<!-- source-sha256: 85312dc9a0cd8e353ce32f7eab95a962bef9879cd2acea6df418bd6cc96a2fe3 -->
 <html lang="ja">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>LibL — 標準ライブラリの libc の面 — Loment</title>
-<meta name="description" content="LibL は Loment の標準ライブラリの libc の面である: libc の名前、libc の引数順、libc の戻り値の意味論 —— 判定基準は Python ではなく、システムの実物の glibc とのバイト単位の比較である。0.1.4.6 から同梱されている。">
+<meta name="description" content="LibL は Loment の標準ライブラリの libc の面である: libc の名前、libc の引数順、libc の戻り値の意味論 —— 判定基準は Python ではなく、システムの実物の glibc とのバイト単位の比較である。0.1.4.6 から同梱されている; C の面は 0.1.5 で締めくくられた。">
 <link rel="icon" href="../mark.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -90,6 +90,12 @@
       0.1.4.6 から、<strong>リリース</strong>ビルドは <code>use libl</code> を受け入れ、さらに
       システムの本物の <code>libc.so.6</code> をリンクして最後まで動かせる。0.1.4.5 でこの二つを
       止めていた錠は開いており、リリースノートがそう述べている。
+    </p>
+    <p class="body">
+      0.1.5 は、C のライブラリが実際に必要とする部分を締めくくった: 位置独立オブジェクト、TLS
+      リロケーション、弱いオブジェクト、さらに IFUNC と <code>STT_NOTYPE</code> のインポート、
+      SONAME を持たない共有オブジェクト、<code>PT_GNU_RELRO</code>。同梱のリンカと参照リンカは、
+      同じ入力に対してバイト単位で同一の成果物を生む。
     </p>
     <p class="limit">
       <strong>「利用できる」は「揃っている」ではない。</strong>ここにある名前はすべてシステムの

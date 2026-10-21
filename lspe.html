@@ -71,7 +71,7 @@
 
 <section class="head">
   <div class="wrap">
-    <p class="eyebrow">System &middot; design, not in any release</p>
+    <p class="eyebrow">System &middot; shipped in 0.1.5</p>
     <h1>LSPE</h1>
     <p class="lede">
       Every build is a set of judgements about your program. LSPE makes the compiler account for
@@ -84,22 +84,26 @@
 
 <section class="sec">
   <div class="wrap">
-    <h2>A design, not a download</h2>
+    <h2>What ships, and what is still a design</h2>
     <p class="body">
-      As of 2026-10-18 LSPE is a design. No release contains it, there is nothing to install, and
-      this page carries no date for one. The design itself is written down in the repository as
+      As of 0.1.5 LSPE is in the package. A release build accepts
+      <code>choose lspe_open_admin</code> and <code>choose lspe_close_admin</code>; the ledger of
+      what each judgement rests on, the census of the sites that need one, the obligation system
+      with its local and interprocedural engines, and <code>lspe pass "reason" { … }</code> all
+      ship with the compiler. The design itself is written down in the repository as
       <code>docs/262</code> &mdash; in Chinese, like the other numbered design documents, which is
       where this project keeps plans rather than in a public issue tracker.
     </p>
     <p class="body">
-      What follows is what the design is for, and what it refuses to claim. It is not an
-      announcement of a feature you can turn on.
+      What does not ship yet is the packaging split: the subsystem still lives inside the
+      compiler's tree rather than standing as its own package. That is 0.1.5.1. The rest of this
+      page is what LSPE is for, and what it refuses to claim.
     </p>
     <p class="limit">
-      <strong>A design is not a promise.</strong> Two things are already known to be impossible,
-      and the design writes them down instead of working around them: no compiler can prove a
-      program free of bugs, and no compiler can settle every question it cannot answer. Everything
-      below is shaped by those two facts.
+      <strong>A ledger is not a proof.</strong> Two things are already known to be impossible, and
+      the design writes them down instead of working around them: no compiler can prove a program
+      free of bugs, and no compiler can settle every question it cannot answer. Everything below
+      is shaped by those two facts.
     </p>
   </div>
 </section>

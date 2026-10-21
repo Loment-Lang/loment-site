@@ -1,12 +1,12 @@
 <!doctype html>
 <!-- translated-from: lvm.html -->
-<!-- source-sha256: 4fa1e82e9117226af1ed4f1ffd15a826675d3311d29c70463ad5e2ef2ebfdf81 -->
+<!-- source-sha256: 8a40eee303016797ce2a71ce3839da667319c12d2fac03b876f241a057b971ba -->
 <html lang="ja">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>LVM — Loment VM — Loment</title>
-<meta name="description" content="Loment VM は、速い道でも、プログラムを書きやすくする方法でもない。プログラムを走らせる第二の方法である: 実行者が要求に応じて採用し、すでに携えているものだけを読んで判定する成果物。リポジトリには動くインタプリタが存在する。パッケージはまだそれを同梱しておらず、この設定はコンパイラが出すものを変えない。">
+<meta name="description" content="Loment VM は、速い道でも、プログラムを書きやすくする方法でもない。プログラムを走らせる第二の方法である: 実行者が要求に応じて採用し、すでに携えているものだけを読んで判定する成果物。インタプリタは loment-lvm としてツールチェインとともに同梱される。この設定は今もコンパイラが出すものを変えない。">
 <link rel="icon" href="../mark.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -73,14 +73,14 @@
 
 <section class="head">
   <div class="wrap">
-    <p class="eyebrow">システム · 進行中</p>
+    <p class="eyebrow">システム · 0.1.5 から出荷</p>
     <h1>Loment VM</h1>
     <p class="lede">
       プログラムを走らせる<strong>第二の方法</strong>。バイナリは、それを要求に応じて採用し、
       採用するかどうかをバイナリがすでに携えているものだけを読んで決める実行者に手渡せる。
-      速い道ではなく、プログラムを書きやすくする方法でもない。<strong>リポジトリには動く
-      インタプリタが存在する —— パッケージはまだそれを同梱しておらず、この設定は
-      コンパイラが出すものを変えない。</strong>
+      速い道ではなく、プログラムを書きやすくする方法でもない。<strong>インタプリタは
+      <code>loment-lvm</code> としてツールチェインとともに同梱される —— だがこの設定は
+      今もコンパイラが出すものを変えない。</strong>
     </p>
   </div>
 </section>
@@ -97,17 +97,17 @@
       戻り道を加える。
     </p>
     <p class="body">
-      存在しないのは、そのどれもが<strong>パッケージの中に</strong>ないことである。インタプリタは
-      リポジトリの <code>tools/lvm.py</code> 一族で、Python で書かれている。リリースが同梱する
-      バイナリの中にはなく、インストール済みツールチェインでこの方法でプログラムを走らせることは
-      できない。設定も成果物を変えない: 今日 <code>choose vm</code> と <code>no_vm</code> の出力は
-      バイト単位で同一である。
+      出荷されるのはインタプリタそのもので、コンパイラの隣に <code>loment-lvm</code> として
+      置かれるので、インストール済みツールチェインでこの方法でプログラムを走らせることができる。
+      出荷されないのは<em>コンパイラモード</em>である: <code>choose vm</code> と <code>no_vm</code>
+      の出力は今もバイト単位で同一であり、だからこの設定は、プログラムをどう走らせるつもりかを
+      述べるものであって、コンパイラが何を出すかではない。
     </p>
     <p class="limit">
-      <strong>プロジェクトが以前にも抱えた借りである。</strong><code>runtime</code> 設定は、
-      何もしないまましばらくの間成果物に宣言され、後にその主張に見合うところまで引き上げられた。
-      これはその形の再来である: エンジンはある、出荷はない。このページはどちらがどちらかを、
-      読者に見つけさせるのではなく、自分で言う。
+      <strong>半分だけ返された借り。</strong><code>runtime</code> 設定も以前に同じ形をしていた:
+      何もしないうちに宣言され、後にその主張に見合うところまで引き上げられた。ここではエンジンと
+      出荷の両方が存在する。まだ宣言でしかないのは、設定そのものである。このページはどちらが
+      どちらかを、読者に見つけさせるのではなく、自分で言う。
     </p>
   </div>
 </section>

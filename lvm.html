@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>LVM — Loment VM — Loment</title>
-<meta name="description" content="The Loment VM is not a faster path and not a way to write programs more easily. It is a second way to run one: an artifact an executor can adopt on demand, judging it by what it already carries. A working interpreter exists in the repository; the package does not ship it yet.">
+<meta name="description" content="The Loment VM is not a faster path and not a way to write programs more easily. It is a second way to run one: an artifact an executor can adopt on demand, judging it by what it already carries. The interpreter ships with the toolchain as loment-lvm; the setting still does not change what the compiler emits.">
 <link rel="icon" href="mark.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -71,14 +71,14 @@
 
 <section class="head">
   <div class="wrap">
-    <p class="eyebrow">System · in progress</p>
+    <p class="eyebrow">System · shipped in 0.1.5</p>
     <h1>Loment VM</h1>
     <p class="lede">
       A <strong>second way to run a program</strong>. The binary can be handed to an executor
       that adopts it on demand and decides whether to adopt it by reading what the binary
       already carries. It is not a faster path, and it is not a way to write programs more
-      easily. <strong>A working interpreter now exists in the repository — the package does not
-      ship it, and the setting does not change what the compiler emits.</strong>
+      easily. <strong>The interpreter ships with the toolchain as <code>loment-lvm</code> &mdash; but the
+      setting still does not change what the compiler emits.</strong>
     </p>
   </div>
 </section>
@@ -95,16 +95,16 @@
       the text form for the same unit; T3 adds guarded specialisation and a way back.
     </p>
     <p class="body">
-      What does not exist is any of that <strong>in the package</strong>. The interpreter is the
-      repository's <code>tools/lvm.py</code> family, written in Python. It is not among the
-      binaries a release ships, so an installed toolchain cannot run a program this way. Nor
-      does the setting change the artifact: <code>choose vm</code> and <code>no_vm</code>
-      produce byte-identical output today.
+      What ships is the interpreter itself, as <code>loment-lvm</code> beside the compiler, so an
+      installed toolchain can run a program this way. What does not ship is a <em>compiler
+      mode</em>: <code>choose vm</code> and <code>no_vm</code> still produce byte-identical
+      output, so the setting says how you intend to run the program, not what the compiler
+      emits.
     </p>
     <p class="limit">
-      <strong>A debt the project has carried before.</strong> The <code>runtime</code> setting
-      was declared in the binary for a while before it did anything, and was later brought up
-      to what it claimed. This is that shape again: the engine exists, the shipping does not.
+      <strong>A debt half paid.</strong> The <code>runtime</code> setting once had this same
+      shape: declared before it did anything, then brought up to what it claimed. Here the
+      engine and the shipping both exist; what is still a declaration is the setting itself.
       The page says which half is which rather than leaving a reader to find out.
     </p>
   </div>

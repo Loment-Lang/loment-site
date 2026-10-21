@@ -1,6 +1,6 @@
 <!doctype html>
 <!-- translated-from: releases.html -->
-<!-- source-sha256: a20b20e0f393045adc09b87355b0805c2de1ed4f7e98a22044ba73dacd3138c3 -->
+<!-- source-sha256: 4d72192fadf605da5db78a7c178aead60852a273d37217f89909bbccb2f859e7 -->
 <html lang="es">
 <head>
 <meta charset="utf-8">
@@ -166,7 +166,7 @@
   <div class="wrap">
     <h2>De este repositorio</h2>
     <p class="body">
-      Las cuatro versiones que salieron de este repositorio antes de la que se publica ahora. Cada una
+      Las versiones que salieron de este repositorio antes de la que se publica ahora. Cada una
       es una fila y no una sección por la razón que un registro debe dar: el detalle está en la
       página de la versión a la que enlaza, y una historia que sigue creciendo entera deja de ser
       historia y se convierte en una segunda copia del archivo.
@@ -210,66 +210,151 @@
           de defectos anterior a 0.1.4.7.
         </p>
       </div>
+      <div class="row">
+        <h3>0.1.4.7 — las bibliotecas se vuelven gemelas</h3>
+        <p>
+          <strong>2026-10-18.</strong> Una versión de defectos cuyo titular no es una función: cada
+          biblioteca que envía el paquete compila a IR idéntico byte a byte en ambas
+          implementaciones — 155 módulos, ninguno omitido. Llegar ahí destapó un conjunto de
+          errores de estado silenciosos, no la divergencia que parecían desde fuera.
+        </p>
+      </div>
     </div>
   </div>
 </section>
 
 <section class="sec">
   <div class="wrap">
-    <h2>0.1.4.7 — las bibliotecas se vuelven gemelas</h2>
+    <h2>0.1.5 — la matriz, y la última compuerta se abre</h2>
     <p class="body">
-      <strong>2026-10-18.</strong> Una versión de defectos, y el titular no es una función: cada
-      biblioteca que envía el paquete compila ahora a <strong>IR idéntico byte a byte en las dos
-      implementaciones</strong> — 155 módulos, ninguno omitido, sin huecos conocidos, fijado por
-      un criterio que se pone rojo cuando la lista crece. Llegar ahí destapó errores de estado
-      silenciosos, no la divergencia que parecían desde fuera.
+      <strong>2026-10-20.</strong> La versión trata de convertir promesas en artefactos que puedes
+      inspeccionar. <code>choose</code> se convirtió en una <strong>matriz de siete
+      dimensiones</strong> en la que ambas implementaciones compilan cada celda legal y la
+      comparan byte a byte; el gestor de memoria seguro y el registro de auditoría se publican; el
+      intérprete se envía con el conjunto de herramientas; y la última compuerta de versión — la
+      que mantenía el subsistema de auditoría fuera de una compilación de versión — ya no está.
     </p>
 
     <h3>Nuevo</h3>
     <ol class="notes">
       <li>
-        <strong>Las bibliotecas enviadas son gemelas.</strong> Cada módulo del almacén se compila
-        como raíz con ambos compiladores y el IR se compara byte a byte. La fachada
-        <code>std</code> queda excluida por nombre y por criterio — no tiene funciones, y sus 127
-        módulos se comparan por separado.
+        <strong>Siete ajustes, y cada combinación legal se compila.</strong>
+        <code>mode</code>, <code>gc</code>, <code>runtime</code>, <code>port</code>,
+        <code>vm</code>, <code>lms</code> y <code>lspe</code>; las filas a nivel de artefacto se
+        juzgan sobre la imagen enlazada y no solo sobre el IR (17 criterios).
       </li>
       <li>
-        <strong>Una tabla de constantes en el compilador autoalojado.</strong>
-        <code>find_const</code> ya no recorre la unidad entera por identificador, que es lo que
-        hacía que la fachada tardara decenas de minutos en compilar.
+        <strong>La capa hosted tiene nombre.</strong> <code>std</code> puede llevar nombres hosted
+        (<code>libc</code>, sistema de archivos, hilos, tiempo, red) y <code>no_std</code> no;
+        <code>std</code> + <code>hosted</code> enlaza el <code>libc.so.6</code> real y se ejecuta;
+        ambos front ends rechazan <code>no_std</code> + <code>hosted</code>; y el propio IR
+        declara la fila, así que el enlazador comprueba una afirmación que no escribió.
+      </li>
+      <li>
+        <strong><code>no_gc</code> es una afirmación comprobada.</strong> El artefacto dice «sin
+        recolector», y el enlazador lo rechaza si hay un recolector en la imagen.
+      </li>
+      <li>
+        <strong>Se publica el gestor de memoria seguro.</strong> Siete niveles — comprobaciones en
+        tiempo de compilación, un mapa de memoria, una guarda, un rechazador, un abortador, un
+        reiniciador fuera de proceso y un suelo mínimo — con <code>lms_full</code> como valor por
+        defecto y cuatro niveles en el ajuste.
+      </li>
+      <li>
+        <strong>Se publica el subsistema de auditoría.</strong> LSPE es el séptimo ajuste: un
+        registro de aquello en lo que se apoya cada juicio, un censo de los puntos que necesitan
+        uno, un sistema de obligaciones con motores local e interprocedimental, y
+        <code>lspe pass "reason" { … }</code> como una evasión contada y léxica. Una compilación
+        de versión lo acepta.
+      </li>
+      <li>
+        <strong>La compuerta dice qué omite.</strong> La lista de rojos conocidos nombra un
+        criterio y no una suite; los presupuestos se comprueban contra la rama base, así que un
+        cambio no puede bajar un suelo ni añadir una omisión; el escáner de capacidad cubre cotas
+        literales y arrays de tamaño fijo en todo el árbol; y la raíz de arranque lleva un registro
+        de procedencia que una reconstrucción puede falsar.
+      </li>
+      <li>
+        <strong>El intérprete se envía con el conjunto de herramientas.</strong> De T0 a T3, la
+        serialización compacta, un artefacto en caché y un techo de rendimiento, todo medido
+        contra un registro grabado.
+      </li>
+      <li>
+        <strong>El enlazador enviado coincide con la referencia en las piezas que libc
+        necesita.</strong> El código independiente de posición, las relocalizaciones de TLS y los
+        objetos débiles cierran la superficie de C; las importaciones IFUNC y
+        <code>STT_NOTYPE</code>, los objetos compartidos sin SONAME y <code>PT_GNU_RELRO</code> la
+        completan.
+      </li>
+      <li>
+        <strong>La seguridad, enunciada como comportamiento.</strong> <code>free</code> limpia la
+        carga útil antes de reutilizarla; el constructor de peticiones HTTP rechaza CR, LF y NUL;
+        los instaladores verifican cada archivo que copian e invocan PowerShell por ruta absoluta;
+        y la versión publica una firma separada sobre <code>SHA256SUMS</code>, fuera de los
+        archivos que describe.
       </li>
     </ol>
 
     <h3>Corregido</h3>
     <ol class="notes">
       <li>
-        <strong>Los errores de estado que destapó el criterio de gemelos.</strong> Un
-        <code>match</code> de cuatro brazos sobrescribía el indicador <code>gc_auto_alpha</code>,
-        así que una unidad que no era alpha se compilaba como alpha; las conversiones encadenadas
-        hacían solo el primer paso; los literales decimales de 64 bits no se envolvían; las
-        llamadas a intrínsecos no tenían tipo de retorno en la inferencia; los operandos de
-        desplazamiento heredaban la expectativa de 64 bits externa; y los centinelas de tipo
-        virtual se confundían con índices de token.
+        <strong>Ranuras de estado que se sobrescribían entre sí dentro del compilador
+        autoalojado.</strong> La etiqueta de un brazo de <code>match</code> pisoteaba el indicador
+        del nivel del recolector, y la ranura de diagnóstico del emisor pisoteaba el indicador de
+        creación de hilos — lo que afloraba como un error espurio de «más de 20 argumentos» en una
+        prueba de hilos. Ahora ambas tienen sus propias ranuras, fijadas por criterios.
       </li>
       <li>
-        <strong>Treinta y cinco defectos del barrido, cada uno con un criterio que se ponía rojo
-        primero.</strong> La biblioteca estándar, diez analizadores de <code>internet</code>, el
-        decodificador de la forma compacta de la VM, cuatro casos del servidor de lenguaje,
-        JSON/CSV/rutas/formato, tres correcciones en las fronteras de nivel del runtime de la VM,
-        y un paso de dependencias que entregaba a cada unidad el programa entero en lugar de su
-        propio cierre.
+        <strong>Tablas fijas que se corrompían en lugar de negarse.</strong> El entorno de nombres
+        del verificador no tenía límite (2048 bytes, 256 entradas) — 515 <code>let</code> en una
+        sola función provocaban un fallo de segmentación en Linux y escribían en silencio más allá
+        en Windows. Ahora aloja 4096 entradas y se detiene en el tope; las tablas del emisor
+        ganaron guardas y diagnósticos con nombre.
       </li>
       <li>
-        <strong>Capacidad que se agotó.</strong> La tabla de símbolos del verificador ahora
-        aloja 5200 entradas; el cierre de la fachada <code>std</code> tiene 4956 nombres de nivel
-        superior.
+        <strong>Caídas sustituidas por diagnósticos.</strong> El analizador léxico autoalojado ya
+        no lee más allá de un búfer de tokens lleno, los límites de anidamiento del analizador
+        sintáctico son una sola pasada sobre <code>(</code> <code>[</code> <code>{</code> más las
+        cadenas unarias, y la herramienta de admisión informa de una entrada demasiado grande en
+        vez de truncarla.
+      </li>
+      <li>
+        <strong>Fallos del enlazador que nombraban lo incorrecto.</strong> Dos mensajes seguían
+        describiendo compuertas que ya no existían; el búfer de entrada creció a 6 MiB; y las
+        tablas de archivo, relocalización e importación se corrigieron en vez de ensancharse.
+      </li>
+      <li>
+        <strong>Silencios del front end y de la CLI.</strong> Seis correcciones en el verificador,
+        diez casos de CLI visibles al usuario, una pasada de traducción a C y trece correcciones
+        en el renderizador/enlazador — cada una un lugar donde la entrada podía perderse sin una
+        palabra.
+      </li>
+      <li>
+        <strong>Los dos formateadores ahora coinciden en los comentarios dentro de una
+        expresión <code>||</code> de varias líneas.</strong> Un criterio compara cada archivo del
+        corpus byte a byte.
+      </li>
+      <li>
+        <strong>La capa de red de lompi es el paquete <code>internet</code>.</strong> Los nombres
+        HTTP escritos a mano desaparecieron; el índice del registro se fija fuera de banda; y los
+        consumidores comprueban un marcador de descarga completa.
+      </li>
+      <li>
+        <strong>Las 134 incidencias etiquetadas como bug del hito están cerradas</strong>, y cada
+        corrección que cambió el comportamiento lleva un criterio que estaba rojo antes y verde
+        después. La lista, con la incidencia que nombró cada una, está en la
+        <a href="https://github.com/Loment-Lang/Loment/milestone/2">página del hito</a>.
       </li>
     </ol>
     <h3>Lo que no trae esta versión</h3>
     <p class="body">
-      Nada de lo ya construido se abre en esta versión &mdash; no levanta ninguna compuerta. El
-      intérprete <strong>sigue sin estar en el paquete</strong>: <code>choose vm</code> continúa
-      siendo una declaración, y es 0.1.5 donde un artefacto podrá entregarse de verdad a un motor.
+      El subsistema de auditoría está <strong>en el paquete pero todavía no separado de él</strong>:
+      la separación en un paquete propio es 0.1.5.1. El informe completo de la cadena de
+      capacidades para <code>no_std</code> es una regla del cargador y sigue siendo
+      <a href="https://github.com/Loment-Lang/Loment/issues/536">#536</a>. <code>choose vm</code>
+      sigue sin cambiar lo que emite el compilador — el intérprete es un programa que ejecutas, no
+      un modo de compilador. Y el registro de auditoría todavía no ingiere las comprobaciones de
+      guarda del gestor de memoria; esa costura está escrita en <code>docs/270</code>.
     </p>
   </div>
 </section>
@@ -289,7 +374,7 @@
       </a>
       <a class="doclink" href="https://loment.fandom.com/wiki/Versions_and_roadmap">
         <span class="who">Roadmap</span>
-        <span class="what">Lo que viene después de 0.1.4.7, enunciado como un plan y no como una función.</span>
+        <span class="what">Lo que viene después de 0.1.5, enunciado como un plan y no como una función.</span>
       </a>
       <a class="doclink" href="start.html">
         <span class="who">Primeros pasos</span>

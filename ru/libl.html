@@ -1,12 +1,12 @@
 <!doctype html>
 <!-- translated-from: libl.html -->
-<!-- source-sha256: 4c5aef7203d0f9e20d5d6d9d14a5e9efe04066591dd649b2615cd82bb59cc22e -->
+<!-- source-sha256: 85312dc9a0cd8e353ce32f7eab95a962bef9879cd2acea6df418bd6cc96a2fe3 -->
 <html lang="ru">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>LibL — грань libc стандартной библиотеки — Loment</title>
-<meta name="description" content="LibL — это грань libc стандартной библиотеки Loment: имена libc, порядок аргументов libc, семантика возврата libc — судимые по настоящей glibc системы, побайтово, а не по Python. Поставляется с 0.1.4.6.">
+<meta name="description" content="LibL — это грань libc стандартной библиотеки Loment: имена libc, порядок аргументов libc, семантика возврата libc — судимые по настоящей glibc системы, побайтово, а не по Python. Поставляется с 0.1.4.6; поверхность C закрыта в 0.1.5.">
 <link rel="icon" href="../mark.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -73,7 +73,7 @@
 
 <section class="head">
   <div class="wrap">
-    <p class="eyebrow">Система · поставляется с 0.1.4.6</p>
+    <p class="eyebrow">Система · поставляется начиная с 0.1.4.6</p>
     <h1>LibL</h1>
     <p class="lede">
       <strong>Грань libc</strong> стандартной библиотеки Loment. Те же имена, тот же порядок
@@ -90,6 +90,12 @@
       С 0.1.4.6 <strong>выпускная</strong> сборка принимает <code>use libl</code>, а выпускная
       сборка может слинковать настоящий <code>libc.so.6</code> системы и довести его до конца.
       Замок, который держал и то, и другое в 0.1.4.5, открыт, и примечания к выпуску это говорят.
+    </p>
+    <p class="body">
+      0.1.5 закрыл те части, которые библиотеке C действительно нужны: позиционно-независимые
+      объекты, TLS-релокации и слабые объекты, а также импорты IFUNC и <code>STT_NOTYPE</code>,
+      разделяемые объекты без SONAME и <code>PT_GNU_RELRO</code>. Поставляемый линкер и
+      эталонный линкер дают побайтово идентичные продукты на одних и тех же входах.
     </p>
     <p class="limit">
       <strong>«Доступен» — не «полон».</strong> Каждое имя здесь проверено против glibc системы, а

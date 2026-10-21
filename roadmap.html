@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Roadmap — Loment</title>
-<meta name="description" content="What Loment intends to build next, from 0.1.5 to 0.1.8 — a plan, not a promise. No dates, and none of it is downloadable today.">
+<meta name="description" content="What Loment intends to build next, from 0.1.5.1 to 0.1.8 — a plan, not a promise. No dates, and none of it is downloadable today.">
 <link rel="icon" href="mark.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -74,7 +74,7 @@
     <p class="eyebrow">Roadmap</p>
     <h1>What comes next</h1>
     <p class="lede">
-      The versions the project is aiming at, from 0.1.5 onward, and what each of them is
+      The versions the project is aiming at, from 0.1.5.1 onward, and what each of them is
       <em>for</em>. This is a <strong>plan</strong> &mdash; the shape of the work the project has
       set itself, not a schedule.
     </p>
@@ -90,21 +90,21 @@
 
 <section class="sec">
   <div class="wrap">
-    <h2>The nearest milestone: 0.1.5 Alpha 1</h2>
+    <h2>The nearest milestone: 0.1.5.1</h2>
     <p class="body">
-      The next thing on the list is not a feature. Its goal is stated as <strong>zero
-      silence</strong>: <em>every claim the language makes gets either a verdict or a test that
-      could prove it wrong</em> &mdash; nothing is described without something that could
-      falsify the description.
+      0.1.5 shipped, and what it left behind is not a feature but seams. The audit subsystem
+      lives inside the compiler's own tree instead of standing as its own package; the memory
+      manager's guard checks do not yet reach the audit ledger; and the reporting behind
+      <code>no_std</code> is still a loader rule rather than a compile-time account. 0.1.5.1
+      takes those apart, one seam at a time.
     </p>
     <p class="body">
-      The input is a survey of what other languages do well &mdash; taken from C, Rust, Java and
-      Python &mdash; and the target is that <strong>every line of it ends up decided</strong>.
-      There are three allowed verdicts: copy the mechanism; copy the <em>intent</em> but not the
-      form; or refuse it outright, and say which conflict it hit and which side was chosen.
-      <strong>Three phrases are treated as failure states:</strong> "undecided", "to be
-      discussed", and "depending on circumstances" &mdash; a line that ends in one of those has
-      not been decided, it has been deferred, and the rule is that deferring counts as failing.
+      The discipline that produced 0.1.5 stays. <strong>Every claim the language makes gets
+      either a verdict or a test that could prove it wrong</strong> &mdash; nothing is described
+      without something that could falsify the description. <strong>Three phrases are treated as
+      failure states:</strong> "undecided", "to be discussed", and "depending on circumstances"
+      &mdash; a line that ends in one of those has not been decided, it has been deferred, and
+      the rule is that deferring counts as failing.
     </p>
     <p class="body">
       Some of those claims <em>cannot</em> coexist, and the useful part of the exercise is being
@@ -155,16 +155,13 @@
 
     <div class="rows">
       <div class="row">
-        <h3>0.1.5 &mdash; reclamation becomes something you can rely on</h3>
+        <h3>0.1.5 &mdash; shipped: the matrix and the last gate</h3>
         <p>
-          The reclamation ladder is what 0.1.5 is for: the point at which it stops being a design
-          and becomes a property a program can count on. <strong>Most of the ladder is already
-          built</strong> &mdash; all four rungs have implementations and criteria, the adaptive
-          collector and the generational half have both landed, and the language's two
-          implementations agree on them byte for byte. What 0.1.5 adds is the part that is not a
-          feature: settling it, and being able to say what it does and does not guarantee. The
-          ladder itself is described on <a href="lgc.html">its own page</a>, which keeps its own
-          status line.
+          The settings became a matrix whose every legal cell is compiled by both implementations
+          and compared byte for byte; the gate started naming the criteria it exempts; the safe
+          memory manager, the audit ledger and the interpreter all shipped. What is left of the
+          reclamation ladder is not a mechanism but a settled guarantee, and
+          <a href="lgc.html">its page</a> keeps its own status line.
         </p>
       </div>
       <div class="row">
@@ -178,13 +175,12 @@
         </p>
       </div>
       <div class="row">
-        <h3>0.1.6 &mdash; the interpreter arrives in the package</h3>
+        <h3>0.1.6 &mdash; the interpreter becomes a target</h3>
         <p>
-          A second way to run a program, at the bottom rung of its ladder. <strong>The rungs are
-          already built</strong> &mdash; T0 through T3 live in the repository, each with a
-          criterion &mdash; but none of that is in a distribution yet, and <code>choose vm</code>
-          still changes nothing about what the compiler emits. 0.1.6 closes that gap: the
-          interpreter ships, and <a href="lvm.html">that page</a> keeps its own status line.
+          The interpreter ships as a program you run; what it is not yet is a compiler mode.
+          <code>choose vm</code> and <code>no_vm</code> still emit the same bytes, so the setting
+          is a declaration rather than a choice about the artifact. 0.1.6 makes it real, and
+          <a href="lvm.html">that page</a> keeps its own status line.
         </p>
       </div>
       <div class="row">

@@ -1,12 +1,12 @@
 <!doctype html>
 <!-- translated-from: roadmap.html -->
-<!-- source-sha256: ec7167363c7e1d6db6ab51bf4decd4178a6103b37797442c844fd81f6ca2e586 -->
+<!-- source-sha256: 7c74844bbf602514bd027d5de9f882cdbb6a24662599b8ba4d5ab7f2a70e0fe0 -->
 <html lang="es">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Hoja de ruta — Loment</title>
-<meta name="description" content="Lo que Loment pretende construir a continuación, de 0.1.5 a 0.1.8 — un plan, no una promesa. Sin fechas, y nada de esto se puede descargar hoy.">
+<meta name="description" content="Lo que Loment pretende construir a continuación, de 0.1.5.1 a 0.1.8 — un plan, no una promesa. Sin fechas, y nada de esto se puede descargar hoy.">
 <link rel="icon" href="../mark.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -76,7 +76,7 @@
     <p class="eyebrow">Hoja de ruta</p>
     <h1>Lo que viene después</h1>
     <p class="lede">
-      Las versiones a las que apunta el proyecto, desde 0.1.5 en adelante, y para <em>qué</em> es
+      Las versiones a las que apunta el proyecto, desde 0.1.5.1 en adelante, y para <em>qué</em> es
       cada una. Esto es un <strong>plan</strong> &mdash; la forma del trabajo que el proyecto se ha
       impuesto, no un calendario.
     </p>
@@ -92,21 +92,22 @@
 
 <section class="sec">
   <div class="wrap">
-    <h2>El hito más cercano: 0.1.5 Alpha 1</h2>
+    <h2>El hito más cercano: 0.1.5.1</h2>
     <p class="body">
-      Lo siguiente en la lista no es una función. Su objetivo se enuncia como <strong>silencio
-      cero</strong>: <em>cada afirmación que hace el lenguaje recibe un veredicto o una prueba que
-      podría demostrarla falsa</em> &mdash; nada se describe sin algo que pueda falsar la
-      descripción.
+      0.1.5 se publicó, y lo que dejó detrás no es una función sino costuras. El subsistema de
+      auditoría vive dentro del árbol del propio compilador en lugar de estar de pie como su
+      propio paquete; las comprobaciones de guarda del gestor de memoria todavía no llegan al
+      registro de auditoría; y el informe que hay detrás de <code>no_std</code> sigue siendo una
+      regla del cargador en vez de una cuenta en tiempo de compilación. 0.1.5.1 las desmonta, una
+      costura a la vez.
     </p>
     <p class="body">
-      La entrada es un sondeo de lo que otros lenguajes hacen bien &mdash; tomado de C, Rust, Java
-      y Python &mdash; y el objetivo es que <strong>cada línea de ese sondeo acabe decidida</strong>.
-      Hay tres veredictos admisibles: copiar el mecanismo; copiar la <em>intención</em> pero no la
-      forma; o rechazarlo sin más, y decir con qué conflicto chocó y qué lado se eligió.
-      <strong>Tres frases se tratan como estados de fallo:</strong> "sin decidir", "por discutir" y
-      "según las circunstancias" &mdash; una línea que acaba en una de ellas no se ha decidido, se
-      ha aplazado, y la regla es que aplazar cuenta como fallar.
+      La disciplina que produjo 0.1.5 se mantiene. <strong>Cada afirmación que hace el lenguaje
+      recibe un veredicto o una prueba que podría demostrarla falsa</strong> &mdash; nada se
+      describe sin algo que pueda falsar la descripción. <strong>Tres frases se tratan como estados
+      de fallo:</strong> "sin decidir", "por discutir" y "según las circunstancias" &mdash; una
+      línea que acaba en una de ellas no se ha decidido, se ha aplazado, y la regla es que aplazar
+      cuenta como fallar.
     </p>
     <p class="body">
       Algunas de esas afirmaciones <em>no pueden</em> coexistir, y la parte útil del ejercicio es
@@ -158,16 +159,13 @@
 
     <div class="rows">
       <div class="row">
-        <h3>0.1.5 &mdash; la recuperación pasa a ser algo con lo que se puede contar</h3>
+        <h3>0.1.5 &mdash; publicado: la matriz y la última compuerta</h3>
         <p>
-          La escala de recuperación es aquello para lo que sirve 0.1.5: el punto en el que deja de
-          ser un diseño y pasa a ser una propiedad con la que un programa puede contar. <strong>La
-          mayor parte de la escala ya está construida</strong> &mdash; los cuatro peldaños tienen
-          implementación y criterio, el recolector adaptativo y la mitad generacional ya han
-          aterrizado, y las dos implementaciones del lenguaje coinciden en ellos byte a byte. Lo
-          que 0.1.5 añade es la parte que no es una función: darla por zanjada, y poder decir qué
-          garantiza y qué no. La escala en sí se describe en <a href="lgc.html">su propia
-          página</a>, que mantiene su propia línea de estado.
+          Los ajustes se convirtieron en una matriz en la que ambas implementaciones compilan cada
+          celda legal y la comparan byte a byte; la compuerta empezó a nombrar los criterios que
+          exime; el gestor de memoria seguro, el registro de auditoría y el intérprete se
+          publicaron. Lo que queda de la escala de recuperación no es un mecanismo sino una
+          garantía zanjada, y <a href="lgc.html">su página</a> mantiene su propia línea de estado.
         </p>
       </div>
       <div class="row">
@@ -181,13 +179,13 @@
         </p>
       </div>
       <div class="row">
-        <h3>0.1.6 &mdash; el intérprete llega al paquete</h3>
+        <h3>0.1.6 &mdash; el intérprete pasa a ser un objetivo</h3>
         <p>
-          Una segunda forma de ejecutar un programa, en el peldaño más bajo de su escala. <strong>Los
-          peldaños ya están construidos</strong> — T0 a T3 viven en el repositorio, cada uno con su
-          criterio — pero ninguno está todavía en una distribución, y <code>choose vm</code> sigue
-          sin cambiar lo que emite el compilador. 0.1.6 cierra esa brecha: el intérprete se envía, y
-          <a href="lvm.html">esa página</a> mantiene su propia línea de estado.
+          El intérprete se envía como un programa que ejecutas; lo que todavía no es es un modo de
+          compilador. <code>choose vm</code> y <code>no_vm</code> siguen emitiendo los mismos
+          bytes, así que el ajuste es una declaración más que una elección sobre el artefacto.
+          0.1.6 lo convierte en real, y <a href="lvm.html">esa página</a> mantiene su propia línea
+          de estado.
         </p>
       </div>
       <div class="row">

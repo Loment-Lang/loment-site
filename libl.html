@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>LibL — the libc face of the standard library — Loment</title>
-<meta name="description" content="LibL is the libc face of Loment's standard library: libc names, libc argument order, libc return semantics — judged against the system's real glibc, byte for byte, rather than against Python. Shipped in 0.1.4.6.">
+<meta name="description" content="LibL is the libc face of Loment's standard library: libc names, libc argument order, libc return semantics — judged against the system's real glibc, byte for byte, rather than against Python. Shipped in 0.1.4.6; the C surface closed out in 0.1.5.">
 <link rel="icon" href="mark.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -71,7 +71,7 @@
 
 <section class="head">
   <div class="wrap">
-    <p class="eyebrow">System · shipped in 0.1.4.6</p>
+    <p class="eyebrow">System · shipped since 0.1.4.6</p>
     <h1>LibL</h1>
     <p class="lede">
       Loment's standard library, in C's shape: <strong>the same function names, the same
@@ -88,6 +88,12 @@
       A <strong>release</strong> build accepts <code>use libl</code> as of 0.1.4.6, and a release
       build can link the system's real <code>libc.so.6</code> and run it end to end. The lock that
       held both back in 0.1.4.5 is open, and the release note says so.
+    </p>
+    <p class="body">
+      0.1.5 closed out the parts a C library actually needs: position-independent objects, TLS
+      relocations and weak objects, plus IFUNC and <code>STT_NOTYPE</code> imports, SONAME-less
+      shared objects and <code>PT_GNU_RELRO</code>. The shipped linker and the reference linker
+      produce byte-identical products on the same inputs.
     </p>
     <p class="limit">
       <strong>"Available" is not "complete".</strong> Every name here is checked against the

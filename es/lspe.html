@@ -1,6 +1,6 @@
 <!doctype html>
 <!-- translated-from: lspe.html -->
-<!-- source-sha256: 4702e32bf08d3ad23d322496cf67b57be097dfc50ef974e3028b06226f5fb407 -->
+<!-- source-sha256: 24ff0f00124917c44ca7f481d528710222faefcd066e364ab229ef9e9617a360 -->
 <html lang="es">
 <head>
 <meta charset="utf-8">
@@ -73,7 +73,7 @@
 
 <section class="head">
   <div class="wrap">
-    <p class="eyebrow">Sistema &middot; diseño, no está en ninguna versión</p>
+    <p class="eyebrow">Sistema &middot; publicado en 0.1.5</p>
     <h1>LSPE</h1>
     <p class="lede">
       Cada compilación es un conjunto de juicios sobre tu programa. LSPE obliga al compilador a responder
@@ -86,22 +86,27 @@
 
 <section class="sec">
   <div class="wrap">
-    <h2>Un diseño, no algo que se descarga</h2>
+    <h2>Lo que se envía y lo que sigue siendo un diseño</h2>
     <p class="body">
-      A 2026-10-18, LSPE es un diseño. Ninguna versión lo incluye, no hay nada que instalar y esta página
-      no pone fecha a su llegada. El diseño está escrito en el repositorio como <code>docs/262</code>
-      &mdash; en chino, como los demás documentos de diseño numerados: este proyecto guarda sus planes
-      ahí, no en un gestor público de incidencias.
+      A partir de 0.1.5, LSPE está en el paquete. Una compilación de <strong>versión</strong> acepta
+      <code>choose lspe_open_admin</code> y <code>choose lspe_close_admin</code>; el registro de
+      aquello en lo que se apoya cada juicio, el censo de los puntos que necesitan uno, el sistema
+      de obligaciones con sus motores local e interprocedimental, y
+      <code>lspe pass "reason" { … }</code> se envían todos con el compilador. El diseño mismo está
+      escrito en el repositorio como <code>docs/262</code> &mdash; en chino, como los demás
+      documentos de diseño numerados: este proyecto guarda sus planes ahí, no en un gestor público
+      de incidencias.
     </p>
     <p class="body">
-      Lo que sigue es para qué sirve el diseño y qué se niega a afirmar. No es el anuncio de una función
-      que puedas activar.
+      Lo que todavía no se envía es la separación en un paquete propio: el subsistema sigue
+      viviendo dentro del árbol del compilador en lugar de estar de pie como su propio paquete. Eso
+      es 0.1.5.1. El resto de esta página trata de para qué sirve LSPE y qué se niega a afirmar.
     </p>
     <p class="limit">
-      <strong>Un diseño no es una promesa.</strong> Ya se sabe que dos cosas son imposibles, y el diseño
-      las escribe en lugar de rodearlas: ningún compilador puede demostrar que un programa está libre de
-      defectos, y ninguno puede resolver todas las preguntas que no sabe responder. Todo lo de abajo está
-      moldeado por esos dos hechos.
+      <strong>Un registro no es una prueba.</strong> Ya se sabe que dos cosas son imposibles, y el
+      diseño las escribe en lugar de rodearlas: ningún compilador puede demostrar que un programa
+      está libre de defectos, y ninguno puede resolver todas las preguntas que no sabe responder.
+      Todo lo de abajo está moldeado por esos dos hechos.
     </p>
   </div>
 </section>
