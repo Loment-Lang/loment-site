@@ -322,6 +322,58 @@
 
 <section class="sec">
   <div class="wrap">
+    <h2>0.1.5.1 —— 权限变成代数，工具链学会替换自己</h2>
+    <p class="body">
+      <strong>2026-11-07。</strong>里程碑关闭：92 个 issue 全部完成。能力不再是一个闭区间，而是三个
+      维度——形状、极性、时律；内存安全变成七级梯子，而且地板有名字、有字节数、有哈希；运行中的工具链
+      可以从签名过的、只含修复的 Pre-Release 替换自己；Java 库不需要 JVM 也能跑；而没写
+      <code>choose write grammar</code> 的源码，现在按<strong>最新</strong>版次
+      <code>tur2026.3</code> 读。
+    </p>
+
+    <h3>新增</h3>
+    <ol class="notes">
+      <li>
+        <strong>十种能力域，一个判决点。</strong>形状可以是普通区间、点、前无限
+        <code>[()..hi]</code>、后无限 <code>[lo..()]</code> 或全域 <code>[()..()]</code>；极性可以
+        是 <code>danger</code>（拒绝表，与普通允许域互为对偶）；时律可以是 <code>epoch</code>、
+        <code>far</code>、<code>sliding</code>、<code>decaying</code>、<code>growing</code> 或
+        <code>consumed</code>。新增 <code>tick;</code> 推进虚拟钟；两套实现发射的 IR 与形式对象
+        逐字节相同。
+      </li>
+      <li>
+        <strong>热更新。</strong>运行中的工具链只接受签名过的、只含修复的 Pre-Release：准入判断是
+       五条相等，而不是一份变更日志；两槽加载器原子切换，活帧链在安全点强制重映射。一条修复落进
+        正在运行的 LSP，一条契约变更被拒绝。
+      </li>
+      <li>
+        <strong>没有 JVM 的 Java 库。</strong><code>lompi</code> 取回外来包；<code>.class</code> 与
+        <code>.jar</code> 不需要 JDK 就能解析，降级前先过验证器，再编成闭世界分派的 Loment IR；
+        最小运行时补上库要的那部分，链接器产出<strong>不装 Java 也证明得了</strong>的镜像。
+      </li>
+      <li>
+        <strong>默认版次是最新版。</strong>没写声明的源码按 <code>tur2026.3</code> 读；
+        <code>tur</code> / <code>tur1</code> 仍然是你明确要旧读法时才写的。新构造若与旧标识符撞车，
+        直接拒编译（<code>E040</code>），绝不静默改义。
+      </li>
+      <li>
+        <strong>会数工作的 VM。</strong>解释器的判据比较确定性计数——指令、解码、元组查找、分派——
+        而不是墙钟比值。融合判据断言分派数下降（夹具上 8,000,012 → 5,000,009）而指令数不变；
+        那里的墙钟差本来就在跑动噪声里。
+      </li>
+    </ol>
+    <h3>不在这一版里</h3>
+    <p class="body">
+      设计里的十八种域落地十种；周期域（要每格时间戳）、代域与自适应域（要安全点与质量账本）、
+      语境类其余四条，以及域树、域图、扩展与嵌套仍是设计。生存期在 2026.3 里仍是设计：
+      <code>lgc</code> 落了，生存期没有。<code>no_std</code> 的完整能力链报告仍是
+      <a href="https://github.com/Loment-Lang/loment/issues/536">#536</a>。
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
     <h2>当前状态在哪里</h2>
     <p class="body">
       这一页是历史。这个项目<em>今天</em>能做什么，在站上其余页面和仓库里；它接下来打算做

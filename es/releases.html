@@ -361,6 +361,63 @@
 
 <section class="sec">
   <div class="wrap">
+    <h2>0.1.5.1 — la autoridad se vuelve un álgebra, y la cadena de herramientas se reemplaza a sí misma</h2>
+    <p class="body">
+      <strong>2026-11-07.</strong> El hito está cerrado: las 92 cuestiones, terminadas. Una capacidad
+      deja de ser un intervalo cerrado y pasa a tener tres dimensiones — forma, polaridad y ley de
+      tiempo. La seguridad de memoria se vuelve una escalera de siete peldaños con un suelo que tiene
+      nombre. Una cadena de herramientas en ejecución admite un Pre-Release firmado de solo
+      correcciones y se reconstruye a sí misma. Una biblioteca Java se ejecuta sin JVM. Y un fuente
+      sin declaración se lee como la edición <strong>más nueva</strong>, <code>tur2026.3</code>.
+    </p>
+
+    <h3>Nuevo</h3>
+    <ol class="notes">
+      <li>
+        <strong>Diez clases de dominio, un solo punto de decisión.</strong> La forma puede ser un
+        intervalo cerrado, un punto, infinita por delante <code>[()..hi]</code>, infinita por detrás
+        <code>[lo..()]</code> o universal <code>[()..()]</code>; la polaridad puede ser
+        <code>danger</code>, el dual de lista de denegación de un dominio de permiso; y la ley de
+        tiempo puede ser <code>epoch</code>, <code>far</code>, <code>sliding</code>,
+        <code>decaying</code>, <code>growing</code> o <code>consumed</code>. Una sentencia nueva,
+        <code>tick;</code>, avanza un reloj virtual. Ambas implementaciones emiten IR y objetos de
+        forma idénticos byte a byte para cada clase.
+      </li>
+      <li>
+        <strong>Actualización en caliente.</strong> Una cadena en ejecución solo admite un
+        Pre-Release a través de un predicado de admisión que son cinco igualdades — una proyección
+        de solo correcciones, no un registro de cambios — con manifiesto firmado, cargador de dos
+        ranuras, conmutación atómica y remapeo forzado de la cadena de marcos viva en un punto seguro.
+      </li>
+      <li>
+        <strong>Bibliotecas Java sin JVM.</strong> <code>lompi</code> descarga un paquete externo;
+        <code>.class</code> y <code>.jar</code> se analizan sin JDK, se verifican antes de bajar y se
+        compilan a IR de Loment con despacho de mundo cerrado. Un runtime mínimo aporta lo que falta,
+        y el enlazador produce una imagen <strong>demostrada sin Java instalado</strong>.
+      </li>
+      <li>
+        <strong>La edición por defecto es la más nueva.</strong> Un fuente sin declaración se lee
+        como <code>tur2026.3</code>; <code>tur</code> y <code>tur1</code> siguen siendo la forma
+        explícita de pedir la lectura antigua. Una construcción nueva que choque con un identificador
+        existente se niega a compilar (<code>E040</code>) en vez de cambiar su significado en
+        silencio.
+      </li>
+    </ol>
+    <h3>Lo que no está en esta versión</h3>
+    <p class="body">
+      De las dieciocho clases diseñadas se entregan diez; el dominio periódico (necesita marcas de
+      tiempo por ranura), el generacional y el adaptativo (puntos seguros y el libro de calidad), el
+      resto de las clases de contexto, y los árboles, grafos, extensión y anidamiento de dominios
+      siguen siendo diseño. Los tiempos de vida siguen siendo diseño en la edición 2026.3:
+      <code>lgc</code> llegó, los tiempos de vida no. El informe completo de la cadena de
+      capacidades para <code>no_std</code> sigue en
+      <a href="https://github.com/Loment-Lang/loment/issues/536">#536</a>.
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
     <h2>Dónde está el estado actual</h2>
     <p class="body">
       Esta página es historia. Lo que el proyecto puede hacer <em>hoy</em> está en el resto del

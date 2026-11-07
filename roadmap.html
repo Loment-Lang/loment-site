@@ -74,7 +74,7 @@
     <p class="eyebrow">Roadmap</p>
     <h1>What comes next</h1>
     <p class="lede">
-      The versions the project is aiming at, from 0.1.5.1 onward, and what each of them is
+      The versions the project is aiming at, from 0.1.5.2 onward, and what each of them is
       <em>for</em>. This is a <strong>plan</strong> &mdash; the shape of the work the project has
       set itself, not a schedule.
     </p>
@@ -90,13 +90,32 @@
 
 <section class="sec">
   <div class="wrap">
-    <h2>The nearest milestone: 0.1.5.1</h2>
+    <h2>The nearest milestone: 0.1.5.2</h2>
     <p class="body">
-      0.1.5 shipped, and what it left behind is not a feature but seams. The audit subsystem
-      lives inside the compiler's own tree instead of standing as its own package; the memory
-      manager's guard checks do not yet reach the audit ledger; and the reporting behind
-      <code>no_std</code> is still a loader rule rather than a compile-time account. 0.1.5.1
-      takes those apart, one seam at a time.
+      0.1.5.1 closed its seams. What is left is a different kind of work: the compiler's graph
+      type, <code>digraph&lt;K&gt;</code>, becomes a compile-time value with its own capability
+      lattice and layout specialisation (<code>#1196</code>&ndash;<code>#1203</code>), beside a
+      defect line that only a gate can see &mdash; a swept allocation that is still live, a
+      capability audit array shared by two modules, an identity that is a 32-bit hash, a header
+      length that wraps. It is not a feature release; it is the line where the things already
+      promised stop being able to lie.
+    </p>
+    <p class="body">
+      The discipline does not change. Every claim gets a criterion that could prove it wrong, and
+      the two implementations stay byte-identical on what they emit.
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>0.1.5.1 &mdash; shipped: the seams are taken apart</h2>
+    <p class="body">
+      <strong>2026-11-07.</strong> The milestone is closed: all 92 issues. The audit subsystem is
+      its own package under <code>loment/lspe/</code>; the memory manager's inline guard checks
+      reach the ledger; a running toolchain can admit a signed, fix-only Pre-Release and rebuild
+      itself; and a capability is no longer one interval but ten kinds over shape, polarity and a
+      time law. What 0.1.5.1 did <em>not</em> change is the standard it is held to.
     </p>
     <p class="body">
       The discipline that produced 0.1.5 stays. <strong>Every claim the language makes gets

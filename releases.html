@@ -344,6 +344,73 @@
 
 <section class="sec">
   <div class="wrap">
+    <h2>0.1.5.1 — authority becomes an algebra, and the toolchain replaces itself</h2>
+    <p class="body">
+      <strong>2026-11-07.</strong> The milestone is closed: all 92 issues. A capability stops being
+      one closed interval and becomes three dimensions — shape, polarity and a time law. Memory
+      safety becomes a seven-level ladder with a named floor. A running toolchain admits a signed,
+      fix-only Pre-Release and rebuilds at a safepoint. A Java library runs without a JVM. And an
+      unannotated source is now read as the <strong>newest</strong> edition, <code>tur2026.3</code>;
+      the declaration exists to pin an older reading, not to unlock the current one.
+    </p>
+
+    <h3>New</h3>
+    <ol class="notes">
+      <li>
+        <strong>Ten capability-domain kinds, one decision point.</strong> The shape can be a closed
+        interval, a point, front-infinite (<code>[()..hi]</code>), back-infinite
+        (<code>[lo..()]</code>) or universal (<code>[()..()]</code>); the polarity can be
+        <code>danger</code>, the deny-list dual of an ordinary allow domain; and the time law can be
+        <code>epoch</code>, <code>far</code>, <code>sliding</code>, <code>decaying</code>,
+        <code>growing</code> or <code>consumed</code>. A new statement, <code>tick;</code>, advances
+        a virtual clock. Both compilers emit byte-identical IR and form objects for every kind.
+      </li>
+      <li>
+        <strong>Hot update.</strong> A running toolchain admits a Pre-Release only through an
+        admission predicate that is five equalities — a bug-fix-only projection, not a changelog —
+        with a signed manifest, a two-slot loader, an atomic flip, and a forced remap of the live
+        frame chain at a safepoint. One fix lands in a running LSP; one contract change is refused.
+      </li>
+      <li>
+        <strong>Java libraries without a JVM.</strong> <code>lompi</code> fetches a foreign package
+        and streams it; <code>.class</code> and <code>.jar</code> are parsed without a JDK, verified
+        before lowering, and compiled to Loment IR with closed-world dispatch. A minimal runtime
+        supplies what the library needs, and the linker produces a Java-backed image
+        <strong>proven without Java installed</strong>.
+      </li>
+      <li>
+        <strong>The default edition is the newest.</strong> An unannotated source is read as
+        <code>tur2026.3</code>. <code>tur</code> and <code>tur1</code> remain the explicit way to ask
+        for the older reading. A new construct that would collide with an existing identifier
+        refuses to compile (<code>E040</code>) instead of silently changing its meaning.
+      </li>
+      <li>
+        <strong>A VM that counts its work.</strong> The interpreter's criteria compare deterministic
+        counters — instructions, decodes, tuple lookups, dispatch — instead of wall-clock ratios. The
+        fusion criterion asserts that dispatch falls (8,000,012 → 5,000,009 on its fixture) while
+        instructions stay equal; the wall-clock delta there was inside run-to-run noise.
+      </li>
+      <li>
+        <strong>LMS, completed.</strong> All seven levels have something that runs: the checker
+        (E028/E029), the memory map, the guard, the rejector that keeps the program running, the
+        crasher that adds no symbol, the out-of-process restarter, and a trust floor that is a seed
+        with a name, a size and a hash.
+      </li>
+    </ol>
+    <h3>Not in this release</h3>
+    <p class="body">
+      Ten of the eighteen designed domain kinds ship; the periodic domain (it needs per-slot
+      timestamps), the generational and adaptive domains (safepoints and the quality ledger), the
+      remaining context-class domains, and domain trees, graphs, extension and nesting remain
+      design. Lifetimes are still a design in the 2026.3 edition: <code>lgc</code> landed, lifetimes
+      did not. Full capability-chain reporting for <code>no_std</code> remains
+      <a href="https://github.com/Loment-Lang/Loment/issues/536">#536</a>.
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
     <h2>Where the current state is</h2>
     <p class="body">
       This page is history. What the project can do <em>today</em> is on the rest of the site
@@ -357,7 +424,7 @@
       </a>
       <a class="doclink" href="https://loment.fandom.com/wiki/Versions_and_roadmap">
         <span class="who">Roadmap</span>
-        <span class="what">What comes after 0.1.5, stated as a plan rather than as a feature.</span>
+        <span class="what">What comes after 0.1.5.1, stated as a plan rather than as a feature.</span>
       </a>
       <a class="doclink" href="start.html">
         <span class="who">Get started</span>

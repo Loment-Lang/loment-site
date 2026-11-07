@@ -6,7 +6,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>路线图 — Loment</title>
-<meta name="description" content="Loment 接下来打算构建什么，从 0.1.5.1 到 0.1.8 —— 一份计划，而不是一份承诺。没有日期，而且其中没有任何一样今天可以下载。">
+<meta name="description" content="Loment 接下来打算构建什么，从 0.1.5.2 到 0.1.8 —— 一份计划，而不是一份承诺。没有日期，而且其中没有任何一样今天可以下载。">
 <link rel="icon" href="../mark.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -76,7 +76,7 @@
     <p class="eyebrow">路线图</p>
     <h1>接下来是什么</h1>
     <p class="lede">
-      项目瞄准的那些版本，从 0.1.5.1 往后，以及每一版是<em>为了</em>什么。这是一份<strong>计划</strong>
+      项目瞄准的那些版本，从 0.1.5.2 往后，以及每一版是<em>为了</em>什么。这是一份<strong>计划</strong>
       —— 项目给自己定下的工作的形状，而不是一份时间表。
     </p>
     <p class="limit">
@@ -90,11 +90,28 @@
 
 <section class="sec">
   <div class="wrap">
-    <h2>最近的里程碑：0.1.5.1</h2>
+    <h2>最近的里程碑：0.1.5.2</h2>
     <p class="body">
-      0.1.5 已经发布，而它留下的不是功能，而是接缝。审计子系统住在编译器自己的树里，而不是
-      独立成一个包；内存管理器的守卫检查还没有到达审计账本；而 <code>no_std</code> 背后的报告
-      仍然是一条加载器规则，而不是一份编译期的账。0.1.5.1 把这些拆开，一次一条接缝。
+      0.1.5.1 把那些接缝拆完了。剩下的是另一种工作：编译器的图类型
+      <code>digraph&lt;K&gt;</code> 变成编译期值，带自己的能力格与布局特化
+      （<code>#1196</code>&ndash;<code>#1203</code>）；同时还有一条只有门禁看得见的缺陷线——
+      被回收却仍然活着的分配、两个模块共用的能力审计数组、以 32 位哈希当身份、会回绕的头部长度。
+      它不是功能版本；它是让已经承诺过的东西不能再撒谎的那条线。
+    </p>
+    <p class="body">
+      纪律不变。每条声称都配一条能证伪它的判据，两套实现在发射物上仍然逐字节相同。
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>0.1.5.1 &mdash; 已发布：接缝已经拆开</h2>
+    <p class="body">
+      <strong>2026-11-07。</strong>里程碑关闭：92 个 issue 全部完成。审计子系统成为
+      <code>loment/lspe/</code> 下独立的包；内存管理器的内联守卫检查进了账本；运行中的工具链可以
+      接受签名过的、只含修复的 Pre-Release 并替换自己；能力不再是一个区间，而是形状、极性与时律上的
+      十种域。0.1.5.1 <em>没有</em>改变的，是它被要求的那个标准。
     </p>
     <p class="body">
       造出 0.1.5 的那套纪律留下。<strong>这门语言作出的每一条声称，要么得到一个裁决，要么得到

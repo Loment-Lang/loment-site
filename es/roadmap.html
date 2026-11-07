@@ -6,7 +6,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Hoja de ruta — Loment</title>
-<meta name="description" content="Lo que Loment pretende construir a continuación, de 0.1.5.1 a 0.1.8 — un plan, no una promesa. Sin fechas, y nada de esto se puede descargar hoy.">
+<meta name="description" content="Lo que Loment pretende construir a continuación, de 0.1.5.2 a 0.1.8 — un plan, no una promesa. Sin fechas, y nada de esto se puede descargar hoy.">
 <link rel="icon" href="../mark.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -76,7 +76,7 @@
     <p class="eyebrow">Hoja de ruta</p>
     <h1>Lo que viene después</h1>
     <p class="lede">
-      Las versiones a las que apunta el proyecto, desde 0.1.5.1 en adelante, y para <em>qué</em> es
+      Las versiones a las que apunta el proyecto, desde 0.1.5.2 en adelante, y para <em>qué</em> es
       cada una. Esto es un <strong>plan</strong> &mdash; la forma del trabajo que el proyecto se ha
       impuesto, no un calendario.
     </p>
@@ -92,14 +92,34 @@
 
 <section class="sec">
   <div class="wrap">
-    <h2>El hito más cercano: 0.1.5.1</h2>
+    <h2>El hito más cercano: 0.1.5.2</h2>
     <p class="body">
-      0.1.5 se publicó, y lo que dejó detrás no es una función sino costuras. El subsistema de
-      auditoría vive dentro del árbol del propio compilador en lugar de estar de pie como su
-      propio paquete; las comprobaciones de guarda del gestor de memoria todavía no llegan al
-      registro de auditoría; y el informe que hay detrás de <code>no_std</code> sigue siendo una
-      regla del cargador en vez de una cuenta en tiempo de compilación. 0.1.5.1 las desmonta, una
-      costura a la vez.
+      0.1.5.1 desmontó sus costuras. Lo que queda es trabajo de otra clase: el tipo de grafo del
+      compilador, <code>digraph&lt;K&gt;</code>, se convierte en un valor de tiempo de compilación
+      con su propia retícula de capacidades y especialización de diseño
+      (<code>#1196</code>&ndash;<code>#1203</code>), junto a una línea de defectos que solo ve la
+      puerta — una asignación barrida que sigue viva, un arreglo de auditoría de capacidades
+      compartido por dos módulos, una identidad que es un hash de 32 bits, una longitud de cabecera
+      que se desborda. No es una versión de funciones; es la línea donde lo ya prometido deja de
+      poder mentir.
+    </p>
+    <p class="body">
+      La disciplina no cambia. Cada afirmación recibe un criterio capaz de refutarla, y las dos
+      implementaciones siguen siendo idénticas byte a byte en lo que emiten.
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>0.1.5.1 &mdash; publicada: las costuras están desmontadas</h2>
+    <p class="body">
+      <strong>2026-11-07.</strong> El hito está cerrado: las 92 cuestiones. El subsistema de
+      auditoría es su propio paquete bajo <code>loment/lspe/</code>; las comprobaciones de guarda
+      del gestor de memoria llegan al registro; una cadena de herramientas en ejecución puede
+      admitir un Pre-Release firmado de solo correcciones y reconstruirse a sí misma; y una
+      capacidad ya no es un intervalo sino diez clases sobre forma, polaridad y ley de tiempo. Lo
+      que 0.1.5.1 <em>no</em> cambió es el estándar al que está sometida.
     </p>
     <p class="body">
       La disciplina que produjo 0.1.5 se mantiene. <strong>Cada afirmación que hace el lenguaje

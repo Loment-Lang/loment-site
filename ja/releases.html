@@ -342,6 +342,56 @@
 
 <section class="sec">
   <div class="wrap">
+    <h2>0.1.5.1 —— 権限が代数になり、ツールチェーンが自分を置き換える</h2>
+    <p class="body">
+      <strong>2026-11-07。</strong>マイルストーンは閉じた: 92 件すべて完了。能力はひとつの閉区間ではなく、
+      形・極性・時の規則という三つの次元になった。メモリ安全は名前・サイズ・ハッシュを持つ床のある
+      七段の梯子になった。動いているツールチェーンは、署名された修正のみの Pre-Release を受け取って
+      自分を置き換える。Java ライブラリは JVM なしで動く。そして宣言のないソースは、いまや
+      <strong>最新</strong>の版 <code>tur2026.3</code> として読まれる。
+    </p>
+
+    <h3>新規</h3>
+    <ol class="notes">
+      <li>
+        <strong>十種の能力域、ひとつの判定点。</strong>形は閉区間・点・前無限
+        <code>[()..hi]</code>・後無限 <code>[lo..()]</code>・全域 <code>[()..()]</code> のいずれか。
+        極性は <code>danger</code>（通常の許可域と双対の拒否表）。時の規則は <code>epoch</code>、
+        <code>far</code>、<code>sliding</code>、<code>decaying</code>、<code>growing</code>、
+        <code>consumed</code>。<code>tick;</code> が仮想時計を進める。両方の実装が、すべての種について
+        バイト単位で同じ IR と形式オブジェクトを出す。
+      </li>
+      <li>
+        <strong>ホットアップデート。</strong>動いているツールチェーンは、五つの等号からなる准入判定
+        （変更履歴ではなく、修正のみの投影）を通した署名付き Pre-Release だけを受け取る。二スロット
+        ローダ、原子フリップ、セーフポイントでの生きたフレーム鎖の強制再マップ。ひとつの修正は
+        動いている LSP に入り、ひとつの契約変更は拒否される。
+      </li>
+      <li>
+        <strong>JVM なしの Java ライブラリ。</strong><code>lompi</code> が外来パッケージを取り寄せ、
+        <code>.class</code> と <code>.jar</code> を JDK なしで解析し、検証してから閉世界ディスパッチの
+        Loment IR に落とす。最小ランタイムが足りない部分を補い、リンカは
+        <strong>Java を入れずに証明できる</strong>イメージを出す。
+      </li>
+      <li>
+        <strong>既定の版は最新。</strong>宣言のないソースは <code>tur2026.3</code> として読まれる。
+        <code>tur</code> / <code>tur1</code> は古い読み方を明示したいときだけ書く。新しい構文が
+        既存の識別子と衝突する場合は、黙って意味を変えずにコンパイルを拒否する（<code>E040</code>）。
+      </li>
+    </ol>
+    <h3>このリリースに含まれないもの</h3>
+    <p class="body">
+      設計上の十八種のうち十種が出荷される。周期域（スロットごとの時刻が必要）、世代域と適応域
+      （セーフポイントと品質台帳が必要）、残りの文脈クラス、そして域の木・グラフ・拡張・入れ子は
+      設計のまま。生存期間は 2026.3 でも設計のまま —— <code>lgc</code> は入り、生存期間は入って
+      いない。<code>no_std</code> の完全な能力連鎖報告は
+      <a href="https://github.com/Loment-Lang/loment/issues/536">#536</a> のまま。
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
     <h2>現在の状態はどこにあるか</h2>
     <p class="body">
       このページは履歴である。プロジェクトが<em>今日</em>できることは、サイトの残りとリポジトリに
