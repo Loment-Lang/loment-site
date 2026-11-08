@@ -757,7 +757,8 @@ main > .sec { animation: settle 460ms cubic-bezier(0.22, 0.61, 0.36, 1) 180ms ba
   background: var(--paper); color: var(--ink);
 }
 .pg-hint { font: var(--t-xs)/1 var(--mono); color: var(--faint); }
-.pg-status { margin-left: auto; font: var(--t-xs)/1 var(--mono); color: var(--faint); white-space: nowrap; }
+.pg-status { font: var(--t-xs)/1 var(--mono); color: var(--faint); white-space: nowrap; }
+.pg-foot .pg-status { margin-right: auto; }
 .pg-status.err { color: var(--ochre); }
 .pg-main { display: grid; grid-template-columns: 1fr 1fr; min-height: 470px; }
 .pg-pane { display: flex; flex-direction: column; min-width: 0; }
