@@ -23,6 +23,7 @@ Español `/es/`。**英文是唯一的源**，其余四种是它的译文 ——
 | `style.css` | 全部样式。配色、字体、那个"边界"母题，以及按语言关掉的那几处拉丁排印习惯，都在文件头的注释里说明了理由 |
 | `examples/*.lomt` | `examples.html` 上那四个程序的**源**，可重跑 |
 | `mark.svg` | 站点图标与顶栏的 mark |
+| `timeline-rabbit.svg` | 时间线底部的兔子铅笔图；由 `tools/draw_timeline_rabbit.py` 生成（固定种子），重跑应逐字节复现 |
 | `zh/ ja/ ru/ es/` | 四种译文，页面名与根目录相同 |
 | `tools/i18n_check.py` | 多语言的对齐判据，用法见下 |
 

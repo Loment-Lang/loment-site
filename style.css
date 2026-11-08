@@ -563,6 +563,15 @@ pre.code code {
   border-color: var(--ochre);
   box-shadow: 0 0 0 4px rgb(138 90 0 / 10%);
 }
+.tl-doodle {
+  margin: var(--s4) 0 0 var(--s2);
+}
+.tl-doodle img {
+  display: block;
+  width: min(240px, 80%);
+  height: auto;
+  opacity: 0.86;
+}
 .tl-key {
   display: flex;
   flex-wrap: wrap;

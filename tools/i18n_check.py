@@ -46,7 +46,7 @@ ORIGIN = "https://loment-lang.github.io/loment-site"
 #: 样式表的查询串。Pages 给 `style.css` 发 `max-age=600`，改了样式之后十分钟内
 #: 浏览器仍会用旧的 —— 这一条让新 HTML 拉新样式。**改 style.css 就把它加一版**，
 #: 然后 `--fix` 会把 70 个页面一起重写。
-STYLE_VERSION = "20261108e"
+STYLE_VERSION = "20261108f"
 
 #: (目录, <html lang>, hreflang, 切换器里的自称, summary 上的短标)
 LANGS = [
@@ -75,7 +75,7 @@ SKIP_CLASSES = {"codewrap", "lang"}
 #: 译文页允许链到的**仓根资源**：站点样式与图标，外加 LGC 论文那份 PDF ——
 #: 它是五种语言共用的一份（各自拷一份就是五份会漂的东西）。
 ROOT_ASSETS = {"style.css", "mark.svg", "lgc-paper.pdf",
-               "playground/playground.js"}
+               "timeline-rabbit.svg", "playground/playground.js"}
 
 VOID = {"area", "base", "br", "col", "embed", "hr", "img", "input",
         "link", "meta", "param", "source", "track", "wbr"}
