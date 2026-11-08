@@ -553,11 +553,11 @@ footer a { color: var(--ink-2); text-decoration: none; }
 footer a:hover { color: var(--ink); text-decoration: underline; }
 footer nav { display: flex; flex-wrap: wrap; gap: var(--s3); }
 
-/* The Mastodon link carries a mark, so it needs to line up with the plain text
+/* The social links carry a mark, so they need to line up with the plain text
    links around it. `currentColor` is deliberate: the icon takes the footer
    link's own colour, so it reads as one of them rather than as a brand badge —
-   and it follows the hover with everything else. Nothing here is Mastodon's
-   purple; that would be the only saturated pixel in the footer. */
+   and it follows the hover with everything else. Neither mark uses its brand
+   colour; that would be the only saturated pixel in the footer. */
 footer nav a.mast { display: inline-flex; align-items: center; gap: 0.45em; }
 footer nav a.mast svg { width: 1.15em; height: 1.15em; flex: none; fill: currentColor; }
 
