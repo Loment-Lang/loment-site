@@ -747,6 +747,8 @@ main > .sec { animation: settle 460ms cubic-bezier(0.22, 0.61, 0.36, 1) 180ms ba
    width keeps Edition/Target/Channel from sliding when it does. */
 #pg-run { min-width: 11.75rem; justify-content: center; }
 .pg-row-2 { padding-top: 2px; }
+/* Keep the focus ring inside the field's own box so it cannot touch the label. */
+.pg-field select:focus-visible { outline-offset: 1px; }
 .pg-field {
   display: flex; align-items: center; gap: 8px;
   font: 600 var(--t-xs)/1 var(--mono);

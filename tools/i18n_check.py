@@ -43,6 +43,11 @@ ROOT = Path(__file__).resolve().parent.parent
 # 站点不会 —— 两者的行为不一样，别混。
 ORIGIN = "https://loment-lang.github.io/loment-site"
 
+#: 样式表的查询串。Pages 给 `style.css` 发 `max-age=600`，改了样式之后十分钟内
+#: 浏览器仍会用旧的 —— 这一条让新 HTML 拉新样式。**改 style.css 就把它加一版**，
+#: 然后 `--fix` 会把 70 个页面一起重写。
+STYLE_VERSION = "20261108b"
+
 #: (目录, <html lang>, hreflang, 切换器里的自称, summary 上的短标)
 LANGS = [
     ("",   "en",      "en",      "English",  "EN"),
@@ -87,7 +92,7 @@ CODE_RE = re.compile(r'<div class="codewrap">.*?</div>', re.S)
 #: 注意**不能**把 `</head>` / `<body>` 也算进尾锚：那样匹配会停在它们之前，
 #: 而规范文本里又含着它们，重写一遍就是复制一份。
 HEAD_SPAN_RE = re.compile(
-    r'<link rel="stylesheet" href="(?:\.\./)?style\.css">.*?'
+    r'<link rel="stylesheet" href="(?:\.\./)?style\.css(?:\?[^"]*)?">.*?'
     r'(?=<a class="skip"|<header class="bar">)', re.S)
 BAR_SPAN_RE = re.compile(r'</nav>\n.*?</header>', re.S)
 #: 校验时只认整块出现在那里，不管它在不在行首。
@@ -142,7 +147,7 @@ def canonical_head_span(d: str, page: str) -> str:
     --fix 与校验用的是同一个函数 —— 两处各写一份就会各漂各的。
     这一段**自带 `</head>`**，所以哪怕页上那个标签整个没了，重写一遍也就补回来了。"""
     prefix = "../" if d else ""
-    return (f'<link rel="stylesheet" href="{prefix}style.css">\n'
+    return (f'<link rel="stylesheet" href="{prefix}style.css?v={STYLE_VERSION}">\n'
             + canonical_alts(page) + "</head>\n<body>\n\n")
 
 
@@ -238,7 +243,7 @@ def local_hrefs(d: str, text: str) -> tuple[list[str], list[str]]:
     for h in HREF_RE.findall(text):
         if h.startswith(("http://", "https://", "#", "mailto:")):
             continue
-        target = h.split("#", 1)[0]
+        target = h.split("#", 1)[0].split("?", 1)[0]
         if not target:
             continue
         parts: list[str] = []
@@ -272,9 +277,9 @@ def repair_asset_hrefs(d: str, text: str) -> str:
 
     def sub(m: re.Match) -> str:
         href = m.group(1)
-        if href.startswith(("http://", "https://", "#", "mailto:", "/")) or "://" in href:
+        if href.startswith(("http://", "https://", "#", "mailto:", "/", "../")):
             return m.group(0)
-        target = href.split("#", 1)[0]
+        target = href.split("#", 1)[0].split("?", 1)[0]
         if target not in ROOT_ASSETS or (ROOT / d / target).exists():
             return m.group(0)
         return f'href="../{href}"' if (ROOT / target).exists() else m.group(0)
@@ -296,7 +301,7 @@ def escapes_dir(d: str, text: str) -> list[str]:
         if h.startswith(("http://", "https://", "#", "mailto:", "/")):
             continue
         parts: list[str] = []
-        for seg in f"{d}/{h.split('#', 1)[0]}".split("/"):
+        for seg in f"{d}/{h.split('#', 1)[0].split('?', 1)[0]}".split("/"):
             if seg == "..":
                 if parts:
                     parts.pop()
