@@ -721,3 +721,135 @@ main > .sec { animation: settle 460ms cubic-bezier(0.22, 0.61, 0.36, 1) 180ms ba
    full page of the two-column layout on a laptop; the download button covers phones, where
    browsers either use their own viewer or show nothing. */
 .paperframe { display: block; width: 100%; height: 880px; border: 1px solid var(--line-2); border-radius: 8px; }
+
+/* ---------------------------------------------------------- playground
+
+   The one page with a machine in it. The layout follows the familiar shape
+   of an online compiler — source on the left, output on the right — and the
+   surfaces use the same tokens as the rest of the site: `--wash` for panels,
+   `--line` for hairlines, `--blue` for the one action. The boundary motif
+   appears once, as a dashed rule above diagnostics. */
+
+.pg-shell {
+  border: 1px solid var(--line-2);
+  border-radius: var(--r);
+  overflow: hidden;
+  background: var(--paper);
+}
+.pg-toolbar {
+  display: flex; align-items: center; gap: var(--s2);
+  padding: 10px 14px;
+  background: var(--wash);
+  border-bottom: 1px solid var(--line-2);
+  flex-wrap: wrap;
+}
+.pg-field {
+  display: flex; align-items: center; gap: 8px;
+  font: 600 var(--t-xs)/1 var(--mono);
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--ink-2);
+}
+.pg-field select {
+  font: var(--t-sm)/1.2 var(--mono);
+  padding: 7px 10px;
+  border: 1px solid var(--line-2); border-radius: 4px;
+  background: var(--paper); color: var(--ink);
+}
+.pg-hint { font: var(--t-xs)/1 var(--mono); color: var(--faint); }
+.pg-status { margin-left: auto; font: var(--t-xs)/1 var(--mono); color: var(--faint); white-space: nowrap; }
+.pg-status.err { color: var(--ochre); }
+.pg-main { display: grid; grid-template-columns: 1fr 1fr; min-height: 470px; }
+.pg-pane { display: flex; flex-direction: column; min-width: 0; }
+.pg-pane + .pg-pane { border-left: 1px solid var(--line-2); }
+.pg-pane-head {
+  font: 600 11px/1 var(--mono);
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--faint);
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--line);
+  background: var(--paper);
+}
+.pg-source-head { display: flex; align-items: center; gap: 8px; }
+.pg-name {
+  font: 600 12px/1 var(--mono);
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid transparent; border-bottom-color: var(--line-2);
+  padding: 2px 4px; width: 14ch;
+}
+.pg-name:focus { outline: none; border-color: var(--blue); }
+.pg-ext { color: var(--faint); font: 600 12px/1 var(--mono); text-transform: none; }
+.pg-code-wrap { display: flex; flex: 1; min-height: 0; background: var(--paper); }
+.pg-gutter {
+  width: 3.4em; flex: none;
+  padding: 14px 10px 14px 0;
+  text-align: right; overflow: hidden;
+  font: var(--t-code)/1.6 var(--mono);
+  color: var(--faint);
+  background: var(--wash);
+  border-right: 1px solid var(--line);
+  user-select: none; white-space: pre;
+}
+.pg-code { position: relative; flex: 1; min-width: 0; }
+.pg-hl, .pg-code textarea {
+  margin: 0; padding: 14px 16px;
+  font: var(--t-code)/1.6 var(--mono);
+  white-space: pre; tab-size: 4;
+  border: 0; background: transparent;
+}
+.pg-hl { position: absolute; inset: 0; overflow: hidden; pointer-events: none; color: var(--ink); }
+.pg-code textarea {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  resize: none; color: transparent; caret-color: var(--ink);
+  -webkit-text-fill-color: transparent;
+  outline: none; overflow: auto;
+}
+/* The textarea paints its selection above the highlight layer, and its own
+   glyphs are transparent. A translucent tint keeps the highlighted text
+   readable underneath; an opaque one erases the selected line. */
+.pg-code textarea::selection { background: rgb(47 75 255 / 16%); }
+.pg-code textarea::-moz-selection { background: rgb(47 75 255 / 16%); }
+.pg-code textarea:focus-visible { outline: 2px solid var(--blue); outline-offset: -2px; }
+/* The site styles every `code` element; the highlight layer needs the same
+   metrics as the textarea, so it resets that box entirely. Without this the
+   highlighter renders at 0.9em with a border and padding, and the caret
+   drifts away from the text. */
+.pg-hl code {
+  font: inherit; color: inherit;
+  background: none; border: 0; border-radius: 0; padding: 0;
+}
+.pg-hl .c { color: var(--faint); font-style: italic; }
+.pg-hl .s { color: var(--ochre); }
+.pg-hl .n { color: var(--ink-2); }
+.pg-hl .k { color: var(--blue-dk); font-weight: 600; }
+.pg-out-wrap { flex: 1; min-height: 0; display: flex; flex-direction: column; overflow: auto; background: var(--paper); }
+.pg-block + .pg-block { border-top: 1px dashed var(--line-2); }
+.pg-block[hidden] { display: none; }
+.pg-label {
+  font: 600 10px/1 var(--mono);
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--faint);
+  padding: 10px 14px 0;
+}
+.pg-block.err .pg-label { color: var(--ochre); }
+.pg-out {
+  margin: 0; padding: 8px 14px 14px;
+  font: var(--t-code)/1.6 var(--mono);
+  white-space: pre-wrap; word-break: break-word;
+  color: var(--ink); min-height: 1.6em;
+}
+.pg-block.err .pg-out { color: var(--ochre); }
+.pg-foot {
+  display: flex; gap: var(--s2); align-items: center;
+  padding: 8px 14px;
+  border-top: 1px solid var(--line);
+  font: var(--t-xs)/1 var(--mono);
+  color: var(--faint); background: var(--wash);
+}
+.pg-note { max-width: var(--measure); }
+@media (max-width: 760px) {
+  .pg-main { grid-template-columns: 1fr; min-height: 0; }
+  .pg-pane + .pg-pane { border-left: 0; border-top: 1px solid var(--line-2); }
+  .pg-code-wrap { height: 360px; }
+  .pg-out-wrap { min-height: 180px; }
+}

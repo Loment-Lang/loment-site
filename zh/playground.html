@@ -1,0 +1,158 @@
+<!doctype html>
+<!-- translated-from: playground.html -->
+<!-- source-sha256: 370bccd87c3539e0dce1bbd9151eeffbab3a5fcff95238cba1789d5dfce22b12 -->
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>在线编译 — Loment</title>
+<meta name="description" content="在浏览器里编译并运行 Loment。参考编译器与 LVM 都在本地通过 WebAssembly 运行，不向服务器发送任何内容。">
+<link rel="icon" href="../mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=JetBrains+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../style.css">
+<link rel="alternate" hreflang="en" href="https://loment-lang.github.io/loment-site/playground.html">
+<link rel="alternate" hreflang="zh-Hans" href="https://loment-lang.github.io/loment-site/zh/playground.html">
+<link rel="alternate" hreflang="ja" href="https://loment-lang.github.io/loment-site/ja/playground.html">
+<link rel="alternate" hreflang="ru" href="https://loment-lang.github.io/loment-site/ru/playground.html">
+<link rel="alternate" hreflang="es" href="https://loment-lang.github.io/loment-site/es/playground.html">
+<link rel="alternate" hreflang="x-default" href="https://loment-lang.github.io/loment-site/playground.html">
+</head>
+<body>
+
+<a class="skip" href="#main">跳到正文</a>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="index.html">
+      <svg width="22" height="22" viewBox="0 0 64 64" aria-hidden="true">
+        <rect width="64" height="64" rx="14" fill="#2f4bff"/>
+        <path d="M18 14h12v24h16v12H18z" fill="#fff"/>
+      </svg>
+      Loment
+    </a>
+        <nav>
+      <a href="learn.html">学习</a>
+      <a href="start.html">入门</a>
+      <a href="examples.html">示例</a>
+      <a href="playground.html" aria-current="page">在线编译</a>
+      <a href="standard.html">标准</a>
+      <details class="navmenu" name="bar">
+        <summary>版本</summary>
+        <ul>
+          <li><a href="releases.html">发布历程</a></li>
+          <li><a href="roadmap.html">路线图</a></li>
+        </ul>
+      </details>
+      <details class="navmenu" name="bar">
+        <summary>系统</summary>
+        <ul>
+          <li><a href="lgc.html">LGC</a></li>
+          <li><a href="lvm.html">LVM</a></li>
+          <li><a href="lompi.html">lompi</a></li>
+          <li><a href="libl.html">LibL</a></li>
+          <li><a href="lspe.html">LSPE</a></li>
+        </ul>
+      </details>
+      <a href="https://github.com/Loment-Lang/loment">GitHub</a>
+    </nav>
+    <details class="lang" name="bar">
+      <summary>中文</summary>
+      <ul>
+        <li><a href="../playground.html" hreflang="en">English</a></li>
+        <li><a href="playground.html" hreflang="zh-Hans" aria-current="true">简体中文</a></li>
+        <li><a href="../ja/playground.html" hreflang="ja">日本語</a></li>
+        <li><a href="../ru/playground.html" hreflang="ru">Русский</a></li>
+        <li><a href="../es/playground.html" hreflang="es">Español</a></li>
+      </ul>
+    </details>
+  </div>
+</header>
+
+<main id="main">
+
+<section class="head">
+  <div class="wrap">
+    <h1>在线编译</h1>
+    <p class="lede">在这里写并运行 Loment。参考编译器与 LVM 解释器都在浏览器里运行；不用安装，也不向服务器发送任何内容。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <div class="pg-shell" id="pg"
+         data-ready="就绪"
+         data-loading-engine="正在加载引擎…"
+         data-loading-compiler="正在加载编译器…"
+         data-compiling="正在编译并运行…"
+         data-finished="完成"
+         data-finished-errors="完成（有错误）"
+         data-error="错误"
+         data-exit="退出码">
+      <div class="pg-toolbar">
+        <label class="pg-field">示例
+          <select id="pg-example">
+            <option value="hello">你好，世界</option>
+            <option value="flow">值与控制流</option>
+            <option value="data">结构体与枚举</option>
+            <option value="domain">能力域</option>
+          </select>
+        </label>
+        <button id="pg-new" class="btn btn-quiet" type="button">新建</button>
+        <button id="pg-run" class="btn btn-solid" type="button">运行</button>
+        <button id="pg-download" class="btn btn-quiet" type="button">下载</button>
+        <span class="pg-hint">Ctrl/⌘ + Enter</span>
+        <span id="pg-status" class="pg-status">就绪</span>
+      </div>
+      <div class="pg-main">
+        <div class="pg-pane">
+          <div class="pg-pane-head pg-source-head"><span>源代码</span><input id="pg-name" class="pg-name" value="main" aria-label="程序名" spellcheck="false" autocomplete="off"><span class="pg-ext">.lomt</span></div>
+          <div class="pg-code-wrap">
+            <div class="pg-gutter" id="pg-gutter" aria-hidden="true">1</div>
+            <div class="pg-code">
+              <pre class="pg-hl" id="pg-hl" aria-hidden="true"><code></code></pre>
+              <textarea id="pg-src" spellcheck="false" autocapitalize="off" autocomplete="off" wrap="off" aria-label="源代码"></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="pg-pane">
+          <div class="pg-pane-head">输出</div>
+          <div class="pg-out-wrap">
+            <div class="pg-block" id="pg-stdout-block"><div class="pg-label">标准输出</div><pre id="pg-stdout" class="pg-out" aria-live="polite"></pre></div>
+            <div class="pg-block err" id="pg-stderr-block" hidden><div class="pg-label">诊断</div><pre id="pg-stderr" class="pg-out"></pre></div>
+          </div>
+          <div class="pg-foot"><span id="pg-exit">—</span><span id="pg-elapsed"></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>这个页面运行什么</h2>
+    <p class="body">源代码由仓库里的参考编译器编译，再交给 LVM 执行——项目用它做确定性的运行时判据。两步都发生在当前标签页里。</p>
+    <p class="limit"><strong>边界。</strong> 首次运行会下载约 20 MB 的引擎。程序可以用 <code>fn main()</code> 或 <code>fn _start()</code>。标准输入、文件与套接字不可用；死循环会被步数上限截断。诊断信息是编译器自己的原文。</p>
+    <p class="body">想装原生工具链，从<a href="start.html">入门</a>开始；更多程序在<a href="examples.html">示例</a>页。</p>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Loment 依据 MIT OR Apache-2.0 双许可发布。由 Fujo 编写。</span>
+    <nav>
+      <a href="https://github.com/Loment-Lang/loment">源码</a>
+      <a href="https://github.com/Loment-Lang/loment/releases/latest">发布</a>
+      <a href="https://github.com/FujoJTOP/lompi">lompi</a>
+      <a href="https://github.com/Loment-Lang/loment/issues">Issues</a>
+      <a class="mast" href="https://mastodon.social/@Loment" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z"/></svg>Mastodon</a>
+    </nav>
+  </div>
+</footer>
+
+<script src="../playground/playground.js"></script>
+</body>
+</html>

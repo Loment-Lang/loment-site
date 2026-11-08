@@ -60,14 +60,16 @@ PAGES = ["index.html", "start.html", "examples.html", "standard.html", "lgc.html
          "lspe.html",
          "releases.html",
          "roadmap.html",
-         "learn.html"]
+         "learn.html",
+         "playground.html"]
 
 #: 语言切换器与 alternate 组不进"散文面"：它们是镶边，不是内容。
 SKIP_CLASSES = {"codewrap", "lang"}
 
 #: 译文页允许链到的**仓根资源**：站点样式与图标，外加 LGC 论文那份 PDF ——
 #: 它是五种语言共用的一份（各自拷一份就是五份会漂的东西）。
-ROOT_ASSETS = {"style.css", "mark.svg", "lgc-paper.pdf"}
+ROOT_ASSETS = {"style.css", "mark.svg", "lgc-paper.pdf",
+               "playground/playground.js"}
 
 VOID = {"area", "base", "br", "col", "embed", "hr", "img", "input",
         "link", "meta", "param", "source", "track", "wbr"}
