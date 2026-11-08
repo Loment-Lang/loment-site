@@ -90,19 +90,54 @@
          data-exit="exit"
          data-new-prompt="Name for the new program">
       <div class="pg-toolbar">
-        <label class="pg-field">Example
-          <select id="pg-example">
-            <option value="hello">Hello, world</option>
-            <option value="flow">Values and control flow</option>
-            <option value="data">Structs and enums</option>
-            <option value="domain">Capability domains</option>
-          </select>
-        </label>
-        <button id="pg-new" class="btn btn-quiet" type="button">New</button>
-        <button id="pg-run" class="btn btn-solid" type="button">Run</button>
-        <button id="pg-download" class="btn btn-quiet" type="button">Download</button>
-        <span class="pg-hint">Ctrl/⌘ + Enter</span>
-        <span id="pg-status" class="pg-status">Ready</span>
+        <div class="pg-row">
+          <label class="pg-field">Action
+            <select id="pg-action">
+              <option value="run">Run</option>
+              <option value="check">Check</option>
+              <option value="build">Build</option>
+              <option value="ir">LLVM IR</option>
+              <option value="ast">AST</option>
+              <option value="potato">Potato</option>
+              <option value="asm">Machine code</option>
+              <option value="wasm">Wasm</option>
+            </select>
+          </label>
+          <button id="pg-run" class="btn btn-solid" type="button">Run</button>
+          <label class="pg-field">Edition
+            <select id="pg-edition">
+              <option value="tur2026.3" selected>Tur 2026.3</option>
+              <option value="tur2026.2">Tur 2026.2</option>
+              <option value="tur2026.1">Tur 2026.1</option>
+            </select>
+          </label>
+          <label class="pg-field">Target
+            <select id="pg-target">
+              <option value="elf" selected>ELF</option>
+              <option value="pe">PE</option>
+            </select>
+          </label>
+          <label class="pg-field">Channel
+            <select id="pg-channel">
+              <option value="beta" selected>Beta (0.1.5.2.beta.2)</option>
+              <option value="stable">Stable (0.1.5.1)</option>
+            </select>
+          </label>
+          <span id="pg-status" class="pg-status">Ready</span>
+        </div>
+        <div class="pg-row pg-row-2">
+          <label class="pg-field">Example
+            <select id="pg-example">
+              <option value="hello">Hello, world</option>
+              <option value="flow">Values and control flow</option>
+              <option value="data">Structs and enums</option>
+              <option value="domain">Capability domains</option>
+            </select>
+          </label>
+          <button id="pg-new" class="btn btn-quiet" type="button">New</button>
+          <button id="pg-download" class="btn btn-quiet" type="button">Download source</button>
+          <span class="pg-hint">Ctrl/⌘ + Enter</span>
+        </div>
       </div>
       <div class="pg-main">
         <div class="pg-pane">
@@ -121,6 +156,7 @@
             <div class="pg-block" id="pg-stdout-block"><div class="pg-label">stdout</div><pre id="pg-stdout" class="pg-out" aria-live="polite"></pre></div>
             <div class="pg-block err" id="pg-stderr-block" hidden><div class="pg-label">Diagnostics</div><pre id="pg-stderr" class="pg-out"></pre></div>
           </div>
+          <div id="pg-links" class="pg-links"></div>
           <div class="pg-foot"><span id="pg-exit">—</span><span id="pg-elapsed"></span></div>
         </div>
       </div>
@@ -132,7 +168,7 @@
   <div class="wrap">
     <h2>What this page runs</h2>
     <p class="body">The source is compiled by the repository's reference compiler, then executed by LVM, the interpreter the project uses for its deterministic runtime tests. Both steps happen in this browser tab.</p>
-    <p class="limit"><strong>Boundaries.</strong> The first run downloads about 20 MB of engine. A program may use <code>fn main()</code> or <code>fn _start()</code>. Standard input, files and sockets are unavailable, and a step cap stops a runaway loop. Diagnostics are the compiler's own messages.</p>
+    <p class="limit"><strong>Boundaries.</strong> The first run downloads about 20 MB of engine. Programs may use <code>fn main()</code> or <code>fn _start()</code>; standard input, files and sockets are unavailable, and a step cap stops a runaway loop. Loment has no MIR or HIR: <em>AST</em> is the parsed module, <em>Potato</em> is the form object, and <em>Machine code</em> is a hex listing of what <code>lomelf</code> emits. <em>Channel</em> selects the compiler snapshot: Beta tracks the latest <code>main</code> (0.1.5.2.beta.2), Stable is the 0.1.5.1 release. <em>Wasm</em> output is planned for 0.1.5.2 (#1496).</p>
     <p class="body">For the native toolchain, start at <a href="start.html">Get started</a>. More programs are on <a href="examples.html">Examples</a>.</p>
   </div>
 </section>

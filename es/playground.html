@@ -1,6 +1,6 @@
 <!doctype html>
 <!-- translated-from: playground.html -->
-<!-- source-sha256: 76c18df6f7855fbc8bbdf396d564dc21bb3bf64fdc702d348e9dc44cd8d45bbb -->
+<!-- source-sha256: 23e7e1d459eb3ce779fd119deb05767a634760be353d3952f993f35b17b5be36 -->
 <html lang="es">
 <head>
 <meta charset="utf-8">
@@ -92,19 +92,54 @@
          data-exit="salida"
          data-new-prompt="Nombre del programa nuevo">
       <div class="pg-toolbar">
-        <label class="pg-field">Ejemplo
-          <select id="pg-example">
-            <option value="hello">Hello, world</option>
-            <option value="flow">Valores y control de flujo</option>
-            <option value="data">Estructuras y enumeraciones</option>
-            <option value="domain">Dominios de capacidad</option>
-          </select>
-        </label>
-        <button id="pg-new" class="btn btn-quiet" type="button">Nuevo</button>
-        <button id="pg-run" class="btn btn-solid" type="button">Ejecutar</button>
-        <button id="pg-download" class="btn btn-quiet" type="button">Descargar</button>
-        <span class="pg-hint">Ctrl/⌘ + Enter</span>
-        <span id="pg-status" class="pg-status">Listo</span>
+        <div class="pg-row">
+          <label class="pg-field">Acción
+            <select id="pg-action">
+              <option value="run">Ejecutar</option>
+              <option value="check">Comprobar</option>
+              <option value="build">Compilar</option>
+              <option value="ir">LLVM IR</option>
+              <option value="ast">AST</option>
+              <option value="potato">Potato</option>
+              <option value="asm">Código máquina</option>
+              <option value="wasm">Wasm</option>
+            </select>
+          </label>
+          <button id="pg-run" class="btn btn-solid" type="button">Ejecutar</button>
+          <label class="pg-field">Edición
+            <select id="pg-edition">
+              <option value="tur2026.3" selected>Tur 2026.3</option>
+              <option value="tur2026.2">Tur 2026.2</option>
+              <option value="tur2026.1">Tur 2026.1</option>
+            </select>
+          </label>
+          <label class="pg-field">Objetivo
+            <select id="pg-target">
+              <option value="elf" selected>ELF</option>
+              <option value="pe">PE</option>
+            </select>
+          </label>
+          <label class="pg-field">Canal
+            <select id="pg-channel">
+              <option value="beta" selected>Beta (0.1.5.2.beta.2)</option>
+              <option value="stable">Estable (0.1.5.1)</option>
+            </select>
+          </label>
+          <span id="pg-status" class="pg-status">Listo</span>
+        </div>
+        <div class="pg-row pg-row-2">
+          <label class="pg-field">Ejemplo
+            <select id="pg-example">
+              <option value="hello">Hello, world</option>
+              <option value="flow">Valores y control de flujo</option>
+              <option value="data">Estructuras y enumeraciones</option>
+              <option value="domain">Dominios de capacidad</option>
+            </select>
+          </label>
+          <button id="pg-new" class="btn btn-quiet" type="button">Nuevo</button>
+          <button id="pg-download" class="btn btn-quiet" type="button">Descargar código</button>
+          <span class="pg-hint">Ctrl/⌘ + Enter</span>
+        </div>
       </div>
       <div class="pg-main">
         <div class="pg-pane">
@@ -123,6 +158,7 @@
             <div class="pg-block" id="pg-stdout-block"><div class="pg-label">stdout</div><pre id="pg-stdout" class="pg-out" aria-live="polite"></pre></div>
             <div class="pg-block err" id="pg-stderr-block" hidden><div class="pg-label">Diagnósticos</div><pre id="pg-stderr" class="pg-out"></pre></div>
           </div>
+          <div id="pg-links" class="pg-links"></div>
           <div class="pg-foot"><span id="pg-exit">—</span><span id="pg-elapsed"></span></div>
         </div>
       </div>
@@ -134,7 +170,7 @@
   <div class="wrap">
     <h2>Qué se ejecuta en esta página</h2>
     <p class="body">El código se compila con el compilador de referencia del repositorio y después lo ejecuta LVM, el intérprete que el proyecto usa para sus pruebas deterministas en tiempo de ejecución. Los dos pasos ocurren en esta pestaña.</p>
-    <p class="limit"><strong>Límites.</strong> La primera ejecución descarga unos 20 MB de motor. El programa puede usar <code>fn main()</code> o <code>fn _start()</code>. La entrada estándar, los archivos y los sockets no están disponibles, y un límite de pasos detiene un bucle descontrolado. Los diagnósticos son los mensajes del propio compilador.</p>
+    <p class="limit"><strong>Límites.</strong> La primera ejecución descarga unos 20 MB de motor. El programa puede usar <code>fn main()</code> o <code>fn _start()</code>. La entrada estándar, los archivos y los sockets no están disponibles, y un límite de pasos detiene un bucle descontrolado. Loment no tiene MIR ni HIR: AST es el módulo analizado, Potato es el objeto de forma y Código máquina es un listado hexadecimal del .text de <code>lomelf</code>. <em>Canal</em> elige la instantánea del compilador: Beta sigue el último <code>main</code> (0.1.5.2.beta.2) y Estable es 0.1.5.1. La salida Wasm está prevista para 0.1.5.2 (#1496).</p>
     <p class="body">Para instalar la cadena nativa, empieza en <a href="start.html">Primeros pasos</a>. Hay más programas en <a href="examples.html">Ejemplos</a>.</p>
   </div>
 </section>

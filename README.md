@@ -16,7 +16,7 @@ Español `/es/`。**英文是唯一的源**，其余四种是它的译文 ——
 | `start.html` | 安装与第一个程序（`QUICKSTART.md` 的短版） |
 | `examples.html` | 四个短程序，各带真跑出来的输出 |
 | `playground.html` | 在线编译：左边编辑器、右边输出。第一次运行按需加载 Pyodide，把仓里的参考编译器与 LVM 搬进浏览器；**没有任何内容上传**。四语同页 |
-| `playground/` | playground 的脚本与编译器副本：`playground.js` + `py/tools/*.py` + `py/loment/lspe/*`。副本随编译器更新，见该目录的 README |
+| `playground/` | playground 的脚本与两套编译器快照：`beta/`（0.1.5.2.beta.2，跟 main）与 `stable/`（0.1.5.1）。各自带 `py/` 与 `manifest.json`，见该目录的 README |
 | `releases.html` | Release 历程：从 0.1.1 到正在建的那一版。**全站唯一写版本号的一页**，理由写在页上。最新那一版按**发布说明**写：`New` / `Fixed` 两张编号列表 + `Not in this release` |
 | `roadmap.html` | 路线图：0.1.5 起各版**为了什么**。**是计划不是承诺** —— 没有日期、没有一样现在能下载，页上明写 |
 | `lgc.html` `lvm.html` `lompi.html` `libl.html` `lspe.html` | 五个系统各一页，**各带自己的状态行**（LVM 是"引擎不存在"，LibL 是"0.1.4.6 起随包发布"，LSPE 是"设计，不在任何发布里"） |

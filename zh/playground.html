@@ -1,6 +1,6 @@
 <!doctype html>
 <!-- translated-from: playground.html -->
-<!-- source-sha256: 76c18df6f7855fbc8bbdf396d564dc21bb3bf64fdc702d348e9dc44cd8d45bbb -->
+<!-- source-sha256: 23e7e1d459eb3ce779fd119deb05767a634760be353d3952f993f35b17b5be36 -->
 <html lang="zh-Hans">
 <head>
 <meta charset="utf-8">
@@ -92,19 +92,54 @@
          data-exit="退出码"
          data-new-prompt="新程序的名称">
       <div class="pg-toolbar">
-        <label class="pg-field">示例
-          <select id="pg-example">
-            <option value="hello">你好，世界</option>
-            <option value="flow">值与控制流</option>
-            <option value="data">结构体与枚举</option>
-            <option value="domain">能力域</option>
-          </select>
-        </label>
-        <button id="pg-new" class="btn btn-quiet" type="button">新建</button>
-        <button id="pg-run" class="btn btn-solid" type="button">运行</button>
-        <button id="pg-download" class="btn btn-quiet" type="button">下载</button>
-        <span class="pg-hint">Ctrl/⌘ + Enter</span>
-        <span id="pg-status" class="pg-status">就绪</span>
+        <div class="pg-row">
+          <label class="pg-field">操作
+            <select id="pg-action">
+              <option value="run">运行</option>
+              <option value="check">检查</option>
+              <option value="build">构建</option>
+              <option value="ir">LLVM IR</option>
+              <option value="ast">AST</option>
+              <option value="potato">Potato</option>
+              <option value="asm">机器码</option>
+              <option value="wasm">Wasm</option>
+            </select>
+          </label>
+          <button id="pg-run" class="btn btn-solid" type="button">运行</button>
+          <label class="pg-field">版次
+            <select id="pg-edition">
+              <option value="tur2026.3" selected>Tur 2026.3</option>
+              <option value="tur2026.2">Tur 2026.2</option>
+              <option value="tur2026.1">Tur 2026.1</option>
+            </select>
+          </label>
+          <label class="pg-field">目标
+            <select id="pg-target">
+              <option value="elf" selected>ELF</option>
+              <option value="pe">PE</option>
+            </select>
+          </label>
+          <label class="pg-field">通道
+            <select id="pg-channel">
+              <option value="beta" selected>Beta (0.1.5.2.beta.2)</option>
+              <option value="stable">稳定版 (0.1.5.1)</option>
+            </select>
+          </label>
+          <span id="pg-status" class="pg-status">就绪</span>
+        </div>
+        <div class="pg-row pg-row-2">
+          <label class="pg-field">示例
+            <select id="pg-example">
+              <option value="hello">你好，世界</option>
+              <option value="flow">值与控制流</option>
+              <option value="data">结构体与枚举</option>
+              <option value="domain">能力域</option>
+            </select>
+          </label>
+          <button id="pg-new" class="btn btn-quiet" type="button">新建</button>
+          <button id="pg-download" class="btn btn-quiet" type="button">下载源码</button>
+          <span class="pg-hint">Ctrl/⌘ + Enter</span>
+        </div>
       </div>
       <div class="pg-main">
         <div class="pg-pane">
@@ -123,6 +158,7 @@
             <div class="pg-block" id="pg-stdout-block"><div class="pg-label">标准输出</div><pre id="pg-stdout" class="pg-out" aria-live="polite"></pre></div>
             <div class="pg-block err" id="pg-stderr-block" hidden><div class="pg-label">诊断</div><pre id="pg-stderr" class="pg-out"></pre></div>
           </div>
+          <div id="pg-links" class="pg-links"></div>
           <div class="pg-foot"><span id="pg-exit">—</span><span id="pg-elapsed"></span></div>
         </div>
       </div>
@@ -134,7 +170,7 @@
   <div class="wrap">
     <h2>这个页面运行什么</h2>
     <p class="body">源代码由仓库里的参考编译器编译，再交给 LVM 执行——项目用它做确定性的运行时判据。两步都发生在当前标签页里。</p>
-    <p class="limit"><strong>边界。</strong> 首次运行会下载约 20 MB 的引擎。程序可以用 <code>fn main()</code> 或 <code>fn _start()</code>。标准输入、文件与套接字不可用；死循环会被步数上限截断。诊断信息是编译器自己的原文。</p>
+    <p class="limit"><strong>边界。</strong> 首次运行会下载约 20 MB 的引擎。程序可以用 <code>fn main()</code> 或 <code>fn _start()</code>；标准输入、文件与套接字不可用，死循环会被步数上限截断。Loment 没有 MIR / HIR：AST 是解析后的模块，Potato 是形式对象，机器码是 <code>lomelf</code> 产物中 .text 的十六进制清单。<em>通道</em>选编译器快照：Beta 跟踪最新 <code>main</code>（0.1.5.2.beta.2），稳定版是 0.1.5.1；Wasm 输出计划在 0.1.5.2（#1496）。</p>
     <p class="body">想装原生工具链，从<a href="start.html">入门</a>开始；更多程序在<a href="examples.html">示例</a>页。</p>
   </div>
 </section>

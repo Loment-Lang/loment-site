@@ -1,0 +1,206 @@
+// std/std.lomt — 包入口 (可移植层)。
+//
+// `use std` 指的是**包内与包同名的那个模块** (docs/168 判据 test_multi_file_package_
+// survives_materialize: 包名与入口文件名必须一致), 所以这个文件必须叫 std.lomt
+// 且 `module std`。它自己不做任何事 —— 作用是把包内全部模块拉进**同一个单元**,
+// 于是 `pub` 的东西对消费方可见 (平名字空间, 前缀是各模块自己的纪律)。
+//
+// 包内 127 个模块, **全部是可移植的**: 一个 syscall 都不发 (numfmt 在最底下)。
+// 宿主侧 (syscall/fd/argv/目录/stat/日志) 在另一个包 host 里, 依赖方向单向:
+//     host -> std -> numfmt
+// 所以裸机/无宿主的消费者只依赖 std, 不会把 getdents64 之类的东西拖进来。
+//
+// ---------------------------------------------------------------- 怎么用 (2026-09-20 修)
+//
+// **按模块取, 别 `use std`。** 名字形式现在能直接命中包内模块 —— `use vec`、`use map`、
+// `use numfmt` 都是一条 use 就够 (解析这一层见 `lomentc.resolve_name`;
+// 加它之前包内模块只有门面这一个入口, 所以下面那段"按需 use 要写路径形式"已经过时)。
+//
+// **门面为什么不要用**: 它把 127 个模块拼进**同一个单元**, 而单元的发射符号是**平的**
+// (顶层名字在单元内唯一, 不做 mangling) —— 于是包内任何两个模块的同名顶层声明都是硬错。
+// 代价不止于此: 编译时间按模块数**超线性**涨 (自举编译器实测 n=64 已 187 秒, 127 个模块
+// 是几十分钟量级)。门面留着是给"我确实全都要"用的, 也是**平名字唯一性**那条判据的语料
+// (`lomentc_test::test_std_package_is_one_unit_without_name_collisions`)。
+//
+// 顺带纠两处旧注解: 这个文件的 use 是 **127 条不是 61 条**, 包内是 **127 个模块不是 76 个**;
+// 而"打包版编译器单文件最多 8 条 use、菱形导入会崩"**早已不成立** —— 两个实现的
+// `MAX_USE` 都是 300 且都做去重, 那句里的 `8` 是依赖**嵌套深度** (`MAXDEPTH`, 另一回事)。
+//
+// 顺序: 从最底层往上 —— 顺着读就是依赖方向 (下面每层只 use 比它更早的)。
+
+module std
+choose runtime
+
+// 基础: 内建之外的第一层
+use "mem.lomt"
+use "bit.lomt"
+use "num.lomt"
+use "numfmt.lomt"
+use "wide.lomt"
+use "endian.lomt"
+use "assert.lomt"
+
+// 分配
+use "arena.lomt"
+use "mall.lomt"
+use "pool.lomt"
+use "memdbg.lomt"
+
+// 软浮点 (bits -> 算术 -> 转换 -> 大整数 -> 文本/超越)
+use "f64bits.lomt"
+use "f64.lomt"
+use "f64conv.lomt"
+use "round.lomt"
+use "bigint.lomt"
+use "f64fmt.lomt"
+use "mathf.lomt"
+
+// 十进制
+use "bigdec.lomt"
+use "fixed.lomt"
+
+// 缓冲与游标输出
+use "buf.lomt"
+use "ring.lomt"
+use "out.lomt"
+use "fmt.lomt"
+use "vec.lomt"
+
+// 容器
+use "heap.lomt"
+use "deque.lomt"
+use "map.lomt"
+use "set.lomt"
+use "mapstr.lomt"
+use "ilist.lomt"
+use "trie.lomt"
+use "bst.lomt"
+use "bitset.lomt"
+
+// 文本
+use "char.lomt"
+use "text.lomt"
+use "trim.lomt"
+use "split.lomt"
+use "word.lomt"
+use "line.lomt"
+use "parse.lomt"
+use "utf8.lomt"
+use "case.lomt"
+use "glob.lomt"
+use "path.lomt"
+use "quote.lomt"
+use "csv.lomt"
+use "hex.lomt"
+use "base64.lomt"
+use "varint.lomt"
+
+// 排序与查找
+use "sort.lomt"
+use "bsearch.lomt"
+
+// LibL —— 这个包对 libc 的那张脸 (docs/232)
+//
+// 上面那些模块是**这门语言自己的**形状: 长度显式、偏移寻址、没有 libc 的名字。
+// 这四份镜的是 libc 的四个头 —— 函数名、参数序、返回值语义都取 libc 的, 于是
+// "会 C 的人不必学新东西"; 而判据是**与真 glibc 逐字节对跑**
+// (tools/loment_libl_test.py)。它们**建在上面那些模块上**（ctype->char,
+// string->mem, stdlib/stdio->mem+string），不另起一份: 同一个字节不会有两个答案。
+//
+// **`libl.lomt` 是个门面**: 只 `use` 下面这四份（加 `mem`/`char`），面小、编得快。
+// 但那个名字**在发行版里被渠道闸关住**（`use libl` = 编译错误，用户 2026-10-12 定：
+// "LibL 仍然在仓库中，和 LVM 一样发行再锁"）—— 文件照发、dev 照用，锁的是**能不能取到
+// 这个名字**。`docs/232` §1.1；闸在名字解析处（`lomentc.resolve_name` / `driver.lomt`）。
+//
+// 按依赖序: mem/char -> string, ctype -> stdlib -> stdio。
+use "string.lomt"
+use "ctype.lomt"
+use "stdlib.lomt"
+use "stdio.lomt"
+
+// 随机
+use "rand.lomt"
+
+// 摘要与校验
+use "crc32.lomt"
+use "crc16.lomt"
+use "crc32c.lomt"
+use "adler32.lomt"
+use "sum.lomt"
+use "md5.lomt"
+use "sha1.lomt"
+use "sha256.lomt"
+use "sha512.lomt"
+use "hmac.lomt"
+use "kdf.lomt"
+
+// 整数上的数学 (math 是整数版; 浮点版是上面的 mathf)
+use "math.lomt"
+use "hash.lomt"
+
+// 编解码与格式 (T7)。全部是**游标式**读取: 值留在原文里, 不建树。
+//   base32/58/85 是"字节<->文本", url 是百分号编码, 其余是四种配置/交换格式。
+use "base32.lomt"
+use "base58.lomt"
+use "base85.lomt"
+use "url.lomt"
+use "ini.lomt"
+use "jsn.lomt"
+use "toml.lomt"
+use "mpk.lomt"
+use "cbor.lomt"
+use "asn1.lomt"
+
+// 补齐: 上面那几段是按主题手写的, 这一段是全量核对后补上的漏项。
+// (清单以**目录里的实际文件**为准, 由 tools/ 的核对脚本生成。)
+use "ansi.lomt"
+use "atomics.lomt"
+use "blit.lomt"
+use "bloom.lomt"
+use "bmp.lomt"
+use "bufio.lomt"
+use "civil.lomt"
+use "clock.lomt"
+use "comb.lomt"
+use "coro.lomt"
+use "deflate.lomt"
+use "env.lomt"
+use "fenwick.lomt"
+use "flags.lomt"
+use "font.lomt"
+use "fwalk.lomt"
+use "graph.lomt"
+use "hashx.lomt"
+use "hexdump.lomt"
+use "huffman.lomt"
+use "inflate.lomt"
+use "intern.lomt"
+use "interp.lomt"
+use "intmath.lomt"
+use "lru.lomt"
+use "lzss.lomt"
+use "matrix.lomt"
+use "mst.lomt"
+use "noise.lomt"
+use "once.lomt"
+use "perm.lomt"
+use "png.lomt"
+use "proc.lomt"
+use "qoi.lomt"
+use "raster.lomt"
+use "rational.lomt"
+use "rle.lomt"
+use "rng.lomt"
+use "sched.lomt"
+use "search.lomt"
+use "shortest.lomt"
+use "spin.lomt"
+use "stats.lomt"
+use "table.lomt"
+use "tmpf.lomt"
+use "tui.lomt"
+use "udiff.lomt"
+use "unionfind.lomt"
+use "width.lomt"
+use "wrap.lomt"
+use "zlibc.lomt"

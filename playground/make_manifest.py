@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
-"""Write playground/manifest.json: every file under playground/py, mapped into
-the virtual filesystem. Run from the site root after refreshing the copies:
+"""Write one manifest per channel: beta/manifest.json and stable/manifest.json.
+
+Each manifest maps every file under <channel>/py into the virtual filesystem.
+Run from the site root after refreshing either channel:
 
     python playground/make_manifest.py
 """
@@ -8,15 +10,17 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-PY = ROOT / "py"
+CHANNELS = ("beta", "stable")
 
-files = []
-for path in sorted(PY.rglob("*")):
-    if not path.is_file():
-        continue
-    rel = path.relative_to(ROOT).as_posix()
-    files.append([rel, "/loment/" + path.relative_to(PY).as_posix()])
-
-(ROOT / "manifest.json").write_text(
-    json.dumps({"files": files}, indent=1) + "\n", encoding="utf-8", newline="\n")
-print(f"{len(files)} files")
+for channel in CHANNELS:
+    base = ROOT / channel
+    py = base / "py"
+    files = []
+    for path in sorted(py.rglob("*")):
+        if not path.is_file():
+            continue
+        files.append([path.relative_to(base).as_posix(),
+                      "/loment/" + path.relative_to(py).as_posix()])
+    (base / "manifest.json").write_text(
+        json.dumps({"files": files}, indent=1) + "\n", encoding="utf-8", newline="\n")
+    print(f"{channel}: {len(files)} files")

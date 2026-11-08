@@ -1,6 +1,6 @@
 <!doctype html>
 <!-- translated-from: playground.html -->
-<!-- source-sha256: 76c18df6f7855fbc8bbdf396d564dc21bb3bf64fdc702d348e9dc44cd8d45bbb -->
+<!-- source-sha256: 23e7e1d459eb3ce779fd119deb05767a634760be353d3952f993f35b17b5be36 -->
 <html lang="ja">
 <head>
 <meta charset="utf-8">
@@ -92,19 +92,54 @@
          data-exit="終了コード"
          data-new-prompt="新しいプログラム名">
       <div class="pg-toolbar">
-        <label class="pg-field">例
-          <select id="pg-example">
-            <option value="hello">Hello, world</option>
-            <option value="flow">値と制御フロー</option>
-            <option value="data">構造体と列挙</option>
-            <option value="domain">能力域</option>
-          </select>
-        </label>
-        <button id="pg-new" class="btn btn-quiet" type="button">新規</button>
-        <button id="pg-run" class="btn btn-solid" type="button">実行</button>
-        <button id="pg-download" class="btn btn-quiet" type="button">ダウンロード</button>
-        <span class="pg-hint">Ctrl/⌘ + Enter</span>
-        <span id="pg-status" class="pg-status">準備完了</span>
+        <div class="pg-row">
+          <label class="pg-field">アクション
+            <select id="pg-action">
+              <option value="run">実行</option>
+              <option value="check">チェック</option>
+              <option value="build">ビルド</option>
+              <option value="ir">LLVM IR</option>
+              <option value="ast">AST</option>
+              <option value="potato">Potato</option>
+              <option value="asm">マシンコード</option>
+              <option value="wasm">Wasm</option>
+            </select>
+          </label>
+          <button id="pg-run" class="btn btn-solid" type="button">実行</button>
+          <label class="pg-field">版
+            <select id="pg-edition">
+              <option value="tur2026.3" selected>Tur 2026.3</option>
+              <option value="tur2026.2">Tur 2026.2</option>
+              <option value="tur2026.1">Tur 2026.1</option>
+            </select>
+          </label>
+          <label class="pg-field">ターゲット
+            <select id="pg-target">
+              <option value="elf" selected>ELF</option>
+              <option value="pe">PE</option>
+            </select>
+          </label>
+          <label class="pg-field">チャンネル
+            <select id="pg-channel">
+              <option value="beta" selected>Beta (0.1.5.2.beta.2)</option>
+              <option value="stable">安定版 (0.1.5.1)</option>
+            </select>
+          </label>
+          <span id="pg-status" class="pg-status">準備完了</span>
+        </div>
+        <div class="pg-row pg-row-2">
+          <label class="pg-field">例
+            <select id="pg-example">
+              <option value="hello">Hello, world</option>
+              <option value="flow">値と制御フロー</option>
+              <option value="data">構造体と列挙</option>
+              <option value="domain">能力域</option>
+            </select>
+          </label>
+          <button id="pg-new" class="btn btn-quiet" type="button">新規</button>
+          <button id="pg-download" class="btn btn-quiet" type="button">ソースを保存</button>
+          <span class="pg-hint">Ctrl/⌘ + Enter</span>
+        </div>
       </div>
       <div class="pg-main">
         <div class="pg-pane">
@@ -123,6 +158,7 @@
             <div class="pg-block" id="pg-stdout-block"><div class="pg-label">標準出力</div><pre id="pg-stdout" class="pg-out" aria-live="polite"></pre></div>
             <div class="pg-block err" id="pg-stderr-block" hidden><div class="pg-label">診断</div><pre id="pg-stderr" class="pg-out"></pre></div>
           </div>
+          <div id="pg-links" class="pg-links"></div>
           <div class="pg-foot"><span id="pg-exit">—</span><span id="pg-elapsed"></span></div>
         </div>
       </div>
@@ -134,7 +170,7 @@
   <div class="wrap">
     <h2>このページで動くもの</h2>
     <p class="body">ソースはリポジトリのリファレンスコンパイラでコンパイルされ、LVM で実行されます。LVM はプロジェクトが決定論的な実行時テストに使っているインタプリタです。どちらもこのタブの中で完結します。</p>
-    <p class="limit"><strong>境界。</strong> 初回実行時に約 20 MB のエンジンをダウンロードします。プログラムは <code>fn main()</code> または <code>fn _start()</code> を使えます。標準入力・ファイル・ソケットは利用できず、暴走するループはステップ上限で止まります。診断はコンパイラ自身のメッセージです。</p>
+    <p class="limit"><strong>境界。</strong> 初回実行時に約 20 MB のエンジンをダウンロードします。プログラムは <code>fn main()</code> または <code>fn _start()</code> を使えます。標準入力・ファイル・ソケットは利用できず、暴走するループはステップ上限で止まります。Loment に MIR / HIR はありません。AST は解析済みモジュール、Potato は形式オブジェクト、マシンコードは <code>lomelf</code> の .text の 16 進リストです。<em>チャンネル</em>はコンパイラのスナップショットを選びます。Beta は最新の <code>main</code>（0.1.5.2.beta.2）、安定版は 0.1.5.1 です。Wasm 出力は 0.1.5.2（#1496）で予定しています。</p>
     <p class="body">ネイティブのツールチェーンは<a href="start.html">はじめに</a>から。プログラムの例は<a href="examples.html">サンプル</a>にあります。</p>
   </div>
 </section>
