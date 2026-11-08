@@ -184,9 +184,11 @@
   });
 
   function programName() {
-    var n = (nameEl.value || "").trim().replace(/[^A-Za-z0-9_]/g, "_");
+    var raw = (nameEl.value || "").trim();
+    if (!raw) return "main";
+    var n = raw.replace(/[^A-Za-z0-9_]/g, "_");
     if (!/^[A-Za-z_]/.test(n)) n = "_" + n;
-    return n || "main";
+    return n;
   }
 
   function clearOutput() {
@@ -205,6 +207,9 @@
   });
 
   document.getElementById("pg-new").addEventListener("click", function () {
+    var entered = window.prompt(S.newPrompt || "Name for the new program", programName());
+    if (entered === null) return;
+    nameEl.value = entered;
     nameEl.value = programName();
     src.value = starter(nameEl.value);
     render();
