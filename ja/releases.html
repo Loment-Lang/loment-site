@@ -1,6 +1,6 @@
 <!doctype html>
 <!-- translated-from: releases.html -->
-<!-- source-sha256: fb9d4d0aeeec028fdd70cee7c161d32637041be3f0af7cfe15e2d2f539815e21 -->
+<!-- source-sha256: a7e67afe272beeb16c7634d563c4c1901a48bd2f2c3bf6172acd51fe4494a377 -->
 <html lang="ja">
 <head>
 <meta charset="utf-8">
@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=JetBrains+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="../style.css?v=20261108d">
+<link rel="stylesheet" href="../style.css?v=20261108e">
 <link rel="alternate" hreflang="en" href="https://loment-lang.github.io/loment-site/releases.html">
 <link rel="alternate" hreflang="zh-Hans" href="https://loment-lang.github.io/loment-site/zh/releases.html">
 <link rel="alternate" hreflang="ja" href="https://loment-lang.github.io/loment-site/ja/releases.html">
@@ -94,20 +94,21 @@
       リリースです。
     </p>
 
-    <div class="tl-key">
+        <div class="tl-key">
       <span><i class="tl-dot"></i>大きな前進</span>
       <span><i class="tl-dot tl-dot-big"></i>大規模な内容更新</span>
+      <span><i class="tl-dot tl-dot-normal"></i>その他のリリース</span>
     </div>
 
     <div class="timeline">
       <div class="tl tl-major"><span class="tl-date">2026-09 以前</span><div class="tl-body"><h3>0.1.1</h3><p>最初の Loment：Rust 構文の厳密なサブセット。サブセットという主張は後に取り下げられ、重なる構文は残りました。</p></div></div>
       <div class="tl tl-major"><span class="tl-date">2026-09 以前</span><div class="tl-body"><h3>0.1.2 Alpha</h3><p>言語が自分自身で書かれ始める。表現できないものを見つける唯一の方法です。</p></div></div>
-      <div class="tl tl-big"><span class="tl-date">2026-09 以前</span><div class="tl-body"><h3>0.1.2 pre1</h3><p>最初のセルフホスティングが見つけた問題の修理。</p></div></div>
+      <div class="tl"><span class="tl-date">2026-09 以前</span><div class="tl-body"><h3>0.1.2 pre1</h3><p>最初のセルフホスティングが見つけた問題の修理。</p></div></div>
       <div class="tl tl-major"><span class="tl-date">2026-09 以前</span><div class="tl-body"><h3>0.1.2 pre2</h3><p>今も残るブートストラップ基盤：コミットされたシードから再構築され、自分を再現するか検査されるコンパイラ。</p></div></div>
       <div class="tl tl-major"><span class="tl-date">2026-09 以前</span><div class="tl-body"><h3>0.1.3 Alpha</h3><p>別の言語のソースを Loment として読める：借りるのは綴りで、意味は Loment のまま。</p></div></div>
       <div class="tl tl-major"><span class="tl-date">2026-09 以前</span><div class="tl-body"><h3>0.1.3.4 Alpha</h3><p>字句解析器、構文解析器、検査器、コード生成器をすべて Loment で書き、ブートストラップが三段的な不動点に達する。</p></div></div>
-      <div class="tl tl-major"><time class="tl-date" datetime="2026-09-22">2026-09-22</time><div class="tl-body"><h3>0.1.4 Pre</h3><p>最初のインストール可能なビルド。「リポジトリにはバージョンがある」を目に見えるものにするのが目的でした。</p></div></div>
-      <div class="tl tl-big"><time class="tl-date" datetime="2026-09-23">2026-09-23</time><div class="tl-body"><h3>0.1.4</h3><p>大きくするより使えることに重点。構文は変えず、最後のインタープリタ経路をビルドから外しました。Windows では zip を使ってください。あのインストーラーは壊れていると分かっています。</p></div></div>
+      <div class="tl"><time class="tl-date" datetime="2026-09-22">2026-09-22</time><div class="tl-body"><h3>0.1.4 Pre</h3><p>最初のインストール可能なビルド。「リポジトリにはバージョンがある」を目に見えるものにするのが目的でした。</p></div></div>
+      <div class="tl"><time class="tl-date" datetime="2026-09-23">2026-09-23</time><div class="tl-body"><h3>0.1.4</h3><p>大きくするより使えることに重点。構文は変えず、最後のインタープリタ経路をビルドから外しました。Windows では zip を使ってください。あのインストーラーは壊れていると分かっています。</p></div></div>
       <div class="tl tl-big"><time class="tl-date" datetime="2026-10-13">2026-10-13</time><div class="tl-body"><h3>0.1.4.5</h3><p>回収ラダー、保証としての <code>no_runtime</code>、両ターゲットのネットワーク、閉じたゲートの後ろの <code>vm</code> 設定。</p></div></div>
       <div class="tl tl-big"><time class="tl-date" datetime="2026-10-17">2026-10-17</time><div class="tl-body"><h3>0.1.4.6</h3><p>インタープリタ層、libc と LibL、<code>vm</code> 設定がリリースから到達可能になる。</p></div></div>
       <div class="tl tl-big"><time class="tl-date" datetime="2026-10-18">2026-10-18</time><div class="tl-body"><h3>0.1.4.7</h3><p>同梱のすべてのライブラリが 2 つの実装でバイト単位に同じ IR を出す：155 モジュール、飛ばしたものなし。</p></div></div>

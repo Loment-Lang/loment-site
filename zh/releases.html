@@ -1,6 +1,6 @@
 <!doctype html>
 <!-- translated-from: releases.html -->
-<!-- source-sha256: fb9d4d0aeeec028fdd70cee7c161d32637041be3f0af7cfe15e2d2f539815e21 -->
+<!-- source-sha256: a7e67afe272beeb16c7634d563c4c1901a48bd2f2c3bf6172acd51fe4494a377 -->
 <html lang="zh-Hans">
 <head>
 <meta charset="utf-8">
@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=JetBrains+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="../style.css?v=20261108d">
+<link rel="stylesheet" href="../style.css?v=20261108e">
 <link rel="alternate" hreflang="en" href="https://loment-lang.github.io/loment-site/releases.html">
 <link rel="alternate" hreflang="zh-Hans" href="https://loment-lang.github.io/loment-site/zh/releases.html">
 <link rel="alternate" hreflang="ja" href="https://loment-lang.github.io/loment-site/ja/releases.html">
@@ -92,20 +92,21 @@
       0.1.4 起，每一条都是本仓库的发布。
     </p>
 
-    <div class="tl-key">
+        <div class="tl-key">
       <span><i class="tl-dot"></i>重大进展</span>
       <span><i class="tl-dot tl-dot-big"></i>大型内容更新</span>
+      <span><i class="tl-dot tl-dot-normal"></i>其他发布</span>
     </div>
 
     <div class="timeline">
       <div class="tl tl-major"><span class="tl-date">2026-09 之前</span><div class="tl-body"><h3>0.1.1</h3><p>第一个 Loment：Rust 语法的严格子集。子集的说法后来被撤下，重叠的语法留了下来。</p></div></div>
       <div class="tl tl-major"><span class="tl-date">2026-09 之前</span><div class="tl-body"><h3>0.1.2 Alpha</h3><p>语言开始用自己书写——这是找出它表达不了什么的唯一办法。</p></div></div>
-      <div class="tl tl-big"><span class="tl-date">2026-09 之前</span><div class="tl-body"><h3>0.1.2 pre1</h3><p>修复第一次自举暴露的问题。</p></div></div>
+      <div class="tl"><span class="tl-date">2026-09 之前</span><div class="tl-body"><h3>0.1.2 pre1</h3><p>修复第一次自举暴露的问题。</p></div></div>
       <div class="tl tl-major"><span class="tl-date">2026-09 之前</span><div class="tl-body"><h3>0.1.2 pre2</h3><p>至今仍在的自举基础：从提交的种子重建编译器，并检查它能复现自己。</p></div></div>
       <div class="tl tl-major"><span class="tl-date">2026-09 之前</span><div class="tl-body"><h3>0.1.3 Alpha</h3><p>另一种语言的源码可以当成 Loment 来读：借的是拼写，含义仍是 Loment 的。</p></div></div>
       <div class="tl tl-major"><span class="tl-date">2026-09 之前</span><div class="tl-body"><h3>0.1.3.4 Alpha</h3><p>词法器、解析器、检查器与代码生成器全部用 Loment 写成；自举到达三阶段不动点。</p></div></div>
-      <div class="tl tl-major"><time class="tl-date" datetime="2026-09-22">2026-09-22</time><div class="tl-body"><h3>0.1.4 Pre</h3><p>第一个可安装的构建。它的意义是让“仓库里有版本”变成能看见的东西。</p></div></div>
-      <div class="tl tl-big"><time class="tl-date" datetime="2026-09-23">2026-09-23</time><div class="tl-body"><h3>0.1.4</h3><p>重点是可用，不是更大：语法没变，最后一条解释器路径离开构建。Windows 上请用 zip；那个安装器已知是坏的。</p></div></div>
+      <div class="tl"><time class="tl-date" datetime="2026-09-22">2026-09-22</time><div class="tl-body"><h3>0.1.4 Pre</h3><p>第一个可安装的构建。它的意义是让“仓库里有版本”变成能看见的东西。</p></div></div>
+      <div class="tl"><time class="tl-date" datetime="2026-09-23">2026-09-23</time><div class="tl-body"><h3>0.1.4</h3><p>重点是可用，不是更大：语法没变，最后一条解释器路径离开构建。Windows 上请用 zip；那个安装器已知是坏的。</p></div></div>
       <div class="tl tl-big"><time class="tl-date" datetime="2026-10-13">2026-10-13</time><div class="tl-body"><h3>0.1.4.5</h3><p>回收阶梯、作为保证的 <code>no_runtime</code>、两个目标上的网络，以及闸门关闭的 <code>vm</code> 设置。</p></div></div>
       <div class="tl tl-big"><time class="tl-date" datetime="2026-10-17">2026-10-17</time><div class="tl-body"><h3>0.1.4.6</h3><p>解释器层、libc 与 LibL、<code>vm</code> 设置从一次发布里变得可达。</p></div></div>
       <div class="tl tl-big"><time class="tl-date" datetime="2026-10-18">2026-10-18</time><div class="tl-body"><h3>0.1.4.7</h3><p>随包发布的每个库在两个实现里都编译出逐字节相同的 IR：155 个模块，一个不落。</p></div></div>

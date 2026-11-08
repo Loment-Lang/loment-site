@@ -543,8 +543,8 @@ pre.code code {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--paper);
-  border: 2px solid var(--line-2);
+  background: var(--faint);
+  border: 2px solid var(--faint);
 }
 .tl.tl-major::before,
 .tl.tl-big::before {
@@ -587,6 +587,10 @@ pre.code code {
 .tl-dot-big {
   background: var(--ochre);
   box-shadow: 0 0 0 3px rgb(138 90 0 / 12%);
+}
+.tl-dot-normal {
+  background: var(--faint);
+  box-shadow: 0 0 0 3px rgb(136 145 160 / 12%);
 }
 .tl-date {
   font: 500 var(--t-xs)/1.6 var(--mono);
