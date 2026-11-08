@@ -743,6 +743,9 @@ main > .sec { animation: settle 460ms cubic-bezier(0.22, 0.61, 0.36, 1) 180ms ba
   border-bottom: 1px solid var(--line-2);
 }
 .pg-row { display: flex; align-items: center; gap: var(--s2); flex-wrap: wrap; }
+/* The label changes with the action ("Run", "Machine code", …). A fixed
+   width keeps Edition/Target/Channel from sliding when it does. */
+#pg-run { min-width: 11.75rem; justify-content: center; }
 .pg-row-2 { padding-top: 2px; }
 .pg-field {
   display: flex; align-items: center; gap: 8px;
