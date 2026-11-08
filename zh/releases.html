@@ -1,17 +1,17 @@
 <!doctype html>
 <!-- translated-from: releases.html -->
-<!-- source-sha256: 9b9fb9c36c4776d8328905fbd8730bf927fb6021ed3d69a6d40223ceb404fd45 -->
+<!-- source-sha256: 00a0d96c8200efd4d6920a18caf5e0e35fa5d25396b41e09d7ab4d57d16d5893 -->
 <html lang="zh-Hans">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>发布历程 — Loment</title>
-<meta name="description" content="从最早的 Loment 到此刻正在构建的这一版，每一次发布，以及每一版是为了什么。最早的那些版本是从另一个仓库发布的，这一页把这件事写出来，而不是假装这份记录是完整的。">
+<title>时间线 — Loment</title>
+<meta name="description" content="Loment 各次发布的日期时间线，以及每一次是为了什么。逐版本更新日志在 GitHub；这一页保留这条线的形状。">
 <link rel="icon" href="../mark.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=JetBrains+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="../style.css?v=20261108b">
+<link rel="stylesheet" href="../style.css?v=20261108c">
 <link rel="alternate" hreflang="en" href="https://loment-lang.github.io/loment-site/releases.html">
 <link rel="alternate" hreflang="zh-Hans" href="https://loment-lang.github.io/loment-site/zh/releases.html">
 <link rel="alternate" hreflang="ja" href="https://loment-lang.github.io/loment-site/ja/releases.html">
@@ -21,7 +21,7 @@
 </head>
 <body>
 
-<a class="skip" href="#main">跳到正文</a>
+<a class="skip" href="#main">Skip to content</a>
 
 <header class="bar">
   <div class="wrap">
@@ -32,19 +32,13 @@
       </svg>
       Loment
     </a>
-        <nav>
-      <a href="learn.html">学习</a>
-      <a href="start.html">入门</a>
+            <nav>
+      <a href="start.html">学习</a>
+      <a href="blog.html">博客</a>
       <a href="examples.html">示例</a>
       <a href="playground.html">在线编译</a>
       <a href="standard.html">标准</a>
-      <details class="navmenu" name="bar">
-        <summary aria-current="page">版本</summary>
-        <ul>
-          <li><a href="releases.html" aria-current="page">发布历程</a></li>
-          <li><a href="roadmap.html">路线图</a></li>
-        </ul>
-      </details>
+      <a href="releases.html" aria-current="page">时间线</a>
       <details class="navmenu" name="bar">
         <summary>系统</summary>
         <ul>
@@ -71,336 +65,82 @@
 </header>
 
 <main id="main">
-
 <section class="head">
   <div class="wrap">
-    <p class="eyebrow">发布</p>
-    <h1>发布历程</h1>
+    <p class="eyebrow">时间线</p>
+    <h1>时间线，不是更新日志</h1>
     <p class="lede">
-      从最早的 Loment 到此刻发布的那一版。每一条都说明那一版是<em>为了</em>什么 —— 以及
-      它的记录在哪里，因为最早的那些版本是从另一个仓库发布的，而这个仓库并不带着它们的标签。
+      每次 Loment 发布，按顺序，用一句话说明它是为了什么。新增与修复的详细清单在 GitHub，
+      产物与签名也在那里。这一页只保留线的形状。
     </p>
     <p class="actions">
-      <a class="btn btn-solid" href="https://github.com/Loment-Lang/loment/releases/latest">下载</a>
-      <a class="btn btn-quiet" href="start.html">入门</a>
+      <a class="btn btn-solid" href="https://github.com/Loment-Lang/loment/releases/latest">下载当前发布</a>
+      <a class="btn btn-quiet" href="roadmap.html">路线图</a>
     </p>
     <p class="limit">
-      <strong>这是本站唯一一页写出具体版本号的页面。</strong>别处下载链接一律写
-      <code>releases/latest</code>，因为写在页面上的版本号是一个会过期的说法。而这里
-      版本<em>本身</em>就是主题，所以它们被写出来，每一个都指向当时真正发布的东西。
-      <strong>其中没有任何一条是对尚未发布的版本所作的承诺。</strong>
+      <strong>这是本站唯一写版本号的页面。</strong>别处下载链接都写
+      <code>releases/latest</code>，因为抄到页面上的版本号是有保质期的事实。这里日期才是主题。
     </p>
   </div>
 </section>
 
 <section class="sec">
   <div class="wrap">
-    <h2>在这个仓库之前</h2>
+    <h2>这条线</h2>
     <p class="body">
-      最早六个版本出自这个项目之前的那个仓库。它们的标签不在这个仓库里，日期也不在，所以
-      下面给出的是这条线的形状，而不是一份带日期的记录 —— 而且这里没有一处链接，因为没有
-      什么可链。
+      最早的六个版本来自项目之前的仓库；它们的标签与日期不在这个仓库里，所以不标日期。从
+      0.1.4 起，每一条都是本仓库的发布。
     </p>
 
-    <div class="rows">
-      <div class="row">
-        <h3>0.1.1 —— 第一个 Loment</h3>
-        <p>
-          Rust 语法的<strong>严格子集</strong>。那是最初的约束，而不是一种风格：这门语言由
-          Rust 已经定下来的东西来定义，所以几乎没有什么可争的，需要的只是把编译器建起来。
-          它如今不再声称是子集 &mdash; 重叠面还在，只是当语法面长过它之后，那个说法被撤掉了。
-        </p>
-      </div>
-      <div class="row">
-        <h3>0.1.2 Alpha —— 第一次自举</h3>
-        <p>
-          这门语言开始用自身来写。它买到的不是优雅：一个用它自己所编译的语言写成的编译器，
-          是找出这门语言表达不了什么的唯一办法。
-        </p>
-      </div>
-      <div class="row">
-        <h3>0.1.2 pre1 —— 修补</h3>
-        <p>
-          第一次自举暴露出来的那些问题。预发布正是这类东西该发生的地方。
-        </p>
-      </div>
-      <div class="row">
-        <h3>0.1.2 pre2 —— 至今仍立着的地基</h3>
-        <p>
-          此后每一次发布都建在它之上的自举地基：一个从提交进仓库的种子重建自身的编译器，
-          以及一条"重建出来的种子等于它出发时的那个"的判据。
-        </p>
-      </div>
-      <div class="row">
-        <h3>0.1.3 Alpha —— 多语法这个想法到来</h3>
-        <p>
-          第一个可以把另一种语言的源码当作 Loment 来读的版本。语义永远是这门语言的，借来的
-          只是拼写。它是这个项目的立论，而不是后来加上去的一个功能，所以它列在这里，而不列
-          在"还有什么不同"下面。
-        </p>
-      </div>
-      <div class="row">
-        <h3>0.1.3.4 Alpha —— 闭环</h3>
-        <p>
-          四个阶段 —— 词法分析器、解析器、检查器和代码生成器 —— 全部用 Loment 写成，产物
-          到达一个三阶段的定点。这是从上一个仓库发布的最后一个版本，也是此后每一个版本拿来
-          对照的那一版：<strong>它是语言与编译器不再需要一个宿主来定义自己的那个发布。</strong>
-        </p>
-      </div>
+    <div class="timeline">
+      <div class="tl"><span class="tl-date">2026-09 之前</span><div class="tl-body"><h3>0.1.1</h3><p>第一个 Loment：Rust 语法的严格子集。子集的说法后来被撤下，重叠的语法留了下来。</p></div></div>
+      <div class="tl"><span class="tl-date">2026-09 之前</span><div class="tl-body"><h3>0.1.2 Alpha</h3><p>语言开始用自己书写——这是找出它表达不了什么的唯一办法。</p></div></div>
+      <div class="tl"><span class="tl-date">2026-09 之前</span><div class="tl-body"><h3>0.1.2 pre1</h3><p>修复第一次自举暴露的问题。</p></div></div>
+      <div class="tl"><span class="tl-date">2026-09 之前</span><div class="tl-body"><h3>0.1.2 pre2</h3><p>至今仍在的自举基础：从提交的种子重建编译器，并检查它能复现自己。</p></div></div>
+      <div class="tl"><span class="tl-date">2026-09 之前</span><div class="tl-body"><h3>0.1.3 Alpha</h3><p>另一种语言的源码可以当成 Loment 来读：借的是拼写，含义仍是 Loment 的。</p></div></div>
+      <div class="tl"><span class="tl-date">2026-09 之前</span><div class="tl-body"><h3>0.1.3.4 Alpha</h3><p>词法器、解析器、检查器与代码生成器全部用 Loment 写成；自举到达三阶段不动点。</p></div></div>
+      <div class="tl"><time class="tl-date" datetime="2026-09-22">2026-09-22</time><div class="tl-body"><h3>0.1.4 Pre</h3><p>第一个可安装的构建。它的意义是让“仓库里有版本”变成能看见的东西。</p></div></div>
+      <div class="tl"><time class="tl-date" datetime="2026-09-23">2026-09-23</time><div class="tl-body"><h3>0.1.4</h3><p>重点是可用，不是更大：语法没变，最后一条解释器路径离开构建。Windows 上请用 zip；那个安装器已知是坏的。</p></div></div>
+      <div class="tl"><time class="tl-date" datetime="2026-10-13">2026-10-13</time><div class="tl-body"><h3>0.1.4.5</h3><p>回收阶梯、作为保证的 <code>no_runtime</code>、两个目标上的网络，以及闸门关闭的 <code>vm</code> 设置。</p></div></div>
+      <div class="tl"><time class="tl-date" datetime="2026-10-17">2026-10-17</time><div class="tl-body"><h3>0.1.4.6</h3><p>解释器层、libc 与 LibL、<code>vm</code> 设置从一次发布里变得可达。</p></div></div>
+      <div class="tl"><time class="tl-date" datetime="2026-10-18">2026-10-18</time><div class="tl-body"><h3>0.1.4.7</h3><p>随包发布的每个库在两个实现里都编译出逐字节相同的 IR：155 个模块，一个不落。</p></div></div>
+      <div class="tl"><time class="tl-date" datetime="2026-10-20">2026-10-20</time><div class="tl-body"><h3>0.1.5</h3><p><code>choose</code> 变成七维矩阵，每个合法格都由两个实现编译；LMS 与 LSPE 随包发布。</p></div></div>
+      <div class="tl"><time class="tl-date" datetime="2026-11-07">2026-11-07</time><div class="tl-body"><h3>0.1.5.1</h3><p>能力域变成由形状、极性与时间律组成的代数；热更新与无 JVM 的 Java 库落地；<code>tur2026.3</code> 成为默认版次。</p></div></div>
     </div>
   </div>
 </section>
 
 <section class="sec">
   <div class="wrap">
-    <h2>来自这个仓库</h2>
+    <h2>细节在哪里</h2>
     <p class="body">
-      在这个仓库里发布过、并且排在此刻这一版之前的那几版。每一版都只占一行，而不是一节，
-      理由是一份记录应该给出的：细节在它链去的那张发布页上，而一份不断完整生长下去的历史
-      就不再是历史，而是档案的第二份副本。
-    </p>
-
-    <div class="rows">
-      <div class="row">
-        <h3>0.1.4 Pre —— 第一个装得上的 Loment</h3>
-        <p>
-          <strong>2026-09-22。</strong>它被当作预发布挂出来只有一个原因：让"这个仓库是有版本
-          的"不再是一句声称，而变成一件你看得见的事实。有一处制作上的细节留到了今天 —— 标签
-          指向的 commit 比归档包所构建自的那个更早，所以 GitHub 自动生成的源码归档包，是那次
-          构建之前的树。
-        </p>
-      </div>
-      <div class="row">
-        <h3>0.1.4 —— 可用</h3>
-        <p>
-          <strong>2026-09-23。</strong>主题是<em>可用</em>，而不是往里塞更多东西：语法面完全
-          没有变，力气都花在把解释器最后一点从必经之路上拿掉。它的 Windows 安装器在那些把
-          Windows 配置成不搜索当前目录的机器上什么也不做；<strong>要这一版请从 zip
-          安装</strong>。
-        </p>
-      </div>
-      <div class="row">
-        <h3>0.1.4.5 —— 回收，以及一个成为保证的运行时</h3>
-        <p>
-          <strong>2026-10-13。</strong>四级回收阶梯，带一个自适应的一半和一个分代的一半；
-          <code>no_runtime</code> 从声明变成了保证；两个目标上都有网络；第五个维度
-          <code>vm</code> 到来，而它的发行闸是关着的。同一天的一个补丁只改了 Windows
-          安装器。
-        </p>
-      </div>
-      <div class="row">
-        <h3>0.1.4.6 —— 闸门落下</h3>
-        <p>
-          <strong>2026-10-17。</strong>四件建好了、却一直被挡在发行版之外的东西同时变得可达：
-          编译器旁边的解释器档、libc 与 LibL、以及 <code>vm</code> 这一维。其余是 0.1.4.7
-          之前最大的一次缺陷清扫。
-        </p>
-      </div>
-      <div class="row">
-        <h3>0.1.4.7 —— 库成为孪生</h3>
-        <p>
-          <strong>2026-10-18。</strong>一次缺陷发布，而头条不是一个功能：包里随附的每一个库，
-          在两个实现里都编出逐字节相同的 IR —— 155 个模块，没有一个被跳过。为了走到这里翻出来
-          的是一批静默的状态 bug，而不是它们从外面看起来的那种「分歧」。
-        </p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="sec">
-  <div class="wrap">
-    <h2>0.1.5 —— 矩阵，以及最后一道闸打开</h2>
-    <p class="body">
-      <strong>2026-10-20。</strong>这一版讲的是把承诺变成你能查看的产物。<code>choose</code>
-      成了一个<strong>七维矩阵</strong>，其中每一个合法的格子都由两个实现各编一遍、再逐字节
-      比对；安全内存管理器与审计账本发布；解释器随工具链一起发布；而最后一道发行闸 —— 那道把
-      审计子系统挡在发布构建之外的闸 —— 已经不在了。
-    </p>
-
-    <h3>新增</h3>
-    <ol class="notes">
-      <li>
-        <strong>七个设置，每一个合法组合都被编译。</strong><code>mode</code>、<code>gc</code>、
-        <code>runtime</code>、<code>port</code>、<code>vm</code>、<code>lms</code> 与
-        <code>lspe</code>；产物层面的几行，判在链接后的映像上，而不只是判在 IR 上（17 条
-        判据）。
-      </li>
-      <li>
-        <strong>hosted 那一层被点名了。</strong><code>std</code> 可以带 hosted 的名字
-        （<code>libc</code>、文件系统、线程、时间、网络），<code>no_std</code> 不可以；
-        <code>std</code> + <code>hosted</code> 链上真正的 <code>libc.so.6</code> 并跑起来；
-        两个前端都拒绝 <code>no_std</code> + <code>hosted</code>；而 IR 自己声明了那一行，
-        所以链接器核对的是它没有写下的那条声称。
-      </li>
-      <li>
-        <strong><code>no_gc</code> 是一条被核对的声称。</strong>产物写着「没有收集器」，而
-        如果映像里有一个收集器，链接器就让这条声称失败。
-      </li>
-      <li>
-        <strong>安全内存管理器发布。</strong>七个级别 —— 编译期检查、内存映射图、守卫、
-        拒绝器、崩溃器、进程外重启器，以及一个最低限度的底 —— 默认是 <code>lms_full</code>，
-        设置上有四档。
-      </li>
-      <li>
-        <strong>审计子系统发布。</strong>LSPE 是第七个设置：记录每个判断依据什么的账本、
-        需要判断的站点的清点、带有局部与过程间引擎的义务系统，以及
-        <code>lspe pass "reason" { … }</code>，作为一种会被计数、按词法生效的绕过。发布构建
-        接受它。
-      </li>
-      <li>
-        <strong>这道闸说出它跳过了什么。</strong>已知红的名单点名的是判据，而不是一整个套件；
-        预算是对着基线分支核的，所以一次改动不能降低一条地板、也不能新增一条跳过；容量扫描器
-        覆盖整棵树里的字面量边界与定长数组；而自举的根带着一份重建可以证伪的来源记录。
-      </li>
-      <li>
-        <strong>解释器随工具链一起发布。</strong>T0 到 T3、紧凑序列化形式、一份缓存的产物与
-        一条性能上限，全都对着记录在案的账本量过。
-      </li>
-      <li>
-        <strong>随包链接器在 libc 需要的那些部分上与参考一致。</strong>位置无关代码、TLS
-        重定位与弱对象把 C 那一面收尾；IFUNC 与 <code>STT_NOTYPE</code> 导入、没有 SONAME 的
-        共享对象以及 <code>PT_GNU_RELRO</code> 把它补齐。
-      </li>
-      <li>
-        <strong>安全，按行为来说。</strong><code>free</code> 在复用之前把那块载荷擦干净；HTTP
-        请求构造器拒绝 CR、LF 与 NUL；安装器核对它复制的每一个文件，并且用绝对路径调用
-        PowerShell；而发布会对 <code>SHA256SUMS</code> 发布一份分离的签名，放在它所描述的那些
-        归档包之外。
-      </li>
-    </ol>
-
-    <h3>修复</h3>
-    <ol class="notes">
-      <li>
-        <strong>自举编译器里互相覆盖的状态槽。</strong>一个 <code>match</code> 臂的标签覆盖了
-        收集器档位的标志，而发射器的诊断槽又覆盖了线程创建的标志 —— 在一条线程探针上表现为
-        一条假的「超过 20 个参数」错误。两者现在各有自己的槽，并由判据钉住。
-      </li>
-      <li>
-        <strong>固定容量的表越界时不是拒绝，而是被写坏。</strong>检查器的名字环境没有边界
-        （2048 字节、256 条）—— 一个函数里 515 个 <code>let</code> 在 Linux 上段错误，在
-        Windows 上则静默地写了出去。它现在容纳 4096 条，并在到达上限时停下；发射器的几张表
-        加上了守卫和点名的诊断。
-      </li>
-      <li>
-        <strong>崩溃换成了诊断。</strong>自举词法分析器不再读过 token 缓冲区的末尾，解析器的
-        嵌套上限是对 <code>(</code> <code>[</code> <code>{</code> 加一元链的一趟扫描，而准入
-        工具对过大的输入报错，而不是把它截断。
-      </li>
-      <li>
-        <strong>点错了东西的链接器失败。</strong>有两条消息还在描述已经不存在的闸；输入缓冲区
-        长到 6 MiB；而归档表、重定位表与导入表是被固定住，而不是被加宽。
-      </li>
-      <li>
-        <strong>前端与 CLI 上的沉默。</strong>六处检查器修复、十个用户看得见的 CLI 情形、
-        一趟 C 翻译，以及十三处渲染器/链接器修复 —— 每一处都是输入可能一声不响地丢掉的地方。
-      </li>
-      <li>
-        <strong>两个格式化器现在对多行 <code>||</code> 表达式里的注释达成一致。</strong>
-        有一条判据把语料里的每个文件逐字节比一遍。
-      </li>
-      <li>
-        <strong>lompi 的网络层就是 <code>internet</code> 包。</strong>手写的那些 HTTP 名字
-        没有了；注册表索引在带外被钉住；而一个「拉取完成」的标记由它的消费者核对。
-      </li>
-      <li>
-        <strong>里程碑里 134 条带 bug 标签的 issue 全部关闭</strong>，而每一处改变了行为的
-        修复都带着一条判据：修之前是红的，修之后是绿的。名单连同点名每一条的那个 issue，在
-        <a href="https://github.com/Loment-Lang/Loment/milestone/2">里程碑页面</a>上。
-      </li>
-    </ol>
-    <h3>这一版没有</h3>
-    <p class="body">
-      审计子系统<strong>在包里，但还没有从包里拆出去</strong>：打包的拆分是 0.1.5.1 的事。
-      <code>no_std</code> 的完整能力链报告是一条加载器规则，仍然留在
-      <a href="https://github.com/Loment-Lang/Loment/issues/536">#536</a>。<code>choose vm</code>
-      仍然不改变编译器发出的东西 —— 解释器是你能运行的一个程序，而不是一种编译器模式。而
-      审计账本还没有吃进内存管理器的守卫检查；那条接缝写在 <code>docs/270</code> 里。
-    </p>
-  </div>
-</section>
-
-<section class="sec">
-  <div class="wrap">
-    <h2>0.1.5.1 —— 权限变成代数，工具链学会替换自己</h2>
-    <p class="body">
-      <strong>2026-11-07。</strong>里程碑关闭：92 个 issue 全部完成。能力不再是一个闭区间，而是三个
-      维度——形状、极性、时律；内存安全变成七级梯子，而且地板有名字、有字节数、有哈希；运行中的工具链
-      可以从签名过的、只含修复的 Pre-Release 替换自己；Java 库不需要 JVM 也能跑；而没写
-      <code>choose write grammar</code> 的源码，现在按<strong>最新</strong>版次
-      <code>tur2026.3</code> 读。
-    </p>
-
-    <h3>新增</h3>
-    <ol class="notes">
-      <li>
-        <strong>十种能力域，一个判决点。</strong>形状可以是普通区间、点、前无限
-        <code>[()..hi]</code>、后无限 <code>[lo..()]</code> 或全域 <code>[()..()]</code>；极性可以
-        是 <code>danger</code>（拒绝表，与普通允许域互为对偶）；时律可以是 <code>epoch</code>、
-        <code>far</code>、<code>sliding</code>、<code>decaying</code>、<code>growing</code> 或
-        <code>consumed</code>。新增 <code>tick;</code> 推进虚拟钟；两套实现发射的 IR 与形式对象
-        逐字节相同。
-      </li>
-      <li>
-        <strong>热更新。</strong>运行中的工具链只接受签名过的、只含修复的 Pre-Release：准入判断是
-       五条相等，而不是一份变更日志；两槽加载器原子切换，活帧链在安全点强制重映射。一条修复落进
-        正在运行的 LSP，一条契约变更被拒绝。
-      </li>
-      <li>
-        <strong>没有 JVM 的 Java 库。</strong><code>lompi</code> 取回外来包；<code>.class</code> 与
-        <code>.jar</code> 不需要 JDK 就能解析，降级前先过验证器，再编成闭世界分派的 Loment IR；
-        最小运行时补上库要的那部分，链接器产出<strong>不装 Java 也证明得了</strong>的镜像。
-      </li>
-      <li>
-        <strong>默认版次是最新版。</strong>没写声明的源码按 <code>tur2026.3</code> 读；
-        <code>tur</code> / <code>tur1</code> 仍然是你明确要旧读法时才写的。新构造若与旧标识符撞车，
-        直接拒编译（<code>E040</code>），绝不静默改义。
-      </li>
-      <li>
-        <strong>会数工作的 VM。</strong>解释器的判据比较确定性计数——指令、解码、元组查找、分派——
-        而不是墙钟比值。融合判据断言分派数下降（夹具上 8,000,012 → 5,000,009）而指令数不变；
-        那里的墙钟差本来就在跑动噪声里。
-      </li>
-    </ol>
-    <h3>不在这一版里</h3>
-    <p class="body">
-      设计里的十八种域落地十种；周期域（要每格时间戳）、代域与自适应域（要安全点与质量账本）、
-      语境类其余四条，以及域树、域图、扩展与嵌套仍是设计。生存期在 2026.3 里仍是设计：
-      <code>lgc</code> 落了，生存期没有。<code>no_std</code> 的完整能力链报告仍是
-      <a href="https://github.com/Loment-Lang/loment/issues/536">#536</a>。
-    </p>
-  </div>
-</section>
-
-<section class="sec">
-  <div class="wrap">
-    <h2>当前状态在哪里</h2>
-    <p class="body">
-      这一页是历史。这个项目<em>今天</em>能做什么，在站上其余页面和仓库里；它接下来打算做
-      什么，在路线图上 —— 它是按一份计划来写的，并且自己这么说。
+      这一页是一条线，不是档案。完整说明、产物与签名在 GitHub；一次改动背后的论证在博客或
+      有编号的设计记录里。
     </p>
     <div style="margin-top: var(--s4)">
-      <a class="doclink" href="https://github.com/Loment-Lang/loment/releases/latest">
-        <span class="who">最新发布</span>
-        <span class="what">要安装的版本。永远用这个链接，绝不把一个版本号抄到页面上。</span>
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/releases">
+        <span class="who">GitHub 上的发布</span>
+        <span class="what">完整说明、下载、校验和与签名。</span>
+      </a>
+      <a class="doclink" href="blog.html">
+        <span class="who">博客</span>
+        <span class="what">值得解释的时刻的长版本。</span>
+      </a>
+      <a class="doclink" href="roadmap.html">
+        <span class="who">路线图</span>
+        <span class="what">接下来做什么，写成计划，不附日期。</span>
       </a>
       <a class="doclink" href="https://loment.fandom.com/wiki/Versions_and_roadmap">
-        <span class="who">路线图</span>
-        <span class="what">0.1.5 之后是什么，按一份计划来说，而不是按一个功能来说。</span>
+        <span class="who">Wiki</span>
+        <span class="what">同一段历史，写成百科条目。</span>
       </a>
-      <a class="doclink" href="start.html">
-        <span class="who">入门</span>
-        <span class="what">装上它，跑你的第一个程序。</span>
-      </a>
-      <a class="doclink" href="index.html">
-        <span class="who">回到首页</span>
-        <span class="what">Loment 是什么，以及它构建的两类程序。</span>
+      <a class="doclink" href="playground.html">
+        <span class="who">在线编译</span>
+        <span class="what">无需安装，试用当前编译器。</span>
       </a>
     </div>
   </div>
 </section>
-
 </main>
 
 <footer>

@@ -1,17 +1,17 @@
 <!doctype html>
 <!-- translated-from: start.html -->
-<!-- source-sha256: cd4f91a41f244cccfe6b13af5629a514fbf797be162984db9bb3d903312e25cc -->
+<!-- source-sha256: 074f41aa2f45cbb0636cab0f1feb16818fa1953cdecfdc87c5fbf543ed7037f4 -->
 <html lang="ja">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>はじめに — Loment</title>
-<meta name="description" content="Loment をインストールして最初のプログラムを走らせる。Linux と Windows 向けのネイティブバイナリ。コンパイルと実行に Python も clang も WSL も要らない。">
+<title>学ぶ — Loment</title>
+<meta name="description" content="Loment を学ぶ：パッケージを導入し、最初のプログラムを動かし、2 冊の本、サンプル集、演習コースから進む道を選びます。ツールチェーン自身も説明します。">
 <link rel="icon" href="../mark.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=JetBrains+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="../style.css?v=20261108b">
+<link rel="stylesheet" href="../style.css?v=20261108c">
 <link rel="alternate" hreflang="en" href="https://loment-lang.github.io/loment-site/start.html">
 <link rel="alternate" hreflang="zh-Hans" href="https://loment-lang.github.io/loment-site/zh/start.html">
 <link rel="alternate" hreflang="ja" href="https://loment-lang.github.io/loment-site/ja/start.html">
@@ -21,30 +21,24 @@
 </head>
 <body>
 
-<a class="skip" href="#main">本文へスキップ</a>
+<a class="skip" href="#main">Skip to content</a>
 
 <header class="bar">
   <div class="wrap">
     <a class="brand" href="index.html">
-      <svg width="22" height="22" viewBox="0 0 64 64" aria-hidden="true">
+      <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true">
         <rect width="64" height="64" rx="14" fill="#2f4bff"/>
         <path d="M18 14h12v24h16v12H18z" fill="#fff"/>
       </svg>
       Loment
     </a>
-        <nav>
-      <a href="learn.html">学習</a>
-      <a href="start.html" aria-current="page">はじめに</a>
+            <nav>
+      <a href="start.html" aria-current="page">学ぶ</a>
+      <a href="blog.html">ブログ</a>
       <a href="examples.html">サンプル</a>
       <a href="playground.html">オンライン実行</a>
       <a href="standard.html">標準</a>
-      <details class="navmenu" name="bar">
-        <summary>バージョン</summary>
-        <ul>
-          <li><a href="releases.html">リリース履歴</a></li>
-          <li><a href="roadmap.html">ロードマップ</a></li>
-        </ul>
-      </details>
+      <a href="releases.html">タイムライン</a>
       <details class="navmenu" name="bar">
         <summary>システム</summary>
         <ul>
@@ -71,59 +65,69 @@
 </header>
 
 <main id="main">
-
 <section class="head">
   <div class="wrap">
-    <h1>はじめに</h1>
+    <p class="eyebrow">学ぶ</p>
+    <h1>Loment を学ぶ</h1>
     <p class="lede">
-      このページは、プログラムを走らせることだけを扱う。言語そのものについては
-      <a href="index.html">フロントページ</a>を見よ。
+      パッケージを入れ、1 つのプログラムを動かし、自分の進め方に合う道を選んでください。
+      <strong>2 冊の本</strong>（Loment を使うための本と、Loment を変えるための本）、
+      <strong>サンプル集</strong>、<strong>演習コース</strong>があります。中のプログラムはすべて
+      ゲートがコンパイルして実行します。その下にあるもう一人の教師が、
+      <strong>自分を説明するツールチェーン</strong>です。言語全体を印字し、すべての組み込み関数を
+      一覧し、診断の意味を教えます。
     </p>
     <p class="actions">
-      <a class="btn btn-solid" href="https://marketplace.visualstudio.com/items?itemName=hooyan2022.loment">VS Code 拡張機能をインストール</a>
+      <a class="btn btn-solid" href="https://loment-lang.github.io/Loment/usage/src/00-introduction.html">本を読む</a>
+      <a class="btn btn-quiet" href="playground.html">オンライン実行を開く</a>
+    </p>
+    <p class="limit">
+      <strong>教材はあります。足りないのは翻訳です。</strong> Loment Book、Development
+      Contribution Plan、By Example、Lomentlings は英語です。リファレンスマニュアルと設計記録は
+      まだ中国語です。以下で不完全な資料は、そのことをこのページに書きます。
     </p>
   </div>
 </section>
 
 <section class="sec">
   <div class="wrap">
-    <h2>インストールする</h2>
+    <h2>インストール</h2>
     <p class="body">
-      Loment はパッケージとして配布される。自分のプラットフォーム向けのアーカイブを
-      <a href="https://github.com/Loment-Lang/loment/releases/latest">最新リリース</a>から取れ。
+      Loment はパッケージとして配布されます。
+      <a href="https://github.com/Loment-Lang/loment/releases/latest">最新リリース</a>から
+      自分のプラットフォームのアーカイブを取ってください。
     </p>
 
     <div class="rows">
       <div class="row">
         <h3>Linux / WSL</h3>
         <p>
-          <code>linux-x64.tar.gz</code>。展開して <code>sh install.sh</code> を実行する。
-          要求されるのは POSIX の <code>sh</code> だけだ。
+          <code>linux-x64.tar.gz</code>。展開して <code>sh install.sh</code> を実行します。
+          必要なのは POSIX <code>sh</code> だけです。
         </p>
       </div>
       <div class="row">
         <h3>Windows</h3>
         <p>
-          <code>windows-x64.zip</code> —— 展開して
-          <code>powershell -File install.ps1</code> を実行する —— あるいはダブルクリックする
-          <code>windows-x64-setup.exe</code>。
+          <code>windows-x64.zip</code> を展開して
+          <code>powershell -File install.ps1</code> を実行するか、
+          <code>windows-x64-setup.exe</code> をダブルクリックします。
         </p>
       </div>
     </div>
 
     <p class="body" style="margin-top: var(--s4)">
-      <code>loment</code> コマンド、<code>lompi</code>、そして言語サーバーが手に入る。
-      コンパイルと実行には <strong>Python も clang も WSL も要らない</strong>。パッケージは
-      ネイティブバイナリと標準ライブラリであり、インストーラは何かを書き込む前に
-      <code>SHA256SUMS</code> を照合する。
+      <code>loment</code> コマンド、パッケージマネージャー <code>lompi</code>、言語サーバーが
+      入ります。コンパイルと実行に <strong>Python、clang、WSL は不要</strong>です。パッケージは
+      ネイティブバイナリと標準ライブラリで、インストーラーは書き込む前に
+      <code>SHA256SUMS</code> を検証します。
     </p>
 
     <p class="note">
-      言語を使うのではなく変えたいなら、代わりにチェックアウトから作業せよ:
-      <code>git clone https://github.com/Loment-Lang/loment.git</code>。コンパイラは
-      Loment で書かれており、リポジトリにコミットされたシードから再ビルドする ——
-      <code>sh loment/bootstrap.sh</code> がそれをビルドし、シードが自分自身を
-      バイト単位で再現するかを確かめる。
+      言語自体を変えたい場合はチェックアウトから始めます:
+      <code>git clone https://github.com/Loment-Lang/loment.git</code>。コンパイラは Loment で
+      書かれ、リポジトリにコミットされたシードから再構築されます。
+      <code>sh loment/bootstrap.sh</code> がビルドし、シードがバイト単位で再現するか確認します。
     </p>
   </div>
 </section>
@@ -132,7 +136,7 @@
   <div class="wrap">
     <h2>プログラムを書く</h2>
     <p class="body">
-      これを <code>hello.lomt</code> に書く。
+      これを <code>hello.lomt</code> に置きます。
     </p>
 
     <div class="codewrap">
@@ -140,65 +144,114 @@
     </div>
 
     <p class="body" style="margin-top: var(--s4)">
-      <code>_start</code> はマシンが始まる場所である。sealed なプログラム —— 何もリンク
-      しないもの —— には、代わりにエントリポイントを呼んでくれる runtime がその下にないので、
-      自分でそれを名指しする; そして <code>printf</code> もないので、出力は <code>write</code>
-      システムコールを通る: ファイルディスクリプタ、文字列のポインタ、その長さである。二番目の
-      呼び出しは <code>exit</code>。<code>choose hosted</code> と書けば、代わりに普通の C
-      プログラムが得られ、エントリポイントは <code>fn main() -&gt; u32</code> になる。
+      <code>_start</code> はマシンが始まる場所です。何もリンクしない密封プログラムには、入口を
+      呼ぶランタイムが下にありません。だから自分で名前を付けます。printf もないので、出力は
+      <code>write</code> システムコールへ送ります。ファイル記述子、文字列のポインタ、長さです。
+      2 回目は exit です。<code>choose hosted</code> と書けば、入口が
+      <code>fn main() -&gt; u32</code> の普通の C プログラムになります。
     </p>
   </div>
 </section>
 
 <section class="sec">
   <div class="wrap">
-    <h2>コンパイルして実行する</h2>
+    <h2>コンパイルして実行</h2>
 
     <div class="codewrap">
 <pre class="code"><code><span class="ln" data-n="1"><span class="prompt">$ </span>loment run hello.lomt          <span class="c"># compile, link, run</span></span><span class="ln" data-n="2"><span class="prompt">$ </span>loment build hello.lomt -o hello</span><span class="ln" data-n="3"><span class="prompt">$ </span>loment check hello.lomt        <span class="c"># check only, nothing written</span></span><span class="ln" data-n="4"><span class="prompt">$ </span>loment ir hello.lomt           <span class="c"># the LLVM IR it generates</span></span></code></pre>
     </div>
 
     <p class="body" style="margin-top: var(--s4)">
-      Windows ではターゲットは PE なので、出力を <code>.exe</code> と名付ける ——
-      リンカはその名前から形式を選ぶ。
+      Windows のターゲットは PE なので、出力名を <code>.exe</code> にします。リンカーはその名前
+      から形式を選びます。<code>loment new hello</code> はこの出発点を書き出し、既存ファイルは
+      上書きしません。
     </p>
   </div>
 </section>
 
 <section class="sec">
   <div class="wrap">
-    <h2>言語を見て回る</h2>
+    <h2>入口を選ぶ</h2>
     <p class="body">
-      ツールチェインは自分自身を説明する。この四つがその大半を担う。
+      2 冊の本と 2 つの練習線、1 つの言語。必要なものに合うものを選んでください。どれも
+      リポジトリにあり、中のプログラムはビルドが検査します。
     </p>
-
-    <div class="codewrap">
-<pre class="code"><code><span class="ln" data-n="1"><span class="prompt">$ </span>loment example tour   <span class="c"># the whole language in one file</span></span><span class="ln" data-n="2"><span class="prompt">$ </span>loment cheat          <span class="c"># the traps, ordered by how easily they bite</span></span><span class="ln" data-n="3"><span class="prompt">$ </span>loment builtins       <span class="c"># every built-in function there is</span></span><span class="ln" data-n="4"><span class="prompt">$ </span>loment syntax         <span class="c"># syntax summary</span></span></code></pre>
-    </div>
-    <p class="caption">
-      <code>loment example tour</code> は言語全体を、コメント付きのひとつのソースファイル
-      として出力する。そのコメントは中国語で、<code>0.1.4</code> ではその特定のファイルは
-      リンクしない。<a href="examples.html">サンプル</a>にある四つのプログラムが、
-      実行できると検証済みのものである。
-    </p>
-
-    <div style="margin-top: var(--s5)">
-      <a class="doclink" href="examples.html">
-        <span class="who">サンプル</span>
-        <span class="what">このサイトの短いプログラムに加えて、リポジトリにある全部。</span>
-      </a>
-      <a class="doclink" href="https://github.com/Loment-Lang/loment/blob/main/QUICKSTART.md">
-        <span class="who">QUICKSTART.md</span>
-        <span class="what">このページの長い版。すべてのビルド経路と FFI の注意を含む。</span>
-      </a>
-      <a class="doclink" href="https://github.com/Loment-Lang/loment/blob/main/README.md">
-        <span class="who">README</span>
-        <span class="what">その言語が何のためか、ほかに何が違うか、そして正直に言って何がまだ終わっていないか。</span>
-      </a>
+    <div class="rows">
+      <div class="row">
+        <h3>Loment Book</h3>
+        <div>
+          <p>「あの本」と呼ばれます。言語を第一原理から説き、途中でいくつかプロジェクトを作るので、最後には構文、能力ドメイン、コンパイラがソースに何をするかの動くモデルが手に入ります。</p>
+          <p><a class="btn btn-solid" href="https://loment-lang.github.io/Loment/usage/src/00-introduction.html">本を読む</a></p>
+        </div>
+      </div>
+      <div class="row">
+        <h3>Development Contribution Plan</h3>
+        <div>
+          <p>2 冊目です。リポジトリの地図、ゲートとそのラチェット、2 つのコンパイラとシード、ブートストラップ鎖、リリース、アーキテクチャ巡検。Loment を使うだけでなく変えたいときに読みます。</p>
+          <p><a class="btn btn-solid" href="https://loment-lang.github.io/Loment/contributing/src/00-introduction.html">貢献計画を読む</a></p>
+        </div>
+      </div>
+      <div class="row">
+        <h3>Loment by Example</h3>
+        <div>
+          <p>1 ファイルに 1 概念。どれもコンパイルして実行できる短い注釈付きプログラムです。説明より動く形が欲しいときに使います。</p>
+          <p><a class="btn btn-solid" href="https://loment-lang.github.io/Loment/usage/by-example/README.html">By Example を見る</a></p>
+        </div>
+      </div>
+      <div class="row">
+        <h3>Lomentlings</h3>
+        <div>
+          <p>直す小さな壊れたプログラム。1 つに 1 つの考え。終わったら教えるランナー付きです: <code>python tools/lomentlings.py</code>。構文が身につきます。</p>
+          <p><a class="btn btn-solid" href="https://github.com/Loment-Lang/Loment/blob/main/exercises/README.md">Lomentlings コースをする</a></p>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
+<section class="sec">
+  <div class="wrap">
+    <h2>ツールチェーンは自分を説明する</h2>
+    <p class="body">
+      ここが本当に珍しい部分で、言語を使うつもりがなくても試す価値があります。
+      <strong>ツールチェーンがリファレンスです。</strong>どれもインストール済みパッケージから
+      読むので、ネットワークなしで動き、実際に持っているバージョンについて答えます。
+    </p>
+
+    <div class="codewrap">
+<pre class="code"><code><span class="ln" data-n="1"><span class="prompt">$ </span>loment example tour   <span class="c"># the whole language in one file</span></span><span class="ln" data-n="2"><span class="prompt">$ </span>loment cheat          <span class="c"># the whole language on one page</span></span><span class="ln" data-n="3"><span class="prompt">$ </span>loment builtins       <span class="c"># every built-in function there is</span></span><span class="ln" data-n="4"><span class="prompt">$ </span>loment syntax         <span class="c"># syntax summary</span></span><span class="ln" data-n="5"><span class="prompt">$ </span>loment explain E4     <span class="c"># what a diagnostic means, and what to change</span></span></code></pre>
+    </div>
+
+    <p class="caption">
+      tour のコメントは中国語で、現在のリリースではそのファイルはリンクできません。
+      <a href="examples.html">サンプル</a>ページのプログラムが実行確認済みです。残りの 4 コマンドは
+      英語です。
+    </p>
+
+    <div style="margin-top: var(--s5)">
+      <a class="doclink" href="playground.html">
+        <span class="who">オンライン実行</span>
+        <span class="what">ブラウザで Loment をコンパイルして実行。インストール不要。</span>
+      </a>
+      <a class="doclink" href="examples.html">
+        <span class="who">サンプル</span>
+        <span class="what">このサイトの短いプログラムと、実際に出た出力。</span>
+      </a>
+      <a class="doclink" href="https://loment.fandom.com/">
+        <span class="who">Wiki</span>
+        <span class="what">言語とツールチェーンを 1 トピック 1 ページで。</span>
+      </a>
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/blob/main/QUICKSTART.md">
+        <span class="who">QUICKSTART.md</span>
+        <span class="what">このページの長い版。すべてのビルド経路を含みます。</span>
+      </a>
+      <a class="doclink" href="https://discord.gg/rGw7NRNU">
+        <span class="who">Discord</span>
+        <span class="what">プロジェクトが話す場所。質問も不具合報告と同じく歓迎です。</span>
+      </a>
+    </div>
+  </div>
+</section>
 </main>
 
 <footer>
@@ -208,6 +261,7 @@
       <a href="https://github.com/Loment-Lang/loment">ソース</a>
       <a href="https://github.com/Loment-Lang/loment/releases/latest">リリース</a>
       <a href="https://github.com/FujoJTOP/lompi">lompi</a>
+      <a href="https://loment.fandom.com/">Wiki</a>
       <a href="https://github.com/Loment-Lang/loment/issues">イシュー</a>
       <a class="mast" href="https://mastodon.social/@Loment" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z"/></svg>Mastodon</a>
       <a class="mast" href="https://bsky.app/profile/loment.bsky.social" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364-3.136.521-5.919 1.517-2.244 5.449 3.944 4.011 5.42-1.005 6.237-3.242.653-1.79 1.03-2.81 1.03-2.81s.377 1.02 1.03 2.81c.817 2.237 2.293 7.253 6.237 3.242 3.675-3.932.892-4.928-2.244-5.449 2.67.296 5.568-.628 6.383-3.364.246-.829.624-5.789.624-6.479 0-.688-.139-1.86-.902-2.203-.659-.299-1.664-.621-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8z"/></svg>Bluesky</a>

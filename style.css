@@ -520,6 +520,46 @@ pre.code code {
   .row { grid-template-columns: 1fr; gap: var(--s2); }
 }
 
+/* Timeline: one dated line, a dot per release, no cards. */
+.timeline {
+  margin-top: var(--s5);
+  border-left: 2px solid var(--line-2);
+  padding-left: var(--s4);
+}
+.tl {
+  display: grid;
+  grid-template-columns: minmax(0, 9rem) minmax(0, 1fr);
+  gap: var(--s1) var(--s4);
+  position: relative;
+  padding: var(--s3) 0;
+  border-bottom: 1px solid var(--line);
+}
+.tl:last-child { border-bottom: 0; }
+.tl::before {
+  content: "";
+  position: absolute;
+  left: calc(-1 * var(--s4) - 6px);
+  top: 1.45rem;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--paper);
+  border: 2px solid var(--blue);
+}
+.tl-date {
+  font: 500 var(--t-xs)/1.6 var(--mono);
+  color: var(--faint);
+  padding-top: 0.2rem;
+  white-space: nowrap;
+}
+.tl-body h3 { font-size: var(--t-h3); }
+.tl-body p { margin-top: var(--s1); color: var(--ink-2); max-width: var(--measure); }
+@media (max-width: 720px) {
+  .tl { grid-template-columns: 1fr; gap: 0; }
+  .tl-date { padding-top: 0; }
+  .tl::before { top: 1.4rem; }
+}
+
 /* --------------------------------------------------------------- misc */
 
 .doclink {

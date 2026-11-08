@@ -12,12 +12,12 @@ Español `/es/`。**英文是唯一的源**，其余四种是它的译文 ——
 | | |
 |---|---|
 | `index.html` | 落地页，**整个页面就是一段话**（2026-10-14 用户裁）：Loment 为什么存在，配两个按钮（下载 / 了解更多）。**没有代码、没有 `.limit`、没有 doclink、不引任何子页面** —— 它是自述，不是说明书。改它之前先读下面那节 |
-| `learn.html` | 学习导流页：按什么顺序上手，**并把每一步缺什么并排写出来** |
-| `start.html` | 安装与第一个程序（`QUICKSTART.md` 的短版） |
+| `start.html` | 学习页（合并了原来的 Learn 与 Get started）：安装、第一个程序、编译运行，以及两本书 / 示例 / 练习的入口。**每一步缺什么并排写出来** |
+| `blog.html` `blog-0152-beta2-playground.html` | Blog 索引与首篇博文：0.1.5.2 Beta 2 上线在线编译。按**时刻与理由**写，不按版本列功能 |
 | `examples.html` | 四个短程序，各带真跑出来的输出 |
 | `playground.html` | 在线编译：左边编辑器、右边输出。第一次运行按需加载 Pyodide，把仓里的参考编译器与 LVM 搬进浏览器；**没有任何内容上传**。四语同页 |
 | `playground/` | playground 的脚本与两套编译器快照：`beta/`（0.1.5.2.beta.2，跟 main）与 `stable/`（0.1.5.1）。各自带 `py/` 与 `manifest.json`，见该目录的 README |
-| `releases.html` | Release 历程：从 0.1.1 到正在建的那一版。**全站唯一写版本号的一页**，理由写在页上。最新那一版按**发布说明**写：`New` / `Fixed` 两张编号列表 + `Not in this release` |
+| `releases.html` | 时间线：从 0.1.1 到当前版的日期与一句话主题。**全站唯一写版本号的一页**，理由写在页上。**不再放逐版本的 New / Fixed 列表**，细节留在 GitHub 的发布页 |
 | `roadmap.html` | 路线图：0.1.5 起各版**为了什么**。**是计划不是承诺** —— 没有日期、没有一样现在能下载，页上明写 |
 | `lgc.html` `lvm.html` `lompi.html` `libl.html` `lspe.html` | 五个系统各一页，**各带自己的状态行**（LVM 是"引擎不存在"，LibL 是"0.1.4.6 起随包发布"，LSPE 是"设计，不在任何发布里"） |
 | `style.css` | 全部样式。配色、字体、那个"边界"母题，以及按语言关掉的那几处拉丁排印习惯，都在文件头的注释里说明了理由 |
@@ -26,16 +26,18 @@ Español `/es/`。**英文是唯一的源**，其余四种是它的译文 ——
 | `zh/ ja/ ru/ es/` | 四种译文，页面名与根目录相同 |
 | `tools/i18n_check.py` | 多语言的对齐判据，用法见下 |
 
-## 顶栏导航（2026-10-11 收成六项，2026-10-13 加到七项，2026-11-08 加到八项）
+## 顶栏导航（2026-10-11 收成六项，2026-10-13 加到七项，2026-11-08 重组为八项）
 
 ```
-Learn · Get started · Examples · Playground · Standard · Versions ▾ · Systems ▾ · GitHub
+Learn · Blog · Examples · Playground · Standard · Timeline · Systems ▾ · GitHub
 ```
 
 **为什么收**：页面涨到十页时平铺是九项，桌面宽度只剩 166px 余量，窄屏要折三行。
 把四个系统归到一个组、两个版本页归到一个组，顶层回到六项，桌面余量 317px。
 2026-10-13 为《Loment 语言标准》加回第七项 `Standard`（放在 Examples 之后）。
-2026-11-08 为在线编译加第八项 `Playground`（同样放在 Examples 之后）。
+2026-11-08 为在线编译加第八项 `Playground`（放在 Examples 之后）；同日把
+`Learn` 与 `Get started` 合并到 `start.html`、加 `Blog`、把 `Versions ▾` 换成
+单项 `Timeline`（`Roadmap` 从顶栏移出，由时间线页链入），顶层仍是八项。
 
 **第八项的长度账**：五语的标签都取短词——中文「在线编译」、日文「オンライン実行」、
 俄文「Песочница」、西文「Probar」——最长的俄文行仍是一行；再往里塞一个长词就会折行。
@@ -67,7 +69,7 @@ python tools/i18n_check.py --stamp  # 重盖翻译戳
 
 | | |
 |---|---|
-| 齐全 | 五种语言 × 十三个页面，没有多余页面 |
+| 齐全 | 五种语言 × 十五个页面，没有多余页面 |
 | 路径 | `<html lang>` 与目录对得上 |
 | `hreflang` | 每页六条 `<link rel="alternate">`（含 `x-default`）**逐字节**正确 |
 | 切换器 | 顶栏那个 `<details class="lang">` 逐字节正确，当前语言带 `aria-current` |

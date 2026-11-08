@@ -1,17 +1,17 @@
 <!doctype html>
 <!-- translated-from: releases.html -->
-<!-- source-sha256: 9b9fb9c36c4776d8328905fbd8730bf927fb6021ed3d69a6d40223ceb404fd45 -->
+<!-- source-sha256: 00a0d96c8200efd4d6920a18caf5e0e35fa5d25396b41e09d7ab4d57d16d5893 -->
 <html lang="es">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Historial de versiones — Loment</title>
-<meta name="description" content="Cada versión de Loment, desde la primera hasta la que se está construyendo ahora, y para qué servía cada una. Las primeras versiones se publicaron desde otro repositorio, y esta página lo dice en vez de fingir que el registro está completo.">
+<title>Cronología — Loment</title>
+<meta name="description" content="Una cronología con fechas de las versiones de Loment y aquello para lo que servía cada una. El registro detallado está en GitHub; esta página conserva la forma de la línea.">
 <link rel="icon" href="../mark.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=JetBrains+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="../style.css?v=20261108b">
+<link rel="stylesheet" href="../style.css?v=20261108c">
 <link rel="alternate" hreflang="en" href="https://loment-lang.github.io/loment-site/releases.html">
 <link rel="alternate" hreflang="zh-Hans" href="https://loment-lang.github.io/loment-site/zh/releases.html">
 <link rel="alternate" hreflang="ja" href="https://loment-lang.github.io/loment-site/ja/releases.html">
@@ -21,7 +21,7 @@
 </head>
 <body>
 
-<a class="skip" href="#main">Saltar al contenido</a>
+<a class="skip" href="#main">Skip to content</a>
 
 <header class="bar">
   <div class="wrap">
@@ -32,19 +32,13 @@
       </svg>
       Loment
     </a>
-        <nav>
-      <a href="learn.html">Aprender</a>
-      <a href="start.html">Primeros pasos</a>
+            <nav>
+      <a href="start.html">Aprender</a>
+      <a href="blog.html">Blog</a>
       <a href="examples.html">Ejemplos</a>
       <a href="playground.html">Probar</a>
       <a href="standard.html">Estándar</a>
-      <details class="navmenu" name="bar">
-        <summary aria-current="page">Versiones</summary>
-        <ul>
-          <li><a href="releases.html" aria-current="page">Historial de versiones</a></li>
-          <li><a href="roadmap.html">Hoja de ruta</a></li>
-        </ul>
-      </details>
+      <a href="releases.html" aria-current="page">Cronología</a>
       <details class="navmenu" name="bar">
         <summary>Sistemas</summary>
         <ul>
@@ -71,381 +65,86 @@
 </header>
 
 <main id="main">
-
 <section class="head">
   <div class="wrap">
-    <p class="eyebrow">Versiones</p>
-    <h1>Historial de versiones</h1>
+    <p class="eyebrow">Cronología</p>
+    <h1>Una cronología sin registro de cambios</h1>
     <p class="lede">
-      Desde el primer Loment hasta el que se publica ahora. Cada entrada dice para qué
-      servía esa versión <em>en concreto</em> — y dónde vive su registro, porque las primeras se
-      publicaron desde otro repositorio y este no lleva sus etiquetas.
+      Cada versión de Loment, en orden, con una frase sobre para qué servía. Las listas detalladas de
+      añadidos y correcciones están en GitHub, donde también están los artefactos y las firmas. Esta
+      página solo conserva la forma de la línea.
     </p>
     <p class="actions">
-      <a class="btn btn-solid" href="https://github.com/Loment-Lang/loment/releases/latest">Descargar</a>
-      <a class="btn btn-quiet" href="start.html">Primeros pasos</a>
+      <a class="btn btn-solid" href="https://github.com/Loment-Lang/loment/releases/latest">Descargar la versión actual</a>
+      <a class="btn btn-quiet" href="roadmap.html">Hoja de ruta</a>
     </p>
     <p class="limit">
-      <strong>Esta es la única página del sitio que nombra versiones.</strong> En todo lo demás el
-      enlace de descarga dice <code>releases/latest</code>, porque un número de versión escrito en
-      una página es un dato con fecha de caducidad. Aquí las versiones <em>son</em> el tema, así
-      que se nombran y cada una apunta a lo que realmente se publicó. <strong>Nada de esto es una
-      promesa sobre una versión que no se ha publicado.</strong>
+      <strong>Es la única página del sitio que nombra versiones.</strong> En el resto, el enlace de
+      descarga dice <code>releases/latest</code>, porque un número de versión copiado en una página es
+      un hecho con fecha de caducidad. Aquí el tema son las fechas.
     </p>
   </div>
 </section>
 
 <section class="sec">
   <div class="wrap">
-    <h2>Antes de este repositorio</h2>
+    <h2>La línea</h2>
     <p class="body">
-      Las primeras seis versiones salieron del repositorio anterior del proyecto. Sus etiquetas no
-      están en este, ni tampoco sus fechas, así que lo que sigue es la forma de la línea y no un
-      registro con fechas — y aquí nada enlaza a ninguna parte, porque no hay nada a lo que
-      enlazar.
+      Las seis primeras versiones salieron del repositorio anterior del proyecto; sus etiquetas y
+      fechas no están en este, así que aparecen sin fecha. Desde 0.1.4, cada entrada es una versión
+      de este repositorio.
     </p>
 
-    <div class="rows">
-      <div class="row">
-        <h3>0.1.1 — el primer Loment</h3>
-        <p>
-          Un <strong>subconjunto estricto de la sintaxis de Rust</strong>. Esa fue la restricción
-          inicial y no un estilo: el lenguaje quedaba definido por lo que Rust ya había resuelto,
-          así que había muy poco que discutir y un compilador que construir. Ya no pretende ser un
-          subconjunto — el solapamiento sigue ahí, la afirmación se abandonó cuando la superficie
-          lo rebasó.
-        </p>
-      </div>
-      <div class="row">
-        <h3>0.1.2 Alpha — el primer autoalojado</h3>
-        <p>
-          El lenguaje empieza a escribirse en sí mismo. Lo que eso aporta no es elegancia: un
-          compilador escrito en el lenguaje que compila es la única forma de averiguar qué es lo
-          que el lenguaje no puede expresar.
-        </p>
-      </div>
-      <div class="row">
-        <h3>0.1.2 pre1 — reparaciones</h3>
-        <p>
-          Los problemas que sacó a la luz el primer autoalojado. Un prelanzamiento es donde se
-          supone que ocurre ese tipo de cosas.
-        </p>
-      </div>
-      <div class="row">
-        <h3>0.1.2 pre2 — la base que sigue en pie</h3>
-        <p>
-          El fundamento de arranque sobre el que se construye cada versión posterior: un compilador
-          que se reconstruye a sí mismo a partir de una semilla de arranque confirmada en el
-          repositorio, y una comprobación de que la semilla reconstruida es igual a aquella con la
-          que empezó.
-        </p>
-      </div>
-      <div class="row">
-        <h3>0.1.3 Alpha — llega la idea de multisintaxis</h3>
-        <p>
-          La primera versión en la que el código fuente de otro lenguaje puede leerse como Loment.
-          El significado es siempre el de este lenguaje; solo se toma prestada la grafía. Es el
-          argumento fundacional del proyecto y no una función añadida encima, y por eso figura aquí
-          y no bajo "qué más es diferente".
-        </p>
-      </div>
-      <div class="row">
-        <h3>0.1.3.4 Alpha — el ciclo se cierra</h3>
-        <p>
-          Las cuatro etapas — analizador léxico, analizador sintáctico, comprobador y generador de
-          código — escritas en Loment, y el resultado alcanza un punto fijo de tres etapas. Es la
-          última de las versiones publicadas desde el repositorio anterior, y aquella contra la que
-          se mide toda versión posterior: <strong>es la versión en la que el lenguaje y el
-          compilador dejaron de necesitar un anfitrión para definirse.</strong>
-        </p>
-      </div>
+    <div class="timeline">
+      <div class="tl"><span class="tl-date">antes de 2026-09</span><div class="tl-body"><h3>0.1.1</h3><p>El primer Loment: un subconjunto estricto de la sintaxis de Rust. La afirmación de subconjunto se retiró después; la sintaxis que se solapa se quedó.</p></div></div>
+      <div class="tl"><span class="tl-date">antes de 2026-09</span><div class="tl-body"><h3>0.1.2 Alpha</h3><p>El lenguaje empieza a escribirse en sí mismo: la única forma de descubrir qué no puede expresar.</p></div></div>
+      <div class="tl"><span class="tl-date">antes de 2026-09</span><div class="tl-body"><h3>0.1.2 pre1</h3><p>Reparaciones de los problemas que sacó el primer autoalojamiento.</p></div></div>
+      <div class="tl"><span class="tl-date">antes de 2026-09</span><div class="tl-body"><h3>0.1.2 pre2</h3><p>La base de arranque que sigue en pie: un compilador reconstruido desde una semilla confirmada y comprobado para reproducirse.</p></div></div>
+      <div class="tl"><span class="tl-date">antes de 2026-09</span><div class="tl-body"><h3>0.1.3 Alpha</h3><p>La fuente de otro lenguaje puede leerse como Loment: se toma prestada la ortografía, el significado sigue siendo de Loment.</p></div></div>
+      <div class="tl"><span class="tl-date">antes de 2026-09</span><div class="tl-body"><h3>0.1.3.4 Alpha</h3><p>Analizador léxico, analizador sintáctico, comprobador y generador de código escritos en Loment; el arranque alcanza un punto fijo de tres etapas.</p></div></div>
+      <div class="tl"><time class="tl-date" datetime="2026-09-22">2026-09-22</time><div class="tl-body"><h3>0.1.4 Pre</h3><p>La primera compilación instalable. Su propósito era convertir «el repositorio tiene versiones» en algo que se puede mirar.</p></div></div>
+      <div class="tl"><time class="tl-date" datetime="2026-09-23">2026-09-23</time><div class="tl-body"><h3>0.1.4</h3><p>El acento estaba en ser usable, no en ser más grande: la sintaxis no cambió y el último camino del intérprete salió de la compilación. En Windows usa el zip; ese instalador se sabe roto.</p></div></div>
+      <div class="tl"><time class="tl-date" datetime="2026-10-13">2026-10-13</time><div class="tl-body"><h3>0.1.4.5</h3><p>La escalera de reclamación, <code>no_runtime</code> como garantía, red en ambos objetivos y el ajuste <code>vm</code> tras una puerta cerrada.</p></div></div>
+      <div class="tl"><time class="tl-date" datetime="2026-10-17">2026-10-17</time><div class="tl-body"><h3>0.1.4.6</h3><p>El nivel de intérprete, libc y LibL, y el ajuste <code>vm</code> se vuelven alcanzables desde una versión.</p></div></div>
+      <div class="tl"><time class="tl-date" datetime="2026-10-18">2026-10-18</time><div class="tl-body"><h3>0.1.4.7</h3><p>Cada biblioteca incluida compila a un IR idéntico byte a byte en las dos implementaciones: 155 módulos, ninguno omitido.</p></div></div>
+      <div class="tl"><time class="tl-date" datetime="2026-10-20">2026-10-20</time><div class="tl-body"><h3>0.1.5</h3><p><code>choose</code> pasa a ser una matriz de siete dimensiones cuyas celdas legales compilan ambas implementaciones; LMS y LSPE se incluyen.</p></div></div>
+      <div class="tl"><time class="tl-date" datetime="2026-11-07">2026-11-07</time><div class="tl-body"><h3>0.1.5.1</h3><p>Los dominios de capacidad pasan a ser un álgebra de forma, polaridad y ley temporal; llegan la actualización en caliente y las bibliotecas Java sin JVM; <code>tur2026.3</code> pasa a ser la edición por defecto.</p></div></div>
     </div>
   </div>
 </section>
 
 <section class="sec">
   <div class="wrap">
-    <h2>De este repositorio</h2>
+    <h2>Dónde está el detalle</h2>
     <p class="body">
-      Las versiones que salieron de este repositorio antes de la que se publica ahora. Cada una
-      es una fila y no una sección por la razón que un registro debe dar: el detalle está en la
-      página de la versión a la que enlaza, y una historia que sigue creciendo entera deja de ser
-      historia y se convierte en una segunda copia del archivo.
-    </p>
-
-    <div class="rows">
-      <div class="row">
-        <h3>0.1.4 Pre — el primer Loment instalable</h3>
-        <p>
-          <strong>2026-09-22.</strong> Se publicó como prelanzamiento por una sola razón: para que
-          «el repositorio tiene versiones» deje de ser una afirmación y pase a ser algo que se puede
-          mirar. Un detalle de cómo se hizo sigue en pie — la etiqueta apunta a un commit anterior al
-          que se usó para construir los archivos, así que los archivos de código fuente que genera
-          GitHub son el árbol previo a esa compilación.
-        </p>
-      </div>
-      <div class="row">
-        <h3>0.1.4 — usable</h3>
-        <p>
-          <strong>2026-09-23.</strong> El tema era <em>ser usable</em>, no tener más cosas: no cambió
-          la sintaxis, y el esfuerzo se fue en sacar del camino lo último del intérprete. Su
-          instalador de Windows no hace nada en máquinas configuradas para no buscar en el directorio
-          actual; <strong>instala desde el zip</strong> si quieres esta versión.
-        </p>
-      </div>
-      <div class="row">
-        <h3>0.1.4.5 — reclamación, y un runtime que es una garantía</h3>
-        <p>
-          <strong>2026-10-13.</strong> La escalera de reclamación de cuatro peldaños con una mitad
-          adaptativa y otra generacional; <code>no_runtime</code> pasó de declaración a garantía; red
-          en ambos objetivos; y la quinta dimensión, <code>vm</code>, llegó con su compuerta de
-          versión cerrada. Un parche del mismo día cambió solo el instalador de Windows.
-        </p>
-      </div>
-      <div class="row">
-        <h3>0.1.4.6 — las compuertas bajan</h3>
-        <p>
-          <strong>2026-10-17.</strong> Cuatro cosas que estaban construidas pero se mantenían
-          fuera de una versión se volvieron alcanzables de una vez: un nivel de intérprete junto
-          al compilador, libc y LibL, y el ajuste <code>vm</code>. El resto fue el mayor barrido
-          de defectos anterior a 0.1.4.7.
-        </p>
-      </div>
-      <div class="row">
-        <h3>0.1.4.7 — las bibliotecas se vuelven gemelas</h3>
-        <p>
-          <strong>2026-10-18.</strong> Una versión de defectos cuyo titular no es una función: cada
-          biblioteca que envía el paquete compila a IR idéntico byte a byte en ambas
-          implementaciones — 155 módulos, ninguno omitido. Llegar ahí destapó un conjunto de
-          errores de estado silenciosos, no la divergencia que parecían desde fuera.
-        </p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="sec">
-  <div class="wrap">
-    <h2>0.1.5 — la matriz, y la última compuerta se abre</h2>
-    <p class="body">
-      <strong>2026-10-20.</strong> La versión trata de convertir promesas en artefactos que puedes
-      inspeccionar. <code>choose</code> se convirtió en una <strong>matriz de siete
-      dimensiones</strong> en la que ambas implementaciones compilan cada celda legal y la
-      comparan byte a byte; el gestor de memoria seguro y el registro de auditoría se publican; el
-      intérprete se envía con el conjunto de herramientas; y la última compuerta de versión — la
-      que mantenía el subsistema de auditoría fuera de una compilación de versión — ya no está.
-    </p>
-
-    <h3>Nuevo</h3>
-    <ol class="notes">
-      <li>
-        <strong>Siete ajustes, y cada combinación legal se compila.</strong>
-        <code>mode</code>, <code>gc</code>, <code>runtime</code>, <code>port</code>,
-        <code>vm</code>, <code>lms</code> y <code>lspe</code>; las filas a nivel de artefacto se
-        juzgan sobre la imagen enlazada y no solo sobre el IR (17 criterios).
-      </li>
-      <li>
-        <strong>La capa hosted tiene nombre.</strong> <code>std</code> puede llevar nombres hosted
-        (<code>libc</code>, sistema de archivos, hilos, tiempo, red) y <code>no_std</code> no;
-        <code>std</code> + <code>hosted</code> enlaza el <code>libc.so.6</code> real y se ejecuta;
-        ambos front ends rechazan <code>no_std</code> + <code>hosted</code>; y el propio IR
-        declara la fila, así que el enlazador comprueba una afirmación que no escribió.
-      </li>
-      <li>
-        <strong><code>no_gc</code> es una afirmación comprobada.</strong> El artefacto dice «sin
-        recolector», y el enlazador lo rechaza si hay un recolector en la imagen.
-      </li>
-      <li>
-        <strong>Se publica el gestor de memoria seguro.</strong> Siete niveles — comprobaciones en
-        tiempo de compilación, un mapa de memoria, una guarda, un rechazador, un abortador, un
-        reiniciador fuera de proceso y un suelo mínimo — con <code>lms_full</code> como valor por
-        defecto y cuatro niveles en el ajuste.
-      </li>
-      <li>
-        <strong>Se publica el subsistema de auditoría.</strong> LSPE es el séptimo ajuste: un
-        registro de aquello en lo que se apoya cada juicio, un censo de los puntos que necesitan
-        uno, un sistema de obligaciones con motores local e interprocedimental, y
-        <code>lspe pass "reason" { … }</code> como una evasión contada y léxica. Una compilación
-        de versión lo acepta.
-      </li>
-      <li>
-        <strong>La compuerta dice qué omite.</strong> La lista de rojos conocidos nombra un
-        criterio y no una suite; los presupuestos se comprueban contra la rama base, así que un
-        cambio no puede bajar un suelo ni añadir una omisión; el escáner de capacidad cubre cotas
-        literales y arrays de tamaño fijo en todo el árbol; y la raíz de arranque lleva un registro
-        de procedencia que una reconstrucción puede falsar.
-      </li>
-      <li>
-        <strong>El intérprete se envía con el conjunto de herramientas.</strong> De T0 a T3, la
-        serialización compacta, un artefacto en caché y un techo de rendimiento, todo medido
-        contra un registro grabado.
-      </li>
-      <li>
-        <strong>El enlazador enviado coincide con la referencia en las piezas que libc
-        necesita.</strong> El código independiente de posición, las relocalizaciones de TLS y los
-        objetos débiles cierran la superficie de C; las importaciones IFUNC y
-        <code>STT_NOTYPE</code>, los objetos compartidos sin SONAME y <code>PT_GNU_RELRO</code> la
-        completan.
-      </li>
-      <li>
-        <strong>La seguridad, enunciada como comportamiento.</strong> <code>free</code> limpia la
-        carga útil antes de reutilizarla; el constructor de peticiones HTTP rechaza CR, LF y NUL;
-        los instaladores verifican cada archivo que copian e invocan PowerShell por ruta absoluta;
-        y la versión publica una firma separada sobre <code>SHA256SUMS</code>, fuera de los
-        archivos que describe.
-      </li>
-    </ol>
-
-    <h3>Corregido</h3>
-    <ol class="notes">
-      <li>
-        <strong>Ranuras de estado que se sobrescribían entre sí dentro del compilador
-        autoalojado.</strong> La etiqueta de un brazo de <code>match</code> pisoteaba el indicador
-        del nivel del recolector, y la ranura de diagnóstico del emisor pisoteaba el indicador de
-        creación de hilos — lo que afloraba como un error espurio de «más de 20 argumentos» en una
-        prueba de hilos. Ahora ambas tienen sus propias ranuras, fijadas por criterios.
-      </li>
-      <li>
-        <strong>Tablas fijas que se corrompían en lugar de negarse.</strong> El entorno de nombres
-        del verificador no tenía límite (2048 bytes, 256 entradas) — 515 <code>let</code> en una
-        sola función provocaban un fallo de segmentación en Linux y escribían en silencio más allá
-        en Windows. Ahora aloja 4096 entradas y se detiene en el tope; las tablas del emisor
-        ganaron guardas y diagnósticos con nombre.
-      </li>
-      <li>
-        <strong>Caídas sustituidas por diagnósticos.</strong> El analizador léxico autoalojado ya
-        no lee más allá de un búfer de tokens lleno, los límites de anidamiento del analizador
-        sintáctico son una sola pasada sobre <code>(</code> <code>[</code> <code>{</code> más las
-        cadenas unarias, y la herramienta de admisión informa de una entrada demasiado grande en
-        vez de truncarla.
-      </li>
-      <li>
-        <strong>Fallos del enlazador que nombraban lo incorrecto.</strong> Dos mensajes seguían
-        describiendo compuertas que ya no existían; el búfer de entrada creció a 6 MiB; y las
-        tablas de archivo, relocalización e importación se corrigieron en vez de ensancharse.
-      </li>
-      <li>
-        <strong>Silencios del front end y de la CLI.</strong> Seis correcciones en el verificador,
-        diez casos de CLI visibles al usuario, una pasada de traducción a C y trece correcciones
-        en el renderizador/enlazador — cada una un lugar donde la entrada podía perderse sin una
-        palabra.
-      </li>
-      <li>
-        <strong>Los dos formateadores ahora coinciden en los comentarios dentro de una
-        expresión <code>||</code> de varias líneas.</strong> Un criterio compara cada archivo del
-        corpus byte a byte.
-      </li>
-      <li>
-        <strong>La capa de red de lompi es el paquete <code>internet</code>.</strong> Los nombres
-        HTTP escritos a mano desaparecieron; el índice del registro se fija fuera de banda; y los
-        consumidores comprueban un marcador de descarga completa.
-      </li>
-      <li>
-        <strong>Las 134 incidencias etiquetadas como bug del hito están cerradas</strong>, y cada
-        corrección que cambió el comportamiento lleva un criterio que estaba rojo antes y verde
-        después. La lista, con la incidencia que nombró cada una, está en la
-        <a href="https://github.com/Loment-Lang/Loment/milestone/2">página del hito</a>.
-      </li>
-    </ol>
-    <h3>Lo que no trae esta versión</h3>
-    <p class="body">
-      El subsistema de auditoría está <strong>en el paquete pero todavía no separado de él</strong>:
-      la separación en un paquete propio es 0.1.5.1. El informe completo de la cadena de
-      capacidades para <code>no_std</code> es una regla del cargador y sigue siendo
-      <a href="https://github.com/Loment-Lang/Loment/issues/536">#536</a>. <code>choose vm</code>
-      sigue sin cambiar lo que emite el compilador — el intérprete es un programa que ejecutas, no
-      un modo de compilador. Y el registro de auditoría todavía no ingiere las comprobaciones de
-      guarda del gestor de memoria; esa costura está escrita en <code>docs/270</code>.
-    </p>
-  </div>
-</section>
-
-<section class="sec">
-  <div class="wrap">
-    <h2>0.1.5.1 — la autoridad se vuelve un álgebra, y la cadena de herramientas se reemplaza a sí misma</h2>
-    <p class="body">
-      <strong>2026-11-07.</strong> El hito está cerrado: las 92 cuestiones, terminadas. Una capacidad
-      deja de ser un intervalo cerrado y pasa a tener tres dimensiones — forma, polaridad y ley de
-      tiempo. La seguridad de memoria se vuelve una escalera de siete peldaños con un suelo que tiene
-      nombre. Una cadena de herramientas en ejecución admite un Pre-Release firmado de solo
-      correcciones y se reconstruye a sí misma. Una biblioteca Java se ejecuta sin JVM. Y un fuente
-      sin declaración se lee como la edición <strong>más nueva</strong>, <code>tur2026.3</code>.
-    </p>
-
-    <h3>Nuevo</h3>
-    <ol class="notes">
-      <li>
-        <strong>Diez clases de dominio, un solo punto de decisión.</strong> La forma puede ser un
-        intervalo cerrado, un punto, infinita por delante <code>[()..hi]</code>, infinita por detrás
-        <code>[lo..()]</code> o universal <code>[()..()]</code>; la polaridad puede ser
-        <code>danger</code>, el dual de lista de denegación de un dominio de permiso; y la ley de
-        tiempo puede ser <code>epoch</code>, <code>far</code>, <code>sliding</code>,
-        <code>decaying</code>, <code>growing</code> o <code>consumed</code>. Una sentencia nueva,
-        <code>tick;</code>, avanza un reloj virtual. Ambas implementaciones emiten IR y objetos de
-        forma idénticos byte a byte para cada clase.
-      </li>
-      <li>
-        <strong>Actualización en caliente.</strong> Una cadena en ejecución solo admite un
-        Pre-Release a través de un predicado de admisión que son cinco igualdades — una proyección
-        de solo correcciones, no un registro de cambios — con manifiesto firmado, cargador de dos
-        ranuras, conmutación atómica y remapeo forzado de la cadena de marcos viva en un punto seguro.
-      </li>
-      <li>
-        <strong>Bibliotecas Java sin JVM.</strong> <code>lompi</code> descarga un paquete externo;
-        <code>.class</code> y <code>.jar</code> se analizan sin JDK, se verifican antes de bajar y se
-        compilan a IR de Loment con despacho de mundo cerrado. Un runtime mínimo aporta lo que falta,
-        y el enlazador produce una imagen <strong>demostrada sin Java instalado</strong>.
-      </li>
-      <li>
-        <strong>La edición por defecto es la más nueva.</strong> Un fuente sin declaración se lee
-        como <code>tur2026.3</code>; <code>tur</code> y <code>tur1</code> siguen siendo la forma
-        explícita de pedir la lectura antigua. Una construcción nueva que choque con un identificador
-        existente se niega a compilar (<code>E040</code>) en vez de cambiar su significado en
-        silencio.
-      </li>
-    </ol>
-    <h3>Lo que no está en esta versión</h3>
-    <p class="body">
-      De las dieciocho clases diseñadas se entregan diez; el dominio periódico (necesita marcas de
-      tiempo por ranura), el generacional y el adaptativo (puntos seguros y el libro de calidad), el
-      resto de las clases de contexto, y los árboles, grafos, extensión y anidamiento de dominios
-      siguen siendo diseño. Los tiempos de vida siguen siendo diseño en la edición 2026.3:
-      <code>lgc</code> llegó, los tiempos de vida no. El informe completo de la cadena de
-      capacidades para <code>no_std</code> sigue en
-      <a href="https://github.com/Loment-Lang/loment/issues/536">#536</a>.
-    </p>
-  </div>
-</section>
-
-<section class="sec">
-  <div class="wrap">
-    <h2>Dónde está el estado actual</h2>
-    <p class="body">
-      Esta página es historia. Lo que el proyecto puede hacer <em>hoy</em> está en el resto del
-      sitio y en el repositorio, y lo que pretende hacer después está en la hoja de ruta — que
-      está escrita como un plan y lo dice.
+      Esta página es una línea, no un archivo. Las notas completas, los artefactos y las firmas están
+      en GitHub; el argumento detrás de un cambio está en el blog o en un registro de diseño
+      numerado.
     </p>
     <div style="margin-top: var(--s4)">
-      <a class="doclink" href="https://github.com/Loment-Lang/loment/releases/latest">
-        <span class="who">Última versión</span>
-        <span class="what">La versión que hay que instalar. Siempre este enlace, nunca un número de versión copiado en una página.</span>
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/releases">
+        <span class="who">Versiones en GitHub</span>
+        <span class="what">Notas completas, descargas, sumas de verificación y firmas.</span>
+      </a>
+      <a class="doclink" href="blog.html">
+        <span class="who">Blog</span>
+        <span class="what">La versión larga de los momentos que merecen explicación.</span>
+      </a>
+      <a class="doclink" href="roadmap.html">
+        <span class="who">Hoja de ruta</span>
+        <span class="what">Lo que viene después, escrito como plan y sin fechas.</span>
       </a>
       <a class="doclink" href="https://loment.fandom.com/wiki/Versions_and_roadmap">
-        <span class="who">Roadmap</span>
-        <span class="what">Lo que viene después de 0.1.5, enunciado como un plan y no como una función.</span>
+        <span class="who">Wiki</span>
+        <span class="what">La misma historia como entrada de enciclopedia.</span>
       </a>
-      <a class="doclink" href="start.html">
-        <span class="who">Primeros pasos</span>
-        <span class="what">Instalarlo y ejecutar el primer programa.</span>
-      </a>
-      <a class="doclink" href="index.html">
-        <span class="who">Volver a la página principal</span>
-        <span class="what">Qué es Loment, y las dos clases de programa que construye.</span>
+      <a class="doclink" href="playground.html">
+        <span class="who">Playground</span>
+        <span class="what">Prueba el compilador actual sin instalar nada.</span>
       </a>
     </div>
   </div>
 </section>
-
 </main>
 
 <footer>

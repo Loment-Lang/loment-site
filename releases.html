@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Release history — Loment</title>
-<meta name="description" content="Every Loment release from the first one to the one shipping now, and what each was for. The earliest versions were released from a different repository, and this page says so rather than pretending the record is complete.">
+<title>Timeline — Loment</title>
+<meta name="description" content="A dated timeline of Loment releases and the one thing each was for. The per-version changelog lives on GitHub; this page keeps the shape of the line.">
 <link rel="icon" href="mark.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=JetBrains+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="style.css?v=20261108b">
+<link rel="stylesheet" href="style.css?v=20261108c">
 <link rel="alternate" hreflang="en" href="https://loment-lang.github.io/loment-site/releases.html">
 <link rel="alternate" hreflang="zh-Hans" href="https://loment-lang.github.io/loment-site/zh/releases.html">
 <link rel="alternate" hreflang="ja" href="https://loment-lang.github.io/loment-site/ja/releases.html">
@@ -30,19 +30,13 @@
       </svg>
       Loment
     </a>
-        <nav>
-      <a href="learn.html">Learn</a>
-      <a href="start.html">Get started</a>
+            <nav>
+      <a href="start.html">Learn</a>
+      <a href="blog.html">Blog</a>
       <a href="examples.html">Examples</a>
       <a href="playground.html">Playground</a>
       <a href="standard.html">Standard</a>
-      <details class="navmenu" name="bar">
-        <summary aria-current="page">Versions</summary>
-        <ul>
-          <li><a href="releases.html" aria-current="page">Release history</a></li>
-          <li><a href="roadmap.html">Roadmap</a></li>
-        </ul>
-      </details>
+      <a href="releases.html" aria-current="page">Timeline</a>
       <details class="navmenu" name="bar">
         <summary>Systems</summary>
         <ul>
@@ -72,88 +66,125 @@
 
 <section class="head">
   <div class="wrap">
-    <p class="eyebrow">Releases</p>
-    <h1>Release history</h1>
+    <p class="eyebrow">Timeline</p>
+    <h1>A timeline, not a changelog</h1>
     <p class="lede">
-      From the first Loment to the one shipping now. Each entry says what that version was
-      <em>for</em> — and where the record of it lives, because the earliest ones were released
-      from a different repository and this one does not carry their tags.
+      Every Loment release, in order, with one sentence for what it was for. The detailed
+      lists of additions and fixes live on GitHub, where the artifacts and signatures are.
+      This page keeps only the shape of the line.
     </p>
     <p class="actions">
-      <a class="btn btn-solid" href="https://github.com/Loment-Lang/loment/releases/latest">Download</a>
-      <a class="btn btn-quiet" href="start.html">Get started</a>
+      <a class="btn btn-solid" href="https://github.com/Loment-Lang/loment/releases/latest">Download the current release</a>
+      <a class="btn btn-quiet" href="roadmap.html">Roadmap</a>
     </p>
     <p class="limit">
       <strong>This is the one page on this site that names versions.</strong> Everywhere else
-      the download link says <code>releases/latest</code>, because a version number written on a
-      page is a fact with an expiry date. Here the versions <em>are</em> the subject, so they are
-      named and each one points at what was actually published. <strong>None of it is a promise
-      about a version that has not shipped.</strong>
+      the download link says <code>releases/latest</code>, because a version number copied
+      onto a page is a fact with an expiry date. Here the dates are the subject.
     </p>
   </div>
 </section>
 
 <section class="sec">
   <div class="wrap">
-    <h2>Before this repository</h2>
+    <h2>The line</h2>
     <p class="body">
-      The first six versions came out of the project's previous repository. Their tags are not
-      in this one and neither are their dates, so what follows is the shape of the line rather
-      than a dated record — and nothing here links anywhere, because there is nothing to link to.
+      The first six versions came from the project's previous repository; their tags and
+      dates are not in this one, so they appear without a date. From 0.1.4 onward every entry
+      is a release in this repository.
     </p>
 
-    <div class="rows">
-      <div class="row">
-        <h3>0.1.1 — the first Loment</h3>
-        <p>
-          A <strong>strict subset of Rust's syntax</strong>. That was the opening constraint
-          rather than a style: the language was defined by what Rust had already settled, so
-          there was very little to argue about and a compiler to build. It no longer claims to
-          be a subset &mdash; the overlap is still there, the claim was dropped when the
-          surface grew past it.
-        </p>
+    <div class="timeline">
+      <div class="tl">
+        <span class="tl-date">before 2026-09</span>
+        <div class="tl-body">
+          <h3>0.1.1</h3>
+          <p>The first Loment: a strict subset of Rust's syntax. The subset claim has since been dropped; the overlapping syntax stayed.</p>
+        </div>
       </div>
-      <div class="row">
-        <h3>0.1.2 Alpha — the first self-hosting</h3>
-        <p>
-          The language begins to be written in itself. What that buys is not elegance: a
-          compiler written in the language it compiles is the only way to find out what the
-          language cannot express.
-        </p>
+      <div class="tl">
+        <span class="tl-date">before 2026-09</span>
+        <div class="tl-body">
+          <h3>0.1.2 Alpha</h3>
+          <p>The language begins to be written in itself &mdash; the only way to find out what it cannot express.</p>
+        </div>
       </div>
-      <div class="row">
-        <h3>0.1.2 pre1 — repairs</h3>
-        <p>
-          The problems the first self-hosting turned up. A pre-release is where that kind of
-          thing is supposed to happen.
-        </p>
+      <div class="tl">
+        <span class="tl-date">before 2026-09</span>
+        <div class="tl-body">
+          <h3>0.1.2 pre1</h3>
+          <p>Repairs for the problems the first self-hosting turned up.</p>
+        </div>
       </div>
-      <div class="row">
-        <h3>0.1.2 pre2 — the base that still stands</h3>
-        <p>
-          The bootstrapping foundation every release since is built on: a compiler that rebuilds
-          itself from a seed committed to the repository, and a check that the rebuilt seed
-          equals the one it started from.
-        </p>
+      <div class="tl">
+        <span class="tl-date">before 2026-09</span>
+        <div class="tl-body">
+          <h3>0.1.2 pre2</h3>
+          <p>The bootstrap base that still stands: a compiler rebuilt from a committed seed, checked to reproduce itself.</p>
+        </div>
       </div>
-      <div class="row">
-        <h3>0.1.3 Alpha — the multi-syntax idea arrives</h3>
-        <p>
-          The first version where another language's source can be read as Loment. The meaning is
-          always this language's; only the spelling is borrowed. It is the project's founding
-          argument rather than a feature added on top, which is why it is listed here and not
-          under "what else is different".
-        </p>
+      <div class="tl">
+        <span class="tl-date">before 2026-09</span>
+        <div class="tl-body">
+          <h3>0.1.3 Alpha</h3>
+          <p>Another language's source can be read as Loment: the spelling is borrowed, the meaning stays Loment's.</p>
+        </div>
       </div>
-      <div class="row">
-        <h3>0.1.3.4 Alpha — the loop closes</h3>
-        <p>
-          All four stages &mdash; lexer, parser, checker and code generator &mdash; written in
-          Loment, and the result reaches a three-stage fixed point. This is the last of the
-          versions released from the previous repository, and the one every later version is
-          measured against: <strong>it is the release the language and the compiler stopped
-          needing a host to define them.</strong>
-        </p>
+      <div class="tl">
+        <span class="tl-date">before 2026-09</span>
+        <div class="tl-body">
+          <h3>0.1.3.4 Alpha</h3>
+          <p>Lexer, parser, checker and code generator all written in Loment; the bootstrap reaches a three-stage fixed point.</p>
+        </div>
+      </div>
+      <div class="tl">
+        <time class="tl-date" datetime="2026-09-22">2026-09-22</time>
+        <div class="tl-body">
+          <h3>0.1.4 Pre</h3>
+          <p>The first installable build. Its point was to turn &ldquo;the repository has versions&rdquo; into something you can look at.</p>
+        </div>
+      </div>
+      <div class="tl">
+        <time class="tl-date" datetime="2026-09-23">2026-09-23</time>
+        <div class="tl-body">
+          <h3>0.1.4</h3>
+          <p>Usable rather than larger: no syntax changed, and the last interpreter path left the build. On Windows, use the zip; that installer is known broken.</p>
+        </div>
+      </div>
+      <div class="tl">
+        <time class="tl-date" datetime="2026-10-13">2026-10-13</time>
+        <div class="tl-body">
+          <h3>0.1.4.5</h3>
+          <p>The reclamation ladder, <code>no_runtime</code> as a guarantee, networking on both targets, and the <code>vm</code> setting behind a closed gate.</p>
+        </div>
+      </div>
+      <div class="tl">
+        <time class="tl-date" datetime="2026-10-17">2026-10-17</time>
+        <div class="tl-body">
+          <h3>0.1.4.6</h3>
+          <p>The interpreter tier, libc and LibL, and the <code>vm</code> setting become reachable from a release.</p>
+        </div>
+      </div>
+      <div class="tl">
+        <time class="tl-date" datetime="2026-10-18">2026-10-18</time>
+        <div class="tl-body">
+          <h3>0.1.4.7</h3>
+          <p>Every shipped library compiles to byte-identical IR in both implementations: 155 modules, none skipped.</p>
+        </div>
+      </div>
+      <div class="tl">
+        <time class="tl-date" datetime="2026-10-20">2026-10-20</time>
+        <div class="tl-body">
+          <h3>0.1.5</h3>
+          <p><code>choose</code> becomes a seven-dimension matrix whose legal cells are compiled by both implementations; LMS and LSPE ship.</p>
+        </div>
+      </div>
+      <div class="tl">
+        <time class="tl-date" datetime="2026-11-07">2026-11-07</time>
+        <div class="tl-body">
+          <h3>0.1.5.1</h3>
+          <p>Capability domains become an algebra of shape, polarity and time law; hot update and Java libraries without a JVM land; <code>tur2026.3</code> becomes the default edition.</p>
+        </div>
       </div>
     </div>
   </div>
@@ -161,279 +192,31 @@
 
 <section class="sec">
   <div class="wrap">
-    <h2>From this repository</h2>
+    <h2>Where the detail lives</h2>
     <p class="body">
-      The versions that came out of this repository before the one shipping now. Each is a
-      row rather than a section for the reason a record should give: the detail is on the
-      release page it links to, and a history that keeps growing in full stops being a history
-      and becomes a second copy of the archive.
-    </p>
-
-    <div class="rows">
-      <div class="row">
-        <h3>0.1.4 Pre — the first installable Loment</h3>
-        <p>
-          <strong>2026-09-22.</strong> Put up as a pre-release for one reason: so that "the
-          repository has versions" stops being a claim and becomes something you can look at.
-          One detail survives it — the tag points at an earlier commit than the archives were
-          built from, so GitHub's generated source archives are the tree before that build.
-        </p>
-      </div>
-      <div class="row">
-        <h3>0.1.4 — usable</h3>
-        <p>
-          <strong>2026-09-23.</strong> The subject was being usable rather than having more in
-          it: no syntax changed, and the work went into taking the last of the interpreter out
-          of the path. Its Windows installer does nothing on machines that do not search the
-          current directory; <strong>install from the zip</strong> if you want this version.
-        </p>
-      </div>
-      <div class="row">
-        <h3>0.1.4.5 — reclamation, and a runtime that is a guarantee</h3>
-        <p>
-          <strong>2026-10-13.</strong> The four-rung reclamation ladder with an adaptive and a
-          generational half; <code>no_runtime</code> became a guarantee rather than a
-          declaration; networking on both targets; and the fifth setting, <code>vm</code>,
-          arrived with its release gate closed. A patch the same day changed only the Windows
-          installer.
-        </p>
-      </div>
-      <div class="row">
-        <h3>0.1.4.6 — the gates come down</h3>
-        <p>
-          <strong>2026-10-17.</strong> Four things that had been built but kept out of a release
-          became reachable from one: an interpreter tier beside the compiler, libc and LibL, and
-          the <code>vm</code> setting. The rest was the largest defect sweep before 0.1.4.7.
-        </p>
-      </div>
-      <div class="row">
-        <h3>0.1.4.7 — the libraries become twins</h3>
-        <p>
-          <strong>2026-10-18.</strong> A defect release whose headline is not a feature: every
-          library the package ships compiles to byte-identical IR in both implementations —
-          155 modules, none skipped. What it took to get there was a set of silent state bugs
-          rather than the divergence they had looked like from outside.
-        </p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="sec">
-  <div class="wrap">
-    <h2>0.1.5 — the matrix, and the last gate opens</h2>
-    <p class="body">
-      <strong>2026-10-20.</strong> The release is about turning promises into artifacts you can
-      inspect. <code>choose</code> became a <strong>seven-dimension matrix</strong> whose every
-      legal cell is compiled by both implementations and compared byte for byte; the safe memory
-      manager and the audit ledger ship; the interpreter ships with the toolchain; and the last
-      release gate — the one that kept the audit subsystem out of a release build — is gone.
-    </p>
-
-    <h3>New</h3>
-    <ol class="notes">
-      <li>
-        <strong>Seven settings, and every legal combination is compiled.</strong>
-        <code>mode</code>, <code>gc</code>, <code>runtime</code>, <code>port</code>,
-        <code>vm</code>, <code>lms</code> and <code>lspe</code>; the artifact-level rows are
-        judged on the linked image rather than on the IR alone (17 criteria).
-      </li>
-      <li>
-        <strong>The hosted layer is named.</strong> <code>std</code> may carry hosted names
-        (<code>libc</code>, filesystem, threads, time, network) and <code>no_std</code> may not;
-        <code>std</code> + <code>hosted</code> links the real <code>libc.so.6</code> and runs;
-        both front ends refuse <code>no_std</code> + <code>hosted</code>; and the IR itself
-        declares the row, so the linker checks a claim it did not write.
-      </li>
-      <li>
-        <strong><code>no_gc</code> is a checked claim.</strong> The artifact says “no collector”,
-        and the linker fails it if a collector is in the image.
-      </li>
-      <li>
-        <strong>The safe memory manager ships.</strong> Seven levels — compile-time checks, a
-        memory map, a guard, a rejector, a crasher, an out-of-process restarter, and a minimal
-        floor — with <code>lms_full</code> as the default and four tiers on the setting.
-      </li>
-      <li>
-        <strong>The audit subsystem ships.</strong> LSPE is the seventh setting: a ledger of what
-        each judgement rests on, a census of the sites that need one, an obligation system with
-        local and interprocedural engines, and <code>lspe pass "reason" { … }</code> as a counted,
-        lexical bypass. A release build accepts it.
-      </li>
-      <li>
-        <strong>The gate says what it skips.</strong> The known-red list names a criterion rather
-        than a suite; budgets are checked against the base branch, so a change cannot lower a
-        floor or add a skip; the capacity scanner covers literal bounds and fixed-size arrays in
-        the whole tree; and the bootstrap root carries a provenance record a rebuild can falsify.
-      </li>
-      <li>
-        <strong>The interpreter ships with the toolchain.</strong> T0 through T3, the compact
-        serialisation, a cached artifact and a performance ceiling, all measured against a
-        recorded ledger.
-      </li>
-      <li>
-        <strong>The shipped linker matches the reference on the parts libc needs.</strong>
-        Position-independent code, TLS relocations and weak objects close out the C surface;
-        IFUNC and <code>STT_NOTYPE</code> imports, SONAME-less shared objects and
-        <code>PT_GNU_RELRO</code> round it out.
-      </li>
-      <li>
-        <strong>Security, stated as behaviour.</strong> <code>free</code> scrubs the payload
-        before reuse; the HTTP request builder rejects CR, LF and NUL; installers verify every
-        file they copy and invoke PowerShell by absolute path; and the release publishes a
-        detached signature over <code>SHA256SUMS</code>, outside the archives it describes.
-      </li>
-    </ol>
-
-    <h3>Fixed</h3>
-    <ol class="notes">
-      <li>
-        <strong>State slots that overwrote each other inside the self-hosted compiler.</strong> A
-        <code>match</code> arm label clobbered the collector tier flag, and the emitter's
-        diagnostic slot clobbered the thread-spawn flag — which surfaced as a bogus “more than 20
-        arguments” error on a thread probe. Both have their own slots now, pinned by criteria.
-      </li>
-      <li>
-        <strong>Fixed tables that corrupted instead of refusing.</strong> The checker's name
-        environment had no bound (2048 bytes, 256 entries) — 515 <code>let</code>s in one function
-        segfaulted on Linux and silently wrote through on Windows. It now holds 4096 entries and
-        stops at the cap; the emitter's tables gained guards and named diagnostics.
-      </li>
-      <li>
-        <strong>Crashes replaced by diagnostics.</strong> The self-hosted lexer no longer reads
-        past a full token buffer, the parser's nesting limits are one pass over
-        <code>(</code> <code>[</code> <code>{</code> plus unary chains, and the admission tool
-        reports an oversized input instead of truncating it.
-      </li>
-      <li>
-        <strong>Linker failures that named the wrong thing.</strong> Two messages still described
-        gates that no longer existed; the input buffer grew to 6 MiB; and the archive,
-        relocation and import tables were fixed rather than widened.
-      </li>
-      <li>
-        <strong>Front-end and CLI silences.</strong> Six checker fixes, ten user-visible CLI
-        cases, a C-translation pass, and thirteen renderer/linker fixes — each one a place where
-        input could be lost without a word.
-      </li>
-      <li>
-        <strong>The two formatters now agree on comments inside a multi-line
-        <code>||</code> expression.</strong> A criterion compares every corpus file byte for byte.
-      </li>
-      <li>
-        <strong>lompi's network layer is the <code>internet</code> package.</strong> The
-        hand-rolled HTTP names are gone; the registry index is pinned out of band; and a
-        fetch-complete marker is checked by its consumers.
-      </li>
-      <li>
-        <strong>All 134 bug-labelled issues in the milestone are closed</strong>, and every fix
-        that changed behaviour carries a criterion that was red before it and green after. The
-        list, with the issue that named each one, is on the
-        <a href="https://github.com/Loment-Lang/Loment/milestone/2">milestone page</a>.
-      </li>
-    </ol>
-    <h3>Not in this release</h3>
-    <p class="body">
-      The audit subsystem is <strong>in the package but not yet split out of it</strong>: the
-      packaging split is 0.1.5.1. Full capability-chain reporting for <code>no_std</code> is a
-      loader rule and remains <a href="https://github.com/Loment-Lang/Loment/issues/536">#536</a>.
-      <code>choose vm</code> still does not change what the compiler emits — the interpreter is a
-      program you run, not a compiler mode. And the audit ledger does not yet ingest the memory
-      manager's guard checks; that seam is written down in <code>docs/270</code>.
-    </p>
-  </div>
-</section>
-
-<section class="sec">
-  <div class="wrap">
-    <h2>0.1.5.1 — authority becomes an algebra, and the toolchain replaces itself</h2>
-    <p class="body">
-      <strong>2026-11-07.</strong> The milestone is closed: all 92 issues. A capability stops being
-      one closed interval and becomes three dimensions — shape, polarity and a time law. Memory
-      safety becomes a seven-level ladder with a named floor. A running toolchain admits a signed,
-      fix-only Pre-Release and rebuilds at a safepoint. A Java library runs without a JVM. And an
-      unannotated source is now read as the <strong>newest</strong> edition, <code>tur2026.3</code>;
-      the declaration exists to pin an older reading, not to unlock the current one.
-    </p>
-
-    <h3>New</h3>
-    <ol class="notes">
-      <li>
-        <strong>Ten capability-domain kinds, one decision point.</strong> The shape can be a closed
-        interval, a point, front-infinite (<code>[()..hi]</code>), back-infinite
-        (<code>[lo..()]</code>) or universal (<code>[()..()]</code>); the polarity can be
-        <code>danger</code>, the deny-list dual of an ordinary allow domain; and the time law can be
-        <code>epoch</code>, <code>far</code>, <code>sliding</code>, <code>decaying</code>,
-        <code>growing</code> or <code>consumed</code>. A new statement, <code>tick;</code>, advances
-        a virtual clock. Both compilers emit byte-identical IR and form objects for every kind.
-      </li>
-      <li>
-        <strong>Hot update.</strong> A running toolchain admits a Pre-Release only through an
-        admission predicate that is five equalities — a bug-fix-only projection, not a changelog —
-        with a signed manifest, a two-slot loader, an atomic flip, and a forced remap of the live
-        frame chain at a safepoint. One fix lands in a running LSP; one contract change is refused.
-      </li>
-      <li>
-        <strong>Java libraries without a JVM.</strong> <code>lompi</code> fetches a foreign package
-        and streams it; <code>.class</code> and <code>.jar</code> are parsed without a JDK, verified
-        before lowering, and compiled to Loment IR with closed-world dispatch. A minimal runtime
-        supplies what the library needs, and the linker produces a Java-backed image
-        <strong>proven without Java installed</strong>.
-      </li>
-      <li>
-        <strong>The default edition is the newest.</strong> An unannotated source is read as
-        <code>tur2026.3</code>. <code>tur</code> and <code>tur1</code> remain the explicit way to ask
-        for the older reading. A new construct that would collide with an existing identifier
-        refuses to compile (<code>E040</code>) instead of silently changing its meaning.
-      </li>
-      <li>
-        <strong>A VM that counts its work.</strong> The interpreter's criteria compare deterministic
-        counters — instructions, decodes, tuple lookups, dispatch — instead of wall-clock ratios. The
-        fusion criterion asserts that dispatch falls (8,000,012 → 5,000,009 on its fixture) while
-        instructions stay equal; the wall-clock delta there was inside run-to-run noise.
-      </li>
-      <li>
-        <strong>LMS, completed.</strong> All seven levels have something that runs: the checker
-        (E028/E029), the memory map, the guard, the rejector that keeps the program running, the
-        crasher that adds no symbol, the out-of-process restarter, and a trust floor that is a seed
-        with a name, a size and a hash.
-      </li>
-    </ol>
-    <h3>Not in this release</h3>
-    <p class="body">
-      Ten of the eighteen designed domain kinds ship; the periodic domain (it needs per-slot
-      timestamps), the generational and adaptive domains (safepoints and the quality ledger), the
-      remaining context-class domains, and domain trees, graphs, extension and nesting remain
-      design. Lifetimes are still a design in the 2026.3 edition: <code>lgc</code> landed, lifetimes
-      did not. Full capability-chain reporting for <code>no_std</code> remains
-      <a href="https://github.com/Loment-Lang/Loment/issues/536">#536</a>.
-    </p>
-  </div>
-</section>
-
-<section class="sec">
-  <div class="wrap">
-    <h2>Where the current state is</h2>
-    <p class="body">
-      This page is history. What the project can do <em>today</em> is on the rest of the site
-      and in the repository, and what it intends to do next is on the roadmap &mdash; which is
-      written as a plan and says so.
+      This page is a line, not an archive. The full notes, artifacts and signatures are on
+      GitHub; the argument behind a change is in the blog or in a numbered design record.
     </p>
     <div style="margin-top: var(--s4)">
-      <a class="doclink" href="https://github.com/Loment-Lang/loment/releases/latest">
-        <span class="who">Latest release</span>
-        <span class="what">The version to install. Always this link, never a version number copied onto a page.</span>
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/releases">
+        <span class="who">Releases on GitHub</span>
+        <span class="what">Full notes, downloads, checksums and signatures.</span>
+      </a>
+      <a class="doclink" href="blog.html">
+        <span class="who">Blog</span>
+        <span class="what">The longer version of the moments worth explaining.</span>
+      </a>
+      <a class="doclink" href="roadmap.html">
+        <span class="who">Roadmap</span>
+        <span class="what">What comes next, written as a plan with no dates attached.</span>
       </a>
       <a class="doclink" href="https://loment.fandom.com/wiki/Versions_and_roadmap">
-        <span class="who">Roadmap</span>
-        <span class="what">What comes after 0.1.5.1, stated as a plan rather than as a feature.</span>
+        <span class="who">Wiki</span>
+        <span class="what">The same history as an encyclopedia entry.</span>
       </a>
-      <a class="doclink" href="start.html">
-        <span class="who">Get started</span>
-        <span class="what">Install it and run your first program.</span>
-      </a>
-      <a class="doclink" href="index.html">
-        <span class="who">Back to the front page</span>
-        <span class="what">What Loment is, and the two kinds of program it builds.</span>
+      <a class="doclink" href="playground.html">
+        <span class="who">Playground</span>
+        <span class="what">Try the current compiler without installing anything.</span>
       </a>
     </div>
   </div>

@@ -1,17 +1,17 @@
 <!doctype html>
 <!-- translated-from: releases.html -->
-<!-- source-sha256: 9b9fb9c36c4776d8328905fbd8730bf927fb6021ed3d69a6d40223ceb404fd45 -->
+<!-- source-sha256: 00a0d96c8200efd4d6920a18caf5e0e35fa5d25396b41e09d7ab4d57d16d5893 -->
 <html lang="ja">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>リリース履歴 — Loment</title>
-<meta name="description" content="最初のものから、いま作られているものまでのすべての Loment リリース、そしてそれぞれが何のためだったか。最も初期のバージョンは別のリポジトリからリリースされており、このページは記録が完全であるふりをせず、そう述べている。">
+<title>タイムライン — Loment</title>
+<meta name="description" content="Loment のリリースを日付順に並べ、それぞれが何のためだったかを一文で示します。バージョンごとの変更履歴は GitHub にあり、このページは線の形だけを保ちます。">
 <link rel="icon" href="../mark.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=JetBrains+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="../style.css?v=20261108b">
+<link rel="stylesheet" href="../style.css?v=20261108c">
 <link rel="alternate" hreflang="en" href="https://loment-lang.github.io/loment-site/releases.html">
 <link rel="alternate" hreflang="zh-Hans" href="https://loment-lang.github.io/loment-site/zh/releases.html">
 <link rel="alternate" hreflang="ja" href="https://loment-lang.github.io/loment-site/ja/releases.html">
@@ -21,7 +21,7 @@
 </head>
 <body>
 
-<a class="skip" href="#main">本文へスキップ</a>
+<a class="skip" href="#main">Skip to content</a>
 
 <header class="bar">
   <div class="wrap">
@@ -32,19 +32,13 @@
       </svg>
       Loment
     </a>
-        <nav>
-      <a href="learn.html">学習</a>
-      <a href="start.html">はじめに</a>
+            <nav>
+      <a href="start.html">学ぶ</a>
+      <a href="blog.html">ブログ</a>
       <a href="examples.html">サンプル</a>
       <a href="playground.html">オンライン実行</a>
       <a href="standard.html">標準</a>
-      <details class="navmenu" name="bar">
-        <summary aria-current="page">バージョン</summary>
-        <ul>
-          <li><a href="releases.html" aria-current="page">リリース履歴</a></li>
-          <li><a href="roadmap.html">ロードマップ</a></li>
-        </ul>
-      </details>
+      <a href="releases.html" aria-current="page">タイムライン</a>
       <details class="navmenu" name="bar">
         <summary>システム</summary>
         <ul>
@@ -71,355 +65,84 @@
 </header>
 
 <main id="main">
-
 <section class="head">
   <div class="wrap">
-    <p class="eyebrow">リリース</p>
-    <h1>リリース履歴</h1>
+    <p class="eyebrow">タイムライン</p>
+    <h1>タイムラインであり、変更履歴ではない</h1>
     <p class="lede">
-      最初の Loment から、いま出荷されたものまで。各項目は、そのバージョンが何の
-      <em>ため</em>だったか —— そしてその記録がどこにあるかを述べる。最も初期のものは
-      別のリポジトリからリリースされており、このリポジトリはそれらのタグを持っていないからである。
+      すべての Loment リリースを順に、何のためだったかを一文で。追加と修正の詳細は GitHub に
+      あり、成果物と署名もそこにあります。このページは線の形だけを残します。
     </p>
     <p class="actions">
-      <a class="btn btn-solid" href="https://github.com/Loment-Lang/loment/releases/latest">ダウンロード</a>
-      <a class="btn btn-quiet" href="start.html">はじめに</a>
+      <a class="btn btn-solid" href="https://github.com/Loment-Lang/loment/releases/latest">現在のリリースをダウンロード</a>
+      <a class="btn btn-quiet" href="roadmap.html">ロードマップ</a>
     </p>
     <p class="limit">
-      <strong>これはこのサイトで唯一、バージョンを名指しするページである。</strong>他のどこでも
-      ダウンロードリンクは <code>releases/latest</code> と言う。ページに書かれたバージョン番号は
-      賞味期限つきの事実だからである。ここではバージョン<em>こそが</em>主題なので、それらは
-      名指しされ、それぞれが実際に公開されたものを指し示す。<strong>そのいずれも、まだ出荷されて
-      いないバージョンについての約束ではない。</strong>
+      <strong>このサイトでバージョン番号を書く唯一のページです。</strong>他の場所のダウンロード
+      リンクは <code>releases/latest</code> です。ページに写したバージョン番号は期限のある事実
+      だからです。ここでは日付が主題です。
     </p>
   </div>
 </section>
 
 <section class="sec">
   <div class="wrap">
-    <h2>このリポジトリより前</h2>
+    <h2>この線</h2>
     <p class="body">
-      最初の六つのバージョンは、プロジェクトの以前のリポジトリから出た。それらのタグも日付も
-      このリポジトリにはないので、以下に続くのは日付つきの記録ではなく、線の形である ——
-      そしてここでは何もどこにもリンクしない。リンクする先が何もないからである。
+      最初の 6 バージョンはプロジェクトの以前のリポジトリから出ました。タグも日付もこの
+      リポジトリにはないため、日付なしで並びます。0.1.4 以降はすべてこのリポジトリの
+      リリースです。
     </p>
 
-    <div class="rows">
-      <div class="row">
-        <h3>0.1.1 —— 最初の Loment</h3>
-        <p>
-          <strong>Rust の構文の厳密な部分集合</strong>。それは様式ではなく、出発点の制約だった:
-          言語は Rust がすでに決着させたものによって定義され、だから議論すべきことはごくわずかで、
-          作るべきコンパイラがあった。もはや部分集合であるとは主張していない —— 重なりは
-          いまもあるが、表層がそれを越えて育ったときにその主張は取り下げられた。
-        </p>
-      </div>
-      <div class="row">
-        <h3>0.1.2 Alpha —— 最初のセルフホスト</h3>
-        <p>
-          言語がそれ自身で書かれ始める。それで得られるものは優雅さではない: 自分がコンパイルする
-          言語で書かれたコンパイラだけが、その言語が表現できないものを見つけ出す唯一の方法である。
-        </p>
-      </div>
-      <div class="row">
-        <h3>0.1.2 pre1 —— 修復</h3>
-        <p>
-          最初のセルフホストが明らかにした問題。その種のことはプレリリースで起きるものとされている。
-        </p>
-      </div>
-      <div class="row">
-        <h3>0.1.2 pre2 —— いまも立ち続ける基盤</h3>
-        <p>
-          それ以降のあらゆるリリースがその上に建てられているブートストラップの基盤: リポジトリに
-          コミットされた種から自分自身を再構築するコンパイラ、そして再構築された種が始めたときの
-          ものと等しいことの検査。
-        </p>
-      </div>
-      <div class="row">
-        <h3>0.1.3 Alpha —— マルチシンタックスの発想が到来する</h3>
-        <p>
-          別の言語のソースを Loment として読める最初のバージョン。意味はつねにこの言語のものであり、
-          借りているのは綴りだけである。それは後から足された機能ではなく、プロジェクトの創設の論で
-          あり、だから「ほかに何が違うか」の下ではなくここに挙げられている。
-        </p>
-      </div>
-      <div class="row">
-        <h3>0.1.3.4 Alpha —— 一巡が閉じる</h3>
-        <p>
-          四つの段階 —— 字句解析器、構文解析器、検査器、コード生成器 —— がすべて Loment で
-          書かれ、その結果は三段階の不動点に到達する。これは以前のリポジトリからリリースされた
-          最後のバージョンであり、それ以降のあらゆるバージョンが測られる基準である:
-          <strong>言語とコンパイラが、自分たちを定義するのにホストを必要としなくなった
-          リリースである。</strong>
-        </p>
-      </div>
+    <div class="timeline">
+      <div class="tl"><span class="tl-date">2026-09 以前</span><div class="tl-body"><h3>0.1.1</h3><p>最初の Loment：Rust 構文の厳密なサブセット。サブセットという主張は後に取り下げられ、重なる構文は残りました。</p></div></div>
+      <div class="tl"><span class="tl-date">2026-09 以前</span><div class="tl-body"><h3>0.1.2 Alpha</h3><p>言語が自分自身で書かれ始める。表現できないものを見つける唯一の方法です。</p></div></div>
+      <div class="tl"><span class="tl-date">2026-09 以前</span><div class="tl-body"><h3>0.1.2 pre1</h3><p>最初のセルフホスティングが見つけた問題の修理。</p></div></div>
+      <div class="tl"><span class="tl-date">2026-09 以前</span><div class="tl-body"><h3>0.1.2 pre2</h3><p>今も残るブートストラップ基盤：コミットされたシードから再構築され、自分を再現するか検査されるコンパイラ。</p></div></div>
+      <div class="tl"><span class="tl-date">2026-09 以前</span><div class="tl-body"><h3>0.1.3 Alpha</h3><p>別の言語のソースを Loment として読める：借りるのは綴りで、意味は Loment のまま。</p></div></div>
+      <div class="tl"><span class="tl-date">2026-09 以前</span><div class="tl-body"><h3>0.1.3.4 Alpha</h3><p>字句解析器、構文解析器、検査器、コード生成器をすべて Loment で書き、ブートストラップが三段的な不動点に達する。</p></div></div>
+      <div class="tl"><time class="tl-date" datetime="2026-09-22">2026-09-22</time><div class="tl-body"><h3>0.1.4 Pre</h3><p>最初のインストール可能なビルド。「リポジトリにはバージョンがある」を目に見えるものにするのが目的でした。</p></div></div>
+      <div class="tl"><time class="tl-date" datetime="2026-09-23">2026-09-23</time><div class="tl-body"><h3>0.1.4</h3><p>大きくするより使えることに重点。構文は変えず、最後のインタープリタ経路をビルドから外しました。Windows では zip を使ってください。あのインストーラーは壊れていると分かっています。</p></div></div>
+      <div class="tl"><time class="tl-date" datetime="2026-10-13">2026-10-13</time><div class="tl-body"><h3>0.1.4.5</h3><p>回収ラダー、保証としての <code>no_runtime</code>、両ターゲットのネットワーク、閉じたゲートの後ろの <code>vm</code> 設定。</p></div></div>
+      <div class="tl"><time class="tl-date" datetime="2026-10-17">2026-10-17</time><div class="tl-body"><h3>0.1.4.6</h3><p>インタープリタ層、libc と LibL、<code>vm</code> 設定がリリースから到達可能になる。</p></div></div>
+      <div class="tl"><time class="tl-date" datetime="2026-10-18">2026-10-18</time><div class="tl-body"><h3>0.1.4.7</h3><p>同梱のすべてのライブラリが 2 つの実装でバイト単位に同じ IR を出す：155 モジュール、飛ばしたものなし。</p></div></div>
+      <div class="tl"><time class="tl-date" datetime="2026-10-20">2026-10-20</time><div class="tl-body"><h3>0.1.5</h3><p><code>choose</code> が 7 次元の行列になり、すべての合法なセルを両実装がコンパイルする。LMS と LSPE が同梱される。</p></div></div>
+      <div class="tl"><time class="tl-date" datetime="2026-11-07">2026-11-07</time><div class="tl-body"><h3>0.1.5.1</h3><p>能力ドメインが形・極性・時間則の代数になる。ホットアップデートと JVM なしの Java ライブラリが入り、<code>tur2026.3</code> が既定の版になる。</p></div></div>
     </div>
   </div>
 </section>
 
 <section class="sec">
   <div class="wrap">
-    <h2>このリポジトリから</h2>
+    <h2>詳細はどこに</h2>
     <p class="body">
-      いま出荷されているものより前に、このリポジトリから出たバージョンたち。それぞれが節ではなく
-      一行になっているのは、記録が果たすべき理由からである —— 細部はリンク先のリリースページにあり、
-      完全なまま育ち続ける履歴はもはや履歴ではなく、アーカイブの二つ目の写しになる。
-    </p>
-
-    <div class="rows">
-      <div class="row">
-        <h3>0.1.4 Pre —— 最初のインストールできる Loment</h3>
-        <p>
-          <strong>2026-09-22。</strong>プレリリースとして置かれた理由は一つだけである ——
-          「このリポジトリにはバージョンがある」という主張を、主張ではなく、目で見られる事実に
-          するため。作られ方について一つだけ残っていることがある: タグはアーカイブが構築された
-          commit より前の commit を指しており、GitHub が生成するソースアーカイブはそのビルドの
-          前の木になる。
-        </p>
-      </div>
-      <div class="row">
-        <h3>0.1.4 —— 使える</h3>
-        <p>
-          <strong>2026-09-23。</strong>主題は中身を増やすことではなく<em>使えること</em>だった:
-          構文面はまったく変わらず、作業はインタプリタの最後の部分を経路から外すことに注がれた。
-          このバージョンの Windows インストーラは、カレントディレクトリを検索しない設定の機械では
-          何もしない。<strong>このバージョンが欲しい場合は zip からインストールする</strong>こと。
-        </p>
-      </div>
-      <div class="row">
-        <h3>0.1.4.5 —— 回収、そして保証になったランタイム</h3>
-        <p>
-          <strong>2026-10-13。</strong>四段の回収のはしご。適応型の半分と世代別の半分を伴う。
-          <code>no_runtime</code> は宣言から保証になった。両方のターゲットでネットワークが動く。
-          五つ目の次元 <code>vm</code> が、リリースゲートを閉じたまま到来した。同日のパッチは
-          Windows インストーラだけを変えた。
-        </p>
-      </div>
-      <div class="row">
-        <h3>0.1.4.6 —— ゲートが下りる</h3>
-        <p>
-          <strong>2026-10-17。</strong>作られながらリリースから締め出されていた四つが、一度に
-          手の届くところへ来た：コンパイラの隣のインタプリタ段、libc と LibL、そして
-          <code>vm</code> の次元。残りは 0.1.4.7 以前で最大の欠陥掃討である。
-        </p>
-      </div>
-      <div class="row">
-        <h3>0.1.4.7 —— ライブラリが双子になる</h3>
-        <p>
-          <strong>2026-10-18。</strong>欠陥のリリースであり、見出しは機能ではない：パッケージが
-          同梱するすべてのライブラリが、二つの実装でバイト単位に同じ IR を生む —— 155 モジュール、
-          飛ばしたものはない。ここへ来るまでに掘り出されたのは、外から見えていた「分岐」ではなく、
-          静かな状態のバグだった。
-        </p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="sec">
-  <div class="wrap">
-    <h2>0.1.5 —— 行列、そして最後のゲートが開く</h2>
-    <p class="body">
-      <strong>2026-10-20。</strong>このリリースは、約束を、目で確かめられる成果物に変えることについて
-      である。<code>choose</code> は<strong>七次元の行列</strong>になり、その合法なすべてのセルが
-      両方の実装でコンパイルされ、バイト単位で比べられる。安全メモリマネージャと監査台帳が出荷され、
-      インタプリタはツールチェインとともに出荷され、そして最後のリリースゲート —— 監査サブシステムを
-      リリースビルドの外に締め出していたもの —— が消えた。
-    </p>
-
-    <h3>新規</h3>
-    <ol class="notes">
-      <li>
-        <strong>七つの設定、そして合法な組み合わせはすべてコンパイルされる。</strong>
-        <code>mode</code>、<code>gc</code>、<code>runtime</code>、<code>port</code>、
-        <code>vm</code>、<code>lms</code>、<code>lspe</code>。成果物レベルの行は、IR だけでなく
-        リンク後のイメージで判定される (17 の判据)。
-      </li>
-      <li>
-        <strong>hosted 層に名前がついた。</strong><code>std</code> は hosted の名前
-        (<code>libc</code>、ファイルシステム、スレッド、時刻、ネットワーク) を携えてよく、
-        <code>no_std</code> はそうしてはならない。<code>std</code> + <code>hosted</code> は本物の
-        <code>libc.so.6</code> をリンクして動き、両方のフロントエンドは <code>no_std</code> +
-        <code>hosted</code> を拒否する。そして IR 自身がその行を宣言するので、リンカは自分が
-        書いていない主張を検査する。
-      </li>
-      <li>
-        <strong><code>no_gc</code> は検査される主張である。</strong>成果物は「コレクタなし」と
-        述べ、イメージにコレクタが入っていればリンカはそれを失敗させる。
-      </li>
-      <li>
-        <strong>安全メモリマネージャが出荷される。</strong>七つのレベル —— コンパイル時の検査、
-        メモリマップ、ガード、拒否器、クラッシャ、プロセス外の再起動器、そして最小限の床 ——
-        があり、既定は <code>lms_full</code> で、設定には四つの段がある。
-      </li>
-      <li>
-        <strong>監査サブシステムが出荷される。</strong>LSPE は七つ目の設定である —— 各判断が何に
-        支えられているかの台帳、それを必要とする箇所の調査、局所と手続き間のエンジンを持つ義務
-        システム、そして数えられ、字句的な迂回路としての <code>lspe pass "reason" { … }</code>。
-        リリースビルドはそれを受け入れる。
-      </li>
-      <li>
-        <strong>ゲートは、何を飛ばすかを言う。</strong>既知の赤のリストはスイートではなく判据を
-        名指しする。予算は基底ブランチに対して検査されるので、変更が床を下げたりスキップを足したり
-        はできない。容量スキャナは木全体のリテラル境界と固定長配列を覆い、ブートストラップの根は
-        再構築で反証できる来歴の記録を携える。
-      </li>
-      <li>
-        <strong>インタプリタがツールチェインとともに出荷される。</strong>T0 から T3、コンパクトな
-        直列化、キャッシュされた成果物、そして性能の上限 —— そのすべてが記録された台帳に対して
-        測られる。
-      </li>
-      <li>
-        <strong>同梱のリンカが、libc の必要とする部分で参照実装と一致する。</strong>位置独立
-        コード、TLS リロケーション、弱いオブジェクトが C の面を閉じ、IFUNC と
-        <code>STT_NOTYPE</code> のインポート、SONAME を持たない共有オブジェクト、
-        <code>PT_GNU_RELRO</code> がそれを仕上げる。
-      </li>
-      <li>
-        <strong>セキュリティを、振る舞いとして述べる。</strong><code>free</code> は再利用の前に
-        ペイロードを消去する。HTTP リクエストビルダは CR、LF、NUL を拒否する。インストーラは
-        コピーするすべてのファイルを検証し、PowerShell を絶対パスで呼び出す。そしてリリースは
-        <code>SHA256SUMS</code> に対する分離署名を、それが記述するアーカイブの外に公開する。
-      </li>
-    </ol>
-
-    <h3>修正</h3>
-    <ol class="notes">
-      <li>
-        <strong>自挙コンパイラの内側で互いを上書きしていた状態スロット。</strong>
-        <code>match</code> のアームラベルがコレクタ段のフラグを潰し、エミッタの診断スロットが
-        スレッド生成のフラグを潰した —— それはスレッドの探針で「引数が 20 を超えています」という
-        偽のエラーとして現れた。どちらも今は自分のスロットを持ち、判据で固定されている。
-      </li>
-      <li>
-        <strong>拒否する代わりに壊れていた固定表。</strong>チェッカの名前環境には上限がなかった
-        (2048 バイト、256 項目) —— 一つの関数に 515 個の <code>let</code> があると Linux では
-        セグメンテーション違反になり、Windows では黙って書き抜けた。今は 4096 項目を持ち、上限で
-        止まる。エミッタの表にはガードと名前付きの診断が加わった。
-      </li>
-      <li>
-        <strong>診断に置き換えられたクラッシュ。</strong>自挙字句解析器は満杯のトークンバッファを
-        読み越さなくなり、構文解析器の入れ子の上限は <code>(</code> <code>[</code> <code>{</code>
-        と単項連鎖の一回の走査になり、受け入れツールは巨大すぎる入力を切り詰めるのではなく報告する。
-      </li>
-      <li>
-        <strong>間違ったものを名指していたリンカの失敗。</strong>二つのメッセージは、もはや存在
-        しないゲートをまだ述べていた。入力バッファは 6 MiB に増え、アーカイブ、リロケーション、
-        インポートの表は広げられるのではなく、直された。
-      </li>
-      <li>
-        <strong>フロントエンドと CLI の沈黙。</strong>チェッカの修正六件、ユーザーに見える CLI の
-        十件、C 翻訳の一巡、そしてレンダラ/リンカの修正十三件 —— そのどれもが、ひとこともなく
-        入力を失いえた箇所である。
-      </li>
-      <li>
-        <strong>二つのフォーマッタは、複数行の <code>||</code> 式の中のコメントについて一致する
-        ようになった。</strong>判据がコーパスの各ファイルをバイト単位で比べる。
-      </li>
-      <li>
-        <strong>lompi のネットワーク層は <code>internet</code> パッケージである。</strong>手作りの
-        HTTP 名は消え、レジストリの索引は帯域外で固定され、取得完了のマーカーはその消費者によって
-        検査される。
-      </li>
-      <li>
-        <strong>マイルストーンにあるバグ印の 134 のイシューはすべて閉じられた</strong>、そして
-        振る舞いを変えたあらゆる修正は、その前は赤く、後は緑になる判据を携えている。一覧は、
-        それぞれを名指したイシューとともに
-        <a href="https://github.com/Loment-Lang/Loment/milestone/2">マイルストーンのページ</a>にある。
-      </li>
-    </ol>
-    <h3>この版に無いもの</h3>
-    <p class="body">
-      監査サブシステムは<strong>パッケージには入っているが、まだパッケージから切り出されて
-      いない</strong>：パッケージングの分割は 0.1.5.1 である。<code>no_std</code> のための完全な
-      能力連鎖の報告はローダの規則であり、引き続き
-      <a href="https://github.com/Loment-Lang/Loment/issues/536">#536</a> である。
-      <code>choose vm</code> は今もコンパイラが出すものを変えない —— インタプリタは走らせる
-      プログラムであり、コンパイラのモードではない。そして監査台帳はまだメモリマネージャのガード
-      検査を取り込んでいない。その継ぎ目は <code>docs/270</code> に書かれている。
-    </p>
-  </div>
-</section>
-
-<section class="sec">
-  <div class="wrap">
-    <h2>0.1.5.1 —— 権限が代数になり、ツールチェーンが自分を置き換える</h2>
-    <p class="body">
-      <strong>2026-11-07。</strong>マイルストーンは閉じた: 92 件すべて完了。能力はひとつの閉区間ではなく、
-      形・極性・時の規則という三つの次元になった。メモリ安全は名前・サイズ・ハッシュを持つ床のある
-      七段の梯子になった。動いているツールチェーンは、署名された修正のみの Pre-Release を受け取って
-      自分を置き換える。Java ライブラリは JVM なしで動く。そして宣言のないソースは、いまや
-      <strong>最新</strong>の版 <code>tur2026.3</code> として読まれる。
-    </p>
-
-    <h3>新規</h3>
-    <ol class="notes">
-      <li>
-        <strong>十種の能力域、ひとつの判定点。</strong>形は閉区間・点・前無限
-        <code>[()..hi]</code>・後無限 <code>[lo..()]</code>・全域 <code>[()..()]</code> のいずれか。
-        極性は <code>danger</code>（通常の許可域と双対の拒否表）。時の規則は <code>epoch</code>、
-        <code>far</code>、<code>sliding</code>、<code>decaying</code>、<code>growing</code>、
-        <code>consumed</code>。<code>tick;</code> が仮想時計を進める。両方の実装が、すべての種について
-        バイト単位で同じ IR と形式オブジェクトを出す。
-      </li>
-      <li>
-        <strong>ホットアップデート。</strong>動いているツールチェーンは、五つの等号からなる准入判定
-        （変更履歴ではなく、修正のみの投影）を通した署名付き Pre-Release だけを受け取る。二スロット
-        ローダ、原子フリップ、セーフポイントでの生きたフレーム鎖の強制再マップ。ひとつの修正は
-        動いている LSP に入り、ひとつの契約変更は拒否される。
-      </li>
-      <li>
-        <strong>JVM なしの Java ライブラリ。</strong><code>lompi</code> が外来パッケージを取り寄せ、
-        <code>.class</code> と <code>.jar</code> を JDK なしで解析し、検証してから閉世界ディスパッチの
-        Loment IR に落とす。最小ランタイムが足りない部分を補い、リンカは
-        <strong>Java を入れずに証明できる</strong>イメージを出す。
-      </li>
-      <li>
-        <strong>既定の版は最新。</strong>宣言のないソースは <code>tur2026.3</code> として読まれる。
-        <code>tur</code> / <code>tur1</code> は古い読み方を明示したいときだけ書く。新しい構文が
-        既存の識別子と衝突する場合は、黙って意味を変えずにコンパイルを拒否する（<code>E040</code>）。
-      </li>
-    </ol>
-    <h3>このリリースに含まれないもの</h3>
-    <p class="body">
-      設計上の十八種のうち十種が出荷される。周期域（スロットごとの時刻が必要）、世代域と適応域
-      （セーフポイントと品質台帳が必要）、残りの文脈クラス、そして域の木・グラフ・拡張・入れ子は
-      設計のまま。生存期間は 2026.3 でも設計のまま —— <code>lgc</code> は入り、生存期間は入って
-      いない。<code>no_std</code> の完全な能力連鎖報告は
-      <a href="https://github.com/Loment-Lang/loment/issues/536">#536</a> のまま。
-    </p>
-  </div>
-</section>
-
-<section class="sec">
-  <div class="wrap">
-    <h2>現在の状態はどこにあるか</h2>
-    <p class="body">
-      このページは履歴である。プロジェクトが<em>今日</em>できることは、サイトの残りとリポジトリに
-      あり、次に何をしようとしているかはロードマップにある —— それは計画として書かれ、
-      そう述べている。
+      このページは線であり、アーカイブではありません。完全な記録、成果物、署名は GitHub に
+      あり、変更の背景はブログか番号付きの設計記録にあります。
     </p>
     <div style="margin-top: var(--s4)">
-      <a class="doclink" href="https://github.com/Loment-Lang/loment/releases/latest">
-        <span class="who">最新リリース</span>
-        <span class="what">インストールすべきバージョン。つねにこのリンクであり、ページに書き写されたバージョン番号ではない。</span>
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/releases">
+        <span class="who">GitHub のリリース</span>
+        <span class="what">完全なノート、ダウンロード、チェックサム、署名。</span>
+      </a>
+      <a class="doclink" href="blog.html">
+        <span class="who">ブログ</span>
+        <span class="what">説明する価値のある瞬間の長い版。</span>
+      </a>
+      <a class="doclink" href="roadmap.html">
+        <span class="who">ロードマップ</span>
+        <span class="what">次に何をするか。計画として書き、日付は付けません。</span>
       </a>
       <a class="doclink" href="https://loment.fandom.com/wiki/Versions_and_roadmap">
-        <span class="who">ロードマップ</span>
-        <span class="what">0.1.5 の後に来るもの。機能としてではなく、計画として述べられている。</span>
+        <span class="who">Wiki</span>
+        <span class="what">同じ歴史を百科事典の項目として。</span>
       </a>
-      <a class="doclink" href="start.html">
-        <span class="who">はじめに</span>
-        <span class="what">インストールして、最初のプログラムを走らせる。</span>
-      </a>
-      <a class="doclink" href="index.html">
-        <span class="who">フロントページへ戻る</span>
-        <span class="what">Loment とは何か、そしてそれがビルドする二種類の成果物。</span>
+      <a class="doclink" href="playground.html">
+        <span class="who">オンライン実行</span>
+        <span class="what">インストールなしで現在のコンパイラを試す。</span>
       </a>
     </div>
   </div>
 </section>
-
 </main>
 
 <footer>
