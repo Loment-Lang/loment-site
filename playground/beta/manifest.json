@@ -269,6 +269,10 @@
    "/loment/lompi/store/std/0.1.0/bitset.lomt"
   ],
   [
+   "py/lompi/store/std/0.1.0/blake2.lomt",
+   "/loment/lompi/store/std/0.1.0/blake2.lomt"
+  ],
+  [
    "py/lompi/store/std/0.1.0/blit.lomt",
    "/loment/lompi/store/std/0.1.0/blit.lomt"
   ],
@@ -409,6 +413,10 @@
    "/loment/lompi/store/std/0.1.0/graph.lomt"
   ],
   [
+   "py/lompi/store/std/0.1.0/gzip.lomt",
+   "/loment/lompi/store/std/0.1.0/gzip.lomt"
+  ],
+  [
    "py/lompi/store/std/0.1.0/hash.lomt",
    "/loment/lompi/store/std/0.1.0/hash.lomt"
   ],
@@ -463,6 +471,10 @@
   [
    "py/lompi/store/std/0.1.0/jsn.lomt",
    "/loment/lompi/store/std/0.1.0/jsn.lomt"
+  ],
+  [
+   "py/lompi/store/std/0.1.0/jsonw.lomt",
+   "/loment/lompi/store/std/0.1.0/jsonw.lomt"
   ],
   [
    "py/lompi/store/std/0.1.0/kdf.lomt",
@@ -549,6 +561,10 @@
    "/loment/lompi/store/std/0.1.0/out.lomt"
   ],
   [
+   "py/lompi/store/std/0.1.0/pack.lomt",
+   "/loment/lompi/store/std/0.1.0/pack.lomt"
+  ],
+  [
    "py/lompi/store/std/0.1.0/parse.lomt",
    "/loment/lompi/store/std/0.1.0/parse.lomt"
   ],
@@ -597,6 +613,10 @@
    "/loment/lompi/store/std/0.1.0/rational.lomt"
   ],
   [
+   "py/lompi/store/std/0.1.0/regex.lomt",
+   "/loment/lompi/store/std/0.1.0/regex.lomt"
+  ],
+  [
    "py/lompi/store/std/0.1.0/ring.lomt",
    "/loment/lompi/store/std/0.1.0/ring.lomt"
   ],
@@ -631,6 +651,10 @@
   [
    "py/lompi/store/std/0.1.0/sha256.lomt",
    "/loment/lompi/store/std/0.1.0/sha256.lomt"
+  ],
+  [
+   "py/lompi/store/std/0.1.0/sha3.lomt",
+   "/loment/lompi/store/std/0.1.0/sha3.lomt"
   ],
   [
    "py/lompi/store/std/0.1.0/sha512.lomt",
@@ -681,6 +705,10 @@
    "/loment/lompi/store/std/0.1.0/table.lomt"
   ],
   [
+   "py/lompi/store/std/0.1.0/tar.lomt",
+   "/loment/lompi/store/std/0.1.0/tar.lomt"
+  ],
+  [
    "py/lompi/store/std/0.1.0/text.lomt",
    "/loment/lompi/store/std/0.1.0/text.lomt"
   ],
@@ -719,6 +747,10 @@
   [
    "py/lompi/store/std/0.1.0/utf8.lomt",
    "/loment/lompi/store/std/0.1.0/utf8.lomt"
+  ],
+  [
+   "py/lompi/store/std/0.1.0/uuid.lomt",
+   "/loment/lompi/store/std/0.1.0/uuid.lomt"
   ],
   [
    "py/lompi/store/std/0.1.0/varint.lomt",

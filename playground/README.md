@@ -43,6 +43,10 @@ Loment 生效。这些外部写法目前是各翻译器的 **Stage A 子集**（
 “current subset has no text output”；Python starter 用 `print_num` 仍能看到 42。
 `Check` / `Build` / `IR` / `AST` / `Potato` 对这些写法都可用。
 
+**Beta.2 起，表层语法不再静默丢掉不认识的顶层/容器体残句**：Python 顶层语句与类体方法、
+Java/C# 类体尾部残句、C/C++ struct 体里的非字段行、Go/Rust 顶层残句都会带行号拒绝。
+Stable 仍是 0.1.5.1 的旧行为，只有 Beta 带这项修复。
+
 ## 目录
 
 | 路径 | 内容 |
