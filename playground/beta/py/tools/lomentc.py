@@ -1787,6 +1787,12 @@ class DomainBlock:
     audit_id: int = 0
     #: 显式的树边 `child_of PARENT`（`docs/315` §4.1）。空 = 只由括号隐含。
     child_of: str = ""
+    #: **借用生命周期域**（`docs/318` §1）：`domain v : borrow(xs) { … }` 的 `xs`。
+    #: 非空时 `space` 是 `borrow` / `borrow_mut`，形状的 lo/hi 不参与判断 —— 域的形状
+    #: 是**区域**，不是位置。空 = 今天那种位置/时律形状。
+    borrow_src: str = ""
+    #: `borrow_mut(xs)` = 独占域；`borrow(xs)` = 共享域（`view` / `freeze` 都是它）。
+    borrow_mut: bool = False
 
 
 @dataclass
@@ -2065,7 +2071,7 @@ def _resolve_guards(mods, caps_map: dict) -> None:
             walk(f.body)
 
 
-def _resolve_domains(mod) -> None:
+def _resolve_domains(mod, cap_base: int | None = None) -> None:
     """`docs/313`：块级域的作用域、自动守卫链、审计槽号。
 
     - 审计槽号：顶层能力先占 `0..len(caps)-1`，块按出现顺序接在后面；
@@ -2073,7 +2079,8 @@ def _resolve_domains(mod) -> None:
     - 值带空间标签（`let a: [u32; 64] in disk` / 形参）时，对它的下标访问
       挂上**同空间**的域链（外→内），发射器据此在取址前插判决。
     """
-    nxt = [len(mod.caps)]
+    base = len(mod.caps) if cap_base is None else cap_base
+    nxt = [base]
     #: 联动组（`docs/315` §5）：第一遍 walk 时还是空的，`couple` 收完之后第二遍再填。
     comp_of: dict = {}
     members: dict = {}
@@ -2264,7 +2271,7 @@ def _resolve_domains(mod) -> None:
     comp_by_fn: dict = {}
 
     def run_walk() -> None:
-        nxt[0] = len(mod.caps)
+        nxt[0] = base
         for f in mod.funcs:
             cur_fn[0] = f.name
             vs = {p.name: p.space for p in f.params if p.space}
@@ -2565,6 +2572,12 @@ class Module:
     #: 每一维**写在第几行**（`(维, 取值, 行)`）。**留成列表而不是只留最后一个**：
     #: "这一维写了两次"要能报出第一次在哪一行、写的是什么。
     choose_lines: list[tuple[str, str, int]] = field(default_factory=list)
+    #: **维度之后的第二位置**（`CORE_SLOTS` / `docs/262` §10.7）：`<维>_<槽>_<值>`，
+    #: 例如 `lspe_aicheck_true`。它与该维的主取值**正交**，所以不占"每维一次"，
+    #: 也不覆盖 `chooses`。今天只有 `aicheck` 一格。
+    slots: dict[str, str] = field(default_factory=dict)
+    #: 每一格写在第几行（`(槽, 取值, 行)`），理由同 `choose_lines`。
+    slot_lines: list[tuple[str, str, int]] = field(default_factory=list)
     #: **开关表**（`docs/182` §1）: `set choose <名字> {…}` 定义, `choose <名字>` /
     #: `choose close <名字>` 取值。由 `_apply_switches` 在**词法流上**落定后挂上来 ——
     #: 开关是**编译期**的事, 它的行不进 AST（关着的那段体连 token 都不进 parser）。
@@ -2755,6 +2768,26 @@ CORE_DIMS: dict[str, tuple[str, ...]] = {
     # 生效值由 `core_default("lifetime", profile)` 算，**不要**直接读 `CORE_DEFAULTS`。
     "lifetime": ("lifetime_no", "lifetime_auto", "lifetime_manual"),
 }
+#: **维度之后的第二位置**（用户 2026-11-08）：`<维>_<槽>_<值>`。
+#:
+#: 主取值是"这一维是什么"（`lspe_open_admin` / `lspe_close_admin`）；槽是**正交**的
+#: 构建旋钮，所以它可以和主取值**同时写**，不触发"这一维写了两次"。
+#: 两个理由必须写在名字里：**属哪一维**（`lspe_` 前缀）与**哪一格**（`aicheck`）。
+#:
+#: 今天只有一格：`lspe_aicheck_true|false` —— AI 检查器是外部、非确定的，
+#: 默认关；打开它只让台账/CLI 多一类**问题**（Q014），不给任何义务添证据。
+CORE_SLOTS: dict[str, tuple[str, tuple[str, ...]]] = {
+    "aicheck": ("lspe", ("true", "false")),
+}
+CORE_SLOT_WORDS = frozenset(f"{dim}_{slot}_{v}"
+                            for slot, (dim, vs) in CORE_SLOTS.items() for v in vs)
+#: 槽取值 → `(槽, 值)`。与 `CORE_DIM_OF` 分开：报错时"这一维写了两次"不适用于槽。
+CORE_SLOT_OF = {f"{dim}_{slot}_{v}": (slot, v)
+                for slot, (dim, vs) in CORE_SLOTS.items() for v in vs}
+#: 每一格**不写**时的取值 —— 与 `CORE_DEFAULTS` 同一条纪律（默认不改变行为）。
+#: 依赖要核"根满足了吗"，核的就是这张表补出来的**生效值**。
+CORE_SLOT_DEFAULTS = {"aicheck": "false"}
+
 #: 冲突**两两查**时的维序。**写死的** —— 报错文本里两个取值的先后由它决定，
 #: 而两个实现比的是字节，所以它不能是集合迭代顺序。
 #: `lms` / `lspe` / `lifetime` 排在最后：它们**没有冲突对**，追加在尾部不会改动
@@ -2762,7 +2795,10 @@ CORE_DIMS: dict[str, tuple[str, ...]] = {
 CORE_DIM_ORDER: tuple[str, ...] = ("mode", "gc", "runtime", "port", "vm", "lms", "lspe",
                                    "lifetime")
 #: 所有核心模式的取值 —— "这一个 `choose` 是核心模式还是开关"就看它在不在这里面。
-CORE_WORDS = frozenset(w for _ws in CORE_DIMS.values() for w in _ws)
+#: 槽取值也算核心写法（否则它会被当成**用户开关**吞掉，`choose lspe_aicheck_true`
+#: 就变成一次未定义的开关取值）。
+CORE_WORDS = (frozenset(w for _ws in CORE_DIMS.values() for w in _ws)
+              | CORE_SLOT_WORDS)
 #: 取值 → 属于哪一维（报错要说清是**哪一维**写了两次）。
 CORE_DIM_OF = {w: d for d, ws in CORE_DIMS.items() for w in ws}
 #: 每一维**不写**时的取值 —— 默认档，且默认**不改变任何现有程序的行为**。
@@ -3624,6 +3660,11 @@ class Parser:
                 if w.val in CORE_DIM_OF:
                     mod.chooses[CORE_DIM_OF[w.val]] = w.val
                     mod.choose_lines.append((CORE_DIM_OF[w.val], w.val, line))
+                elif w.val in CORE_SLOT_OF:
+                    # 维度之后的第二位置（`lspe_aicheck_true`）：**不碰** `chooses`。
+                    _slot, _sv = CORE_SLOT_OF[w.val]
+                    mod.slots[_slot] = _sv
+                    mod.slot_lines.append((_slot, _sv, line))
                 elif w.val == "close":
                     # `choose close <名字>`：整个语句都是开关，吃掉名字。
                     if self.peek(0).kind == "ident":
@@ -3799,6 +3840,12 @@ class Parser:
         a, b, c, d = self.peek(1), self.peek(2), self.peek(3), self.peek(4)
         if a.kind == "ident" and b.val == ":" and c.kind == "ident" and d.val == "[":
             return True
+        # `docs/318`：区域形状 —— `domain V : borrow(xs)` / `domain borrow_mut(xs)`。
+        # 只认 `borrow` / `borrow_mut` 这两个名字（`domain(...)` 仍可以是普通调用）。
+        if a.kind == "ident" and b.val == ":" and c.kind == "ident" and d.val == "(":
+            return c.val in ("borrow", "borrow_mut")
+        if a.kind == "ident" and b.val == "(" and a.val in ("borrow", "borrow_mut"):
+            return True
         return a.kind == "ident" and b.val == "["
 
     def _at_domain_loop(self) -> bool:
@@ -3919,6 +3966,26 @@ class Parser:
                 and self.peek(1).val == ":"):
             name = self.next().val
             self.next()
+        # **区域形状**（`docs/318` §1）：`borrow(xs)` / `borrow_mut(xs)`。形状是区域，
+        # 不是位置 —— lo/hi 不参与判断，时律固定成 `regular`（本期的三个域都不用状态）。
+        if (self.at("ident", "borrow") or self.at("ident", "borrow_mut")) \
+                and self.peek(1).val == "(":
+            mode = self.next().val
+            self.expect("punct", "(")
+            src = self.ident("被借用的名字")
+            self.expect("punct", ")")
+            if not name:
+                self.dom_seq += 1
+                name = f"__dom${self.dom_seq}"
+            blk = DomainBlock(name, mode, 0, 0, False, False, "regular", 0, False, [],
+                              kw.line, borrow_src=src,
+                              borrow_mut=(mode == "borrow_mut"))
+            self.dom_stack.append(blk)
+            try:
+                blk.body = self.parse_block()
+            finally:
+                self.dom_stack.pop()
+            return blk
         space = self.ident("空间名")
         lo, hi, lo_inf, hi_inf = self.parse_shape()
         kind, param = self.parse_law_tail()
@@ -5073,12 +5140,16 @@ def prepare(mod: Module, deps: list[Module] | None = None) -> tuple[Module, list
     if _has_try(allmods):  # M9: ? 语法糖
         _desugar_try(allmods, funcs_map, structs_map)
     _resolve_solid_aliases(mod)
+    # 能力名是**单元级**的（与自举侧的 ctab 同一口径）：依赖先、入口后。
+    # 从前这里只取 `mod.caps`，于是依赖里的 guard 查不到，`Guard` 保留默认
+    # `[0..0]` —— 安全边界随安装的编译器变化（#1175）。
+    all_caps = [c for m in allmods for c in m.caps]
     if _has_guard(allmods):  # P4: guard 解析
         _resolve_guards(allmods, {
             c.name: (i, c.lo, c.hi, CAP_KIND_ID[c.kind], c.param,
                      (1 if c.lo_inf else 0) | (2 if c.hi_inf else 0))
-            for i, c in enumerate(mod.caps)})
-    _resolve_domains(mod)  # docs/313：块级域、自动守卫链、审计槽号
+            for i, c in enumerate(all_caps)})
+    _resolve_domains(mod, len(all_caps))  # docs/313：块级域、自动守卫链、审计槽号
     return mod, deps
 
 
@@ -6790,6 +6861,7 @@ def _check(mod: Module, ext_funcs: dict[str, Func] | None = None,
     lms = _lms_level(mod, "lms_check")
     funcs = dict(ext_funcs or {})
     deps = deps or []
+    unit_caps = {c.name: c for m in [*deps, mod] for c in m.caps}
 
     # 依赖模块的导出符号: 先入符号表, 再检查本模块是否重名 (M12: 仅 pub 可见)
     structs: dict[str, Struct] = {}
@@ -6852,11 +6924,24 @@ def _check(mod: Module, ext_funcs: dict[str, Func] | None = None,
                         f"{CORE_DIM_ZH[dim]}（第一次在第 {l0} 行，写的是 `{w0}`；"
                         f"这一行写的是 `{w1}`）。它声明的是**整个程序**的这一维。"
                         f"要开关请用 `set choose <名字> {{ … }}`")
+    # **槽位**（维度之后的第二位置）同样"每格一次"（`docs/262` §10.7）。它和主取值
+    # 是两条串，所以 `choose lspe_open_admin` + `choose lspe_aicheck_true` 合法。
+    per_slot: dict[str, list[tuple[str, int]]] = {}
+    for slot, word, line in mod.slot_lines:
+        per_slot.setdefault(slot, []).append((word, line))
+    for slot, ws in sorted(per_slot.items()):
+        if len(ws) > 1:
+            (w0, l0), (w1, l1) = ws[0], ws[1]
+            errs.append(f"{l1}: `choose {slot}` 这一格只能声明一次 —— "
+                        f"第一次在第 {l0} 行（`{w0}`），这一行是 `{w1}`")
     # **互相冲突的取值**（`docs/175` §3.4 ⚠）：`no_std` + `gc_auto` **暂时**报错。
     # 看的是**生效值**（显式写的，或那一维的默认档）—— 因为冲突说的是"这个程序最后
     # 是哪两档"，不是"源码里写了哪两行"。报错要**点名为什么冲突**，泛泛的"非法组合"
     # 正是判据点名的反面（`docs/188` 的"宁拒勿猜"）。
     _eff = effective_dims(mod)
+    # 槽的生效值（依赖要核"根满足了吗"，与 `_eff` 同一趟落定）。
+    _slot_eff = dict(CORE_SLOT_DEFAULTS)
+    _slot_eff.update(mod.slots)
     # **两两查**（不是写死 `(mode, gc)` 那一对）：加一维时这一段一行都不用动。
     # 先后由 `CORE_DIM_ORDER` 定 —— 报错文本要比字节，不能靠 dict/set 的迭代顺序。
     _vals = [_eff[d] for d in CORE_DIM_ORDER]
@@ -6953,6 +7038,14 @@ def _check(mod: Module, ext_funcs: dict[str, Func] | None = None,
                 errs.append(f"`addin` 单元不许声明核心模式"
                             f"（在 {_unit_where(d)} / `{d.name}` 里，`{word0}`）—— "
                             f"{CORE_DIM_ZH[dim0]}是整个程序的，只有根单元能定")
+            if d.slots:
+                # **槽同一条**（`#1505` 之后补）：`choose lspe_aicheck_true` 写在 addin 里
+                # 同样**静默无效** —— 它决定的是整个程序的台账，不是这个单元的。
+                # 与上一段共用前缀，所以诊断码照旧是 E022。
+                _s0, _sv0, _ = d.slot_lines[0]
+                errs.append(f"`addin` 单元不许声明核心模式"
+                            f"（在 {_unit_where(d)} / `{d.name}` 里，`{_s0}`=`{_sv0}`）—— "
+                            f"槽也是整个程序的，只有根单元能定")
             continue
         # **库要声明它的运行期需求**（`docs/217`）：上面那条"根必须满足依赖"只对
         # **声明了**的依赖有效 —— 一个用了除法却什么都不写的库，会在根写着 `no_runtime`
@@ -6984,6 +7077,21 @@ def _check(mod: Module, ext_funcs: dict[str, Func] | None = None,
                         f"而根单元这一维是 `{_eff[dim0]}` —— 依赖的声明是**需求**，"
                         f"根必须满足它（在 {_unit_where(d)} 里）。"
                         f"在根单元写一行 `choose {word0}`")
+        if d.slots:
+            # **槽也按"需求"办**：它决定整个程序的台账，所以库声明的是"我希望
+            # 这个程序开着/关着"，根必须满足 —— 与上面那条同一形状。静默忽略会
+            # 让 `choose lspe_aicheck_true` 在库里变成一行没人读的注释。
+            _sseen: set[str] = set()
+            for _s0, _sv0, _line0 in d.slot_lines:
+                if _s0 in _sseen:
+                    continue
+                _sseen.add(_s0)
+                if _slot_eff[_s0] != _sv0:
+                    errs.append(
+                        f"依赖 `{d.name}` 要求 核心模式的槽 `{_s0}`=`{_sv0}`，"
+                        f"而根单元这一格是 `{_slot_eff[_s0]}` —— 依赖的声明是**需求**，"
+                        f"根必须满足它（在 {_unit_where(d)} 里）。"
+                        f"在根单元写一行 `choose lspe_{_s0}_{_sv0}`")
         if d.addin_lines:
             _nm, _ln = d.addin_lines[0]
             errs.append(f"库不许 `addin`（在 {_unit_where(d)} / `{d.name}` 里，"
@@ -7208,6 +7316,20 @@ def _check(mod: Module, ext_funcs: dict[str, Func] | None = None,
             if space and space == c.space:
                 errs.append(f"{c.line}: 能力 {c.name} 使用了 excluded 的空间 {space}")
 
+    # 能力名在**单元**里唯一（与自举侧的 ctab 同一口径）。同一模块内的重复由上面
+    # 那条 `seen_caps` 报；这里只报**跨文件**的重复 —— 依赖先、入口后，位置写在
+    # 后面那一条声明的文件里（#1175：从前参考实现让入口的范围静默覆盖依赖）。
+    if not _dep_pass:
+        unit_seen: dict[str, Module] = {}
+        for m0 in [*deps, mod]:
+            for c in m0.caps:
+                prev = unit_seen.get(c.name)
+                if prev is not None and prev is not m0:
+                    errs.append(f"{_unit_where(m0)}: {c.line}: 能力 {c.name} 与 "
+                                f"{_unit_where(prev)} 中的同名声明重复")
+                else:
+                    unit_seen[c.name] = m0
+
     # **行为轴**（`docs/218` §7 第 2 件，2026-10-11）：上面那条 M41 比的是**名字**
     # （`excluded "usb"` 对 `capability … : usb[…]`）—— 它**从不看行为**，所以
     # "声明了不碰网络、代码里却在调 `socket`"是它看不见的。补上的就是这一条。
@@ -7357,7 +7479,7 @@ def _check(mod: Module, ext_funcs: dict[str, Func] | None = None,
                                 errs.append(
                                     f"{s.line}: 域 {s.cap} 是危险域，索引 {v} 落在禁止区内")
                         continue
-                    cap = next((c for c in mod.caps if c.name == s.cap), None)
+                    cap = unit_caps.get(s.cap)
                     if cap is None:
                         errs.append(f"{s.line}: guard 引用了未声明的能力 {s.cap}")
                     elif (cap.kind in CAP_AUX_KINDS) != (s.aux is not None):
@@ -7382,7 +7504,7 @@ def _check(mod: Module, ext_funcs: dict[str, Func] | None = None,
                                 f"{s.line}: 能力 {s.cap} 是危险域，索引 {v} 落在禁止区内")
                 elif isinstance(s, Quality):  # docs/306 §5.2 第 7 条
                     dom = next((d for d in reversed(dstack) if d.name == s.cap), None)
-                    cap = next((c for c in mod.caps if c.name == s.cap), None) if dom is None else None
+                    cap = unit_caps.get(s.cap) if dom is None else None
                     _walk_expr(s.expr, fscope, funcs, structs, errs, enums, lifetime)
                     if dom is not None:
                         if dom.kind != "adaptive":
@@ -7398,7 +7520,7 @@ def _check(mod: Module, ext_funcs: dict[str, Func] | None = None,
                         errs.append(f"{s.line}: quality 的值类型 {qt}，应为整型")
                 elif isinstance(s, Discharge):  # docs/307 §5
                     dom = next((d for d in reversed(dstack) if d.name == s.cap), None)
-                    cap = next((c for c in mod.caps if c.name == s.cap), None) if dom is None else None
+                    cap = unit_caps.get(s.cap) if dom is None else None
                     _walk_expr(s.expr, fscope, funcs, structs, errs, enums, lifetime)
                     if dom is not None:
                         if dom.kind != "reachable":
@@ -7491,6 +7613,7 @@ def _check(mod: Module, ext_funcs: dict[str, Func] | None = None,
 
         walk(f.body, scope)
         errs.extend(_move_check(f, funcs, structs, enums, lms))  # M13 移动检查 + E029
+        errs.extend(_borrow_domain_errs(f))  # docs/318 期 1：借用生命周期域的三条规则
         if lifetime != "lifetime_no":
             _pn = [(p.name, p.type) for p in f.params]
             for _p in f.params:
@@ -7750,6 +7873,96 @@ def _move_check(f: Func, funcs: dict, structs: dict, enums: dict,
                     use(s.aux)
 
     walk(f.body, scope)
+    return errs
+
+
+# ---------------------------------------------------------------- 借用生命周期域（docs/318）
+#
+# 期 1：`domain x : borrow(v) { … }` / `borrow_mut(v)` 两种**区域形状**，三条规则：
+#   R1 寿命 —— 源必须是本函数可见的名字（形参或 `let`）；
+#   R2 权威 —— 共享域里不许写 v；独占域里不许再借 v（别名）；
+#   R3 逃逸 —— 域里借出去的值不能 `return` 出去；v 在仍被借用时不能 `free`。
+#
+# 三条都只是**检查器**的事：块本身进 IR 与普通 `{ }` 同形（`kind=regular`），
+# 所以接受这份程序的两个实现产物逐字节不变。
+
+_STORE_BUILTINS = ("store8", "store16", "store32", "store64", "store128")
+
+
+def _borrow_domain_errs(f: Func) -> list[str]:
+    """`docs/318` 期 1 的三条规则。每条都点名**域 / 名字 / 行号**。"""
+    import dataclasses as _dc
+
+    def reap(v, fn) -> None:
+        if _dc.is_dataclass(v) and not isinstance(v, type):
+            fn(v)
+            for fd in _dc.fields(v):
+                if fd.name in ("line", "col", "off", "len"):
+                    continue
+                reap(getattr(v, fd.name), fn)
+        elif isinstance(v, (list, tuple)):
+            for y in v:
+                reap(y, fn)
+
+    visible = {p.name for p in f.params}
+
+    def note(v) -> None:
+        if isinstance(v, Let):
+            visible.add(v.name)
+
+    reap(f.body, note)
+
+    blocks: list[DomainBlock] = []
+
+    def pick(v) -> None:
+        if isinstance(v, DomainBlock) and v.borrow_src:
+            blocks.append(v)
+
+    reap(f.body, pick)
+    errs: list[str] = []
+    for b in blocks:
+        src = b.borrow_src
+        if src not in visible:
+            errs.append(f"{b.line}: 域 {b.name} 要借用的 {src} 不在作用域里 —— "
+                        "区域形状只能绑到一个可见的名字")
+            continue
+
+        def scan(v, _b=b, _src=src) -> None:
+            ln = getattr(v, "line", _b.line)
+            if isinstance(v, Assign):
+                r = _place_root(v.target)
+                if r is not None and r.name == _src and not _b.borrow_mut:
+                    errs.append(f"{ln}: borrow 域 {_b.name} 里只能读 {_src}，不能写")
+            elif isinstance(v, Call) and v.name in _STORE_BUILTINS and v.args:
+                r = _place_root(v.args[0])
+                if r is not None and r.name == _src and not _b.borrow_mut:
+                    errs.append(f"{ln}: borrow 域 {_b.name} 里只能读 {_src}，不能写")
+            elif isinstance(v, Call) and v.name == "free" and v.args:
+                a0 = v.args[0]
+                if isinstance(a0, Ident) and a0.name == _src:
+                    errs.append(f"{ln}: {_src} 还在域 {_b.name} 里被借用，不能 free")
+            elif isinstance(v, Un) and v.op in ("&", "&mut"):
+                r = _place_root(v.expr)
+                if r is not None and r.name == _src:
+                    if _b.borrow_mut:
+                        errs.append(f"{ln}: 独占域 {_b.name} 里不能再借 {_src}（别名）")
+                    elif v.op == "&mut":
+                        errs.append(f"{ln}: 共享域 {_b.name} 里不能再借 &mut {_src}")
+            elif isinstance(v, Return) and v.expr is not None:
+                hit = []
+
+                def find(x) -> None:
+                    # 只有**借出去**的形状才算逃逸：`return xs[0]` 读的是值，不是借用。
+                    if isinstance(x, Un) and x.op in ("&", "&mut"):
+                        r = _place_root(x.expr)
+                        if r is not None and r.name == _src:
+                            hit.append(x)
+
+                reap(v.expr, find)
+                if hit:
+                    errs.append(f"{ln}: 域 {_b.name} 里的借用不能带出（来源 {_src}）")
+
+        reap(b.body, scan)
     return errs
 
 
@@ -8616,6 +8829,7 @@ def emit_potato(mod: Module, lom_root: Path, deps: list[Module] | None = None,
                                     # 读的就是 raw_mod 那几张表）
     raw_mod, raw_deps = _c.deepcopy(mod), _c.deepcopy(list(deps or []))
     mod, deps = prepare(mod, deps)  # M6
+    all_caps = [c for m in (deps or []) + [mod] for c in m.caps]
     layouts = []
     for u in mod.uses:
         p = (lom_root / u) if not Path(u).is_absolute() else Path(u)
@@ -8689,6 +8903,7 @@ def emit_potato(mod: Module, lom_root: Path, deps: list[Module] | None = None,
         dims=_dims, facts=_facts,
         budget=getattr(mod, "lspe_budget", None),
         depth=getattr(mod, "lspe_depth", None),
+        aicheck=(getattr(mod, "slots", {}) or {}).get("aicheck") == "true",
         sidecar=sidecar,
         cache=cache,
     )
@@ -8861,7 +9076,7 @@ def emit_potato(mod: Module, lom_root: Path, deps: list[Module] | None = None,
                    if (c.lo_inf or c.hi_inf) else {}),
                 **({"law": c.kind, "param": c.param} if c.kind != "regular" else {}),
             }
-            for c in mod.caps
+            for c in all_caps
         ],
         "functions": [
             {
@@ -13130,17 +13345,18 @@ def emit_llvm(mod: Module, lom_root: Path, deps: list[Module] | None = None,
         _slots = max(16, getattr(mod, "domain_slots", 0))
         out.append(f"@__loment_audit = internal global [{_slots} x i64] zeroinitializer")
         out.append("")
-    if mod.caps:  # P4/M35: 域描述表 (space 名取 FNV-1a 32 位哈希)
+    all_caps = [c for m in (deps or []) + [mod] for c in m.caps]
+    if all_caps:  # P4/M35: 域描述表 (space 名取 FNV-1a 32 位哈希)
         rows = ", ".join(
             "{ i64, i64, i64, i64 } { i64 %d, i64 %d, i64 %d, i64 %d }"
             % (_fnv1a32(c.space),
                0 if c.lo_inf else c.lo,
                -1 if c.hi_inf else c.hi,
                1 if c.revocable else 0)
-            for c in mod.caps
+            for c in all_caps
         )
         out.append(
-            f"@__loment_caps = internal constant [{len(mod.caps)} x {{ i64, i64, i64, i64 }}] [{rows}]"
+            f"@__loment_caps = internal constant [{len(all_caps)} x {{ i64, i64, i64, i64 }}] [{rows}]"
         )
         out.append("")
     # **分配器与它的全局同进同出**（`docs/175` §3.4）：`alloc`/`free` 现在是对运行期的

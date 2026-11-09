@@ -69,6 +69,14 @@
    "/loment/loment/lspe/__init__.py"
   ],
   [
+   "py/loment/lspe/aiask.py",
+   "/loment/loment/lspe/aiask.py"
+  ],
+  [
+   "py/loment/lspe/aicheck.py",
+   "/loment/loment/lspe/aicheck.py"
+  ],
+  [
    "py/loment/lspe/cache.py",
    "/loment/loment/lspe/cache.py"
   ],
