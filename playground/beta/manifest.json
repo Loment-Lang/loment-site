@@ -69,16 +69,36 @@
    "/loment/loment/lspe/__init__.py"
   ],
   [
+   "py/loment/lspe/cache.py",
+   "/loment/loment/lspe/cache.py"
+  ],
+  [
    "py/loment/lspe/census.py",
    "/loment/loment/lspe/census.py"
+  ],
+  [
+   "py/loment/lspe/derive.py",
+   "/loment/loment/lspe/derive.py"
+  ],
+  [
+   "py/loment/lspe/invariants.py",
+   "/loment/loment/lspe/invariants.py"
   ],
   [
    "py/loment/lspe/ledger.py",
    "/loment/loment/lspe/ledger.py"
   ],
   [
+   "py/loment/lspe/lspc.py",
+   "/loment/loment/lspe/lspc.py"
+  ],
+  [
    "py/loment/lspe/lspe.lomt",
    "/loment/loment/lspe/lspe.lomt"
+  ],
+  [
+   "py/loment/lspe/questions.py",
+   "/loment/loment/lspe/questions.py"
   ],
   [
    "py/loment/lspe/registry.py",

@@ -51,8 +51,10 @@ Loment 没有 MIR、HIR 与文本汇编，所以页面不提供这三个名字�
 
 ## 刷新一个通道
 
-**Beta 每天自动同步**：`.github/workflows/beta-sync.yml` 检出 Loment 的 `main`，跑
-`python tools/sync_beta.py <checkout>`，只有 `playground/beta` 变了才提交。
+**Beta 每天 22:00（美国东部时间）自动重建**：`.github/workflows/beta-sync.yml` 检出
+Loment 的 `main`，跑 `python tools/sync_beta.py <checkout>`，只有 `playground/beta`
+变了才提交。GitHub cron 只认 UTC 且不跟随夏令时，所以 workflow 在 02:00 与 03:00 UTC
+各触发一次，再按 `America/New_York` 的小时只放行 22:00 那一次。
 也可以在 Actions 里手动触发；本地等价命令就是这一条。
 
 Stable 只在发布时换：把下面的 `<checkout>` 换成 `v0.1.5.1` 的检出，`C=playground/stable`。

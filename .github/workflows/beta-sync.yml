@@ -1,12 +1,15 @@
 # 把 Playground 的 Beta 通道同步到 Loment 的最新 main。
 #
 # Beta 的定义就是"最新 main 上的参考编译器"；手拷一份会在别人改完编译器后悄悄变旧，
-# 所以这条每天跑一次，也可以在 Actions 里手动触发。只有 playground/beta 变了才提交。
+# 所以这条每天在美国东部时间 22:00 重建一次，也可以在 Actions 里手动触发。
+# 只有 playground/beta 变了才提交。
 name: beta-sync
 
 on:
   schedule:
-    - cron: "17 4 * * *"
+    # GitHub cron 只认 UTC，且不跟随夏令时：02:00 UTC = 22:00 EDT，
+    # 03:00 UTC = 22:00 EST。两次都排上，下面按 America/New_York 的小时筛一次。
+    - cron: "0 2,3 * * *"
   workflow_dispatch:
 
 permissions:
@@ -16,15 +19,29 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
+      - name: Is New York at 22:00?
+        id: clock
+        run: |
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            hour=$(TZ=America/New_York date +%H)
+            if [ "$hour" != "22" ]; then
+              echo "New York time is ${hour}:00 — waiting for 22:00."
+              echo "skip=1" >> "$GITHUB_OUTPUT"
+            fi
+          fi
       - uses: actions/checkout@v4
+        if: steps.clock.outputs.skip != '1'
       - uses: actions/checkout@v4
+        if: steps.clock.outputs.skip != '1'
         with:
           repository: Loment-Lang/loment
           ref: main
           path: _loment
       - name: Copy the compiler into playground/beta
+        if: steps.clock.outputs.skip != '1'
         run: python3 tools/sync_beta.py _loment
       - name: Commit if anything changed
+        if: steps.clock.outputs.skip != '1'
         run: |
           git config user.name "loment-bot"
           git config user.email "bot@loment-lang.github.io"
