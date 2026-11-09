@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A domain you can stand in, a complete LSPE, and lifetimes next — Loment</title>
+<meta name="description" content="Domains became blocks with a lifetime, all eighteen kinds now ship, LSPE's four parts are in the 0.1.5.2 beta, and the borrow-lifetime checker is next.">
+<link rel="icon" href="mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=JetBrains+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="style.css?v=20261108g">
+<link rel="alternate" hreflang="en" href="https://loment-lang.github.io/loment-site/blog-20261108-domains-lspe-lifetimes.html">
+<link rel="alternate" hreflang="zh-Hans" href="https://loment-lang.github.io/loment-site/zh/blog-20261108-domains-lspe-lifetimes.html">
+<link rel="alternate" hreflang="ja" href="https://loment-lang.github.io/loment-site/ja/blog-20261108-domains-lspe-lifetimes.html">
+<link rel="alternate" hreflang="ru" href="https://loment-lang.github.io/loment-site/ru/blog-20261108-domains-lspe-lifetimes.html">
+<link rel="alternate" hreflang="es" href="https://loment-lang.github.io/loment-site/es/blog-20261108-domains-lspe-lifetimes.html">
+<link rel="alternate" hreflang="x-default" href="https://loment-lang.github.io/loment-site/blog-20261108-domains-lspe-lifetimes.html">
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="index.html">
+      <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true">
+        <rect width="64" height="64" rx="14" fill="#2f4bff"/>
+        <path d="M18 14h12v24h16v12H18z" fill="#fff"/>
+      </svg>
+      Loment
+    </a>
+        <nav>
+      <a href="start.html">Learn</a>
+      <a href="blog.html" aria-current="page">Blog</a>
+      <a href="examples.html">Examples</a>
+      <a href="playground.html">Playground</a>
+      <a href="standard.html">Standard</a>
+      <a href="releases.html">Timeline</a>
+      <details class="navmenu" name="bar">
+        <summary>Systems</summary>
+        <ul>
+          <li><a href="lgc.html">LGC</a></li>
+          <li><a href="lvm.html">LVM</a></li>
+          <li><a href="lompi.html">lompi</a></li>
+          <li><a href="libl.html">LibL</a></li>
+          <li><a href="lspe.html">LSPE</a></li>
+        </ul>
+      </details>
+      <a href="https://github.com/Loment-Lang/loment">GitHub</a>
+    </nav>
+    <details class="lang" name="bar">
+      <summary>EN</summary>
+      <ul>
+        <li><a href="blog-20261108-domains-lspe-lifetimes.html" hreflang="en" aria-current="true">English</a></li>
+        <li><a href="zh/blog-20261108-domains-lspe-lifetimes.html" hreflang="zh-Hans">简体中文</a></li>
+        <li><a href="ja/blog-20261108-domains-lspe-lifetimes.html" hreflang="ja">日本語</a></li>
+        <li><a href="ru/blog-20261108-domains-lspe-lifetimes.html" hreflang="ru">Русский</a></li>
+        <li><a href="es/blog-20261108-domains-lspe-lifetimes.html" hreflang="es">Español</a></li>
+      </ul>
+    </details>
+  </div>
+</header>
+
+<main id="main">
+
+<section class="head">
+  <div class="wrap">
+    <p class="eyebrow">Blog &middot; 2026-11-08</p>
+    <h1>A domain you can stand in, a complete LSPE, and lifetimes next</h1>
+    <p class="lede">
+      Three things are worth writing down this week: a domain stopped being a label at the
+      top of a file and became a block you enter, all eighteen domain kinds now ship, LSPE
+      has its four parts in the 0.1.5.2 beta, and the borrow-lifetime line is the next thing
+      on the bench. This is the plain-language version.
+    </p>
+    <p class="limit">
+      <strong>This is a progress note, not a release.</strong> Beta means a snapshot of
+      <code>main</code>; the stable channel is still 0.1.5.1. Anything described as coming
+      next is a direction, not a date.
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>A domain is now a place in the code</h2>
+    <p class="body">
+      The old shape was a declaration. You wrote <code>capability blk_write : disk[0..4]</code>
+      once at the top of a file, then <code>guard blk_write(slot)</code> in a function. It
+      told a reader what the code intended, and the compiler mostly took that line on trust.
+      The new shape is a block. You enter it, the domain starts; you leave, it ends. Values
+      say which space they live in, and indexing one of those values is guarded
+      automatically.
+    </p>
+    <p class="body">
+      A block written as <code>domain buf : disk[0..63] consumed(1) { … }</code>, with a value
+      declared as <code>a: [u32; 64] in disk</code>, means that <code>a[i]</code> inside the
+      block checks <code>buf(i)</code> before the access. An explicit <code>guard buf(i)</code>
+      still works, and a guard after the block is a compile error because <code>buf</code> no
+      longer exists.
+    </p>
+    <p class="body">
+      The point is not prettier syntax. A domain now has a place and a lifetime. Stateful
+      kinds allocate their state in the current frame, so every loop iteration and every
+      recursive call gets a fresh instance instead of sharing one global table.
+    </p>
+    <p class="limit">
+      <strong>The honest boundary.</strong> A space tag does not travel through a call; the
+      callee sees a plain type. Automatic guards cover direct indexing only, not
+      <code>ptr_add</code>. Block domains are not in the Potato form object yet.
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Eighteen kinds, three questions</h2>
+    <p class="body">
+      Every domain answers three questions: where the index may be (shape), whether it marks
+      allowed or forbidden territory (polarity), and when the answer changes (time law). The
+      old ten kinds covered the common cases. The other eight landed this week, so all
+      eighteen now ship, and both compilers emit byte-identical IR for every one.
+    </p>
+    <p class="body">
+      In plain terms: an interval says where. <code>consumed(1)</code> says each position may
+      be used once per instance. <code>cyclic(P)</code> wraps around. <code>generational(N)</code>
+      flips its answer every N ticks. <code>adaptive</code> shrinks the allowed range from a
+      quality byte. <code>reachable(K)</code> reserves a position for K ticks and expects a
+      discharge. <code>subject</code>, <code>witnessed</code> and <code>flow</code> carry a
+      second argument: a bitmask, a ticket, or a packed edge.
+    </p>
+    <p class="body">
+      The boundary matters. <code>subject</code> and <code>witnessed</code> tokens come from
+      the caller; the language counts uses but cannot make the token unforgeable — that needs
+      linear values. <code>flow</code> is a packed range of edges, not an arbitrary edge set.
+      Both compilers agree on the IR, and both say what they do not cover.
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>You can walk a domain</h2>
+    <p class="body">
+      A domain used to be something you guarded. Now it is something you can traverse.
+      <code>domain:for i { … }</code> walks the current domain's positions;
+      <code>domain:for i in buf step 2</code> names a domain and jumps;
+      <code>domain:for i, j in A, B</code> walks two same-shaped domains in parallel;
+      <code>step -N</code> walks backwards.
+    </p>
+    <p class="body">
+      The loop is one guard at the head and a clock tick at every back edge. Units that use
+      no domains do not change by a byte. <code>choose domain_clock_explicit</code> turns the
+      automatic tick off if you want to drive the clock yourself.
+    </p>
+    <p class="body">
+      Tree and graph edges became syntax too. <code>child_of</code> states a parent;
+      <code>couple A, B</code> makes two domains renew as one unit, so a guard on either
+      checks the other silently; <code>mutex A, B</code> is a compile-time promise that two
+      finite, non-danger shapes never overlap. <code>tools/loment_geometry.py</code> prints
+      the tree, the graph and the position axes as deterministic JSON.
+    </p>
+    <p class="limit">
+      <strong>What is still design:</strong> <code>→</code> delegation, <code>≺</code>
+      ordering, <code>×</code> exclusion, extension domains, the tool domain, and the solid
+      body of the graph. The pages and the compiler say so instead of pretending the map is
+      complete.
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>LSPE is complete in the 0.1.5.2 beta</h2>
+    <p class="body">
+      LSPE is the audit layer: it records what each judgement rests on. The 0.1.5.2 line had
+      four parts, and all four are now in the beta compiler.
+    </p>
+    <p class="body">
+      The questioner has eight engines (E1–E8): loops, well-formedness keyed by type and
+      substitution, differential judgments that never discharge, and a probe registry
+      generated from the test tree. The counter-asker has fixed question templates
+      (Q001–Q013) and answer channels: the default is allow but label, <code>defer</code> and
+      <code>refuse</code> are explicit, and strict mode makes an unanswered question an
+      error. LSPC is the pre-flight sheet — twelve families by five columns, with
+      <code>full</code>, <code>quiet</code>, <code>strict</code> and <code>off</code> modes;
+      <code>loment lspc check</code> reads the front end without writing anything.
+    </p>
+    <p class="body">
+      The ledger keeps the derivation tree, a proof hash per site, a <code>.lspe</code>
+      sidecar, and invariants I1–I5. <code>loment lspe why</code> and
+      <code>loment lspe verify</code> read it. It is in the Beta channel now. The Playground
+      runs that snapshot, so Run, Check and Build exercise the same compiler; the Playground
+      does not add an LSPE button, because the ledger is a command-line artifact rather than
+      an action on a text box.
+    </p>
+    <p class="actions">
+      <a class="btn btn-solid" href="playground.html">Open the Playground</a>
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Lifetimes are next</h2>
+    <p class="body">
+      The next line is borrow lifetimes. It is opt-in from the file header:
+      <code>choose lifetime_true</code>. The goal is Rust's guarantees without Rust's
+      annotation noise: no <code>'a</code>, no <code>&lt;'a&gt;</code>, no <code>where</code>.
+      <code>&amp;T</code> and <code>&amp;mut T</code> become first-class in fields, returns and
+      generic arguments, and the compiler infers a region for every borrow and checks that it
+      does not outlive its source.
+    </p>
+    <p class="body">
+      Elision is deliberately aggressive. One borrow input means every borrow output borrows
+      from it. Several borrow inputs and one output means the shortest of them — so
+      <code>fn min(a: &amp;[u32], b: &amp;[u32]) -&gt; &amp;[u32]</code> needs no annotation.
+      Methods borrow from <code>self</code>. Only when a return must borrow from one specific
+      input do you write that parameter's name, as in <code>-&gt; &amp;a [u32]</code>.
+    </p>
+    <p class="body">
+      The checker follows LSPE's gentle philosophy: it names the source — which variable,
+      which line — and explains the path, instead of printing “lifetime error” and leaving
+      you there. Strictness is available; it is not the default. The lifetime domain series
+      extends the same idea: a region is a place with an entry, an exit and a rule about what
+      may cross it, and the checker asks the same kind of question LSPE asks.
+    </p>
+    <p class="limit">
+      <strong>This is work in progress, not a shipped feature.</strong> The umbrella is
+      <a href="https://github.com/Loment-Lang/loment/issues/1240">#1240</a> and the design is
+      <a href="https://github.com/Loment-Lang/loment/blob/main/docs/299-tur3-lifetimes.md">docs/299</a>;
+      the sub-issues are landing one at a time. Nothing here has a date.
+    </p>
+    <figure class="post-figure" aria-hidden="true">
+      <img src="blog-rabbit-horizon.svg" width="360" height="160" alt="">
+    </figure>
+    <p class="caption">
+      Loment is still being built: every claim above has a criterion behind it, and the ones
+      that do not are labelled as design. &mdash; <strong>Loment Dev Fujo</strong>
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Loment is released under the MIT OR Apache-2.0 license. Program by Fujo.</span>
+    <nav>
+      <a href="https://github.com/Loment-Lang/loment">Source</a>
+      <a href="https://github.com/Loment-Lang/loment/releases/latest">Releases</a>
+      <a href="https://github.com/FujoJTOP/lompi">lompi</a>
+      <a href="https://loment.fandom.com/">Wiki</a>
+      <a href="https://github.com/Loment-Lang/loment/issues">Issues</a>
+      <a class="mast" href="https://mastodon.social/@Loment" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z"/></svg>Mastodon</a>
+      <a class="mast" href="https://bsky.app/profile/loment.bsky.social" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364-3.136.521-5.919 1.517-2.244 5.449 3.944 4.011 5.42-1.005 6.237-3.242.653-1.79 1.03-2.81 1.03-2.81s.377 1.02 1.03 2.81c.817 2.237 2.293 7.253 6.237 3.242 3.675-3.932.892-4.928-2.244-5.449 2.67.296 5.568-.628 6.383-3.364.246-.829.624-5.789.624-6.479 0-.688-.139-1.86-.902-2.203-.659-.299-1.664-.621-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8z"/></svg>Bluesky</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -572,6 +572,15 @@ pre.code code {
   height: auto;
   opacity: 0.86;
 }
+.post-figure {
+  margin: var(--s5) 0 0;
+}
+.post-figure img {
+  display: block;
+  width: min(300px, 100%);
+  height: auto;
+  opacity: 0.88;
+}
 .tl-key {
   display: flex;
   flex-wrap: wrap;

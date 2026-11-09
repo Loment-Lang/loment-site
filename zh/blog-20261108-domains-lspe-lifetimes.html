@@ -1,0 +1,242 @@
+<!doctype html>
+<!-- translated-from: blog-20261108-domains-lspe-lifetimes.html -->
+<!-- source-sha256: 539088b2b4190f00b91ac7fbc2c6e0505314885595071585cda1b3c54404069d -->
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>可以走进去的域、完整 LSPE，以及下一步的生命周期 — Loment</title>
+<meta name="description" content="域变成了带位置的块，十八种域全部落地，LSPE 四件套进入 0.1.5.2 beta，借用生命周期检查器是下一步。">
+<link rel="icon" href="../mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=JetBrains+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../style.css?v=20261108g">
+<link rel="alternate" hreflang="en" href="https://loment-lang.github.io/loment-site/blog-20261108-domains-lspe-lifetimes.html">
+<link rel="alternate" hreflang="zh-Hans" href="https://loment-lang.github.io/loment-site/zh/blog-20261108-domains-lspe-lifetimes.html">
+<link rel="alternate" hreflang="ja" href="https://loment-lang.github.io/loment-site/ja/blog-20261108-domains-lspe-lifetimes.html">
+<link rel="alternate" hreflang="ru" href="https://loment-lang.github.io/loment-site/ru/blog-20261108-domains-lspe-lifetimes.html">
+<link rel="alternate" hreflang="es" href="https://loment-lang.github.io/loment-site/es/blog-20261108-domains-lspe-lifetimes.html">
+<link rel="alternate" hreflang="x-default" href="https://loment-lang.github.io/loment-site/blog-20261108-domains-lspe-lifetimes.html">
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="index.html">
+      <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true">
+        <rect width="64" height="64" rx="14" fill="#2f4bff"/>
+        <path d="M18 14h12v24h16v12H18z" fill="#fff"/>
+      </svg>
+      Loment
+    </a>
+        <nav>
+      <a href="start.html">学习</a>
+      <a href="blog.html" aria-current="page">博客</a>
+      <a href="examples.html">示例</a>
+      <a href="playground.html">在线编译</a>
+      <a href="standard.html">标准</a>
+      <a href="releases.html">时间线</a>
+      <details class="navmenu" name="bar">
+        <summary>系统</summary>
+        <ul>
+          <li><a href="lgc.html">LGC</a></li>
+          <li><a href="lvm.html">LVM</a></li>
+          <li><a href="lompi.html">lompi</a></li>
+          <li><a href="libl.html">LibL</a></li>
+          <li><a href="lspe.html">LSPE</a></li>
+        </ul>
+      </details>
+      <a href="https://github.com/Loment-Lang/loment">GitHub</a>
+    </nav>
+    <details class="lang" name="bar">
+      <summary>中文</summary>
+      <ul>
+        <li><a href="../blog-20261108-domains-lspe-lifetimes.html" hreflang="en">English</a></li>
+        <li><a href="blog-20261108-domains-lspe-lifetimes.html" hreflang="zh-Hans" aria-current="true">简体中文</a></li>
+        <li><a href="../ja/blog-20261108-domains-lspe-lifetimes.html" hreflang="ja">日本語</a></li>
+        <li><a href="../ru/blog-20261108-domains-lspe-lifetimes.html" hreflang="ru">Русский</a></li>
+        <li><a href="../es/blog-20261108-domains-lspe-lifetimes.html" hreflang="es">Español</a></li>
+      </ul>
+    </details>
+  </div>
+</header>
+
+<main id="main">
+<section class="head">
+  <div class="wrap">
+    <p class="eyebrow">博客 · 2026-11-08</p>
+    <h1>可以走进去的域、完整 LSPE，以及下一步的生命周期</h1>
+    <p class="lede">
+      这周有三件事值得写下来：域从文件顶部的一行声明变成了能走进去的块，十八种域全部落地，
+      LSPE 的四件套已经在 0.1.5.2 beta 里，接下来的工作是借用生命周期。这是人话版。
+    </p>
+    <p class="limit">
+      <strong>这是一篇进度笔记，不是发布公告。</strong>Beta 是 <code>main</code> 的快照；
+      稳定通道仍是 0.1.5.1。写成“接下来”的内容是方向，不是日期。
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>域现在是代码里的一块地方</h2>
+    <p class="body">
+      以前的域是一条声明。你在文件顶部写一次
+      <code>capability blk_write : disk[0..4]</code>，然后在函数里写
+      <code>guard blk_write(slot)</code>。它告诉读者这段代码想做什么，编译器基本选择相信
+      那一行。新的域是一个块：走进去，域开始；走出去，域结束。值会说明自己住在哪个空间，
+      访问这样的值会自动经过守卫。
+    </p>
+    <p class="body">
+      写成 <code>domain buf : disk[0..63] consumed(1) { … }</code>，再把值声明成
+      <code>a: [u32; 64] in disk</code>，块里的 <code>a[i]</code> 就会在取址之前检查
+      <code>buf(i)</code>。显式的 <code>guard buf(i)</code> 仍然可用；块之外再写
+      <code>guard buf(i)</code> 是编译错误，因为 <code>buf</code> 已经不存在了。
+    </p>
+    <p class="body">
+      重点不在语法更好看。域现在有了位置，也有了寿命。有状态的域把状态分配在当前栈帧里，
+      所以每次循环、每次递归都会拿到一个新实例，不再共用一张全局表。
+    </p>
+    <p class="limit">
+      <strong>诚实的边界。</strong>空间标记不会跟着调用走；被调函数看到的是普通类型。
+      自动守卫只覆盖直接下标，不覆盖 <code>ptr_add</code>。块域还没有写进 Potato 形式对象。
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>十八种域，三个问题</h2>
+    <p class="body">
+      每个域都在回答三个问题：下标可以在哪里（形状），它标记的是允许还是禁止（极性），
+      答案什么时候会变（时间律）。原来的十种覆盖了常见情况；这周另外八种也落地了。
+      十八种现在全部随包发布，两个编译器为每一种发出的 IR 都逐字节相同。
+    </p>
+    <p class="body">
+      用日常的话说：区间说明“在哪里”。<code>consumed(1)</code> 说明每个位置在每个实例里
+      只能用一次。<code>cyclic(P)</code> 会绕圈。<code>generational(N)</code> 每 N 个 tick
+      翻转一次答案。<code>adaptive</code> 用质量字节收缩允许的范围。<code>reachable(K)</code>
+      把一个位置预留 K 个 tick，并等待一次释放。<code>subject</code>、<code>witnessed</code>
+      和 <code>flow</code> 还要第二个实参：位掩码、票据或打包的边。
+    </p>
+    <p class="body">
+      边界也要说清楚。<code>subject</code> 与 <code>witnessed</code> 的票据由调用方提供；
+      语言只数使用次数，没法让票据不可伪造——那需要线性值。<code>flow</code> 是一段打包的
+      边范围，不是任意边集。两个编译器在 IR 上一致，也都写清自己不管什么。
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>域可以走了</h2>
+    <p class="body">
+      以前域只是拿来守卫的；现在它可以被遍历。<code>domain:for i { … }</code> 走过当前域的
+      位置；<code>domain:for i in buf step 2</code> 点名一个域并跳着走；
+      <code>domain:for i, j in A, B</code> 并行走过两个同形状的域；<code>step -N</code>
+      反向走。
+    </p>
+    <p class="body">
+      循环头只放一次守卫，每条回边推进一次虚拟钟。完全不碰域的程序一个字节都不会变。
+      想自己驱动时钟，就写 <code>choose domain_clock_explicit</code> 关掉自动 tick。
+    </p>
+    <p class="body">
+      树的边和图的边也进了语法。<code>child_of</code> 声明父域；<code>couple A, B</code>
+      让两个域作为同一个续期单位，守卫任一边都会静默检查另一边；<code>mutex A, B</code>
+      是编译期承诺：两个有限、非 danger 的形状永不重叠。
+      <code>tools/loment_geometry.py</code> 会把树、图和位置轴打印成确定性的 JSON。
+    </p>
+    <p class="limit">
+      <strong>仍是设计的部分：</strong><code>→</code> 委托、<code>≺</code> 时序、
+      <code>×</code> 排他、扩展域、工具域，以及图的立体部分。页面和编译器都会直说，
+      不假装地图已经画完。
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>LSPE 在 0.1.5.2 beta 里完整了</h2>
+    <p class="body">
+      LSPE 是审计层：它记录每个判断到底建立在什么之上。0.1.5.2 这条线有四件，现在四件都在
+      beta 编译器里。
+    </p>
+    <p class="body">
+      质疑器有八个引擎（E1–E8）：循环、按类型与替换键控的良构性、永不解除的差分判断，
+      以及从测试树生成的探针注册表。反问器有固定问题模板（Q001–Q013）和回答通道：默认
+      允许但打标签，<code>defer</code> 与 <code>refuse</code> 是显式动作，strict 模式会把
+      没回答的问题变成错误。LSPC 是起飞前检查单——十二个族乘五列，有
+      <code>full</code>、<code>quiet</code>、<code>strict</code>、<code>off</code> 四种模式；
+      <code>loment lspc check</code> 只读前端，不写任何东西。
+    </p>
+    <p class="body">
+      台账保留推导树、每个站点的证明哈希、<code>.lspe</code> 旁边的文件，以及 I1–I5 五条
+      不变量。<code>loment lspe why</code> 和 <code>loment lspe verify</code> 读它。它现在
+      在 Beta 通道里；在线编译跑的就是这份快照，所以 Run、Check、Build 用的都是同一个
+      编译器。在线编译没有加 LSPE 按钮，因为台账是命令行产物，不是一个文本框上的动作。
+    </p>
+    <p class="actions">
+      <a class="btn btn-solid" href="playground.html">打开在线编译</a>
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>下一步是生命周期</h2>
+    <p class="body">
+      下一条线是借用生命周期。它在文件头选择性开启：<code>choose lifetime_true</code>。
+      目标是 Rust 的保证，不要 Rust 的标注噪音：没有 <code>'a</code>，没有
+      <code>&lt;'a&gt;</code>，没有 <code>where</code>。<code>&amp;T</code> 与
+      <code>&amp;mut T</code> 在字段、返回值和泛型实参里成为一等类型；编译器为每个借用
+      推断一个区域，并检查它不会比来源活得更久。
+    </p>
+    <p class="body">
+      省略规则故意做得很激进。一个借用入参，所有借用出参都借自它。多个借用入参、一个出参，
+      取最短的那个——所以 <code>fn min(a: &amp;[u32], b: &amp;[u32]) -&gt; &amp;[u32]</code>
+      一个标注都不用写。方法默认借自 <code>self</code>。只有返回值必须绑到某个特定入参时，
+      才写那个参数的名字，例如 <code>-&gt; &amp;a [u32]</code>。
+    </p>
+    <p class="body">
+      检查器遵循 LSPE 的温柔哲学：它点名来源——哪个变量、哪一行——并解释路径，不会只丢下
+      一句“生命周期错误”让你自己猜。严格模式存在，但默认不开。生命周期域系列延续同一个
+      想法：一个区域就是一块有入口、有出口、有“什么可以穿过”的规则的地方，检查器问的是
+      和 LSPE 同一类问题。
+    </p>
+    <p class="limit">
+      <strong>这是进行中的工作，不是已发布的功能。</strong>伞是
+      <a href="https://github.com/Loment-Lang/loment/issues/1240">#1240</a>，设计在
+      <a href="https://github.com/Loment-Lang/loment/blob/main/docs/299-tur3-lifetimes.md">docs/299</a>；
+      子任务一个一个落。这里没有日期。
+    </p>
+    <figure class="post-figure" aria-hidden="true">
+      <img src="../blog-rabbit-horizon.svg" width="360" height="160" alt="">
+    </figure>
+    <p class="caption">
+      Loment 仍在建设：上面每条主张背后都有一条判据，没有判据的都标成设计。——
+      <strong>Loment Dev Fujo</strong>
+    </p>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Loment 依据 MIT OR Apache-2.0 双许可发布。由 Fujo 编写。</span>
+    <nav>
+      <a href="https://github.com/Loment-Lang/loment">源码</a>
+      <a href="https://github.com/Loment-Lang/loment/releases/latest">发布</a>
+      <a href="https://github.com/FujoJTOP/lompi">lompi</a>
+      <a href="https://loment.fandom.com/">Wiki</a>
+      <a href="https://github.com/Loment-Lang/loment/issues">Issues</a>
+      <a class="mast" href="https://mastodon.social/@Loment" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z"/></svg>Mastodon</a>
+      <a class="mast" href="https://bsky.app/profile/loment.bsky.social" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364-3.136.521-5.919 1.517-2.244 5.449 3.944 4.011 5.42-1.005 6.237-3.242.653-1.79 1.03-2.81 1.03-2.81s.377 1.02 1.03 2.81c.817 2.237 2.293 7.253 6.237 3.242 3.675-3.932.892-4.928-2.244-5.449 2.67.296 5.568-.628 6.383-3.364.246-.829.624-5.789.624-6.479 0-.688-.139-1.86-.902-2.203-.659-.299-1.664-.621-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8z"/></svg>Bluesky</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

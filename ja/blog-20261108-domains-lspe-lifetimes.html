@@ -1,0 +1,257 @@
+<!doctype html>
+<!-- translated-from: blog-20261108-domains-lspe-lifetimes.html -->
+<!-- source-sha256: 539088b2b4190f00b91ac7fbc2c6e0505314885595071585cda1b3c54404069d -->
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>入って歩けるドメイン、完成した LSPE、次はライフタイム — Loment</title>
+<meta name="description" content="ドメインは位置を持つブロックになり、18 種類がすべて出荷され、LSPE の 4 部品が 0.1.5.2 beta に入り、借用ライフタイムの検査器が次の作業です。">
+<link rel="icon" href="../mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=JetBrains+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../style.css?v=20261108g">
+<link rel="alternate" hreflang="en" href="https://loment-lang.github.io/loment-site/blog-20261108-domains-lspe-lifetimes.html">
+<link rel="alternate" hreflang="zh-Hans" href="https://loment-lang.github.io/loment-site/zh/blog-20261108-domains-lspe-lifetimes.html">
+<link rel="alternate" hreflang="ja" href="https://loment-lang.github.io/loment-site/ja/blog-20261108-domains-lspe-lifetimes.html">
+<link rel="alternate" hreflang="ru" href="https://loment-lang.github.io/loment-site/ru/blog-20261108-domains-lspe-lifetimes.html">
+<link rel="alternate" hreflang="es" href="https://loment-lang.github.io/loment-site/es/blog-20261108-domains-lspe-lifetimes.html">
+<link rel="alternate" hreflang="x-default" href="https://loment-lang.github.io/loment-site/blog-20261108-domains-lspe-lifetimes.html">
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="index.html">
+      <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true">
+        <rect width="64" height="64" rx="14" fill="#2f4bff"/>
+        <path d="M18 14h12v24h16v12H18z" fill="#fff"/>
+      </svg>
+      Loment
+    </a>
+        <nav>
+      <a href="start.html">学ぶ</a>
+      <a href="blog.html" aria-current="page">ブログ</a>
+      <a href="examples.html">サンプル</a>
+      <a href="playground.html">オンライン実行</a>
+      <a href="standard.html">標準</a>
+      <a href="releases.html">タイムライン</a>
+      <details class="navmenu" name="bar">
+        <summary>システム</summary>
+        <ul>
+          <li><a href="lgc.html">LGC</a></li>
+          <li><a href="lvm.html">LVM</a></li>
+          <li><a href="lompi.html">lompi</a></li>
+          <li><a href="libl.html">LibL</a></li>
+          <li><a href="lspe.html">LSPE</a></li>
+        </ul>
+      </details>
+      <a href="https://github.com/Loment-Lang/loment">GitHub</a>
+    </nav>
+    <details class="lang" name="bar">
+      <summary>日本語</summary>
+      <ul>
+        <li><a href="../blog-20261108-domains-lspe-lifetimes.html" hreflang="en">English</a></li>
+        <li><a href="../zh/blog-20261108-domains-lspe-lifetimes.html" hreflang="zh-Hans">简体中文</a></li>
+        <li><a href="blog-20261108-domains-lspe-lifetimes.html" hreflang="ja" aria-current="true">日本語</a></li>
+        <li><a href="../ru/blog-20261108-domains-lspe-lifetimes.html" hreflang="ru">Русский</a></li>
+        <li><a href="../es/blog-20261108-domains-lspe-lifetimes.html" hreflang="es">Español</a></li>
+      </ul>
+    </details>
+  </div>
+</header>
+
+<main id="main">
+<section class="head">
+  <div class="wrap">
+    <p class="eyebrow">ブログ · 2026-11-08</p>
+    <h1>入って歩けるドメイン、完成した LSPE、次はライフタイム</h1>
+    <p class="lede">
+      今週は 3 つ書いておく価値があります。ドメインがファイル先頭の宣言から、入って歩ける
+      ブロックになりました。18 種類すべてが出荷されました。LSPE の 4 部品が 0.1.5.2 beta に
+      入り、次は借用ライフタイムです。これは平易な版です。
+    </p>
+    <p class="limit">
+      <strong>これは進捗メモであり、リリース告知ではありません。</strong>Beta は
+      <code>main</code> のスナップショットで、安定チャネルは 0.1.5.1 のままです。
+      「次」と書いたものは方向であり、日付ではありません。
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>ドメインはコードの中の場所になった</h2>
+    <p class="body">
+      以前のドメインは宣言でした。ファイルの先頭に
+      <code>capability blk_write : disk[0..4]</code> を一度書き、関数の中で
+      <code>guard blk_write(slot)</code> を書く。読み手に意図を伝えますが、コンパイラは
+      その一行をほとんど信じていました。新しい形はブロックです。入ればドメインが始まり、
+      出れば終わります。値は自分がどの空間に住むかを言い、その値への添字は自動で守られます。
+    </p>
+    <p class="body">
+      <code>domain buf : disk[0..63] consumed(1) { … }</code> と書き、値を
+      <code>a: [u32; 64] in disk</code> と宣言すると、ブロック内の <code>a[i]</code> は
+      アクセスの前に <code>buf(i)</code> を検査します。明示的な <code>guard buf(i)</code>
+      も使えます。ブロックの外で <code>guard buf(i)</code> と書くと、<code>buf</code> は
+      もう存在しないのでコンパイルエラーです。
+    </p>
+    <p class="body">
+      見た目を良くする話ではありません。ドメインに場所と寿命ができました。状態を持つ種類は
+      現在のフレームに状態を確保するので、ループの各回、再帰の各呼び出しが新しいインスタンスを
+      持ち、1 枚のグローバル表を共有しません。
+    </p>
+    <p class="limit">
+      <strong>正直な境界。</strong>空間タグは呼び出しを越えません。呼ばれた側は普通の型を
+      見ます。自動ガードは直接の添字だけで、<code>ptr_add</code> は対象外です。ブロック
+      ドメインはまだ Potato 形式オブジェクトに入っていません。
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>18 種類、3 つの問い</h2>
+    <p class="body">
+      どのドメインも 3 つに答えます。添字がどこまで許されるか（形）、それが許可か禁止か
+      （極性）、答えがいつ変わるか（時間則）。以前の 10 種類でよくある場合は覆えていました。
+      残りの 8 種類が今週入り、18 種類すべてが出荷されました。両方のコンパイラが、どの種類でも
+      バイト単位で同じ IR を出します。
+    </p>
+    <p class="body">
+      普通の言葉で言うと、区間は「どこ」を言います。<code>consumed(1)</code> は各位置が
+      インスタンスごとに 1 回だけ使えると言います。<code>cyclic(P)</code> は回り込みます。
+      <code>generational(N)</code> は N tick ごとに答えを反転します。<code>adaptive</code>
+      は品質バイトで許可範囲を縮めます。<code>reachable(K)</code> は位置を K tick 予約し、
+      解放を待ちます。<code>subject</code>、<code>witnessed</code>、<code>flow</code> は
+      第 2 引数を持ちます。ビットマスク、チケット、または詰めた辺です。
+    </p>
+    <p class="body">
+      境界も重要です。<code>subject</code> と <code>witnessed</code> のチケットは呼び出し側が
+      渡します。言語は使用回数を数えますが、チケットを偽造不能にはできません。それには線形値が
+      必要です。<code>flow</code> は詰めた辺の範囲で、任意の辺集合ではありません。両方の
+      コンパイラは IR で一致し、どちらも守らない範囲を明記します。
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>ドメインを歩ける</h2>
+    <p class="body">
+      以前のドメインは守るものでした。今は歩けるものです。<code>domain:for i { … }</code>
+      は現在のドメインの位置を歩きます。<code>domain:for i in buf step 2</code> はドメインを
+      名指しして飛ばします。<code>domain:for i, j in A, B</code> は同じ形の 2 つのドメインを
+      並行して歩きます。<code>step -N</code> は逆方向です。
+    </p>
+    <p class="body">
+      ループの頭にガードが 1 回、戻り辺ごとに仮想時計が 1 回進みます。ドメインを全く使わない
+      ユニットは 1 バイトも変わりません。時計を自分で動かしたいときは
+      <code>choose domain_clock_explicit</code> で自動 tick を切れます。
+    </p>
+    <p class="body">
+      木の辺とグラフの辺も構文になりました。<code>child_of</code> は親を宣言します。
+      <code>couple A, B</code> は 2 つのドメインを 1 つの更新単位にし、どちらかのガードが
+      もう片方を静かに検査します。<code>mutex A, B</code> は、有限で danger でない 2 つの形が
+      決して重ならないというコンパイル時の約束です。<code>tools/loment_geometry.py</code> は
+      木、グラフ、位置軸を決定的な JSON で出力します。
+    </p>
+    <p class="limit">
+      <strong>まだ設計の部分：</strong><code>→</code> の委譲、<code>≺</code> の順序、
+      <code>×</code> の排他、拡張ドメイン、ツールドメイン、グラフの立体部分。ページも
+      コンパイラも、地図が完成したふりをせずにそう書きます。
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>LSPE は 0.1.5.2 beta で完成した</h2>
+    <p class="body">
+      LSPE は監査層です。各判断が何に支えられているかを記録します。0.1.5.2 の線には 4 つの
+      部品があり、今は 4 つとも beta コンパイラに入っています。
+    </p>
+    <p class="body">
+      質問器には 8 つのエンジン（E1–E8）があります。ループ、型と置換で鍵付けされた
+      整形式性、決して解除されない差分判断、テスト木から生成されるプローブ登録表です。
+      逆質問器には固定の質問テンプレート（Q001–Q013）と回答チャネルがあります。既定は
+      「許可するがラベルを付ける」で、<code>defer</code> と <code>refuse</code> は明示的な
+      操作、strict モードは未回答をエラーにします。LSPC は離陸前チェックシートで、12 の族 ×
+      5 列、<code>full</code>、<code>quiet</code>、<code>strict</code>、<code>off</code> の
+      4 モードがあります。<code>loment lspc check</code> はフロントエンドを読むだけで、
+      何も書きません。
+    </p>
+    <p class="body">
+      台帳は導出木、サイトごとの証明ハッシュ、<code>.lspe</code> サイドカー、I1–I5 の
+      不変条件を保ちます。<code>loment lspe why</code> と <code>loment lspe verify</code> が
+      それを読みます。今は Beta チャネルにあります。オンライン実行はそのスナップショットを
+      動かすので、Run、Check、Build は同じコンパイラを使います。オンライン実行に LSPE ボタンを
+      足していないのは、台帳がコマンドラインの成果物であり、テキスト欄のアクションではないからです。
+    </p>
+    <p class="actions">
+      <a class="btn btn-solid" href="playground.html">オンライン実行を開く</a>
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>次はライフタイム</h2>
+    <p class="body">
+      次の線は借用ライフタイムです。ファイル先頭で選択的に有効にします:
+      <code>choose lifetime_true</code>。目標は Rust の保証であり、Rust の注釈の雑音では
+      ありません。<code>'a</code> も <code>&lt;'a&gt;</code> も <code>where</code> も
+      書きません。<code>&amp;T</code> と <code>&amp;mut T</code> はフィールド、戻り値、
+      ジェネリック引数で一級の型になります。コンパイラは各借用に領域を推論し、借用元より
+      長生きしないことを検査します。
+    </p>
+    <p class="body">
+      省略規則はかなり攻めています。借用の入力が 1 つなら、借用の出力はすべてそこから借ります。
+      借用の入力が複数で出力が 1 つなら、最も短いものを使います。だから
+      <code>fn min(a: &amp;[u32], b: &amp;[u32]) -&gt; &amp;[u32]</code> は注釈なしで
+      書けます。メソッドは <code>self</code> から借ります。戻り値を特定の入力に結びたいときだけ、
+      <code>-&gt; &amp;a [u32]</code> のように引数名を書きます。
+    </p>
+    <p class="body">
+      検査器は LSPE の穏やかな哲学に従います。どの変数、どの行かを名指しし、経路を説明します。
+      「ライフタイムエラー」とだけ出して放置しません。strict は選べますが、既定ではありません。
+      ライフタイムドメイン系列も同じ考え方です。領域は入口と出口と「何が越えられるか」の規則を
+      持つ場所で、検査器は LSPE と同じ種類の問いを立てます。
+    </p>
+    <p class="limit">
+      <strong>これは進行中の仕事で、出荷済みの機能ではありません。</strong>傘は
+      <a href="https://github.com/Loment-Lang/loment/issues/1240">#1240</a>、設計は
+      <a href="https://github.com/Loment-Lang/loment/blob/main/docs/299-tur3-lifetimes.md">docs/299</a>。
+      子タスクは 1 つずつ入ります。ここに日付はありません。
+    </p>
+    <figure class="post-figure" aria-hidden="true">
+      <img src="../blog-rabbit-horizon.svg" width="360" height="160" alt="">
+    </figure>
+    <p class="caption">
+      Loment はまだ作られています。上の主張にはそれぞれ判据があり、ないものは設計と書いて
+      あります。—— <strong>Loment Dev Fujo</strong>
+    </p>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Loment は MIT OR Apache-2.0 の下で公開されている。制作: Fujo。</span>
+    <nav>
+      <a href="https://github.com/Loment-Lang/loment">ソース</a>
+      <a href="https://github.com/Loment-Lang/loment/releases/latest">リリース</a>
+      <a href="https://github.com/FujoJTOP/lompi">lompi</a>
+      <a href="https://loment.fandom.com/">Wiki</a>
+      <a href="https://github.com/Loment-Lang/loment/issues">イシュー</a>
+      <a class="mast" href="https://mastodon.social/@Loment" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z"/></svg>Mastodon</a>
+      <a class="mast" href="https://bsky.app/profile/loment.bsky.social" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364-3.136.521-5.919 1.517-2.244 5.449 3.944 4.011 5.42-1.005 6.237-3.242.653-1.79 1.03-2.81 1.03-2.81s.377 1.02 1.03 2.81c.817 2.237 2.293 7.253 6.237 3.242 3.675-3.932.892-4.928-2.244-5.449 2.67.296 5.568-.628 6.383-3.364.246-.829.624-5.789.624-6.479 0-.688-.139-1.86-.902-2.203-.659-.299-1.664-.621-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8z"/></svg>Bluesky</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

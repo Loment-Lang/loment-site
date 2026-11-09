@@ -24,6 +24,7 @@ Español `/es/`。**英文是唯一的源**，其余四种是它的译文 ——
 | `examples/*.lomt` | `examples.html` 上那四个程序的**源**，可重跑 |
 | `mark.svg` | 站点图标与顶栏的 mark |
 | `timeline-rabbit.svg` | 时间线底部的兔子铅笔图；由 `tools/draw_timeline_rabbit.py` 生成（固定种子），重跑应逐字节复现 |
+| `blog-rabbit-horizon.svg` | 博文里兔子奔向地平线的铅笔图；由 `tools/draw_blog_rabbit.py` 生成（固定种子），重跑应逐字节复现 |
 | `zh/ ja/ ru/ es/` | 四种译文，页面名与根目录相同 |
 | `tools/i18n_check.py` | 多语言的对齐判据，用法见下 |
 
@@ -70,7 +71,7 @@ python tools/i18n_check.py --stamp  # 重盖翻译戳
 
 | | |
 |---|---|
-| 齐全 | 五种语言 × 十五个页面，没有多余页面 |
+| 齐全 | 五种语言 × 十六个页面，没有多余页面 |
 | 路径 | `<html lang>` 与目录对得上 |
 | `hreflang` | 每页六条 `<link rel="alternate">`（含 `x-default`）**逐字节**正确 |
 | 切换器 | 顶栏那个 `<details class="lang">` 逐字节正确，当前语言带 `aria-current` |
