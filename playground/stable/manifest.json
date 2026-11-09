@@ -729,6 +729,26 @@
    "/loment/lompi/store/std/0.1.0/zlibc.lomt"
   ],
   [
+   "py/tools/cpptrans.py",
+   "/loment/tools/cpptrans.py"
+  ],
+  [
+   "py/tools/cstrans.py",
+   "/loment/tools/cstrans.py"
+  ],
+  [
+   "py/tools/ctrans.py",
+   "/loment/tools/ctrans.py"
+  ],
+  [
+   "py/tools/gotrans.py",
+   "/loment/tools/gotrans.py"
+  ],
+  [
+   "py/tools/jtrans.py",
+   "/loment/tools/jtrans.py"
+  ],
+  [
    "py/tools/lomc.py",
    "/loment/tools/lomc.py"
   ],
@@ -761,6 +781,10 @@
    "/loment/tools/lvm.py"
   ],
   [
+   "py/tools/nltrans.py",
+   "/loment/tools/nltrans.py"
+  ],
+  [
    "py/tools/pg_runner.py",
    "/loment/tools/pg_runner.py"
   ],
@@ -771,6 +795,14 @@
   [
    "py/tools/potato_from.py",
    "/loment/tools/potato_from.py"
+  ],
+  [
+   "py/tools/pytrans.py",
+   "/loment/tools/pytrans.py"
+  ],
+  [
+   "py/tools/trans_core.py",
+   "/loment/tools/trans_core.py"
   ]
  ]
 }

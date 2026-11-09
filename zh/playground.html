@@ -1,6 +1,6 @@
 <!doctype html>
 <!-- translated-from: playground.html -->
-<!-- source-sha256: d02c85822ed304e99f45866d5275ab2f012a5b551554435cc3b76480739dca15 -->
+<!-- source-sha256: a43056bf6ff7b933a9ed2973928e68fc41476ae39580dad17d3278c2b067a5b7 -->
 <html lang="zh-Hans">
 <head>
 <meta charset="utf-8">
@@ -84,6 +84,7 @@
          data-finished-errors="完成（有错误）"
          data-error="错误"
          data-exit="退出码"
+         data-no-output="这份写法已经运行；当前子集没有文本输出。"
          data-new-prompt="新程序的名称">
       <div class="pg-toolbar">
         <div class="pg-row">
@@ -100,6 +101,17 @@
             </select>
           </label>
           <button id="pg-run" class="btn btn-solid" type="button">运行</button>
+          <label class="pg-field">语言
+            <select id="pg-lang">
+              <option value="loment" selected>Loment</option>
+              <option value="python">Python</option>
+              <option value="java">Java</option>
+              <option value="c">C</option>
+              <option value="cpp">C++</option>
+              <option value="csharp">C#</option>
+              <option value="go">Go</option>
+            </select>
+          </label>
           <label class="pg-field">版次
             <select id="pg-edition">
               <option value="tur2026.3" selected>Tur 2026.3</option>
@@ -131,7 +143,7 @@
           </label>
           <button id="pg-new" class="btn btn-quiet" type="button">新建</button>
           <button id="pg-download" class="btn btn-quiet" type="button">下载源码</button>
-          <span class="pg-hint">Ctrl/⌘ + Enter</span>
+          
         </div>
       </div>
       <div class="pg-main">
@@ -152,7 +164,7 @@
             <div class="pg-block err" id="pg-stderr-block" hidden><div class="pg-label">诊断</div><pre id="pg-stderr" class="pg-out"></pre></div>
           </div>
           <div id="pg-links" class="pg-links"></div>
-          <div class="pg-foot"><span id="pg-status" class="pg-status">就绪</span><span id="pg-exit">—</span><span id="pg-elapsed"></span></div>
+          <div class="pg-foot"><span id="pg-status" class="pg-status">就绪</span><span class="pg-hint">Ctrl/⌘ + Enter</span><span id="pg-exit">—</span><span id="pg-elapsed"></span></div>
         </div>
       </div>
     </div>

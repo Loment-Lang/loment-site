@@ -36,6 +36,13 @@ Loment 没有 MIR、HIR 与文本汇编，所以页面不提供这三个名字�
 真实的三个可观察面。`Edition` 选 Tur 版次（2026.3 / 2026.2 / 2026.1），`Target` 选
 `Build` 与 `Machine code` 的目标（ELF / PE）。
 
+`Language` 选**表层语法**：Loment（原生 Tur）、Python、Java、C、C++、C#、Go。切换时
+编辑器换成对应写法的 starter，并在源码头写 `choose write grammar <名>`；`Edition` 只对
+Loment 生效。这些外部写法目前是各翻译器的 **Stage A 子集**（整数标量 + `if`/`while`/
+`for` + 四则/位运算），所以 Java/C/C++/C#/Go 的 Run 通常没有 stdout，页面会明说
+“current subset has no text output”；Python starter 用 `print_num` 仍能看到 42。
+`Check` / `Build` / `IR` / `AST` / `Potato` 对这些写法都可用。
+
 ## 目录
 
 | 路径 | 内容 |
@@ -43,6 +50,7 @@ Loment 没有 MIR、HIR 与文本汇编，所以页面不提供这三个名字�
 | `playground.js` | 编辑器、高亮、Pyodide 引导、动作分发与产物下载 |
 | `beta/` `stable/` | 两个通道各自的 `py/` 与 `manifest.json` |
 | `beta/py/tools/` | 参考编译器、`lomelf`、`lvm`、`pg_runner.py` 及其依赖 |
+| `beta/py/tools/*trans.py` | 表层语法翻译器（`pytrans` / `jtrans` / `ctrans` / `cpptrans` / `cstrans` / `gotrans`）与 `trans_core.py`；`choose write grammar <名>` 按需导入 |
 | `beta/py/loment/lib/` | 工具链自带的核心库（`num`、`mem`、`proc`、`json` …） |
 | `beta/py/lompi/store/` | 随包发布的标准库与 host 库 |
 | `beta/py/loment/lspe/` | 编译器导入的 LSPE 包 |

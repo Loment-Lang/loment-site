@@ -11,6 +11,9 @@ import json
 import re
 import struct
 import sys
+import warnings
+
+warnings.filterwarnings("ignore", category=SyntaxWarning)
 from pathlib import Path
 
 ROOT = Path("/loment")
@@ -31,6 +34,20 @@ def _edition(text: str, edition: str) -> str:
     if "choose write grammar" in text:
         return text
     return "choose write grammar " + edition + "\n\n" + text
+
+
+NATIVE = ("", "loment", "tur", "tur1", "tur2", "tur3",
+          "tur2026.1", "tur2026.2", "tur2026.3")
+
+
+def _grammar(text: str, edition: str, language: str) -> str:
+    """Select the surface grammar. Native Tur keeps the edition switch."""
+    language = (language or "loment").strip().lower()
+    if language in NATIVE:
+        return _edition(text, edition)
+    if "choose write grammar" in text:
+        return text
+    return "choose write grammar " + language + "\n\n" + text
 
 
 def _describe(mod) -> str:
@@ -115,7 +132,8 @@ def _result(kind, rc=0, out="", err="", **extra):
 
 
 def run_text(text: str, action: str = "run", edition: str = "tur2026.3",
-             target: str = "elf", name: str = "main") -> dict:
+             target: str = "elf", name: str = "main",
+             language: str = "loment") -> dict:
     import lomentc
     import lomelf
     import lvm
@@ -130,7 +148,10 @@ def run_text(text: str, action: str = "run", edition: str = "tur2026.3",
             "The wasm32 backend is designed in docs/313 and tracked in issue #1496.\n"
             "Until it lands, use Build for an ELF/PE artifact, or Run for LVM.\n")
 
-    src = _shim(_edition(text, edition))
+    language = (language or "loment").strip().lower()
+    src = _grammar(text, edition, language)
+    if language in NATIVE:
+        src = _shim(src)
     WORK.parent.mkdir(parents=True, exist_ok=True)
     WORK.write_text(src, encoding="utf-8", newline="\n")
 

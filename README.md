@@ -15,7 +15,7 @@ Español `/es/`。**英文是唯一的源**，其余四种是它的译文 ——
 | `start.html` | 学习页（合并了原来的 Learn 与 Get started）：安装、第一个程序、编译运行，以及两本书 / 示例 / 练习的入口。**每一步缺什么并排写出来** |
 | `blog.html` `blog-0152-beta2-playground.html` | Blog 索引与首篇博文：0.1.5.2 Beta 2 上线在线编译。按**时刻与理由**写，不按版本列功能 |
 | `examples.html` | 四个短程序，各带真跑出来的输出 |
-| `playground.html` | 在线编译：左边编辑器、右边输出。第一次运行按需加载 Pyodide，把仓里的参考编译器与 LVM 搬进浏览器；**没有任何内容上传**。四语同页 |
+| `playground.html` | 在线编译：左边编辑器、右边输出。第一次运行按需加载 Pyodide，把仓里的参考编译器与 LVM 搬进浏览器；**没有任何内容上传**。可选表层语法（Loment / Python / Java / C / C++ / C# / Go）与 Tur 版次；五语同页 |
 | `playground/` | playground 的脚本与两套编译器快照：`beta/`（0.1.5.2.beta.2，跟 main）与 `stable/`（0.1.5.1）。各自带 `py/` 与 `manifest.json`，见该目录的 README |
 | `releases.html` | 时间线：从 0.1.1 到当前版的日期与一句话主题。**全站唯一写版本号的一页**，理由写在页上。**不再放逐版本的 New / Fixed 列表**，细节留在 GitHub 的发布页 |
 | `roadmap.html` | 路线图：0.1.5 起各版**为了什么**。**是计划不是承诺** —— 没有日期、没有一样现在能下载，页上明写 |

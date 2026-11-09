@@ -105,12 +105,64 @@
     ].join("\n");
   }
 
+  function langStarter(lang, name) {
+    if (lang === "python") {
+      return [
+        "choose write grammar python",
+        "",
+        "def _start() -> int:",
+        "    print_num(6 * 7)",
+        "    return 0",
+        ""
+      ].join("\n");
+    }
+    if (lang === "java" || lang === "csharp") {
+      return [
+        "choose write grammar " + lang,
+        "",
+        "public class Main {",
+        "    public static int _start() {",
+        "        int x = 6 * 7;",
+        "        return x;",
+        "    }",
+        "}",
+        ""
+      ].join("\n");
+    }
+    if (lang === "c" || lang === "cpp") {
+      return [
+        "choose write grammar " + lang,
+        "",
+        "int _start() {",
+        "    int x = 6 * 7;",
+        "    return x;",
+        "}",
+        ""
+      ].join("\n");
+    }
+    if (lang === "go") {
+      return [
+        "choose write grammar go",
+        "",
+        "package main",
+        "",
+        "func _start() int {",
+        "    var x int = 6 * 7",
+        "    return x",
+        "}",
+        ""
+      ].join("\n");
+    }
+    return starter(name);
+  }
+
   var root = document.getElementById("pg");
   if (!root) return;
   var S = root.dataset;
 
   var nameEl = document.getElementById("pg-name");
   var actionEl = document.getElementById("pg-action");
+  var langEl = document.getElementById("pg-lang");
   var editionEl = document.getElementById("pg-edition");
   var targetEl = document.getElementById("pg-target");
   var channelEl = document.getElementById("pg-channel");
@@ -222,7 +274,30 @@
     elapsedEl.textContent = "";
   }
 
+  var drafts = {};
+  var currentLang = "loment";
+
+  function syncLanguage(lang) {
+    currentLang = lang;
+    editionEl.disabled = lang !== "loment";
+    document.getElementById("pg-example").disabled = lang !== "loment";
+  }
+
+  langEl.addEventListener("change", function (e) {
+    drafts[currentLang] = src.value;
+    var next = e.target.value;
+    syncLanguage(next);
+    src.value = drafts[next] || langStarter(next, programName());
+    render();
+    clearOutput();
+  });
+
   document.getElementById("pg-example").addEventListener("change", function (e) {
+    if (currentLang !== "loment") {
+      drafts[currentLang] = src.value;
+      langEl.value = "loment";
+      syncLanguage("loment");
+    }
     src.value = EXAMPLES[e.target.value] || EXAMPLES.hello;
     render();
     clearOutput();
@@ -237,6 +312,7 @@
 
   channelEl.addEventListener("change", function () {
     try { sessionStorage.setItem("pg-src", src.value); } catch (e) { /* ignore */ }
+    try { sessionStorage.setItem("pg-lang", langEl.value); } catch (e) { /* ignore */ }
     var u = new URL(window.location.href);
     u.searchParams.set("channel", channelEl.value);
     window.location.href = u.toString();
@@ -247,7 +323,7 @@
     if (entered === null) return;
     nameEl.value = entered;
     nameEl.value = programName();
-    src.value = starter(nameEl.value);
+    src.value = langStarter(currentLang, nameEl.value);
     render();
     clearOutput();
     src.focus();
@@ -279,7 +355,7 @@
   }
 
   function loadTree(py) {
-    return fetch(new URL("manifest.json", ASSET)).then(function (r) {
+    return fetch(new URL("manifest.json?ts=" + Date.now(), ASSET), { cache: "no-store" }).then(function (r) {
       if (!r.ok) throw new Error("missing " + CHANNEL + "/manifest.json");
       return r.json();
     }).then(function (m) {
@@ -288,7 +364,7 @@
       function next() {
         if (i >= list.length) return Promise.resolve();
         var pair = list[i++];
-        return fetch(new URL(pair[0], ASSET)).then(function (r) {
+        return fetch(new URL(pair[0], ASSET), { cache: "no-store" }).then(function (r) {
           if (!r.ok) throw new Error("missing " + pair[0]);
           return r.text();
         }).then(function (text) {
@@ -319,8 +395,8 @@
           'sys.path.append("/loment/loment")',
           "import pg_runner",
           "",
-          "def run_text(text, action, edition, target, name):",
-          "    return pg_runner.run_text(text, action, edition, target, name)"
+          "def run_text(text, action, edition, target, name, language):",
+          "    return pg_runner.run_text(text, action, edition, target, name, language)"
         ].join("\n")).then(function () { return py; });
     });
   }
@@ -338,14 +414,15 @@
     var action = actionEl.value;
     var edition = editionEl.value;
     var target = targetEl.value;
+    var language = langEl.value;
     var promise = pyPromise || (pyPromise = boot());
     promise.then(function (py) {
       setStatus(S.compiling);
       var fn = py.globals.get("run_text");
-      var res = fn(src.value, action, edition, target, nameEl.value || "main");
+      var res = fn(src.value, action, edition, target, nameEl.value || "main", language);
       var d = res.toJs();
       res.destroy();
-      outEl.textContent = d.out || "";
+      outEl.textContent = d.out || (language !== "loment" && !d.err ? (S.noOutput || "") : "");
       if (d.err) {
         errEl.textContent = d.err;
         errBlock.hidden = false;
@@ -369,9 +446,18 @@
   runBtn.addEventListener("click", run);
   channelEl.value = CHANNEL;
   var saved = null;
-  try { saved = sessionStorage.getItem("pg-src"); } catch (e) { /* ignore */ }
-  src.value = saved || EXAMPLES.hello;
+  var savedLang = "loment";
+  try {
+    saved = sessionStorage.getItem("pg-src");
+    savedLang = sessionStorage.getItem("pg-lang") || "loment";
+  } catch (e) { /* ignore */ }
+  if (savedLang !== "loment" && langEl.querySelector('option[value="' + savedLang + '"]')) {
+    langEl.value = savedLang;
+  }
+  syncLanguage(langEl.value);
+  src.value = saved || (langEl.value === "loment" ? EXAMPLES.hello : langStarter(langEl.value, "main"));
   if (saved) { try { sessionStorage.removeItem("pg-src"); } catch (e) { /* ignore */ } }
+  if (saved) { try { sessionStorage.removeItem("pg-lang"); } catch (e) { /* ignore */ } }
   render();
   syncAction();
 })();

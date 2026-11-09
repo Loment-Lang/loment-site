@@ -1,6 +1,6 @@
 <!doctype html>
 <!-- translated-from: playground.html -->
-<!-- source-sha256: d02c85822ed304e99f45866d5275ab2f012a5b551554435cc3b76480739dca15 -->
+<!-- source-sha256: a43056bf6ff7b933a9ed2973928e68fc41476ae39580dad17d3278c2b067a5b7 -->
 <html lang="ru">
 <head>
 <meta charset="utf-8">
@@ -84,6 +84,7 @@
          data-finished-errors="Готово с ошибками"
          data-error="Ошибка"
          data-exit="код выхода"
+         data-no-output="Эта запись выполнена; в текущем подмножестве нет текстового вывода."
          data-new-prompt="Имя новой программы">
       <div class="pg-toolbar">
         <div class="pg-row">
@@ -100,6 +101,17 @@
             </select>
           </label>
           <button id="pg-run" class="btn btn-solid" type="button">Запустить</button>
+          <label class="pg-field">Язык
+            <select id="pg-lang">
+              <option value="loment" selected>Loment</option>
+              <option value="python">Python</option>
+              <option value="java">Java</option>
+              <option value="c">C</option>
+              <option value="cpp">C++</option>
+              <option value="csharp">C#</option>
+              <option value="go">Go</option>
+            </select>
+          </label>
           <label class="pg-field">Редакция
             <select id="pg-edition">
               <option value="tur2026.3" selected>Tur 2026.3</option>
@@ -131,7 +143,7 @@
           </label>
           <button id="pg-new" class="btn btn-quiet" type="button">Новый</button>
           <button id="pg-download" class="btn btn-quiet" type="button">Скачать исходник</button>
-          <span class="pg-hint">Ctrl/⌘ + Enter</span>
+          
         </div>
       </div>
       <div class="pg-main">
@@ -152,7 +164,7 @@
             <div class="pg-block err" id="pg-stderr-block" hidden><div class="pg-label">Диагностика</div><pre id="pg-stderr" class="pg-out"></pre></div>
           </div>
           <div id="pg-links" class="pg-links"></div>
-          <div class="pg-foot"><span id="pg-status" class="pg-status">Готово</span><span id="pg-exit">—</span><span id="pg-elapsed"></span></div>
+          <div class="pg-foot"><span id="pg-status" class="pg-status">Готово</span><span class="pg-hint">Ctrl/⌘ + Enter</span><span id="pg-exit">—</span><span id="pg-elapsed"></span></div>
         </div>
       </div>
     </div>

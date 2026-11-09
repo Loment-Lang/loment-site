@@ -20,6 +20,9 @@ MODULES = (
     "lomc.py", "lomelf.py", "lomentc.py", "lvm.py", "potato.py",
     "potato_from.py", "lomt_from.py", "loment_comefor.py",
     "loment_diag.py", "loment_interp.py",
+    # surface grammars: `choose write grammar <name>` imports these lazily
+    "trans_core.py", "pytrans.py", "jtrans.py", "ctrans.py", "cpptrans.py",
+    "cstrans.py", "gotrans.py", "nltrans.py",
 )
 
 
