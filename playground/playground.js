@@ -226,7 +226,12 @@
     statusEl.className = "pg-status" + (isErr ? " err" : "");
   }
 
-  src.addEventListener("input", render);
+  src.addEventListener("input", function () {
+    render();
+    // Editing invalidates the last run. Without this, a successful exit/output
+    // from the previous source stays visible and makes a broken edit look OK.
+    if (statusEl.textContent !== S.ready) clearOutput();
+  });
   src.addEventListener("scroll", syncScroll);
 
   src.addEventListener("keydown", function (e) {
