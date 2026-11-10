@@ -309,6 +309,112 @@ code {
 .head { padding-block: clamp(var(--s5), 6vw, var(--s7)) var(--s5); }
 .head h1 { font-size: var(--t-h2); }
 
+/* Tur 2026.3 test-build banner. Rounded squares, strongest on the left and
+   faded to nothing on the right, with the edition name standing in the clear
+   half. The fade keeps it a background: the word is what a reader carries. */
+.tur3-banner {
+  position: relative;
+  height: clamp(136px, 19vw, 196px);
+  margin-bottom: var(--s4);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  overflow: hidden;
+  background: var(--wash);
+}
+.tur3-banner::before,
+.tur3-banner::after {
+  content: "";
+  position: absolute;
+  inset: -24px;
+  background-repeat: repeat;
+  -webkit-mask-image: linear-gradient(to right, #000 0%, #000 24%, rgba(0, 0, 0, 0.55) 48%, rgba(0, 0, 0, 0.12) 72%, transparent 86%);
+          mask-image: linear-gradient(to right, #000 0%, #000 24%, rgba(0, 0, 0, 0.55) 48%, rgba(0, 0, 0, 0.12) 72%, transparent 86%);
+}
+.tur3-banner::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='116' height='116' viewBox='0 0 116 116'%3E%3Crect x='9' y='9' width='42' height='42' rx='12' fill='%232f4bff' fill-opacity='0.13'/%3E%3Crect x='65' y='9' width='42' height='42' rx='12' fill='%231d2733' fill-opacity='0.055'/%3E%3Crect x='9' y='65' width='42' height='42' rx='12' fill='%231d2733' fill-opacity='0.055'/%3E%3Crect x='65' y='65' width='42' height='42' rx='12' fill='%232f4bff' fill-opacity='0.09'/%3E%3C/svg%3E");
+  background-size: 116px 116px;
+}
+.tur3-banner::after {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='188' height='188' viewBox='0 0 188 188'%3E%3Crect x='10' y='12' width='58' height='58' rx='17' fill='%232f4bff' fill-opacity='0.08'/%3E%3Crect x='84' y='28' width='44' height='44' rx='13' fill='%231d2733' fill-opacity='0.045'/%3E%3Crect x='28' y='92' width='46' height='46' rx='14' fill='%231d2733' fill-opacity='0.05'/%3E%3Crect x='92' y='86' width='76' height='76' rx='22' fill='%232f4bff' fill-opacity='0.06'/%3E%3C/svg%3E");
+  background-position: 19px 27px;
+  background-size: 188px 188px;
+}
+.tur3-word {
+  position: absolute;
+  top: 50%;
+  right: clamp(var(--s3), 4vw, var(--s5));
+  transform: translateY(-50%);
+  font: 700 clamp(2.5rem, 7.4vw, 4.9rem)/1 var(--display);
+  letter-spacing: -0.035em;
+  color: var(--ink);
+  white-space: nowrap;
+}
+@media (max-width: 560px) {
+  .tur3-word { right: var(--s2); }
+}
+
+/* The featured blog row: a three-column editorial unit. The right column is
+   a quiet field, not a picture; the squares fade toward its right edge so the
+   wordmark stands in clear space. It is a different object from the post-page
+   banner: a tile beside the entry, not a band above it. */
+.row.row-featured {
+  grid-template-columns: minmax(0, 16rem) minmax(0, 1fr) minmax(200px, 260px);
+  align-items: stretch;
+  padding-block: var(--s5);
+}
+.row-featured > div:not(.row-art) > p:first-child {
+  font-size: clamp(1.15rem, 1.6vw, 1.35rem);
+  line-height: 1.4;
+}
+.row-art {
+  position: relative;
+  min-height: 190px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--wash);
+}
+.row-art::before {
+  content: "";
+  position: absolute;
+  inset: -20px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Crect x='10' y='14' width='38' height='38' rx='11' fill='%232f4bff' fill-opacity='0.14'/%3E%3Crect x='58' y='26' width='24' height='24' rx='7' fill='none' stroke='%231d2733' stroke-opacity='0.13' stroke-width='2'/%3E%3Crect x='22' y='64' width='28' height='28' rx='8' fill='%231d2733' fill-opacity='0.06'/%3E%3Crect x='64' y='62' width='42' height='42' rx='12' fill='%232f4bff' fill-opacity='0.10'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 120px 120px;
+  -webkit-mask-image: linear-gradient(to right, #000 0%, #000 30%, rgba(0, 0, 0, 0.35) 62%, transparent 88%);
+          mask-image: linear-gradient(to right, #000 0%, #000 30%, rgba(0, 0, 0, 0.35) 62%, transparent 88%);
+}
+.row-art-label {
+  position: absolute;
+  top: var(--s3);
+  left: var(--s3);
+  font: 500 var(--t-xs)/1 var(--mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+.row-art-word {
+  position: absolute;
+  right: var(--s3);
+  bottom: var(--s3);
+  font: 700 clamp(1.8rem, 2.6vw, 2.5rem)/1 var(--display);
+  letter-spacing: -0.035em;
+  color: var(--blue-dk);
+  white-space: nowrap;
+}
+@media (max-width: 1000px) {
+  .row.row-featured { grid-template-columns: minmax(0, 16rem) minmax(0, 1fr); }
+  .row-featured .row-art {
+    grid-column: 1 / -1;
+    min-height: 132px;
+    margin-top: var(--s3);
+  }
+}
+@media (max-width: 720px) {
+  .row.row-featured { grid-template-columns: 1fr; }
+  .row-featured .row-art { grid-column: auto; margin-top: 0; }
+}
+
 .hero .lede, .head .lede {
   max-width: var(--measure);
   margin-top: var(--s3);

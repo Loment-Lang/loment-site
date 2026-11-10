@@ -1,7 +1,7 @@
 # loment-site
 
 Loment 的官网。静态站，手写 HTML/CSS，没有构建步骤。唯一的运行时依赖是
-`playground.html` 在**第一次点运行**时才从 CDN 加载的 Pyodide；其余页面仍是零脚本。
+`playground/` 在**第一次点运行**时才从 CDN 加载的 Pyodide；其余页面仍是零脚本。
 
 站点出**五种语言**：英文（根目录）、简体中文 `/zh/`、日本語 `/ja/`、Русский `/ru/`、
 Español `/es/`。**英文是唯一的源**，其余四种是它的译文 —— 所以对外材料的正本仍然只有
@@ -12,21 +12,33 @@ Español `/es/`。**英文是唯一的源**，其余四种是它的译文 ——
 | | |
 |---|---|
 | `index.html` | 落地页，**整个页面就是一段话**（2026-10-14 用户裁）：Loment 为什么存在，配两个按钮（下载 / 了解更多）。**没有代码、没有 `.limit`、没有 doclink、不引任何子页面** —— 它是自述，不是说明书。改它之前先读下面那节 |
-| `start.html` | 学习页（合并了原来的 Learn 与 Get started）：安装、第一个程序、编译运行，以及两本书 / 示例 / 练习的入口。**每一步缺什么并排写出来** |
-| `blog.html` `blog-0152-beta2-playground.html` | Blog 索引与首篇博文：0.1.5.2 Beta 2 上线在线编译。按**时刻与理由**写，不按版本列功能 |
-| `examples.html` | 四个短程序，各带真跑出来的输出 |
-| `playground.html` | 在线编译：左边编辑器、右边输出。第一次运行按需加载 Pyodide，把仓里的参考编译器与 LVM 搬进浏览器；**没有任何内容上传**。可选表层语法（Loment / Python / Java / C / C++ / C# / Go）与 Tur 版次；五语同页 |
+| `start/index.html` | 学习页（合并了原来的 Learn 与 Get started）：安装、第一个程序、编译运行，以及两本书 / 示例 / 练习的入口。**每一步缺什么并排写出来** |
+| `blog/index.html` `blog/0152-beta2-playground/index.html` | Blog 索引与首篇博文：0.1.5.2 Beta 2 上线在线编译。按**时刻与理由**写，不按版本列功能 |
+| `examples/index.html` | 四个短程序，各带真跑出来的输出 |
+| `playground/index.html` | 在线编译：左边编辑器、右边输出。第一次运行按需加载 Pyodide，把仓里的参考编译器与 LVM 搬进浏览器；**没有任何内容上传**。可选表层语法（Loment / Python / Java / C / C++ / C# / Go）与 Tur 版次；五语同页 |
 | `playground/` | playground 的脚本与两套编译器快照：`beta/`（0.1.5.2.beta.2，跟 main）与 `stable/`（0.1.5.1）。各自带 `py/` 与 `manifest.json`，见该目录的 README |
-| `releases.html` | 时间线：从 0.1.1 到当前版的日期与一句话主题。**全站唯一写版本号的一页**，理由写在页上。**不再放逐版本的 New / Fixed 列表**，细节留在 GitHub 的发布页 |
-| `roadmap.html` | 路线图：0.1.5 起各版**为了什么**。**是计划不是承诺** —— 没有日期、没有一样现在能下载，页上明写 |
-| `lgc.html` `lvm.html` `lompi.html` `libl.html` `lspe.html` | 五个系统各一页，**各带自己的状态行**（LVM 是"引擎不存在"，LibL 是"0.1.4.6 起随包发布"，LSPE 是"设计，不在任何发布里"） |
+| `releases/index.html` | 时间线：从 0.1.1 到当前版的日期与一句话主题。**全站唯一写版本号的一页**，理由写在页上。**不再放逐版本的 New / Fixed 列表**，细节留在 GitHub 的发布页 |
+| `roadmap/index.html` | 路线图：0.1.5 起各版**为了什么**。**是计划不是承诺** —— 没有日期、没有一样现在能下载，页上明写 |
+| `lgc/index.html` `lvm/index.html` `lompi/index.html` `libl/index.html` `lspe/index.html` | 五个系统各一页，**各带自己的状态行**（LVM 是"引擎不存在"，LibL 是"0.1.4.6 起随包发布"，LSPE 是"设计，不在任何发布里"） |
 | `style.css` | 全部样式。配色、字体、那个"边界"母题，以及按语言关掉的那几处拉丁排印习惯，都在文件头的注释里说明了理由 |
-| `examples/*.lomt` | `examples.html` 上那四个程序的**源**，可重跑 |
+| `examples/*.lomt` | `examples/` 上那四个程序的**源**，可重跑 |
 | `mark.svg` | 站点图标与顶栏的 mark |
 | `timeline-rabbit.svg` | 时间线底部的兔子铅笔图；由 `tools/draw_timeline_rabbit.py` 生成（固定种子），重跑应逐字节复现 |
 | `blog-rabbit-horizon.svg` | 博文里兔子奔向地平线的铅笔图；由 `tools/draw_blog_rabbit.py` 生成（固定种子），重跑应逐字节复现 |
-| `zh/ ja/ ru/ es/` | 四种译文，页面名与根目录相同 |
+| `zh/ ja/ ru/ es/` | 四种译文，页面路径与根目录相同 |
+| `404.html` `404/index.html` | 旧 `.html` 外链由 `404.html` 跳到目录式地址；其余缺失路径一律跳到 `404/index.html`（森林兔子铅笔图）。 |
+| `404-rabbit-forest.svg` | 404 页的兔子图；由 `tools/draw_404_rabbit.py` 生成（固定种子），重跑应逐字节复现。 |
+| `tools/serve.py` | 本地预览服务器；按 GitHub Pages 的方式把缺失路径交给 `404.html`。 |
 | `tools/i18n_check.py` | 多语言的对齐判据，用法见下 |
+
+**2026-11-10：URL 改成目录式，不带 `.html`。** 每个页面是 `<slug>/index.html`，博文是
+`blog/<slug>/index.html`；显示地址以 `/` 结尾。旧 `.html` 外链由 `404.html` 跳到新地址。
+加页面时 `PAGES` 写新路径（例如 `standard/index.html`），不要再写扁平的 `.html` 文件名。
+
+本地预览用 `python tools/serve.py [port]`。普通 `python -m http.server` 不会把缺失路径
+交给 `404.html`，会显示它自己的错误页；`tools/serve.py` 按 GitHub Pages 的方式返回
+`404.html`，所以 `/blog/不存在的名字` 也会进 `/404/`。`404/index.html` 是唯一不在
+`PAGES` 里的页面（英文单页，描画那只迷路的兔子），判据对它只放行、不做多语言对齐。
 
 ## 顶栏导航（2026-10-11 收成六项，2026-10-13 加到七项，2026-11-08 重组为八项）
 
@@ -89,18 +101,19 @@ python tools/i18n_check.py --stamp  # 重盖翻译戳
 不是噪音。把译文改到跟上，再 `--stamp`。
 
 **站址只写在一个地方** —— `tools/i18n_check.py` 顶部的 `ORIGIN`。换域名时改那一行，
-跑 `--fix`，70 个页面的 `hreflang` 会一起重写，跑不出"漏掉某一页"这种形状。
+跑 `--fix`，85 个页面的 `hreflang` 会一起重写，跑不出"漏掉某一页"这种形状。
 
 **加一个页面要动的地方**（今天**工具只管 head 段、顶栏切换器与代码块，不管导航**）：
 
-1. `tools/i18n_check.py` 的 `PAGES` 加一条；
-2. 五种语言各写一份；
-3. **顶栏导航要在 70 个页面里各加一行** —— 导航是手写的，而且各语言的"入门/示例"
-   那两项文字不同，所以不能靠工具统一生成。链法是页内相对（`zh/` 里也写 `libl.html`，
-   不是 `../libl.html`）；**只有仓根资源**（`style.css`、`mark.svg`）才带 `../`。
-   插错位置这件事发生过一次：正则先撞上导航里那条 `lompi` 链接，于是新项落到了
-   第一个 `</a>` 后面、跑到别的条目中间去了 —— 判据因此从"比链接集合"改成
-   **按文档顺序逐条比**，这类挪位子现在会红。
+1. `tools/i18n_check.py` 的 `PAGES` 加一条，写**目录式路径**（`newpage/index.html`）；
+2. 五种语言各写一份，路径相同；
+3. **顶栏导航要在 85 个页面里各加一行** —— 导航是手写的，而且各语言的"入门/示例"
+   那两项文字不同，所以不能靠工具统一生成。链接按**当前页面所在目录**写相对路径：
+   `newpage/index.html` 里链别的页是 `../libl/`，`blog/<slug>/index.html` 里是
+   `../../libl/`；仓根资源（`style.css`、`mark.svg`）按深度带 `../`。插错位置这件事
+   发生过一次：正则先撞上导航里那条 `lompi` 链接，于是新项落到了第一个 `</a>` 后面、
+   跑到别的条目中间去了 —— 判据因此从"比链接集合"改成**按文档顺序逐条比**，
+   这类挪位子现在会红。
 4. 首页 `Systems` 那一节如果有新条目，**别把条数写进标题**（原来叫 "Three systems"，
    加了第四个就过期了 —— 这正是硬约定第 1 条要防的）。
 

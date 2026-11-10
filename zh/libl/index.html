@@ -1,0 +1,364 @@
+<!doctype html>
+<!-- translated-from: libl/index.html -->
+<!-- source-sha256: efd8c26fe69b026b1503106f0a62db60f777775d67ca8c998a4f0b4b341988d8 -->
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LibL — 标准库的 libc 那一面 — Loment</title>
+<meta name="description" content="LibL 是 Loment 标准库的 libc 那一面：libc 的名字、libc 的参数序、libc 的返回语义 —— 判据拿系统的真 glibc 逐字节对跑，而不是拿 Python。0.1.4.6 起随包发布；C 那一面在 0.1.5 收尾。">
+<link rel="icon" href="../../mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=JetBrains+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../../style.css?v=20261110a">
+<link rel="alternate" hreflang="en" href="https://loment-lang.github.io/loment-site/libl/">
+<link rel="alternate" hreflang="zh-Hans" href="https://loment-lang.github.io/loment-site/zh/libl/">
+<link rel="alternate" hreflang="ja" href="https://loment-lang.github.io/loment-site/ja/libl/">
+<link rel="alternate" hreflang="ru" href="https://loment-lang.github.io/loment-site/ru/libl/">
+<link rel="alternate" hreflang="es" href="https://loment-lang.github.io/loment-site/es/libl/">
+<link rel="alternate" hreflang="x-default" href="https://loment-lang.github.io/loment-site/libl/">
+</head>
+<body>
+
+<a class="skip" href="#main">跳到正文</a>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="../">
+      <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true">
+        <rect width="64" height="64" rx="14" fill="#2f4bff"/>
+        <path d="M18 14h12v24h16v12H18z" fill="#fff"/>
+      </svg>
+      Loment
+    </a>
+                        <nav>
+      <a href="../start/">学习</a>
+      <a href="../blog/">博客</a>
+      <a href="../examples/">示例</a>
+      <a href="../playground/">在线编译</a>
+      <a href="../standard/">标准</a>
+      <a href="../releases/">时间线</a>
+      <details class="navmenu" name="bar">
+        <summary>系统</summary>
+        <ul>
+          <li><a href="../lgc/">LGC</a></li>
+          <li><a href="../lvm/">LVM</a></li>
+          <li><a href="../lompi/">lompi</a></li>
+          <li><a href="./">LibL</a></li>
+          <li><a href="../lspe/">LSPE</a></li>
+        </ul>
+      </details>
+      <a href="https://github.com/Loment-Lang/loment">GitHub</a>
+    </nav>
+    <details class="lang" name="bar">
+      <summary>中文</summary>
+      <ul>
+        <li><a href="../../libl/" hreflang="en">English</a></li>
+        <li><a href="./" hreflang="zh-Hans" aria-current="true">简体中文</a></li>
+        <li><a href="../../ja/libl/" hreflang="ja">日本語</a></li>
+        <li><a href="../../ru/libl/" hreflang="ru">Русский</a></li>
+        <li><a href="../../es/libl/" hreflang="es">Español</a></li>
+      </ul>
+    </details>
+  </div>
+</header>
+
+<main id="main">
+
+<section class="head">
+  <div class="wrap">
+    <p class="eyebrow">系统 · 自 0.1.4.6 起发布</p>
+    <h1>LibL</h1>
+    <p class="lede">
+      Loment 的标准库，做成 C 的形状：<strong>与 libc 相同的函数名、相同的参数序、相同的
+      返回值</strong> —— 给已经懂 C 的人用。一个库有两面，不是两个库。
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>自 0.1.4.6 起可用</h2>
+    <p class="body">
+      自 0.1.4.6 起，<strong>发布</strong>构建接受 <code>use libl</code>，而且发布构建可以链上
+      系统真正的 <code>libc.so.6</code> 并跑通到底。0.1.4.5 里挡住这两样东西的那把锁已经打开，
+      发布说明写明了这一点。
+    </p>
+    <p class="body">
+      0.1.5 补齐了一个 C 库真正需要的那些部分：位置无关对象、TLS 重定位与弱对象，再加上
+      IFUNC 与 <code>STT_NOTYPE</code> 导入、没有 SONAME 的共享对象，以及
+      <code>PT_GNU_RELRO</code>。在同一批输入上，随包链接器与参考链接器产出的东西逐字节相同。
+    </p>
+    <p class="limit">
+      <strong>"可用"不是"齐全"。</strong>这里的每一个名字都对着系统的 glibc 判过，而缺掉的那一组
+      写在下面，而不是留给读者在链接那一步才发现。这一页也留着理由，因为一面没有理由的 libc
+      是没人能审计的承诺。
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>为什么要有第二面</h2>
+    <p class="body">
+      标准库本来就在，而它<strong>一个 libc 名字都没有</strong> —— 没有 <code>strlen</code>，
+      没有 <code>printf</code>，没有 <code>malloc</code>。那不是一处遗漏，而是一种形状。它的
+      函数取一个显式的长度，而不是去找结尾符；用一个偏移量寻址进缓冲区；而且从不接受可变数目
+      的参数。这门语言里没有以 NUL 结尾的字符串，也没有变参函数，所以那个库是照着语言的样子
+      写成的。
+    </p>
+    <p class="body">
+      那个形状对写 Loment 的人来说是对的，而对懂 C 的人来说是一道墙。第二面回答的是另一个
+      问题：<strong>要是你从没听说过 Loment，这会叫什么？</strong><code>strcmp</code>，它返回
+      的东西和 C 的一样。<code>qsort</code>。<code>isdigit</code>。没有东西要学。
+    </p>
+    <p class="body">
+      两面指向<strong>同一批字节</strong>。<code>isdigit</code> 调用的是库自己的字符判定；
+      <code>memcpy</code> 调用的是它自己的拷贝例程。所以两面本来会带来的那种失败 —— 同一个字节
+      因为你问的是哪个名字而给出不同的回答 —— 是结构上不可能，而不只是被避开了。
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>两种入口</h2>
+    <p class="body">
+      <strong>LibL 是这个库的名字；<code>std</code> 仍然是这个包的名字。</strong>两个入口都到达
+      同一个包，区别在于它们各自带进来多少东西。
+    </p>
+
+    <div class="rows">
+      <div class="row">
+        <h3><code>use std</code></h3>
+        <p>
+          整个包。LibL 之前写下的一切都已经这么做，而且它继续可用。代价是：一个包级入口把每个
+          模块拉进<em>一个</em>单元，而这门语言的发射符号空间是平的 —— 于是那些顶层名字必须
+          彼此唯一，编译时间的增长也快过模块数。
+        </p>
+      </div>
+      <div class="row">
+        <h3><code>use libl</code></h3>
+        <p>
+          那四个 libc 面和它们所依赖的东西 —— 六个模块。一个小面：编译得快，而且几乎没有东西会
+          和它撞名。当你想要的只是 libc 名字时，就用这个入口。
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>它覆盖什么</h2>
+    <p class="body">
+      一个 libc 头对应一个模块，而这个映射本身就是遵循 libc 的一部分。
+    </p>
+
+    <div class="rows">
+      <div class="row">
+        <h3><code>&lt;string.h&gt;</code></h3>
+        <p>
+          <code>strlen</code>、<code>strcpy</code>、<code>strncpy</code>、<code>strcat</code>、
+          <code>strcmp</code>、<code>strncmp</code>、<code>strchr</code>、<code>strrchr</code>、
+          <code>strstr</code>、<code>strspn</code>、<code>strcspn</code>、<code>strpbrk</code>、
+          <code>strtok_r</code>、<code>memchr</code>、<code>memcmp</code>、<code>memcpy</code>、
+          <code>memmove</code>、<code>memset</code>。
+        </p>
+      </div>
+      <div class="row">
+        <h3><code>&lt;ctype.h&gt;</code></h3>
+        <p>
+          <code>isdigit</code>、<code>isalpha</code>、<code>isalnum</code>、
+          <code>isspace</code>、<code>isupper</code>、<code>islower</code>、
+          <code>isxdigit</code>、<code>ispunct</code>、<code>isprint</code>，以及这一组里
+          其余的，外加 <code>toupper</code> 和 <code>tolower</code>。
+        </p>
+      </div>
+      <div class="row">
+        <h3><code>&lt;stdlib.h&gt;</code></h3>
+        <p>
+          不需要堆就能构建的那一半：<code>atoi</code>、<code>atol</code>、<code>strtol</code>、
+          <code>strtoul</code>、<code>abs</code>、<code>labs</code>、<code>llabs</code>、
+          <code>qsort</code>、<code>bsearch</code>。
+        </p>
+      </div>
+      <div class="row">
+        <h3><code>&lt;stdio.h&gt;</code></h3>
+        <p>
+          格式化那一半：<code>snprintf</code>、<code>sprintf</code>，以及其余的
+          <code>printf</code> 格式。文件那一半在 0.1.4.6 作为单独的 <code>host</code> 模块到来
+          —— <code>fopen</code>、<code>fclose</code>、<code>fread</code>、<code>fwrite</code>、
+          <code>fseek</code>、<code>ftell</code>、<code>fflush</code>、<code>feof</code>、
+          <code>fgets</code>、<code>fputs</code>、<code>puts</code>、<code>putchar</code>、
+          <code>getchar</code> —— 因为它们要发系统调用，而核心库一个都不发。
+        </p>
+      </div>
+    </div>
+
+    <p class="caption">
+      再加上一个 libc 没有的函数，而它才是有意思的那个 —— 见下。
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>对照物就是 libc 本身</h2>
+    <p class="body">
+      标准库其它每一个部分，都是把 Loment 算出的东西和 <em>Python</em> 算出的东西比对来判的。
+      对这个问题来说那是错的对照物，而且可证：恰恰在定义"行为像 libc"的那些边界上 ——
+      <code>strncpy</code> 会不会补零、<code>strcmp</code> 返回的是一个符号还是一个<em>差</em>、
+      <code>strchr</code> 会不会找到结尾符、<code>memmove</code> 在区间重叠时是否安全 ——
+      Python 和 libc 给出的不是同一个答案。拿 Python 当对照，会让两份实现一起错、还能通过。
+    </p>
+    <p class="body">
+      所以这条判据把一个 C 程序对着系统的真 glibc 编译，在两边跑同一组调用，并<strong>逐字节
+      比对标准输出</strong>，报出第一处不同的行。有两处归一化是有意为之，否则这个测试量的会是
+      实现细节而不是语义：标准只承诺 <code>strcmp</code> 的<em>符号</em>，所以符号和差都被检查；
+      而 glibc 的字符判定返回的是一个<em>位掩码</em>而不是 1，所以两边都在比对之前被归约成一个
+      是或否。
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>语言逼出来的东西</h2>
+    <p class="body">
+      这项工作的规则是"libc 怎么实现，LibL 就怎么实现"。这门语言不是 C，所以有四处不得不不同、
+      有一处不得不新增。每一处都被写下来，而不是藏起来。
+    </p>
+
+    <div class="rows">
+      <div class="row">
+        <h3>字符串字面量不带结尾符</h3>
+        <p>
+          于是对字面量调用 <code>strlen</code> 会读过结尾。在第一次探针里，它给空字符串返回了
+          <strong>17</strong>，一路读下去，直到碰巧遇上一个零字节。C 不需要为此写个函数，因为
+          C 里的 <code>"abc"</code> 本来就带着它的 NUL。<strong>这不是一处遗漏 —— 两种
+          <code>str</code> 类型不是同一个东西：</strong>这门语言的带着长度，C 的不带。LibL 加了
+          <code>cstr_of</code> 把一种转成另一种，而库里每一个 NUL 字符串函数都需要它。
+        </p>
+      </div>
+      <div class="row">
+        <h3>没有变参函数</h3>
+        <p>
+          于是 <code>snprintf</code> 比 libc 的多取一个参数：
+          <code>snprintf(buf, cap, fmt, args, nargs)</code>，其中 <code>args</code> 指向一个
+          64 位值的数组。转换说明符仍然决定每一个怎么读，和 libc 里一模一样。<strong>这是库里
+          唯一一处偏离的签名</strong>，而且它不纯粹是损失：libc 数不了自己的参数，给它太少就会
+          去读栈上碰巧有的东西；这里，太少意味着转换停下，而已经产出的部分被妥当地收尾。
+        </p>
+      </div>
+      <div class="row">
+        <h3>没有函数指针</h3>
+        <p>
+          于是 <code>qsort</code> 的第四个参数是一个枚举，说明按什么比较，而不是一个比较函数。
+          那是一处真实的差异，而且它在某一个方向上不是降级：它把"这个排序按什么比较"从运行期的
+          一个地址挪进<strong>产物里的一个常量</strong>，于是不用读源码就能回答。<strong>代价随
+          它一起被说出来：</strong>不是内建几种之一的排序无法表达 —— 你自己写那个循环。
+        </p>
+      </div>
+      <div class="row">
+        <h3>没有模块级可变全局</h3>
+        <p>
+          于是 <code>strtok</code> 变成 <code>strtok_r</code>，游标由调用方持着 —— POSIX 本来
+          就提供这个，所以这不是降级。一个藏着种子的 <code>rand</code> 也没法存在；这门语言用的
+          形状从调用方取状态，并且有意地<em>不</em>叫 <code>rand</code>。也没有
+          <code>errno</code>：<code>strtol</code> 饱和到边界值，然后正常返回，所以调用方改为
+          对着边界来比。
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>它不是什么</h2>
+
+    <div class="rows">
+      <div class="row">
+        <h3>不是 libc 的替代品</h3>
+        <p>
+          LibL 是一个<strong>源码库</strong>，不是一个 C 目标文件能链接上去的归档。C 代码没法
+          调用它；那需要一条"从 Loment 到目标文件"的路，而那条路不存在。它替代的东西更窄，值得
+          说准确：<strong>一个 Loment 程序不得不手写 <code>strcmp</code>。</strong>
+        </p>
+      </div>
+      <div class="row">
+        <h3>不是 libc 的全部</h3>
+        <p>
+          <code>realloc</code> 与 <code>free</code> 是有意缺席的：<code>realloc</code> 需要旧
+          长度，而旧长度住在编译器私有的堆头里；<code>free</code> 这个名字已经被内建占了，库里
+          再定义一个同名函数，在调用点根本解析不到。<code>malloc</code> 与 <code>calloc</code>
+          自 0.1.4.6 起在，它们是内建堆上的拼写、自己不带长度头 —— 正因如此内建
+          <code>free</code> 收得下它们返回的东西。<code>stdin</code>、<code>stdout</code>、
+          <code>stderr</code> 会是模块级可变全局量，而语言没有这种东西。进程与环境那一族里，
+          除了 <code>exit</code> 与 <code>abort</code>，一个都没有。而
+          <code>%f</code>/<code>%e</code>/<code>%g</code> 不是"没做"，是"还做不了"：上游的
+          格式化器是软浮点，而它反方向需要一个这一层刻意没有的宽除法。
+        </p>
+      </div>
+      <div class="row">
+        <h3>没完工，也不假装完工</h3>
+        <p>
+          写它的过程暴露出周边系统里的缺陷 —— 其中有：一个辅助函数的重叠检查比的是偏移，而 libc
+          比的是地址；一个格式化器产出的 IR 被系统汇编器拒绝；一个依赖检查怪错了模块。这些都被
+          开成 issue，而不是顺手修掉，而这个库自己的判据有意地窄：它声称这些模块是合法单元，而
+          <em>不</em>声称它们的依赖也是。
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>它写在哪儿</h2>
+    <div style="margin-top: var(--s4)">
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/blob/main/docs/232-libl.md">
+        <span class="who">docs/232</span>
+        <span class="what">设计记录：那四个面、标题到模块的对应关系，以及语言每一处被迫偏离的地方。用中文写成。</span>
+      </a>
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/pull/245">
+        <span class="who">拉取请求 #245</span>
+        <span class="what">它落地的地方 —— 那个库、对着 glibc 跑的那条判据，以及论证。已合并。</span>
+      </a>
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/issues/246">
+        <span class="who">Issue #246</span>
+        <span class="what">它暴露出的缺陷之一 —— 一个依赖检查，报出一个无辜的叶子模块。单独开成 issue，没有在这里修。</span>
+      </a>
+      <a class="doclink" href="../lompi/">
+        <span class="who">lompi</span>
+        <span class="what">像这样的库住在哪里：一个目录，由它内容的哈希来寻址。</span>
+      </a>
+      <a class="doclink" href="../">
+        <span class="who">回到首页</span>
+        <span class="what">Loment 是什么，以及它构建的两类程序。</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Loment 依据 MIT OR Apache-2.0 双许可发布。由 Fujo 编写。</span>
+    <nav>
+      <a href="https://github.com/Loment-Lang/loment">源码</a>
+      <a href="https://github.com/Loment-Lang/loment/releases/latest">发布</a>
+      <a href="https://github.com/FujoJTOP/lompi">lompi</a>
+      <a href="https://loment.fandom.com/">Wiki</a>
+      <a href="https://github.com/Loment-Lang/loment/issues">Issues</a>
+      <a class="mast" href="https://mastodon.social/@Loment" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z"/></svg>Mastodon</a>
+      <a class="mast" href="https://bsky.app/profile/loment.bsky.social" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364-3.136.521-5.919 1.517-2.244 5.449 3.944 4.011 5.42-1.005 6.237-3.242.653-1.79 1.03-2.81 1.03-2.81s.377 1.02 1.03 2.81c.817 2.237 2.293 7.253 6.237 3.242 3.675-3.932.892-4.928-2.244-5.449 2.67.296 5.568-.628 6.383-3.364.246-.829.624-5.789.624-6.479 0-.688-.139-1.86-.902-2.203-.659-.299-1.664-.621-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8z"/></svg>Bluesky</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

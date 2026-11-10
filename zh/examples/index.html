@@ -1,0 +1,171 @@
+<!doctype html>
+<!-- translated-from: examples/index.html -->
+<!-- source-sha256: a1aab4f6094795387fcc9d3b59d11fd36656a00e6368924ea14762b4b2163005 -->
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>示例 — Loment</title>
+<meta name="description" content="简短、完整的 Loment 程序 —— 第一个程序、一个函数、一个循环、一个切片。每一个都是一个可运行的完整文件。">
+<link rel="icon" href="../../mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=JetBrains+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../../style.css?v=20261110a">
+<link rel="alternate" hreflang="en" href="https://loment-lang.github.io/loment-site/examples/">
+<link rel="alternate" hreflang="zh-Hans" href="https://loment-lang.github.io/loment-site/zh/examples/">
+<link rel="alternate" hreflang="ja" href="https://loment-lang.github.io/loment-site/ja/examples/">
+<link rel="alternate" hreflang="ru" href="https://loment-lang.github.io/loment-site/ru/examples/">
+<link rel="alternate" hreflang="es" href="https://loment-lang.github.io/loment-site/es/examples/">
+<link rel="alternate" hreflang="x-default" href="https://loment-lang.github.io/loment-site/examples/">
+</head>
+<body>
+
+<a class="skip" href="#main">跳到正文</a>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="../">
+      <svg width="22" height="22" viewBox="0 0 64 64" aria-hidden="true">
+        <rect width="64" height="64" rx="14" fill="#2f4bff"/>
+        <path d="M18 14h12v24h16v12H18z" fill="#fff"/>
+      </svg>
+      Loment
+    </a>
+                        <nav>
+      <a href="../start/">学习</a>
+      <a href="../blog/">博客</a>
+      <a href="./">示例</a>
+      <a href="../playground/">在线编译</a>
+      <a href="../standard/">标准</a>
+      <a href="../releases/">时间线</a>
+      <details class="navmenu" name="bar">
+        <summary>系统</summary>
+        <ul>
+          <li><a href="../lgc/">LGC</a></li>
+          <li><a href="../lvm/">LVM</a></li>
+          <li><a href="../lompi/">lompi</a></li>
+          <li><a href="../libl/">LibL</a></li>
+          <li><a href="../lspe/">LSPE</a></li>
+        </ul>
+      </details>
+      <a href="https://github.com/Loment-Lang/loment">GitHub</a>
+    </nav>
+    <details class="lang" name="bar">
+      <summary>中文</summary>
+      <ul>
+        <li><a href="../../examples/" hreflang="en">English</a></li>
+        <li><a href="./" hreflang="zh-Hans" aria-current="true">简体中文</a></li>
+        <li><a href="../../ja/examples/" hreflang="ja">日本語</a></li>
+        <li><a href="../../ru/examples/" hreflang="ru">Русский</a></li>
+        <li><a href="../../es/examples/" hreflang="es">Español</a></li>
+      </ul>
+    </details>
+  </div>
+</header>
+
+<main id="main">
+
+<section class="head">
+  <div class="wrap">
+    <h1>示例</h1>
+    <p class="lede">
+      四个短程序。每一个都是一个完整的文件 —— 把它拷进 <code>hello.lomt</code> 再运行。
+      每个下面你看到的，是它实际打印出来的东西。
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>最小的程序</h2>
+    <p class="body">
+      <code>_start</code> 是机器开始的地方，输出走 <code>write</code> 系统调用：文件描述符、
+      指针、长度。第二次调用是 <code>exit</code>。
+    </p>
+    <div class="codewrap">
+<pre class="code"><code><span class="ln" data-n="1"><span class="k">module</span> hello</span><span class="ln" data-n="2"> </span><span class="ln" data-n="3"><span class="k">fn</span> _start() {</span><span class="ln" data-n="4">    <span class="k">let</span> s: <span class="t">str</span> = <span class="s">"hello from Loment\n"</span>;</span><span class="ln" data-n="5">    syscall4(<span class="n">1</span>, <span class="n">1</span>, str_ptr(s) <span class="k">as</span> <span class="t">u64</span>, str_len(s) <span class="k">as</span> <span class="t">u64</span>);</span><span class="ln" data-n="6">    syscall4(<span class="n">60</span>, <span class="n">0</span>, <span class="n">0</span>, <span class="n">0</span>);</span><span class="ln" data-n="7">}</span></code></pre>
+      <p class="out">hello from Loment</p>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>一个带返回值的函数</h2>
+    <p class="body">
+      类型写出来，从不推断；没有隐式的数值转换，所以一个需要换成别的宽度的整数，会用
+      <code>as</code> 把这件事说出来。
+    </p>
+    <div class="codewrap">
+<pre class="code"><code><span class="ln" data-n="1"><span class="k">module</span> funct</span><span class="ln" data-n="2"> </span><span class="ln" data-n="3"><span class="k">fn</span> write_str(fd: <span class="t">u64</span>, s: <span class="t">str</span>) -&gt; <span class="t">i64</span> {</span><span class="ln" data-n="4">    <span class="k">return</span> syscall4(<span class="n">1</span>, fd, str_ptr(s) <span class="k">as</span> <span class="t">u64</span>, str_len(s) <span class="k">as</span> <span class="t">u64</span>);</span><span class="ln" data-n="5">}</span><span class="ln" data-n="6"> </span><span class="ln" data-n="7"><span class="k">fn</span> larger(a: <span class="t">u32</span>, b: <span class="t">u32</span>) -&gt; <span class="t">u32</span> {</span><span class="ln" data-n="8">    <span class="k">if</span> a &gt; b {</span><span class="ln" data-n="9">        <span class="k">return</span> a;</span><span class="ln" data-n="10">    }</span><span class="ln" data-n="11">    <span class="k">return</span> b;</span><span class="ln" data-n="12">}</span><span class="ln" data-n="13"> </span><span class="ln" data-n="14"><span class="k">fn</span> _start() {</span><span class="ln" data-n="15">    <span class="k">let</span> m: <span class="t">u32</span> = larger(<span class="n">7</span>, <span class="n">9</span>);</span><span class="ln" data-n="16">    <span class="k">if</span> m == <span class="n">9</span> {</span><span class="ln" data-n="17">        write_str(<span class="n">1</span>, <span class="s">"larger(7, 9) came back with 9\n"</span>);</span><span class="ln" data-n="18">        syscall4(<span class="n">60</span>, <span class="n">0</span>, <span class="n">0</span>, <span class="n">0</span>);</span><span class="ln" data-n="19">    }</span><span class="ln" data-n="20">    write_str(<span class="n">1</span>, <span class="s">"unexpected\n"</span>);</span><span class="ln" data-n="21">    syscall4(<span class="n">60</span>, <span class="n">1</span>, <span class="n">0</span>, <span class="n">0</span>);</span><span class="ln" data-n="22">}</span></code></pre>
+      <p class="out">larger(7, 9) came back with 9</p>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>一个常量和一个循环</h2>
+    <p class="body">
+      <code>for</code> 走一个区间并绑定下标。<code>const</code> 是一个编译期值，可用作边界。
+    </p>
+    <div class="codewrap">
+<pre class="code"><code><span class="ln" data-n="1"><span class="k">module</span> counting</span><span class="ln" data-n="2"> </span><span class="ln" data-n="3"><span class="k">const</span> LIMIT: <span class="t">u32</span> = <span class="n">5</span>;</span><span class="ln" data-n="4"> </span><span class="ln" data-n="5"><span class="k">fn</span> write_str(fd: <span class="t">u64</span>, s: <span class="t">str</span>) -&gt; <span class="t">i64</span> {</span><span class="ln" data-n="6">    <span class="k">return</span> syscall4(<span class="n">1</span>, fd, str_ptr(s) <span class="k">as</span> <span class="t">u64</span>, str_len(s) <span class="k">as</span> <span class="t">u64</span>);</span><span class="ln" data-n="7">}</span><span class="ln" data-n="8"> </span><span class="ln" data-n="9"><span class="k">fn</span> _start() {</span><span class="ln" data-n="10">    <span class="k">let</span> sum: <span class="t">u32</span> = <span class="n">0</span>;</span><span class="ln" data-n="11">    <span class="k">for</span> i <span class="k">in</span> <span class="n">0</span>..LIMIT {</span><span class="ln" data-n="12">        sum = sum + i;</span><span class="ln" data-n="13">    }</span><span class="ln" data-n="14">    <span class="k">if</span> sum == <span class="n">10</span> {</span><span class="ln" data-n="15">        write_str(<span class="n">1</span>, <span class="s">"the loop summed 0 through 4\n"</span>);</span><span class="ln" data-n="16">        syscall4(<span class="n">60</span>, <span class="n">0</span>, <span class="n">0</span>, <span class="n">0</span>);</span><span class="ln" data-n="17">    }</span><span class="ln" data-n="18">    write_str(<span class="n">1</span>, <span class="s">"unexpected\n"</span>);</span><span class="ln" data-n="19">    syscall4(<span class="n">60</span>, <span class="n">1</span>, <span class="n">0</span>, <span class="n">0</span>);</span><span class="ln" data-n="20">}</span></code></pre>
+      <p class="out">the loop summed 0 through 4</p>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>一个数组，以切片传入</h2>
+    <p class="body">
+      <code>[u32; 3]</code> 是一个把长度写进类型里的数组；<code>[u32]</code> 是一个切片，
+      它自身不携带长度。<code>&amp;xs</code> 把数组当作切片交出去，<code>slice_len</code>
+      问它有多长。
+    </p>
+    <div class="codewrap">
+<pre class="code"><code><span class="ln" data-n="1"><span class="k">module</span> slice</span><span class="ln" data-n="2"> </span><span class="ln" data-n="3"><span class="k">fn</span> write_str(fd: <span class="t">u64</span>, s: <span class="t">str</span>) -&gt; <span class="t">i64</span> {</span><span class="ln" data-n="4">    <span class="k">return</span> syscall4(<span class="n">1</span>, fd, str_ptr(s) <span class="k">as</span> <span class="t">u64</span>, str_len(s) <span class="k">as</span> <span class="t">u64</span>);</span><span class="ln" data-n="5">}</span><span class="ln" data-n="6"> </span><span class="ln" data-n="7"><span class="k">fn</span> sum(xs: [<span class="t">u32</span>]) -&gt; <span class="t">u32</span> {</span><span class="ln" data-n="8">    <span class="k">let</span> acc: <span class="t">u32</span> = <span class="n">0</span>;</span><span class="ln" data-n="9">    <span class="k">let</span> i: <span class="t">u32</span> = <span class="n">0</span>;</span><span class="ln" data-n="10">    <span class="k">while</span> i &lt; slice_len(xs) {</span><span class="ln" data-n="11">        acc = acc + xs[i];</span><span class="ln" data-n="12">        i = i + <span class="n">1</span>;</span><span class="ln" data-n="13">    }</span><span class="ln" data-n="14">    <span class="k">return</span> acc;</span><span class="ln" data-n="15">}</span><span class="ln" data-n="16"> </span><span class="ln" data-n="17"><span class="k">fn</span> _start() {</span><span class="ln" data-n="18">    <span class="k">let</span> xs: [<span class="t">u32</span>; <span class="n">3</span>] = [<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>];</span><span class="ln" data-n="19">    <span class="k">let</span> s: <span class="t">u32</span> = sum(&amp;xs);</span><span class="ln" data-n="20">    <span class="k">if</span> s == <span class="n">6</span> {</span><span class="ln" data-n="21">        write_str(<span class="n">1</span>, <span class="s">"the slice summed to 6\n"</span>);</span><span class="ln" data-n="22">        syscall4(<span class="n">60</span>, <span class="n">0</span>, <span class="n">0</span>, <span class="n">0</span>);</span><span class="ln" data-n="23">    }</span><span class="ln" data-n="24">    write_str(<span class="n">1</span>, <span class="s">"unexpected\n"</span>);</span><span class="ln" data-n="25">    syscall4(<span class="n">60</span>, <span class="n">1</span>, <span class="n">0</span>, <span class="n">0</span>);</span><span class="ln" data-n="26">}</span></code></pre>
+      <p class="out">the slice summed to 6</p>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>更多</h2>
+    <p class="body">
+      仓库在
+      <a href="https://github.com/Loment-Lang/loment/tree/main/loment/examples">loment/examples/</a>
+      下带了一个更大的集合。它们并非全都在这个发布里能链接。
+    </p>
+    <p class="note">
+      这一页上的所有东西都是用已发布的 <code>0.1.4</code> 包编译并运行的。能力系统 ——
+      <a href="../">首页</a>给了一个例子的那个 —— 不在这四个之中，因为它在这个发布里
+      链接不过。那是自举链接器里一个已知的缺陷，不是语言的问题：参考实现能链接同一个程序并运行
+      它。同一类失败见
+      <a href="https://github.com/Loment-Lang/loment/issues/102">issue #102</a> 和
+      <a href="https://github.com/Loment-Lang/loment/issues/38">#38</a>。
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Loment 依据 MIT OR Apache-2.0 双许可发布。由 Fujo 编写。</span>
+    <nav>
+      <a href="https://github.com/Loment-Lang/loment">源码</a>
+      <a href="https://github.com/Loment-Lang/loment/releases/latest">发布</a>
+      <a href="https://github.com/FujoJTOP/lompi">lompi</a>
+      <a href="https://github.com/Loment-Lang/loment/issues">Issues</a>
+      <a class="mast" href="https://mastodon.social/@Loment" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z"/></svg>Mastodon</a>
+      <a class="mast" href="https://bsky.app/profile/loment.bsky.social" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364-3.136.521-5.919 1.517-2.244 5.449 3.944 4.011 5.42-1.005 6.237-3.242.653-1.79 1.03-2.81 1.03-2.81s.377 1.02 1.03 2.81c.817 2.237 2.293 7.253 6.237 3.242 3.675-3.932.892-4.928-2.244-5.449 2.67.296 5.568-.628 6.383-3.364.246-.829.624-5.789.624-6.479 0-.688-.139-1.86-.902-2.203-.659-.299-1.664-.621-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8z"/></svg>Bluesky</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

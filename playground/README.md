@@ -1,6 +1,6 @@
 # playground
 
-`playground.html` 的运行时。页面是静态的；第一次执行动作时，`playground.js` 从 CDN 取
+`playground/index.html` 的运行时。页面是静态的；第一次执行动作时，`playground.js` 从 CDN 取
 Pyodide（CPython 的 WebAssembly 构建），再把所选**通道**的 Python 模块写进虚拟文件系统：
 
 1. 参考编译器编译源码；

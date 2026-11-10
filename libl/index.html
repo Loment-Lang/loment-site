@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LibL — the libc face of the standard library — Loment</title>
+<meta name="description" content="LibL is the libc face of Loment's standard library: libc names, libc argument order, libc return semantics — judged against the system's real glibc, byte for byte, rather than against Python. Shipped in 0.1.4.6; the C surface closed out in 0.1.5.">
+<link rel="icon" href="../mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=JetBrains+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../style.css?v=20261110a">
+<link rel="alternate" hreflang="en" href="https://loment-lang.github.io/loment-site/libl/">
+<link rel="alternate" hreflang="zh-Hans" href="https://loment-lang.github.io/loment-site/zh/libl/">
+<link rel="alternate" hreflang="ja" href="https://loment-lang.github.io/loment-site/ja/libl/">
+<link rel="alternate" hreflang="ru" href="https://loment-lang.github.io/loment-site/ru/libl/">
+<link rel="alternate" hreflang="es" href="https://loment-lang.github.io/loment-site/es/libl/">
+<link rel="alternate" hreflang="x-default" href="https://loment-lang.github.io/loment-site/libl/">
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="../">
+      <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true">
+        <rect width="64" height="64" rx="14" fill="#2f4bff"/>
+        <path d="M18 14h12v24h16v12H18z" fill="#fff"/>
+      </svg>
+      Loment
+    </a>
+                        <nav>
+      <a href="../start/">Learn</a>
+      <a href="../blog/">Blog</a>
+      <a href="../examples/">Examples</a>
+      <a href="../playground/">Playground</a>
+      <a href="../standard/">Standard</a>
+      <a href="../releases/">Timeline</a>
+      <details class="navmenu" name="bar">
+        <summary>Systems</summary>
+        <ul>
+          <li><a href="../lgc/">LGC</a></li>
+          <li><a href="../lvm/">LVM</a></li>
+          <li><a href="../lompi/">lompi</a></li>
+          <li><a href="./">LibL</a></li>
+          <li><a href="../lspe/">LSPE</a></li>
+        </ul>
+      </details>
+      <a href="https://github.com/Loment-Lang/loment">GitHub</a>
+    </nav>
+    <details class="lang" name="bar">
+      <summary>EN</summary>
+      <ul>
+        <li><a href="./" hreflang="en" aria-current="true">English</a></li>
+        <li><a href="../zh/libl/" hreflang="zh-Hans">简体中文</a></li>
+        <li><a href="../ja/libl/" hreflang="ja">日本語</a></li>
+        <li><a href="../ru/libl/" hreflang="ru">Русский</a></li>
+        <li><a href="../es/libl/" hreflang="es">Español</a></li>
+      </ul>
+    </details>
+  </div>
+</header>
+
+<main id="main">
+
+<section class="head">
+  <div class="wrap">
+    <p class="eyebrow">System · shipped since 0.1.4.6</p>
+    <h1>LibL</h1>
+    <p class="lede">
+      Loment's standard library, in C's shape: <strong>the same function names, the same
+      argument order and the same return values as libc</strong> &mdash; for people who already
+      know C. One library with two faces, not two libraries.
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Available since 0.1.4.6</h2>
+    <p class="body">
+      A <strong>release</strong> build accepts <code>use libl</code> as of 0.1.4.6, and a release
+      build can link the system's real <code>libc.so.6</code> and run it end to end. The lock that
+      held both back in 0.1.4.5 is open, and the release note says so.
+    </p>
+    <p class="body">
+      0.1.5 closed out the parts a C library actually needs: position-independent objects, TLS
+      relocations and weak objects, plus IFUNC and <code>STT_NOTYPE</code> imports, SONAME-less
+      shared objects and <code>PT_GNU_RELRO</code>. The shipped linker and the reference linker
+      produce byte-identical products on the same inputs.
+    </p>
+    <p class="limit">
+      <strong>"Available" is not "complete".</strong> Every name here is checked against the
+      system's glibc, and the set that is missing is written out below rather than left for a
+      reader to discover at the link step. The page also keeps the reasons, because a face of libc
+      without them is a promise nobody can audit.
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Why a second face</h2>
+    <p class="body">
+      The standard library already existed, and it contained <strong>no libc name at all</strong>
+      &mdash; not <code>strlen</code>, not <code>printf</code>, not <code>malloc</code>. That was
+      not an omission; it was a shape. Its functions take an explicit length rather than searching
+      for a terminator, address into a buffer with an offset, and never take a variable number of
+      arguments. There are no NUL-terminated strings in the language and no variadic functions in
+      it, so the library was written the way the language is.
+    </p>
+    <p class="body">
+      That shape is right for people writing Loment, and it is a wall for people who know C. A
+      second face answers a different question: <strong>what would this be called if you had never
+      heard of Loment?</strong> <code>strcmp</code>, which returns the same thing C's does.
+      <code>qsort</code>. <code>isdigit</code>. Nothing to learn.
+    </p>
+    <p class="body">
+      The two faces point at <strong>the same bytes</strong>. <code>isdigit</code> calls the
+      library's own character predicate; <code>memcpy</code> calls its own copy routine. So the
+      failure you would expect from two faces &mdash; the same byte answering differently
+      depending on which name you asked &mdash; is structurally impossible rather than merely
+      avoided.
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Two ways in</h2>
+    <p class="body">
+      <strong>LibL is the library's name; <code>std</code> is still the package's name.</strong>
+      Both entries reach the same package, and they differ in how much they pull in with them.
+    </p>
+
+    <div class="rows">
+      <div class="row">
+        <h3><code>use std</code></h3>
+        <p>
+          The whole package. What everything written before LibL already does, and it keeps
+          working. The cost is that a package-wide entry pulls every module into <em>one</em>
+          unit, and this language's emitted-symbol space is flat &mdash; so all of those top-level
+          names have to be unique together, and compile time grows faster than the module count.
+        </p>
+      </div>
+      <div class="row">
+        <h3><code>use libl</code></h3>
+        <p>
+          The four libc faces and what they depend on &mdash; six modules. A small face: it
+          compiles quickly and it has almost nothing to collide with. This is the entry to use
+          when libc names are all you wanted.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>What it covers</h2>
+    <p class="body">
+      One libc header maps to one module, and that mapping is itself part of following libc.
+    </p>
+
+    <div class="rows">
+      <div class="row">
+        <h3><code>&lt;string.h&gt;</code></h3>
+        <p>
+          <code>strlen</code>, <code>strcpy</code>, <code>strncpy</code>, <code>strcat</code>,
+          <code>strcmp</code>, <code>strncmp</code>, <code>strchr</code>, <code>strrchr</code>,
+          <code>strstr</code>, <code>strspn</code>, <code>strcspn</code>, <code>strpbrk</code>,
+          <code>strtok_r</code>, <code>memchr</code>, <code>memcmp</code>, <code>memcpy</code>,
+          <code>memmove</code>, <code>memset</code>.
+        </p>
+      </div>
+      <div class="row">
+        <h3><code>&lt;ctype.h&gt;</code></h3>
+        <p>
+          <code>isdigit</code>, <code>isalpha</code>, <code>isalnum</code>,
+          <code>isspace</code>, <code>isupper</code>, <code>islower</code>,
+          <code>isxdigit</code>, <code>ispunct</code>, <code>isprint</code>, and the rest of the
+          set, with <code>toupper</code> and <code>tolower</code>.
+        </p>
+      </div>
+      <div class="row">
+        <h3><code>&lt;stdlib.h&gt;</code></h3>
+        <p>
+          The half that can be built without a heap: <code>atoi</code>, <code>atol</code>,
+          <code>strtol</code>, <code>strtoul</code>, <code>abs</code>, <code>labs</code>,
+          <code>llabs</code>, <code>qsort</code>, <code>bsearch</code>.
+        </p>
+      </div>
+      <div class="row">
+        <h3><code>&lt;stdio.h&gt;</code></h3>
+        <p>
+          The formatting half: <code>snprintf</code>, <code>sprintf</code>, and the rest of the
+          <code>printf</code> formats. The file half arrived in 0.1.4.6 as a separate
+          <code>host</code> module &mdash; <code>fopen</code>, <code>fclose</code>,
+          <code>fread</code>, <code>fwrite</code>, <code>fseek</code>, <code>ftell</code>,
+          <code>fflush</code>, <code>feof</code>, <code>fgets</code>, <code>fputs</code>,
+          <code>puts</code>, <code>putchar</code>, <code>getchar</code> &mdash; because those need
+          system calls, and the core library makes none.
+        </p>
+      </div>
+    </div>
+
+    <p class="caption">
+      Plus one function libc does not have, and it is the interesting one &mdash; see below.
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>The control is libc itself</h2>
+    <p class="body">
+      Every other part of the standard library is judged by comparing what Loment computes against
+      what <em>Python</em> computes. That is the wrong control for this question, and provably so:
+      on exactly the edges that define "behaves like libc" &mdash; whether <code>strncpy</code>
+      zero-fills, whether <code>strcmp</code> returns a sign or a <em>difference</em>, whether
+      <code>strchr</code> finds the terminator, whether <code>memmove</code> is safe when the
+      ranges overlap &mdash; Python and libc are not the same answer. Comparing against Python
+      would let two implementations be wrong together and pass.
+    </p>
+    <p class="body">
+      So the criterion compiles a C program against the system's real glibc, runs the same set of
+      calls on both sides, and <strong>compares standard output byte for byte</strong>, reporting
+      the first line that differs. Two normalisations are deliberate, because otherwise the test
+      would be measuring implementation details rather than semantics: the standard only promises
+      the <em>sign</em> of <code>strcmp</code>, so both the sign and the difference are checked;
+      and glibc's character predicates return a <em>bitmask</em> rather than 1, so both sides are
+      reduced to a yes-or-no before comparison.
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>What the language forced</h2>
+    <p class="body">
+      The rule for this work was "however libc implements it, LibL implements it that way". The
+      language is not C, so four places had to differ and one had to be added. Each one is
+      written down rather than hidden.
+    </p>
+
+    <div class="rows">
+      <div class="row">
+        <h3>A string literal carries no terminator</h3>
+        <p>
+          So <code>strlen</code> on a literal reads past the end. In the first probe it returned
+          <strong>17</strong> for the empty string, having run on until it happened to meet a zero
+          byte. C does not need a function for this because <code>"abc"</code> in C already
+          carries its NUL. <strong>This is not an omission &mdash; the two <code>str</code>
+          types are not the same thing:</strong> this language's carries a length, C's does not.
+          LibL adds <code>cstr_of</code> to convert one into the other, and every NUL-string
+          function in the library needs it.
+        </p>
+      </div>
+      <div class="row">
+        <h3>No variadic functions</h3>
+        <p>
+          So <code>snprintf</code> takes one more argument than libc's:
+          <code>snprintf(buf, cap, fmt, args, nargs)</code>, where <code>args</code> points at an
+          array of 64-bit values. The conversion specifier still decides how each one is read,
+          exactly as in libc. <strong>This is the only signature in the library that
+          deviates</strong>, and it is not purely a loss: libc cannot count its arguments, so
+          giving it too few reads whatever is on the stack; here, too few means the conversion
+          stops and what was produced so far is finished properly.
+        </p>
+      </div>
+      <div class="row">
+        <h3>No function pointers</h3>
+        <p>
+          So <code>qsort</code>'s fourth argument is an enumeration saying what to compare by, not
+          a comparison function. That is a real difference and it is not a downgrade in one
+          direction: it moves "what does this sort compare by" out of a runtime address and into
+          <strong>a constant in the binary</strong>, so it is answerable without reading the
+          source. <strong>The price is stated with it:</strong> an ordering that is not one of the
+          built-in kinds cannot be expressed &mdash; you write the loop yourself.
+        </p>
+      </div>
+      <div class="row">
+        <h3>No module-level mutable global</h3>
+        <p>
+          So <code>strtok</code> becomes <code>strtok_r</code>, with the cursor held by the
+          caller &mdash; which POSIX already offers, so this is not a downgrade. A
+          <code>rand</code> that keeps a hidden seed cannot exist either; the shape this language
+          uses takes the state from the caller, and it is deliberately <em>not</em> named
+          <code>rand</code>. And there is no <code>errno</code>: <code>strtol</code> saturates to
+          the boundary value and returns normally, so the caller compares against the boundary
+          instead.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>What it is not</h2>
+
+    <div class="rows">
+      <div class="row">
+        <h3>Not a replacement for libc</h3>
+        <p>
+          LibL is a <strong>source library</strong>, not an archive a C object file can be linked
+          against. C code cannot call into it; that needs a "Loment to object file" path, which
+          does not exist. What it replaces is narrower and worth saying precisely: <strong>a
+          Loment program having to hand-write <code>strcmp</code>.</strong>
+        </p>
+      </div>
+      <div class="row">
+        <h3>Not the whole of libc</h3>
+        <p>
+          <code>realloc</code> and <code>free</code> are missing on purpose. <code>realloc</code>
+          needs the old length, and the old length lives in a heap header private to the
+          compiler; <code>free</code>'s name is already taken by the builtin, so a library
+          function by that name would not resolve at the call site. <code>malloc</code> and
+          <code>calloc</code> are here as of 0.1.4.6 &mdash; spellings over the builtin heap with
+          no length header of their own, which is what lets the builtin <code>free</code> accept
+          what they return. <code>stdin</code>, <code>stdout</code> and <code>stderr</code> would
+          be module-level mutable globals, and the language has none. Beyond <code>exit</code>
+          and <code>abort</code>, nothing from the process or environment families. And
+          <code>%f</code>/<code>%e</code>/<code>%g</code> are not "not done" but "cannot be done
+          yet": the upstream formatter is software floating point whose parse direction needs a
+          wide division the layer deliberately does not have.
+        </p>
+      </div>
+      <div class="row">
+        <h3>Not finished, and not pretending to be</h3>
+        <p>
+          Writing it turned up defects in the surrounding system &mdash; among them a helper
+          whose overlap check compared offsets where libc compares addresses, a formatter that
+          emits IR the system assembler rejects, and a dependency check that blames the wrong
+          module. Those are filed as issues rather than fixed in passing, and the library's own
+          criterion is deliberately narrow: it claims these modules are legal units, and it does
+          <em>not</em> claim their dependencies are.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Where it is written down</h2>
+    <div style="margin-top: var(--s4)">
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/blob/main/docs/232-libl.md">
+        <span class="who">docs/232</span>
+        <span class="what">The design record: the four faces, the heading-to-module mapping, and every place the language forced a deviation. Written in Chinese.</span>
+      </a>
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/pull/245">
+        <span class="who">Pull request #245</span>
+        <span class="what">Where it landed &mdash; the library, the criterion run against glibc, and the argument. Merged.</span>
+      </a>
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/issues/246">
+        <span class="who">Issue #246</span>
+        <span class="what">One of the defects it turned up &mdash; a dependency check that reports an innocent leaf module. Filed separately, not fixed here.</span>
+      </a>
+      <a class="doclink" href="../lompi/">
+        <span class="who">lompi</span>
+        <span class="what">Where a library like this one lives: a directory, addressed by the hash of its contents.</span>
+      </a>
+      <a class="doclink" href="../">
+        <span class="who">Back to the front page</span>
+        <span class="what">What Loment is, and the two kinds of program it builds.</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Loment is released under the MIT OR Apache-2.0 license. Program by Fujo.</span>
+    <nav>
+      <a href="https://github.com/Loment-Lang/loment">Source</a>
+      <a href="https://github.com/Loment-Lang/loment/releases/latest">Releases</a>
+      <a href="https://github.com/FujoJTOP/lompi">lompi</a>
+      <a href="https://loment.fandom.com/">Wiki</a>
+      <a href="https://github.com/Loment-Lang/loment/issues">Issues</a>
+      <a class="mast" href="https://mastodon.social/@Loment" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z"/></svg>Mastodon</a>
+      <a class="mast" href="https://bsky.app/profile/loment.bsky.social" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364-3.136.521-5.919 1.517-2.244 5.449 3.944 4.011 5.42-1.005 6.237-3.242.653-1.79 1.03-2.81 1.03-2.81s.377 1.02 1.03 2.81c.817 2.237 2.293 7.253 6.237 3.242 3.675-3.932.892-4.928-2.244-5.449 2.67.296 5.568-.628 6.383-3.364.246-.829.624-5.789.624-6.479 0-.688-.139-1.86-.902-2.203-.659-.299-1.664-.621-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8z"/></svg>Bluesky</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

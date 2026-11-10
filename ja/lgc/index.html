@@ -1,0 +1,275 @@
+<!doctype html>
+<!-- translated-from: lgc/index.html -->
+<!-- source-sha256: b34e484722502d785150311c8bf4bfb489f1707eead12531630ffa1fd79eb828 -->
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LomentGC — Loment</title>
+<meta name="description" content="LomentGC: Loment のプログラムで確保が起きるあらゆる場所は、コンパイル時に四つの戦略のいずれかに割り当てられる —— そしてコレクタにどれだけ任されるかは、バイナリに書き込まれる。">
+<link rel="icon" href="../../mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=JetBrains+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../../style.css?v=20261110a">
+<link rel="alternate" hreflang="en" href="https://loment-lang.github.io/loment-site/lgc/">
+<link rel="alternate" hreflang="zh-Hans" href="https://loment-lang.github.io/loment-site/zh/lgc/">
+<link rel="alternate" hreflang="ja" href="https://loment-lang.github.io/loment-site/ja/lgc/">
+<link rel="alternate" hreflang="ru" href="https://loment-lang.github.io/loment-site/ru/lgc/">
+<link rel="alternate" hreflang="es" href="https://loment-lang.github.io/loment-site/es/lgc/">
+<link rel="alternate" hreflang="x-default" href="https://loment-lang.github.io/loment-site/lgc/">
+</head>
+<body>
+
+<a class="skip" href="#main">本文へスキップ</a>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="../">
+      <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true">
+        <rect width="64" height="64" rx="14" fill="#2f4bff"/>
+        <path d="M18 14h12v24h16v12H18z" fill="#fff"/>
+      </svg>
+      Loment
+    </a>
+                        <nav>
+      <a href="../start/">学ぶ</a>
+      <a href="../blog/">ブログ</a>
+      <a href="../examples/">サンプル</a>
+      <a href="../playground/">オンライン実行</a>
+      <a href="../standard/">標準</a>
+      <a href="../releases/">タイムライン</a>
+      <details class="navmenu" name="bar">
+        <summary>システム</summary>
+        <ul>
+          <li><a href="./">LGC</a></li>
+          <li><a href="../lvm/">LVM</a></li>
+          <li><a href="../lompi/">lompi</a></li>
+          <li><a href="../libl/">LibL</a></li>
+          <li><a href="../lspe/">LSPE</a></li>
+        </ul>
+      </details>
+      <a href="https://github.com/Loment-Lang/loment">GitHub</a>
+    </nav>
+    <details class="lang" name="bar">
+      <summary>日本語</summary>
+      <ul>
+        <li><a href="../../lgc/" hreflang="en">English</a></li>
+        <li><a href="../../zh/lgc/" hreflang="zh-Hans">简体中文</a></li>
+        <li><a href="./" hreflang="ja" aria-current="true">日本語</a></li>
+        <li><a href="../../ru/lgc/" hreflang="ru">Русский</a></li>
+        <li><a href="../../es/lgc/" hreflang="es">Español</a></li>
+      </ul>
+    </details>
+  </div>
+</header>
+
+<main id="main">
+
+<section class="head">
+  <div class="wrap">
+    <p class="eyebrow">システム</p>
+    <h1>LomentGC</h1>
+    <p class="lede">
+      Loment のプログラムがメモリを解放するとき、その仕事のすべてをコレクタに任せはしない。
+      確保が起きるあらゆる場所は、コンパイル時に<strong>四つの戦略のいずれか</strong>に割り当て
+      られ —— runtime コレクタにどれだけ任されるかは、文書の中の主張ではなく、バイナリに
+      書き込まれた数値である。
+    </p>
+    <p class="actions">
+      <a class="btn btn-solid" href="../lgc-paper/">論文を読む</a>
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>はしご</h2>
+    <p class="body">
+      最強から最弱へ。コンパイラは<em>証明</em>できる最も強い段を取る。より多くを証明すれば、
+      払うものは少ない。各段の値段は脚注に残すのではなく、その隣に書かれている。
+    </p>
+
+    <div class="rows">
+      <div class="row">
+        <h3>L0 — 静的</h3>
+        <p>
+          アロケーションはリテラルのサイズであり、ポインタはロード、ストア、アトミックの
+          第一引数として丸ごと渡されるだけである。ヒープには決して到達しないので、回収すべき
+          ものが何もない。<strong>値段:</strong>より大きなスタックフレーム。
+        </p>
+      </div>
+      <div class="row">
+        <h3>L1 — 最終使用</h3>
+        <p>
+          同じ形だが、関数本体のトップレベルで宣言されるので、最後の使用が<em>数えられる</em>。
+          コンパイラは、その後の最も早い return の前に <code>free</code> を挿入する。
+          <strong>値段:</strong>早期 return の経路では挿入点を取り逃すことがあり、その経路は
+          一度漏れる。漏れであって、バグではない。
+        </p>
+      </div>
+      <div class="row">
+        <h3>L2 — ブロックエポック</h3>
+        <p>
+          ループ本体の内側では、すべてのアロケーションは本体を決して出て行かないローカルである。
+          本体の終わりは、アロケータのフロントを巻き戻すことで、領域全体を一度に返す ——
+          リストも走査もない。エポックはブロック構造と脱出から<em>推論</em>され、手で書かれるのでは
+          ない。<strong>値段:</strong>本体内のアロケーションがひとつでも脱出すると、ブロック全体が
+          残らなければならない。
+        </p>
+      </div>
+      <div class="row">
+        <h3>L3 — runtime</h3>
+        <p>
+          コンパイラが証明できなかったすべて。コレクタの全コスト。
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>三つの段階</h2>
+    <p class="body">
+      プログラムは、自分が始めるファイルに一行書くことで、はしごをどこまで下ることを許すかを
+      選ぶ。
+    </p>
+
+    <div class="rows">
+      <div class="row">
+        <h3><code>choose gc_manual</code></h3>
+        <p>
+          既定。何も自動では回収されず、プログラムが自分のメモリを管理する。一行も書かなければ
+          これになる —— 既定とは、その設定が存在する前からの振る舞いであり、それはすべての設定が
+          従う規則である。
+        </p>
+      </div>
+      <div class="row">
+        <h3><code>choose gc_auto</code></h3>
+        <p>
+          runtime コレクタが回収する: 正確なルートを持つマーク&スイープで、確保したバイト数に
+          よって起動される。
+        </p>
+      </div>
+      <div class="row">
+        <h3><code>choose gc_auto_alpha</code></h3>
+        <p>
+          四つの段すべてが有効なので、コレクタはコンパイル時の段が証明できなかったものだけを
+          見る —— そしてそれは適応的である。しきい値はライブセットに従い、空間トリガーを備えるので、
+          上限は arena の固定された割合ではない。
+        </p>
+      </div>
+    </div>
+
+    <p class="limit">
+      <strong>発見されるのではなく明示される限界。</strong><code>gc_auto</code> では、トリガーは
+      固定の 32 KiB で、arena は 64 KiB なので、<em>ライブセット</em>がおよそ 32 KB を超える
+      プログラムはやはり尽きる。その隔たりを埋めるのが、適応的コレクタと、
+      <code>gc_auto_alpha</code> の下の世代別コレクタの役目である。
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>L3 の内側</h2>
+    <p class="body">
+      runtime の段も、ひとつのアルゴリズムではない。それは三つの歩みで成長し、それぞれが、
+      計測可能なプログラム上でその前のものを打ち負かさなければならなかった。
+    </p>
+
+    <div class="rows">
+      <div class="row">
+        <h3>マーク&スイープ</h3>
+        <p>
+          ルートは<em>正確</em>である —— ルートテーブルはスロットのアドレスを保持する ——
+          一方で、ブロックの内部は保守的に扱われる。<code>alloc</code> が型を持たず、ブロックが
+          何を保持するかを何も記録しないからだ。
+        </p>
+      </div>
+      <div class="row">
+        <h3>適応的な起動</h3>
+        <p>
+          固定のしきい値は、ライブセットがどれだけ大きくなるかを推測しなければならない。
+          適応的なものはそれを読む: ライブセットが二倍になったとき、あるいは空間が尽きかけたときに
+          回収する。
+        </p>
+      </div>
+      <div class="row">
+        <h3>世代別</h3>
+        <p>
+          二つの世代を、オブジェクトの年齢ではなく<em>アドレス</em>で分ける —— 移動しない
+          コレクタは、各マイナーコレクションの終わりにフロンティアを進めることで昇格させる。
+          カードテーブルとライトバリアが、古い世代から若い世代へのポインタを捉える。それによって
+          節約されるのはマーク&伝播のパスで、それが若い世代だけを覆うようになる。
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>なぜ成果物に残るのか</h2>
+    <p class="body">
+      各ユニットは、<code>gc_ladder</code> を運ぶ形式オブジェクトをエクスポートする: 各段が取った
+      <code>alloc</code> サイトの数と、合計。四つの数は合計に一致しなければならず、
+      <strong>二つの独立した検証器が、ソースを一行も読まずにその算術を照合する</strong>。だから
+      「このプログラムのメモリはどう管理されるか?」は、文書の中の主張ではなく、ビルド出力の中の
+      数値である。
+    </p>
+
+    <p class="limit">
+      <strong>何が主張され、何が主張されていないか。</strong>はしごは二度実装されている ——
+      参照実装のコンパイラとセルフホストのもの —— そして両者はバイト単位で一致しなければならない。
+      各段の背後の測定は、プロジェクト自身の判据、すなわち小さなプログラムから来ている。
+      コレクタは実ワークロードに対して走らされたことがなく、これはこの話を性能の主張として読む前に
+      知っておく価値がある。
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>設計を読む</h2>
+    <div style="margin-top: var(--s4)">
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/blob/main/docs/210-loment-gc-design.md">
+        <span class="who">docs/210</span>
+        <span class="what">設計記録: はしご、各段の判据、そして意図的に真似しなかったもの。</span>
+      </a>
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/blob/main/docs/202-loment-014-release-gate.md">
+        <span class="who">docs/202</span>
+        <span class="what">リリースゲート。これらの主張のどれがいつ出荷されたかを含む。</span>
+      </a>
+      <a class="doclink" href="../lvm/">
+        <span class="who">LVM</span>
+        <span class="what">実行モデルの設定 —— 設定とその検査は main ブランチにあり、エンジンはない。</span>
+      </a>
+      <a class="doclink" href="../">
+        <span class="who">フロントページへ戻る</span>
+        <span class="what">Loment とは何か、そしてそれがビルドする二種類の成果物。</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Loment は MIT OR Apache-2.0 の下で公開されている。制作: Fujo。</span>
+    <nav>
+      <a href="https://github.com/Loment-Lang/loment">ソース</a>
+      <a href="https://github.com/Loment-Lang/loment/releases/latest">リリース</a>
+      <a href="https://github.com/FujoJTOP/lompi">lompi</a>
+      <a href="https://loment.fandom.com/">Wiki</a>
+      <a href="https://github.com/Loment-Lang/loment/issues">イシュー</a>
+      <a class="mast" href="https://mastodon.social/@Loment" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z"/></svg>Mastodon</a>
+      <a class="mast" href="https://bsky.app/profile/loment.bsky.social" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364-3.136.521-5.919 1.517-2.244 5.449 3.944 4.011 5.42-1.005 6.237-3.242.653-1.79 1.03-2.81 1.03-2.81s.377 1.02 1.03 2.81c.817 2.237 2.293 7.253 6.237 3.242 3.675-3.932.892-4.928-2.244-5.449 2.67.296 5.568-.628 6.383-3.364.246-.829.624-5.789.624-6.479 0-.688-.139-1.86-.902-2.203-.659-.299-1.664-.621-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8z"/></svg>Bluesky</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

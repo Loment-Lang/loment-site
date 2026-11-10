@@ -1,0 +1,404 @@
+<!doctype html>
+<!-- translated-from: lvm/index.html -->
+<!-- source-sha256: f38c877784edaeb71935c6684a8114ea4ab28c10cb93d1e6345b5ef36a6267db -->
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LVM — Loment VM — Loment</title>
+<meta name="description" content="Loment VM 不是一条更快的路，也不是一种把程序写得更省事的办法。它是运行程序的第二种方式：一份可以被执行器按需接纳的产物，执行器凭它已经携带的东西来加以判断。解释器作为 loment-lvm 随工具链一起发布；而这个设置仍然不改变编译器发出的东西。">
+<link rel="icon" href="../../mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=JetBrains+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../../style.css?v=20261110a">
+<link rel="alternate" hreflang="en" href="https://loment-lang.github.io/loment-site/lvm/">
+<link rel="alternate" hreflang="zh-Hans" href="https://loment-lang.github.io/loment-site/zh/lvm/">
+<link rel="alternate" hreflang="ja" href="https://loment-lang.github.io/loment-site/ja/lvm/">
+<link rel="alternate" hreflang="ru" href="https://loment-lang.github.io/loment-site/ru/lvm/">
+<link rel="alternate" hreflang="es" href="https://loment-lang.github.io/loment-site/es/lvm/">
+<link rel="alternate" hreflang="x-default" href="https://loment-lang.github.io/loment-site/lvm/">
+</head>
+<body>
+
+<a class="skip" href="#main">跳到正文</a>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="../">
+      <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true">
+        <rect width="64" height="64" rx="14" fill="#2f4bff"/>
+        <path d="M18 14h12v24h16v12H18z" fill="#fff"/>
+      </svg>
+      Loment
+    </a>
+                        <nav>
+      <a href="../start/">学习</a>
+      <a href="../blog/">博客</a>
+      <a href="../examples/">示例</a>
+      <a href="../playground/">在线编译</a>
+      <a href="../standard/">标准</a>
+      <a href="../releases/">时间线</a>
+      <details class="navmenu" name="bar">
+        <summary>系统</summary>
+        <ul>
+          <li><a href="../lgc/">LGC</a></li>
+          <li><a href="./">LVM</a></li>
+          <li><a href="../lompi/">lompi</a></li>
+          <li><a href="../libl/">LibL</a></li>
+          <li><a href="../lspe/">LSPE</a></li>
+        </ul>
+      </details>
+      <a href="https://github.com/Loment-Lang/loment">GitHub</a>
+    </nav>
+    <details class="lang" name="bar">
+      <summary>中文</summary>
+      <ul>
+        <li><a href="../../lvm/" hreflang="en">English</a></li>
+        <li><a href="./" hreflang="zh-Hans" aria-current="true">简体中文</a></li>
+        <li><a href="../../ja/lvm/" hreflang="ja">日本語</a></li>
+        <li><a href="../../ru/lvm/" hreflang="ru">Русский</a></li>
+        <li><a href="../../es/lvm/" hreflang="es">Español</a></li>
+      </ul>
+    </details>
+  </div>
+</header>
+
+<main id="main">
+
+<section class="head">
+  <div class="wrap">
+    <p class="eyebrow">系统 · 0.1.5 起发布</p>
+    <h1>Loment VM</h1>
+    <p class="lede">
+      它是<strong>运行程序的第二种方式</strong>：一份产物可以交给一个执行器，由它按需接纳，
+      而它决定要不要接纳，靠的是读这份产物已经携带的东西。它不是一条更快的路，也不是一种把
+      程序写得更省事的办法。<strong>解释器作为 <code>loment-lvm</code> 随工具链一起发布 &mdash;
+      但这个设置仍然不改变编译器发出的东西。</strong>
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>有什么，没有什么</h2>
+    <p class="body">
+      仓库里现在有一层<strong>能用的解释器，T0 到 T3</strong>，读的是链接器读的同一份中间形式。
+      T0 直接执行那份形式；T1 记下一份反馈剖面，却不改动一个字节的输出；T2 在进入执行循环之前
+      就把指令逐条解码，在语料上跑到 <strong>T0 的 6.1&times;</strong>，输出逐字节相同；紧凑的
+      序列化形式是同一单元文本形式的 <strong>28.5%</strong>；T3 加上带守卫的特化，以及一条回头路。
+    </p>
+    <p class="body">
+      随包发布的是解释器本身，作为编译器旁边的 <code>loment-lvm</code>，所以一套已安装的工具链
+      可以用这种方式跑程序。没有发布的是一种<em>编译器模式</em>：<code>choose vm</code> 与
+      <code>no_vm</code> 仍然产出逐字节相同的输出，所以这个设置说的是你打算怎么运行这个程序，
+      而不是编译器发出什么。
+    </p>
+    <p class="limit">
+      <strong>一笔还了一半的债。</strong><code>runtime</code> 设置曾有过同样的形状：在被声明之后
+      什么也不做，后来才被补齐到它声称的样子。而在这里，引擎和发布都已存在；仍然只是一句声明的，
+      是这个设置本身。这一页把哪一半是哪一半说出来，而不是留给读的人去发现。
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>它不是什么</h2>
+    <p class="body">
+      有三种解读是错的，而每一种都是读者带着来的。它们排在设计之前，因为把这三种解读放过去，
+      就会让这东西变成什么都想做、却什么都做不好的那种。
+    </p>
+
+    <div class="rows">
+      <div class="row">
+        <h3>不是那条快路</h3>
+        <p>
+          说反了。Loment 的原生路径本来就在用速度换独立性，而且它一开始就不快：在
+          <a href="https://github.com/Loment-Lang/loment/blob/main/docs/212-loment-offload.md">docs/212</a>
+          的数组基准上，对着 C <code>-O2</code>，它<strong>落后 10.7&times;</strong> —— 这是
+          一次记录下来的测量，不是一条长期承诺。VM 是叠在它上面的一层。<strong>这条线的轴不是
+          性能</strong>，而逃生舱属于完全不同的另一条线。
+        </p>
+      </div>
+      <div class="row">
+        <h3>不是一次编写、到处运行</h3>
+        <p>
+          那件事早就交给了<em>编译期</em>：一份 IR，三种输出 —— Linux ELF、Windows PE，或一个
+          freestanding 目标文件。一个字节码格式并不比这更接近可移植性，而且这个说法过不了它
+          自己的检验：如果可移植性是重点，判据就该是"增加一个目标不需要新的后端"，而现在有
+          两个目标。
+        </p>
+      </div>
+      <div class="row">
+        <h3>不是一种把程序写得更快的办法</h3>
+        <p>
+          那是另一组东西，而这一个一样都不碰：另外六门表层语法、格式化器、语言服务器、编译期
+          语法定义、为编码 agent 写的指南。LVM 是在程序<em>写完之后</em>才到来的。
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>设计，分三部分</h2>
+
+    <div class="rows">
+      <div class="row">
+        <h3>字节码不是一项新发明</h3>
+        <p>
+          它是<strong>对编译器已经产出的那份中间形式的一次序列化</strong>。随包的后端是一台
+          栈机 —— 每个值占一个栈槽，参数放在栈上，聚合体通过一个隐藏的结果指针传递 —— 所以
+          针对那个子集的一套完整执行模型已经存在、也已经在被演练。缺的是<em>执行</em>它的
+          那一步。LVM 会是同一份形式的<strong>第四个读者</strong>：没有新的前端，没有新的
+          中间形式，没有新的类型系统。
+        </p>
+      </div>
+      <div class="row">
+        <h3>第五个设置</h3>
+        <p>
+          <code>choose</code> 已有四个 —— 程序可以用库的哪一层、它如何回收内存、产物能否
+          携带一个 runtime、以及它能否向自身之外伸手。<code>vm</code> 是第五个，回答的是
+          <strong>这个程序是为哪种执行模型而写的？</strong>不写就是 <code>no_vm</code>，
+          也就是这个设置存在之前一切东西的状态。自 0.1.4.6 起，发布构建也接受它；今天它能买到的是一条声明，而不是一份不同的产物。
+        </p>
+        <p>
+          这个值说的是<em>是否</em>，从不是<em>哪一个</em>。这正是 <code>runtime</code> 设置
+          已经遵循的规则：里面装的东西会随年份变化，而一个把今天这一级编码进名字的写法，明天
+          要加新的一级时就得改名。
+        </p>
+      </div>
+      <div class="row">
+        <h3>这道闸，以及它为什么开了</h3>
+        <p>
+          直到 0.1.4.6，<strong>发布</strong>构建在编译期拒绝 <code>choose vm</code>；只有开发
+          通道接受它。规则很硬 —— 在第一个可用的引擎出现之前，对它的任何调用在发布里都非法 ——
+          这样一个已安装的工具链就永远不会接受一个它兑现不了的承诺。<strong>一个落空的承诺比
+          一次拒绝更糟。</strong>
+        </p>
+        <p>
+          0.1.4.6 把它打开，因为那条拒绝的前提不再成立：第一个可用的引擎到了。这个设置在两个
+          通道里现在都是一条声明，而这次更正被记录下来，而不是删掉 —— 曾经要求"拒"的那条校验，
+          现在要求"收"，于是"这道闸存在过、以及它是什么时候开的"仍然看得见。
+        </p>
+        <p>
+          这道闸门需要一个仓库此前没有的概念：这个编译器是发布构建，还是开发构建？设计把它收进
+          <strong>一个常量</strong>，每一边一个值，在打包时翻转。只用一行是有意为之 —— 打包好
+          的语言指南未经修改就被拷进发行版，这样"包里的副本就是仓库里的副本"才保持可核对，而
+          一行是弯曲这条规则的最小办法。代价随它一起被说出来：随包发出的编译器种子就不再逐字节
+          等于仓库里的，于是判据从<em>完全相同</em>降为<em>可复现地相等，且差异恰好是那一个
+          常量</em>。
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>阶梯</h2>
+    <p class="body">
+      把 VM 当作一级一级来读，而不是当作一件要建的事。每一级都必须可达成，也必须可证伪 ——
+      "写个 JIT"不是一级，因为没有什么能证伪它。零件清单取自两个在规模上做过这件事的系统；
+      实现会是项目自己的，而它是否保持如此，是一个悬而未决的决定。
+    </p>
+
+    <div class="rows">
+      <div class="row">
+        <h3>T0 — 字节码和一个直接解释器</h3>
+        <p>
+          地板。<strong>仓库里已经建好。</strong><strong>判据：</strong>一个以这种方式运行的
+          程序，产出与原生产物逐字节相同的输出和相同的退出码。
+        </p>
+      </div>
+      <div class="row">
+        <h3>T1 — 反馈</h3>
+        <p>
+          针对类型、分支与调用点的剖析数据。<strong>仓库里已经建好。</strong><strong>判据：</strong>
+          剖析数据落在<em>产物里</em>，第三方能读取它 —— 而把它关掉，产物逐字节不变。
+        </p>
+      </div>
+      <div class="row">
+        <h3>T2 — 一个基线编译器</h3>
+        <p>
+          去掉解释的开销，而不做优化。<strong>仓库里已经建好 —— 语料上是 T0 的
+          6.1&times;。</strong><strong>判据：</strong>可测量地比 T0 快，语义上完全相同。
+        </p>
+      </div>
+      <div class="row">
+        <h3>T3 — 一个优化编译器，且有回头路</h3>
+        <p>
+          一个被证明是错的猜测，必须能被放弃。<strong>仓库里已经建好，针对那唯一一条背着猜测的
+          优化。</strong><strong>这是这一级唯一一条硬判据：</strong>在猜测被放弃之后，程序的结果
+          与原生产物一致。
+        </p>
+      </div>
+      <div class="row">
+        <h3>T4 — 分代与并发回收</h3>
+        <p>
+          唯一一级不是其它几级的延伸。回收设计曾经说这件事在这里根本做不了：后端只把指针存在
+          局部变量和形参槽里，而这排除了通常的写屏障。<strong>那条理由不再成立</strong> —— 把指针
+          变成整数的办法出现了，而分代那一半落到了<a href="../lgc/">回收那一侧</a>，带着一张卡表
+          和一道写屏障。仍然在前面的，是在<em>VM 内部</em>做这件事，而这与提前做是两回事。
+        </p>
+      </div>
+    </div>
+
+    <p class="limit">
+      <strong>仓库里有 T0 到 T3；包里一级都没有。</strong>建解释器与把它装进发行版是两步，
+      而只有第一步做完了。上面那几级是计划的形状，不是时间表。
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>它是干什么用的</h2>
+    <p class="body">
+      先泼盆冷水：大型项目最常想要的两件事 —— 构建更快、运行更快 —— 都在范围之外。构建时间
+      是编译器<em>内部</em>的问题，而运行时间对这条线来说是错的轴。
+    </p>
+    <p class="body">
+      但"大"已经暴露出一个结构性的、而非缺陷的问题，而这是唯一能治它的东西。<strong>产出的
+      符号是扁平的：</strong>一百个模块意味着函数名必须靠手工做成全局唯一，而两个各自定义了
+      同一个短名的模块会被拒。这是"一次静态链接"作为一种模型带来的后果 —— 大型项目那道经典
+      的可扩展性墙，被语言自身的结构直接推到用户脸上。仓库已经把一个超大型项目语料作为判据
+      在跑，所以这件事是测量出来的，不是猜的。
+    </p>
+
+    <div class="rows">
+      <div class="row">
+        <h3>在运行期接纳一个模块</h3>
+        <p>
+          给一个原生产物加一个模块，意味着重新链接整个程序。在这里，它意味着加载一个单元。
+        </p>
+      </div>
+      <div class="row">
+        <h3>不重新链接就替换一个模块</h3>
+        <p>
+          改一个模块，重新加载它，程序其余部分留在原地。
+        </p>
+      </div>
+      <div class="row">
+        <h3>运行不是你写的代码</h3>
+        <p>
+          一个第三方扩展，或者一个机器写出来的扩展。<strong>这是项目自己的那些想法第一次有活
+          要干的地方。</strong>在链接期，端口表、一个单元声明自己可达的范围、关于它没有什么的
+          记录，以及它的回收数字，都是<em>审计</em> —— 事后拿来读的东西。到了加载期，这些同样
+          的记录变成一道<em>闸门</em> —— 在任何东西运行之前，拿来作决定的东西。
+        </p>
+      </div>
+    </div>
+
+    <p class="caption">
+      这就是这一页愿意为之背书的那一句话，而且它可证伪：<strong>添加一个扩展模块，不意味着
+      重新链接整个程序 —— 而在它被加载之前，你就能判断出它能不能触达它不该触达的东西。</strong>
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>它不声称什么</h2>
+    <p class="body">
+      这份清单存在设计记录里，而它应该在这页上，而不是留在记录里。
+    </p>
+
+    <div class="rows">
+      <div class="row">
+        <h3>它新</h3>
+        <p>
+          这里头没有哪一块砖是新的。把执行证据携带在产物里、在加载期加以判断，是 20 世纪 90
+          年代就有的；拒绝加载无法被证明的东西，是沙箱化 runtime 的做法；一份输入配多种执行
+          模型，是最大的移动端 runtime 在做的事。可能被摆在不同位置的，是那道接缝，不是那些
+          零件。
+        </p>
+      </div>
+      <div class="row">
+        <h3>那两件事没人做过</h3>
+        <p>
+          全篇的措辞是<em>没有在某次检索里被找到</em>，这与<em>没人做过</em>不是一回事。两项
+          能推翻这个说法的检索被写下来当作未决判据，并诚实地注明它们没有被穷尽地跑过。
+        </p>
+      </div>
+      <div class="row">
+        <h3>它有用</h3>
+        <p>
+          这一格今天是空的。而且上面第三个角色建立在一个没人测量过的数字上 —— 那个超大型语料
+          里，究竟有多少是真正应该被延迟加载的代码。如果这个数字接近零，那个角色就只是个漂亮
+          故事。
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>它写在哪儿</h2>
+    <div style="margin-top: var(--s4)">
+      <a class="doclink" href="https://loment.fandom.com/wiki/LVM">
+        <span class="who">LVM</span>
+        <span class="what">wiki 上的同一片地，与语言其余部分放在一起。</span>
+      </a>
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/blob/main/docs/232-loment-vm.md">
+        <span class="who">docs/232</span>
+        <span class="what">设计记录。用中文写成，并且它自己说明了哪些部分是定下的、哪些不是。</span>
+      </a>
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/blob/main/docs/231-lvm-channel-and-vm-dimension.md">
+        <span class="who">docs/231</span>
+        <span class="what">通道与 <code>vm</code> 设置 —— 以及那道闸打开的记录。</span>
+      </a>
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/blob/main/docs/243-lvm-t0-interpreter.md">
+        <span class="who">docs/243</span>
+        <span class="what">T0：字节码就是现有的中间形式，执行它意味着什么。</span>
+      </a>
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/blob/main/docs/259-lvm-t2-baseline.md">
+        <span class="who">docs/259</span>
+        <span class="what">T2：把解码搬出执行循环，以及那条数解码次数的判据。</span>
+      </a>
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/blob/main/docs/250-lvm-compact-form.md">
+        <span class="who">docs/250</span>
+        <span class="what">紧凑形：同一份形式，28.5% 的体积。</span>
+      </a>
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/blob/main/docs/261-lvm-t3-implemented.md">
+        <span class="who">docs/261</span>
+        <span class="what">T3：带守卫的特化，以及为什么在槽机上去优化很便宜。</span>
+      </a>
+      <a class="doclink" href="https://loment.fandom.com/wiki/Versions_and_roadmap">
+        <span class="who">路线图</span>
+        <span class="what">VM 相对各个版本处在什么位置 —— 一份计划，就按计划来说。</span>
+      </a>
+      <a class="doclink" href="../lgc/">
+        <span class="who">LomentGC</span>
+        <span class="what">回收阶梯 —— 一个已经建成、供对照的系统。</span>
+      </a>
+      <a class="doclink" href="../">
+        <span class="who">回到首页</span>
+        <span class="what">Loment 是什么，以及它构建的两类程序。</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Loment 依据 MIT OR Apache-2.0 双许可发布。由 Fujo 编写。</span>
+    <nav>
+      <a href="https://github.com/Loment-Lang/loment">源码</a>
+      <a href="https://github.com/Loment-Lang/loment/releases/latest">发布</a>
+      <a href="https://github.com/FujoJTOP/lompi">lompi</a>
+      <a href="https://loment.fandom.com/">Wiki</a>
+      <a href="https://github.com/Loment-Lang/loment/issues">Issues</a>
+      <a class="mast" href="https://mastodon.social/@Loment" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z"/></svg>Mastodon</a>
+      <a class="mast" href="https://bsky.app/profile/loment.bsky.social" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364-3.136.521-5.919 1.517-2.244 5.449 3.944 4.011 5.42-1.005 6.237-3.242.653-1.79 1.03-2.81 1.03-2.81s.377 1.02 1.03 2.81c.817 2.237 2.293 7.253 6.237 3.242 3.675-3.932.892-4.928-2.244-5.449 2.67.296 5.568-.628 6.383-3.364.246-.829.624-5.789.624-6.479 0-.688-.139-1.86-.902-2.203-.659-.299-1.664-.621-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8z"/></svg>Bluesky</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

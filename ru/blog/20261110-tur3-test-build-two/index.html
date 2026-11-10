@@ -1,0 +1,243 @@
+<!doctype html>
+<!-- translated-from: blog/20261110-tur3-test-build-two/index.html -->
+<!-- source-sha256: 009a9c4a44db6b33a57cd75671948da8200178a50816089e652d5988c05a4d0b -->
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tur 2026.3, второй полный тестовый билд: времена жизни и store, закрывающий пробелы — Loment</title>
+<meta name="description" content="Второй полный тестовый билд Tur 2026.3 готов: заимствованные времена жизни в обеих реализациях, управление временем lgc и store из 332 модулей. Издание всё ещё в разработке.">
+<link rel="icon" href="../../../mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=JetBrains+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../../../style.css?v=20261110a">
+<link rel="alternate" hreflang="en" href="https://loment-lang.github.io/loment-site/blog/20261110-tur3-test-build-two/">
+<link rel="alternate" hreflang="zh-Hans" href="https://loment-lang.github.io/loment-site/zh/blog/20261110-tur3-test-build-two/">
+<link rel="alternate" hreflang="ja" href="https://loment-lang.github.io/loment-site/ja/blog/20261110-tur3-test-build-two/">
+<link rel="alternate" hreflang="ru" href="https://loment-lang.github.io/loment-site/ru/blog/20261110-tur3-test-build-two/">
+<link rel="alternate" hreflang="es" href="https://loment-lang.github.io/loment-site/es/blog/20261110-tur3-test-build-two/">
+<link rel="alternate" hreflang="x-default" href="https://loment-lang.github.io/loment-site/blog/20261110-tur3-test-build-two/">
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="../../">
+      <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true">
+        <rect width="64" height="64" rx="14" fill="#2f4bff"/>
+        <path d="M18 14h12v24h16v12H18z" fill="#fff"/>
+      </svg>
+      Loment
+    </a>
+        <nav>
+      <a href="../../start/">Обучение</a>
+      <a href="../" aria-current="page">Блог</a>
+      <a href="../../examples/">Примеры</a>
+      <a href="../../playground/">Песочница</a>
+      <a href="../../standard/">Стандарт</a>
+      <a href="../../releases/">Хронология</a>
+      <details class="navmenu" name="bar">
+        <summary>Системы</summary>
+        <ul>
+          <li><a href="../../lgc/">LGC</a></li>
+          <li><a href="../../lvm/">LVM</a></li>
+          <li><a href="../../lompi/">lompi</a></li>
+          <li><a href="../../libl/">LibL</a></li>
+          <li><a href="../../lspe/">LSPE</a></li>
+        </ul>
+      </details>
+      <a href="https://github.com/Loment-Lang/loment">GitHub</a>
+    </nav>
+    <details class="lang" name="bar">
+      <summary>RU</summary>
+      <ul>
+        <li><a href="../../../blog/20261110-tur3-test-build-two/" hreflang="en">English</a></li>
+        <li><a href="../../../zh/blog/20261110-tur3-test-build-two/" hreflang="zh-Hans">简体中文</a></li>
+        <li><a href="../../../ja/blog/20261110-tur3-test-build-two/" hreflang="ja">日本語</a></li>
+        <li><a href="./" hreflang="ru" aria-current="true">Русский</a></li>
+        <li><a href="../../../es/blog/20261110-tur3-test-build-two/" hreflang="es">Español</a></li>
+      </ul>
+    </details>
+  </div>
+</header>
+
+<main id="main">
+
+<section class="head">
+  <div class="wrap">
+    <div class="tur3-banner" aria-hidden="true">
+      <span class="tur3-word">Tur2026.3</span>
+    </div>
+    <p class="eyebrow">Блог &middot; 2026-11-10</p>
+    <h1>Tur 2026.3, второй полный тестовый билд: времена жизни и store, закрывающий пробелы</h1>
+    <p class="lede">
+      Второй полный тестовый билд Tur 2026.3 готов. Заимствованные времена жизни вошли в обе
+      реализации, <code>lgc</code> даёт сборщику часы, а store вырос до 332 модулей, чтобы
+      программа могла попросить удобства, которых в самом Loment нет. Издание всё ещё в
+      разработке.
+    </p>
+    <p class="limit">
+      <strong>Это тестовый билд, а не релиз; Tur 2026.3 ещё не завершён.</strong> Стабильный
+      канал остаётся на 0.1.5.1; Beta-канал Playground следует за <code>main</code>. Всё, что
+      ниже названо «следующим», — направление, а не дата.
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Что утверждает тестовый билд</h2>
+    <p class="body">
+      Тестовый билд — это всё издание, собранное и прогнанное сразу: обе реализации
+      компилятора, оба пути артефактов и весь store. Первый билд нёс работу по доменам и
+      LSPE; времена жизни были следующей строкой. Этот второй билд впервые сводит
+      заимствованные времена жизни и расширенный store в одно дерево. Это контрольная
+      точка, а не тег.
+    </p>
+    <p class="body">
+      Утверждение узкое и проверяемое: эталонный компилятор в <code>tools/lomentc.py</code>
+      и самостоятельный компилятор в <code>loment/selfhost</code> читают одну и ту же
+      поверхность Tur 2026.3 и выдают одинаковый IR для корпуса. Если они расходятся,
+      билд не закончен.
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Заимствованные времена жизни без синтаксиса времён жизни</h2>
+    <p class="body">
+      <code>&amp;T</code> и <code>&amp;mut T</code> теперь полноценные типы: параметры,
+      возвраты, поля структур и аргументы обобщений. Измерение —
+      <code>choose lifetime_no | lifetime_auto | lifetime_manual</code>.
+      <code>lifetime_auto</code> — умолчание начиная с <code>tur2026.3</code>; старые
+      издания остаются на <code>lifetime_no</code>, поэтому их артефакты не меняются ни на
+      байт.
+    </p>
+    <p class="body">
+      Поверхность остаётся тихой. Один заимствованный вход означает, что все заимствованные
+      выходы берутся из него; несколько входов и один выход — берётся самый короткий,
+      поэтому <code>fn min(a: &amp;[u32], b: &amp;[u32]) -&gt; &amp;[u32]</code> не требует
+      аннотаций. Методы заимствуют из <code>self</code>. Только возврат, который обязан
+      выбрать конкретный вход, пишет имя этого параметра, как в
+      <code>-&gt; &amp;a [u32]</code>. Заимствование в артефакте — это <code>ptr</code>;
+      заимствования срезов нормализуются в существующие представления; <code>*r</code>
+      разыменовывает, <code>r.field</code> разыменовывает автоматически.
+    </p>
+    <p class="body">
+      Самостоятельная сторона догнала 2026-11-08: она больше не отвергает типы заимствований
+      по имени. E041 теперь появляется только когда область не держится — возвращаемое
+      заимствование без заимствованного параметра, маркер на несуществующем параметре или
+      <code>free(p)</code>, пока <code>p</code> заимствован. Сохранённый
+      <code>&amp;mut</code> исключает последующие заимствования как E007. Это те же пять
+      правил с обеих сторон.
+    </p>
+    <p class="limit">
+      <strong>Честная граница.</strong> Заимствования как аргументы обобщений есть только на
+      эталонной стороне; регистрация в самостоятельном компиляторе — на уровне имён, поэтому
+      в его таблицу исключений входит только <code>let x = &amp;mut y</code>. Проект —
+      <a href="https://github.com/Loment-Lang/loment/blob/main/docs/299-tur3-lifetimes.md">docs/299</a>.
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2><code>lgc</code> даёт сборщику часы</h2>
+    <p class="body">
+      Вторая возможность Tur 2026.3 — <code>lgc</code>, ручное управление временем
+      сборщика. <code>lgc start(10ms) { … }</code> открывает окно сборки с кооперативным
+      бюджетом времени; <code>lgc start { … }</code> открывает окно без бюджета;
+      <code>lgc end;</code> приостанавливает, <code>lgc start;</code> возобновляет.
+      <code>lgc end { … }</code> — приостановка в области видимости, которая возвращает
+      прежнее состояние на выходе.
+    </p>
+    <p class="body">
+      Это работает в любом режиме <code>choose gc</code>, а <code>no_gc</code> вместе с
+      <code>lgc</code> даёт E039: управлять нечем. Бюджет ограничивает <em>запуск</em>
+      сборки, а не вытесняет уже идущую. Это не четвёртый уровень GC — <code>choose gc</code>
+      остаётся выбором уровня.
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>store вырос до 332 модулей</h2>
+    <p class="body">
+      Loment намеренно мал. Store — место для удобств: обычный исходный код Loment,
+      который компилируют обе реализации, а все публичные имена перечислены в
+      <a href="https://github.com/Loment-Lang/loment/blob/main/docs/store-index.md">docs/store-index.md</a>.
+      Сейчас там 13 пакетов, 332 модуля и 2791 публичная функция. <code>std</code> — 148
+      из них; остальные — <code>os</code> (44), <code>system</code> (41), <code>world</code>
+      (22), <code>dev</code> (15), <code>lowlevel</code> (12), <code>internet</code> (11),
+      <code>math</code> (9), <code>host</code> (8), <code>science</code> (6),
+      <code>baremetal</code> (6), <code>windows</code> (6) и <code>engineering</code> (4).
+    </p>
+    <p class="body">
+      Последняя партия закрывает пять структурных пробелов. В криптографии и сетях
+      появились ChaCha20, Poly1305, AEAD, AES-CTR/GCM, x25519 и ed25519, а также AF_UNIX
+      с <code>SCM_RIGHTS</code> и ядро TLS 1.3-клиента. В слое композиции появились цикл
+      событий, атомарные файловые операции, ограниченный channel, очередь задач и небольшой
+      HTTP-сервер. Пакет <code>windows</code> описывает поверхность Kernel32. Общие модули
+      заменили дублирование внутри <code>os</code> и <code>system</code>. Сгенерированный
+      индекс и cookbook по задачам позволяют искать в store, не читая каждый файл.
+    </p>
+    <p class="limit">
+      <strong>Чего store не скрывает.</strong> Модуль TLS — это ядро клиента, а не заявление
+      о совместимости с настоящими серверами. Модули <code>windows</code> остаются
+      поверхностью объявлений до появления PE FFI
+      (<a href="https://github.com/Loment-Lang/loment/issues/1262">#1262</a>). В Loment нет
+      указателей на функции, поэтому цикл событий разбирает по тегу, а HTTP-сервер
+      возвращает handler id. <code>thread_spawn</code> требует имени функции времени
+      компиляции, поэтому очередь задач даёт только очередь, а worker пишете вы.
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Чего ещё нет</h2>
+    <p class="body">
+      Tur 2026.3 не закрыт. <code>lifetime_manual</code> принимает маркер
+      <code>&amp;a T</code>, но более широкой поверхности аннотаций нет. Расширяющие
+      домены, тело графовой модели, формы доменов <code>→</code> / <code>≺</code> /
+      <code>×</code> и бэкенд wasm32 остаются проектом или более поздней работой. Края
+      платформы и протоколов в store описаны как границы, а не заполнены.
+    </p>
+    <p class="body">
+      Второй тестовый билд — это точка, где издание можно попробовать целиком. Это не
+      точка, где оно закончено.
+    </p>
+    <p class="actions">
+      <a class="btn btn-solid" href="../../playground/">Попробовать Beta в Playground</a>
+    </p>
+    <p class="caption">
+      За каждым утверждением выше стоит критерий; то, за чем его нет, помечено как проект.
+      &mdash; <strong>Loment Dev Fujo</strong>
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Loment выпускается под лицензией MIT OR Apache-2.0. Программа — Fujo.</span>
+    <nav>
+      <a href="https://github.com/Loment-Lang/loment">Исходники</a>
+      <a href="https://github.com/Loment-Lang/loment/releases/latest">Релизы</a>
+      <a href="https://github.com/FujoJTOP/lompi">lompi</a>
+      <a href="https://loment.fandom.com/">Вики</a>
+      <a href="https://github.com/Loment-Lang/loment/issues">Проблемы</a>
+      <a class="mast" href="https://mastodon.social/@Loment" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z"/></svg>Mastodon</a>
+      <a class="mast" href="https://bsky.app/profile/loment.bsky.social" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364-3.136.521-5.919 1.517-2.244 5.449 3.944 4.011 5.42-1.005 6.237-3.242.653-1.79 1.03-2.81 1.03-2.81s.377 1.02 1.03 2.81c.817 2.237 2.293 7.253 6.237 3.242 3.675-3.932.892-4.928-2.244-5.449 2.67.296 5.568-.628 6.383-3.364.246-.829.624-5.789.624-6.479 0-.688-.139-1.86-.902-2.203-.659-.299-1.664-.621-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8z"/></svg>Bluesky</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

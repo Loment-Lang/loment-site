@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Roadmap — Loment</title>
+<meta name="description" content="What Loment intends to build next, from 0.1.5.1 to 0.1.8 — a plan, not a promise. No dates, and none of it is downloadable today.">
+<link rel="icon" href="../mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=JetBrains+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../style.css?v=20261110a">
+<link rel="alternate" hreflang="en" href="https://loment-lang.github.io/loment-site/roadmap/">
+<link rel="alternate" hreflang="zh-Hans" href="https://loment-lang.github.io/loment-site/zh/roadmap/">
+<link rel="alternate" hreflang="ja" href="https://loment-lang.github.io/loment-site/ja/roadmap/">
+<link rel="alternate" hreflang="ru" href="https://loment-lang.github.io/loment-site/ru/roadmap/">
+<link rel="alternate" hreflang="es" href="https://loment-lang.github.io/loment-site/es/roadmap/">
+<link rel="alternate" hreflang="x-default" href="https://loment-lang.github.io/loment-site/roadmap/">
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="../">
+      <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true">
+        <rect width="64" height="64" rx="14" fill="#2f4bff"/>
+        <path d="M18 14h12v24h16v12H18z" fill="#fff"/>
+      </svg>
+      Loment
+    </a>
+                        <nav>
+      <a href="../start/">Learn</a>
+      <a href="../blog/">Blog</a>
+      <a href="../examples/">Examples</a>
+      <a href="../playground/">Playground</a>
+      <a href="../standard/">Standard</a>
+      <a href="../releases/">Timeline</a>
+      <details class="navmenu" name="bar">
+        <summary>Systems</summary>
+        <ul>
+          <li><a href="../lgc/">LGC</a></li>
+          <li><a href="../lvm/">LVM</a></li>
+          <li><a href="../lompi/">lompi</a></li>
+          <li><a href="../libl/">LibL</a></li>
+          <li><a href="../lspe/">LSPE</a></li>
+        </ul>
+      </details>
+      <a href="https://github.com/Loment-Lang/loment">GitHub</a>
+    </nav>
+    <details class="lang" name="bar">
+      <summary>EN</summary>
+      <ul>
+        <li><a href="./" hreflang="en" aria-current="true">English</a></li>
+        <li><a href="../zh/roadmap/" hreflang="zh-Hans">简体中文</a></li>
+        <li><a href="../ja/roadmap/" hreflang="ja">日本語</a></li>
+        <li><a href="../ru/roadmap/" hreflang="ru">Русский</a></li>
+        <li><a href="../es/roadmap/" hreflang="es">Español</a></li>
+      </ul>
+    </details>
+  </div>
+</header>
+
+<main id="main">
+
+<section class="head">
+  <div class="wrap">
+    <p class="eyebrow">Roadmap</p>
+    <h1>What comes next</h1>
+    <p class="lede">
+      The versions the project is aiming at, from 0.1.5.2 onward, and what each of them is
+      <em>for</em>. This is a <strong>plan</strong> &mdash; the shape of the work the project has
+      set itself, not a schedule.
+    </p>
+    <p class="limit">
+      <strong>No dates, and nothing here is downloadable.</strong> Every line below is a direction
+      the project has chosen; none of them is a commitment to a time, and none of them is a
+      feature you can use today. What you can install is the
+      <a href="https://github.com/Loment-Lang/loment/releases/latest">latest release</a>, and what it
+      contains is in the <a href="https://github.com/Loment-Lang/loment/releases">release notes</a>; the dates are on the <a href="../releases/">timeline</a>.
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>The nearest milestone: 0.1.5.2</h2>
+    <p class="body">
+      0.1.5.1 closed its seams. What is left is a different kind of work: the compiler's graph
+      type, <code>digraph&lt;K&gt;</code>, becomes a compile-time value with its own capability
+      lattice and layout specialisation (<code>#1196</code>&ndash;<code>#1203</code>), beside a
+      defect line that only a gate can see &mdash; a swept allocation that is still live, a
+      capability audit array shared by two modules, an identity that is a 32-bit hash, a header
+      length that wraps. It is not a feature release; it is the line where the things already
+      promised stop being able to lie.
+    </p>
+    <p class="body">
+      The discipline does not change. Every claim gets a criterion that could prove it wrong, and
+      the two implementations stay byte-identical on what they emit.
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>0.1.5.1 &mdash; shipped: the seams are taken apart</h2>
+    <p class="body">
+      <strong>2026-11-07.</strong> The milestone is closed: all 92 issues. The audit subsystem is
+      its own package under <code>loment/lspe/</code>; the memory manager's inline guard checks
+      reach the ledger; a running toolchain can admit a signed, fix-only Pre-Release and rebuild
+      itself; and a capability is no longer one interval but ten kinds over shape, polarity and a
+      time law. What 0.1.5.1 did <em>not</em> change is the standard it is held to.
+    </p>
+    <p class="body">
+      The discipline that produced 0.1.5 stays. <strong>Every claim the language makes gets
+      either a verdict or a test that could prove it wrong</strong> &mdash; nothing is described
+      without something that could falsify the description. <strong>Three phrases are treated as
+      failure states:</strong> "undecided", "to be discussed", and "depending on circumstances"
+      &mdash; a line that ends in one of those has not been decided, it has been deferred, and
+      the rule is that deferring counts as failing.
+    </p>
+    <p class="body">
+      Some of those claims <em>cannot</em> coexist, and the useful part of the exercise is being
+      forced to say which one is being given up, and why. Three of the conflicts are worth
+      naming, because they are the ones this language actually sits on:
+    </p>
+
+    <div class="rows">
+      <div class="row">
+        <h3>How thick is the abstract machine</h3>
+        <p>
+          C is thin enough to allow undefined behaviour, and that thinness is what buys its speed
+          and portability &mdash; the language assumes nothing. Rust is thick enough to decide
+          borrowing at compile time, and that thickness is what buys its proofs &mdash; the
+          language assumes a great deal. <strong>They cannot both be maximised.</strong>
+        </p>
+      </div>
+      <div class="row">
+        <h3>Where the intelligence lives</h3>
+        <p>
+          Java puts it in the runtime, and buys peak throughput and simpler operations with it.
+          Loment's reason for existing is a program with <em>no</em> runtime and predictable
+          behaviour. <strong>Putting the collector into the core is giving up the thing this
+          language is for</strong> &mdash; which is why reclamation is a tiered choice rather than
+          a policy.
+        </p>
+      </div>
+      <div class="row">
+        <h3>When a name is resolved</h3>
+        <p>
+          Python resolves at run time: no ceremony, and you write quickly. Java resolves at
+          compile time: reliable tooling and refactoring. The same import cannot both be checked
+          at compile time and not be.
+        </p>
+      </div>
+    </div>
+
+    <p class="caption">
+      None of those three is resolved by finding a clever middle. Each is resolved by choosing a
+      side and writing down what the other side cost.
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>What comes after</h2>
+
+    <div class="rows">
+      <div class="row">
+        <h3>0.1.5 &mdash; shipped: the matrix and the last gate</h3>
+        <p>
+          The settings became a matrix whose every legal cell is compiled by both implementations
+          and compared byte for byte; the gate started naming the criteria it exempts; the safe
+          memory manager, the audit ledger and the interpreter all shipped. What is left of the
+          reclamation ladder is not a mechanism but a settled guarantee, and
+          <a href="../lgc/">its page</a> keeps its own status line.
+        </p>
+      </div>
+      <div class="row">
+        <h3>0.1.5.x &mdash; the runtime is finished</h3>
+        <p>
+          The <code>runtime</code> setting already exists, with a default, and it is
+          <strong>enforced rather than advisory</strong>: asking for the reclamation tier that
+          needs a collector while declaring there is no runtime is a compile error, because the
+          two contradict each other by definition. What the runtime holds today is exactly the
+          part that tier needs. This line adds the rest of it.
+        </p>
+      </div>
+      <div class="row">
+        <h3>0.1.6 &mdash; the interpreter becomes a target</h3>
+        <p>
+          The interpreter ships as a program you run; what it is not yet is a compiler mode.
+          <code>choose vm</code> and <code>no_vm</code> still emit the same bytes, so the setting
+          is a declaration rather than a choice about the artifact. 0.1.6 makes it real, and
+          <a href="../lvm/">that page</a> keeps its own status line.
+        </p>
+      </div>
+      <div class="row">
+        <h3>0.1.7 &mdash; the object system is filled out</h3>
+        <p>
+          Today the language has structs, enums whose variants carry a single payload, traits
+          dispatched statically, and generics resolved at compile time. This line fills in what is
+          missing rather than adding something nobody asked for.
+        </p>
+      </div>
+      <div class="row">
+        <h3>0.1.8 &mdash; the memory management system is filled out</h3>
+        <p>
+          Which rests on the tiers and the ladder above: reclamation becomes a system rather than
+          a set of mechanisms.
+        </p>
+      </div>
+    </div>
+
+    <p class="caption">
+      Past 0.1.8 the heads are still in planning, and this page will not invent them. One thing
+      outside this list has been announced separately: the package manager's own next version,
+      which is announced on <a href="https://github.com/FujoJTOP/lompi">its own repository</a>.
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>How you can tell whether any of this happened</h2>
+    <p class="body">
+      A roadmap is only worth reading if there is a way to check it later, so the honest thing is
+      to say where the checking happens. <strong>The project does not keep its plans in a public
+      issue tracker.</strong> It records them as numbered design documents in the repository, and
+      those documents are written in Chinese &mdash; which is worth knowing before you go looking,
+      because the roadmap is not where you would expect it to be.
+    </p>
+    <p class="body">
+      Each version's arrival is then a matter of record rather than of announcement: the release notes say what shipped, and the timeline says when, and each of the pages below carries its own status line
+      rather than describing itself as finished.
+    </p>
+    <div style="margin-top: var(--s4)">
+      <a class="doclink" href="../releases/">
+        <span class="who">Timeline</span>
+        <span class="what">When each version shipped, and the one thing it was for.</span>
+      </a>
+      <a class="doclink" href="https://loment.fandom.com/wiki/Versions_and_roadmap">
+        <span class="who">Roadmap on the wiki</span>
+        <span class="what">The same plan in more detail, kept beside the rest of the language.</span>
+      </a>
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/tree/main/docs">
+        <span class="who">docs/</span>
+        <span class="what">The numbered design records, where each of these lines is argued rather than summarised. In Chinese.</span>
+      </a>
+      <a class="doclink" href="../">
+        <span class="who">Back to the front page</span>
+        <span class="what">What Loment is, and the two kinds of program it builds.</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Loment is released under the MIT OR Apache-2.0 license. Program by Fujo.</span>
+    <nav>
+      <a href="https://github.com/Loment-Lang/loment">Source</a>
+      <a href="https://github.com/Loment-Lang/loment/releases/latest">Releases</a>
+      <a href="https://github.com/FujoJTOP/lompi">lompi</a>
+      <a href="https://loment.fandom.com/">Wiki</a>
+      <a href="https://github.com/Loment-Lang/loment/issues">Issues</a>
+      <a class="mast" href="https://mastodon.social/@Loment" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z"/></svg>Mastodon</a>
+      <a class="mast" href="https://bsky.app/profile/loment.bsky.social" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364-3.136.521-5.919 1.517-2.244 5.449 3.944 4.011 5.42-1.005 6.237-3.242.653-1.79 1.03-2.81 1.03-2.81s.377 1.02 1.03 2.81c.817 2.237 2.293 7.253 6.237 3.242 3.675-3.932.892-4.928-2.244-5.449 2.67.296 5.568-.628 6.383-3.364.246-.829.624-5.789.624-6.479 0-.688-.139-1.86-.902-2.203-.659-.299-1.664-.621-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8z"/></svg>Bluesky</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

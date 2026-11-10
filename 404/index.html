@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>404 — Off the path — Loment</title>
+<meta name="description" content="This page is not in the forest. A pencil sketch of a rabbit at the wrong fork.">
+<link rel="icon" href="../mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=JetBrains+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../style.css">
+<style>
+  .lost { padding-block: var(--s6) var(--s7); }
+  .lost-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.62fr) minmax(0, 1.38fr);
+    gap: var(--s5);
+    align-items: center;
+  }
+  .lost h1 {
+    font-size: clamp(2.6rem, 5.4vw, 4.2rem);
+    letter-spacing: -0.035em;
+    margin-top: var(--s2);
+  }
+  .lost .lede {
+    max-width: 44ch;
+    margin-top: var(--s3);
+    font-size: var(--t-body);
+    line-height: 1.6;
+    color: var(--ink-2);
+  }
+  .lost-figure {
+    margin: 0;
+    padding: var(--s3);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    background: var(--paper);
+  }
+  .lost-figure img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .lost-figure figcaption {
+    margin-top: var(--s2);
+    font: 400 var(--t-xs)/1.5 var(--mono);
+    color: var(--faint);
+    text-align: right;
+  }
+  .lost-langs {
+    margin-top: var(--s6);
+    padding-top: var(--s3);
+    border-top: 1px solid var(--line);
+    font: 500 var(--t-xs)/1.8 var(--mono);
+    color: var(--faint);
+  }
+  .lost-langs a { color: var(--ink-2); }
+  @media (max-width: 900px) {
+    .lost-grid { grid-template-columns: 1fr; gap: var(--s5); }
+    .lost h1 { font-size: clamp(2.4rem, 9vw, 3.6rem); }
+  }
+</style>
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="../">
+      <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true">
+        <rect width="64" height="64" rx="14" fill="#2f4bff"/>
+        <path d="M18 14h12v24h16v12H18z" fill="#fff"/>
+      </svg>
+      Loment
+    </a>
+    <nav>
+      <a href="../start/">Learn</a>
+      <a href="../blog/">Blog</a>
+      <a href="../playground/">Playground</a>
+      <a href="https://github.com/Loment-Lang/loment">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+<section class="lost">
+  <div class="wrap">
+    <div class="lost-grid">
+      <div>
+        <p class="eyebrow">404</p>
+        <h1>You're off the path.</h1>
+        <p class="lede">
+          This page is not in this part of the forest. The rabbit checked the map twice,
+          looked down both forks, and is still not sure which way it came from.
+        </p>
+        <p class="actions">
+          <a class="btn btn-solid" href="../">Back to the homepage</a>
+          <a class="btn" href="../blog/">Read the blog</a>
+        </p>
+      </div>
+      <figure class="lost-figure">
+        <img src="../404-rabbit-forest.svg" width="900" height="560"
+             alt="A pencil sketch of a rabbit standing at a fork in a forest, holding a map and looking for the way.">
+        <figcaption>The rabbit took the wrong fork.</figcaption>
+      </figure>
+    </div>
+    <p class="lost-langs">
+      Also lost in:
+      <a href="../zh/">简体中文</a> &middot;
+      <a href="../ja/">日本語</a> &middot;
+      <a href="../ru/">Русский</a> &middot;
+      <a href="../es/">Español</a>
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Loment is released under the MIT OR Apache-2.0 license. Program by Fujo.</span>
+  </div>
+</footer>
+
+</body>
+</html>

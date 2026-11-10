@@ -1,0 +1,275 @@
+<!doctype html>
+<!-- translated-from: roadmap/index.html -->
+<!-- source-sha256: 73bc5439eddf9bf4bf523e0223b78344a661641667f737e4acdd585dce484432 -->
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ロードマップ — Loment</title>
+<meta name="description" content="Loment が次に作ろうとしているもの、0.1.5.2 から 0.1.8 まで —— 計画であって、約束ではない。日付はなく、そのいずれも今日ダウンロードできるものではない。">
+<link rel="icon" href="../../mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=JetBrains+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../../style.css?v=20261110a">
+<link rel="alternate" hreflang="en" href="https://loment-lang.github.io/loment-site/roadmap/">
+<link rel="alternate" hreflang="zh-Hans" href="https://loment-lang.github.io/loment-site/zh/roadmap/">
+<link rel="alternate" hreflang="ja" href="https://loment-lang.github.io/loment-site/ja/roadmap/">
+<link rel="alternate" hreflang="ru" href="https://loment-lang.github.io/loment-site/ru/roadmap/">
+<link rel="alternate" hreflang="es" href="https://loment-lang.github.io/loment-site/es/roadmap/">
+<link rel="alternate" hreflang="x-default" href="https://loment-lang.github.io/loment-site/roadmap/">
+</head>
+<body>
+
+<a class="skip" href="#main">本文へスキップ</a>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="../">
+      <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true">
+        <rect width="64" height="64" rx="14" fill="#2f4bff"/>
+        <path d="M18 14h12v24h16v12H18z" fill="#fff"/>
+      </svg>
+      Loment
+    </a>
+                        <nav>
+      <a href="../start/">学ぶ</a>
+      <a href="../blog/">ブログ</a>
+      <a href="../examples/">サンプル</a>
+      <a href="../playground/">オンライン実行</a>
+      <a href="../standard/">標準</a>
+      <a href="../releases/">タイムライン</a>
+      <details class="navmenu" name="bar">
+        <summary>システム</summary>
+        <ul>
+          <li><a href="../lgc/">LGC</a></li>
+          <li><a href="../lvm/">LVM</a></li>
+          <li><a href="../lompi/">lompi</a></li>
+          <li><a href="../libl/">LibL</a></li>
+          <li><a href="../lspe/">LSPE</a></li>
+        </ul>
+      </details>
+      <a href="https://github.com/Loment-Lang/loment">GitHub</a>
+    </nav>
+    <details class="lang" name="bar">
+      <summary>日本語</summary>
+      <ul>
+        <li><a href="../../roadmap/" hreflang="en">English</a></li>
+        <li><a href="../../zh/roadmap/" hreflang="zh-Hans">简体中文</a></li>
+        <li><a href="./" hreflang="ja" aria-current="true">日本語</a></li>
+        <li><a href="../../ru/roadmap/" hreflang="ru">Русский</a></li>
+        <li><a href="../../es/roadmap/" hreflang="es">Español</a></li>
+      </ul>
+    </details>
+  </div>
+</header>
+
+<main id="main">
+
+<section class="head">
+  <div class="wrap">
+    <p class="eyebrow">ロードマップ</p>
+    <h1>次に来るもの</h1>
+    <p class="lede">
+      プロジェクトが目指すバージョン —— 0.1.5.2 以降のもの —— そしてそれぞれが何の
+      <em>ため</em>なのか。これは<strong>計画</strong>である —— プロジェクトが自らに課した
+      仕事の形であり、予定表ではない。
+    </p>
+    <p class="limit">
+      <strong>日付はなく、ここにあるものはどれもダウンロードできない。</strong>以下のどの行も、
+      プロジェクトが選んだ一つの方向である; そのいずれも時期への約束ではなく、今日使える機能でも
+      ない。インストールできるのは
+      <a href="https://github.com/Loment-Lang/loment/releases/latest">最新リリース</a>であり、それが
+      何を含むかは <a href="https://github.com/Loment-Lang/loment/releases">リリースノート</a>にあり、日付は <a href="../releases/">タイムライン</a>にある。
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>最も近いマイルストーン: 0.1.5.2</h2>
+    <p class="body">
+      0.1.5.1 が継ぎ目を分け終えた。残っているのは別の種類の仕事である。コンパイラのグラフ型
+      <code>digraph&lt;K&gt;</code> が、独自の能力束とレイアウト特化を備えたコンパイル時の値に
+      なる（<code>#1196</code>&ndash;<code>#1203</code>）。それと並んで、ゲートにしか見えない
+      欠陥の列 —— 回収されたのに生きている割り当て、二つのモジュールが共有する能力監査配列、
+      32 ビットのハッシュを身元にしていること、回り込むヘッダ長。機能のリリースではなく、
+      すでに約束したものが嘘をつけなくなるための線である。
+    </p>
+    <p class="body">
+      規律は変わらない。あらゆる主張には、それを反証しうる判定が付き、二つの実装は出したものの
+      上でバイト単位に一致し続ける。
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>0.1.5.1 &mdash; 出荷済み: 継ぎ目は分けられた</h2>
+    <p class="body">
+      <strong>2026-11-07。</strong>マイルストーンは閉じた: 92 件すべて。監査サブシステムは
+      <code>loment/lspe/</code> の下の独立したパッケージになり、メモリマネージャのインライン
+      ガード検査は台帳に届き、動いているツールチェーンは署名された修正のみの Pre-Release を
+      受け取って自分を置き換えられる。能力はもはやひとつの区間ではなく、形・極性・時の規則に
+      わたる十種の域である。0.1.5.1 が<em>変えなかった</em>のは、それが課されている標準である。
+    </p>
+    <p class="body">
+      0.1.5 を生んだ規律はそのまま残る。<strong>言語がなすあらゆる主張が、判定か、それが
+      間違いだと証明しうる判据のどちらかを受け取る</strong> —— だから何ものも、その記述を反証
+      しうるものなしに記述されはしない。<strong>三つの言い回しは失敗状態として扱われる:</strong>
+      「未定」「要検討」「状況次第」—— そのいずれかで終わる行は、決着されておらず、先延ばしに
+      されている。そして規則は、先延ばしは失敗と数える、というものである。
+    </p>
+    <p class="body">
+      そうした主張のいくつかは共存<em>できない</em>。そしてこの営みの役に立つ部分は、どれが
+      放棄され、なぜなのかを言わされることにある。その衝突のうち三つは名指しに値する ——
+      この言語が実際にその上に座っているものだからである:
+    </p>
+
+    <div class="rows">
+      <div class="row">
+        <h3>抽象機械はどれだけ厚いか</h3>
+        <p>
+          C は未定義の振る舞いを許すほど薄く、その薄さが速度と移植性を買っている —— 言語は何も
+          前提にしない。Rust は借用をコンパイル時に決定できるほど厚く、その厚さがその証明を
+          買っている —— 言語は多くを前提にする。<strong>両方を最大化することはできない。</strong>
+        </p>
+      </div>
+      <div class="row">
+        <h3>知性はどこに住むか</h3>
+        <p>
+          Java はそれを runtime に置き、それによってピーク時のスループットとより単純な運用を
+          買っている。Loment が存在する理由は、runtime を<em>持たない</em>プログラムと予測可能な
+          振る舞いである。<strong>コレクタを核に置くことは、この言語が何のためのものかを放棄する
+          ことである</strong> —— だから回収は方針ではなく、段階的な選択なのである。
+        </p>
+      </div>
+      <div class="row">
+        <h3>名前はいつ解決されるか</h3>
+        <p>
+          Python は実行時に解決する: 儀式がなく、素早く書ける。Java はコンパイル時に解決する:
+          信頼できるツールとリファクタリング。同じ import が、コンパイル時に検査されながら検査
+          されない、ということはできない。
+        </p>
+      </div>
+    </div>
+
+    <p class="caption">
+      その三つのどれも、賢い中間を見つけることで解決されはしない。それぞれは、一方の側を選び、
+      もう一方の側が何を要したかを書き留めることで解決される。
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>その後に来るもの</h2>
+
+    <div class="rows">
+      <div class="row">
+        <h3>0.1.5 —— 出荷済み: 行列と最後のゲート</h3>
+        <p>
+          設定は行列になり、その合法なすべてのセルが両方の実装でコンパイルされ、バイト単位で
+          比べられる。ゲートは免除する判据を名指しするようになり、安全メモリマネージャ、監査台帳、
+          インタプリタはすべて出荷された。回収のはしごに残っているのは仕組みではなく、落ち着いた
+          保証であり、<a href="../lgc/">そのページ</a>は自前の状態行を保っている。
+        </p>
+      </div>
+      <div class="row">
+        <h3>0.1.5.x —— runtime が完成する</h3>
+        <p>
+          <code>runtime</code> の設定はすでに、既定付きで存在しており、それは<strong>勧告ではなく
+          強制される</strong>: コレクタを要する回収の段を求めつつ、runtime がないと宣言するのは
+          コンパイルエラーである —— その二つは定義上、互いに矛盾するからだ。今日 runtime が
+          保持しているのは、まさにその段が必要とする部分である。この行はその残りを加える。
+        </p>
+      </div>
+      <div class="row">
+        <h3>0.1.6 —— インタプリタがターゲットになる</h3>
+        <p>
+          インタプリタは、あなたが走らせるプログラムとして出荷される。まだコンパイラのモードでは
+          ない。<code>choose vm</code> と <code>no_vm</code> は今も同じバイトを出力するので、この
+          設定は成果物についての選択ではなく、宣言である。0.1.6 がそれを本物にし、
+          <a href="../lvm/">そのページ</a>は自前の状態行を持つ。
+        </p>
+      </div>
+      <div class="row">
+        <h3>0.1.7 —— オブジェクトシステムが埋められる</h3>
+        <p>
+          今日、言語には struct、単一のペイロードを運ぶ変種をもつ enum、静的にディスパッチされる
+          trait、そしてコンパイル時に解決されるジェネリクスがある。この行が扱うのは、誰も求めて
+          いない機能を加えることではなく、欠けているものである。
+        </p>
+      </div>
+      <div class="row">
+        <h3>0.1.8 —— メモリ管理システムが埋められる</h3>
+        <p>
+          これは上の段とはしごに載っている: 回収が、仕組みの寄せ集めではなく、ひとつのシステムに
+          なる。
+        </p>
+      </div>
+    </div>
+
+    <p class="caption">
+      0.1.8 より先の項目はまだ計画中であり、このページはそれらを作り出しはしない。この一覧の外に
+      ある一つのことは別に告知されている: パッケージマネージャ自身の次のバージョンで、それは
+      <a href="https://github.com/FujoJTOP/lompi">それ自身のリポジトリ</a>で告知される。
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>これがどれか起きたかどうかを、どうやって見分けるか</h2>
+    <p class="body">
+      ロードマップは、後から確かめる方法があってはじめて読む価値がある。だから正直なやり方は、
+      その確かめがどこで起きるかを述べることである。<strong>プロジェクトは計画を公開のイシュー
+      トラッカーには置かない。</strong>それをリポジトリ内の番号付きの設計記録として書き留めて
+      おり、そしてそれらの記録は中国語で書かれている —— 探しに行く前に知っておく価値がある。
+      このロードマップは、あなたが期待するであろう場所にはないからである。
+    </p>
+    <p class="body">
+      そうすれば、各バージョンの到来は告知ではなく記録の問題になる: リリースノートが実際に何が出荷されたかを述べ、タイムラインが
+      いつかを述べ、下の各ページは、自分を完成したと述べるのではなく、自分の状態行を
+      携えている。
+    </p>
+    <div style="margin-top: var(--s4)">
+      <a class="doclink" href="../releases/">
+        <span class="who">タイムライン</span>
+        <span class="what">各バージョンがいつ出荷され、何のためだったか。</span>
+      </a>
+      <a class="doclink" href="https://loment.fandom.com/wiki/Versions_and_roadmap">
+        <span class="who">wiki のロードマップ</span>
+        <span class="what">同じ計画を、より詳しく、言語の残りの話題と並べて。</span>
+      </a>
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/tree/main/docs">
+        <span class="who">docs/</span>
+        <span class="what">番号付きの設計記録。これらの各行が、要約されるのではなくそこで論じられている。中国語で。</span>
+      </a>
+      <a class="doclink" href="../">
+        <span class="who">フロントページへ戻る</span>
+        <span class="what">Loment とは何か、そしてそれがビルドする二種類の成果物。</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Loment は MIT OR Apache-2.0 の下で公開されている。制作: Fujo。</span>
+    <nav>
+      <a href="https://github.com/Loment-Lang/loment">ソース</a>
+      <a href="https://github.com/Loment-Lang/loment/releases/latest">リリース</a>
+      <a href="https://github.com/FujoJTOP/lompi">lompi</a>
+      <a href="https://loment.fandom.com/">Wiki</a>
+      <a href="https://github.com/Loment-Lang/loment/issues">イシュー</a>
+      <a class="mast" href="https://mastodon.social/@Loment" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z"/></svg>Mastodon</a>
+      <a class="mast" href="https://bsky.app/profile/loment.bsky.social" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364-3.136.521-5.919 1.517-2.244 5.449 3.944 4.011 5.42-1.005 6.237-3.242.653-1.79 1.03-2.81 1.03-2.81s.377 1.02 1.03 2.81c.817 2.237 2.293 7.253 6.237 3.242 3.675-3.932.892-4.928-2.244-5.449 2.67.296 5.568-.628 6.383-3.364.246-.829.624-5.789.624-6.479 0-.688-.139-1.86-.902-2.203-.659-.299-1.664-.621-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8z"/></svg>Bluesky</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

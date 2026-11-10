@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Redirecting — Loment</title>
+<script>
+(function () {
+  var path = location.pathname;
+  var seg = path.split("/")[1] || "";
+  var root = location.hostname.slice(-10) === "github.io"
+    ? "/" + (seg ? seg + "/" : "")
+    : "/";
+
+  // Old flat URLs still work: send them to the directory-style page.
+  var pages = {
+    "index": "",
+    "start": "start/",
+    "examples": "examples/",
+    "standard": "standard/",
+    "lgc": "lgc/",
+    "lgc-paper": "lgc-paper/",
+    "lvm": "lvm/",
+    "lompi": "lompi/",
+    "libl": "libl/",
+    "lspe": "lspe/",
+    "releases": "releases/",
+    "roadmap": "roadmap/",
+    "blog": "blog/",
+    "playground": "playground/",
+    "blog-0152-beta2-playground": "blog/0152-beta2-playground/",
+    "blog-20261108-domains-lspe-lifetimes": "blog/20261108-domains-lspe-lifetimes/",
+    "blog-20261110-tur3-test-build-two": "blog/20261110-tur3-test-build-two/"
+  };
+
+  var m = path.match(/^(.*\/)([^\/]+)\.html$/);
+  if (m) {
+    var base = m[1], name = m[2];
+    if (Object.prototype.hasOwnProperty.call(pages, name)) {
+      location.replace(base + pages[name] + location.search + location.hash);
+      return;
+    }
+  }
+
+  // Everything else is not a page: one hop to the drawn 404.
+  location.replace(root + "404/" + location.search + location.hash);
+}());
+</script>
+</head>
+<body>
+<noscript><p>This page has moved. <a href="/">Go to Loment</a>.</p></noscript>
+</body>
+</html>

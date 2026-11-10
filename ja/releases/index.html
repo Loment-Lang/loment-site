@@ -1,0 +1,173 @@
+<!doctype html>
+<!-- translated-from: releases/index.html -->
+<!-- source-sha256: a7e67afe272beeb16c7634d563c4c1901a48bd2f2c3bf6172acd51fe4494a377 -->
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>タイムライン — Loment</title>
+<meta name="description" content="Loment のリリースを日付順に並べ、それぞれが何のためだったかを一文で示します。バージョンごとの変更履歴は GitHub にあり、このページは線の形だけを保ちます。">
+<link rel="icon" href="../../mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=JetBrains+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../../style.css?v=20261110a">
+<link rel="alternate" hreflang="en" href="https://loment-lang.github.io/loment-site/releases/">
+<link rel="alternate" hreflang="zh-Hans" href="https://loment-lang.github.io/loment-site/zh/releases/">
+<link rel="alternate" hreflang="ja" href="https://loment-lang.github.io/loment-site/ja/releases/">
+<link rel="alternate" hreflang="ru" href="https://loment-lang.github.io/loment-site/ru/releases/">
+<link rel="alternate" hreflang="es" href="https://loment-lang.github.io/loment-site/es/releases/">
+<link rel="alternate" hreflang="x-default" href="https://loment-lang.github.io/loment-site/releases/">
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="../">
+      <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true">
+        <rect width="64" height="64" rx="14" fill="#2f4bff"/>
+        <path d="M18 14h12v24h16v12H18z" fill="#fff"/>
+      </svg>
+      Loment
+    </a>
+                <nav>
+      <a href="../start/">学ぶ</a>
+      <a href="../blog/">ブログ</a>
+      <a href="../examples/">サンプル</a>
+      <a href="../playground/">オンライン実行</a>
+      <a href="../standard/">標準</a>
+      <a href="./" aria-current="page">タイムライン</a>
+      <details class="navmenu" name="bar">
+        <summary>システム</summary>
+        <ul>
+          <li><a href="../lgc/">LGC</a></li>
+          <li><a href="../lvm/">LVM</a></li>
+          <li><a href="../lompi/">lompi</a></li>
+          <li><a href="../libl/">LibL</a></li>
+          <li><a href="../lspe/">LSPE</a></li>
+        </ul>
+      </details>
+      <a href="https://github.com/Loment-Lang/loment">GitHub</a>
+    </nav>
+    <details class="lang" name="bar">
+      <summary>日本語</summary>
+      <ul>
+        <li><a href="../../releases/" hreflang="en">English</a></li>
+        <li><a href="../../zh/releases/" hreflang="zh-Hans">简体中文</a></li>
+        <li><a href="./" hreflang="ja" aria-current="true">日本語</a></li>
+        <li><a href="../../ru/releases/" hreflang="ru">Русский</a></li>
+        <li><a href="../../es/releases/" hreflang="es">Español</a></li>
+      </ul>
+    </details>
+  </div>
+</header>
+
+<main id="main">
+<section class="head">
+  <div class="wrap">
+    <p class="eyebrow">タイムライン</p>
+    <h1>タイムラインであり、変更履歴ではない</h1>
+    <p class="lede">
+      すべての Loment リリースを順に、何のためだったかを一文で。追加と修正の詳細は GitHub に
+      あり、成果物と署名もそこにあります。このページは線の形だけを残します。
+    </p>
+    <p class="actions">
+      <a class="btn btn-solid" href="https://github.com/Loment-Lang/loment/releases/latest">現在のリリースをダウンロード</a>
+      <a class="btn btn-quiet" href="../roadmap/">ロードマップ</a>
+    </p>
+    <p class="limit">
+      <strong>このサイトでバージョン番号を書く唯一のページです。</strong>他の場所のダウンロード
+      リンクは <code>releases/latest</code> です。ページに写したバージョン番号は期限のある事実
+      だからです。ここでは日付が主題です。
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>この線</h2>
+    <p class="body">
+      最初の 6 バージョンはプロジェクトの以前のリポジトリから出ました。タグも日付もこの
+      リポジトリにはないため、日付なしで並びます。0.1.4 以降はすべてこのリポジトリの
+      リリースです。
+    </p>
+
+        <div class="tl-key">
+      <span><i class="tl-dot"></i>大きな前進</span>
+      <span><i class="tl-dot tl-dot-big"></i>大規模な内容更新</span>
+      <span><i class="tl-dot tl-dot-normal"></i>その他のリリース</span>
+    </div>
+
+    <div class="timeline">
+      <div class="tl tl-major"><span class="tl-date">2026-09 以前</span><div class="tl-body"><h3>0.1.1</h3><p>最初の Loment：Rust 構文の厳密なサブセット。サブセットという主張は後に取り下げられ、重なる構文は残りました。</p></div></div>
+      <div class="tl tl-major"><span class="tl-date">2026-09 以前</span><div class="tl-body"><h3>0.1.2 Alpha</h3><p>言語が自分自身で書かれ始める。表現できないものを見つける唯一の方法です。</p></div></div>
+      <div class="tl"><span class="tl-date">2026-09 以前</span><div class="tl-body"><h3>0.1.2 pre1</h3><p>最初のセルフホスティングが見つけた問題の修理。</p></div></div>
+      <div class="tl tl-major"><span class="tl-date">2026-09 以前</span><div class="tl-body"><h3>0.1.2 pre2</h3><p>今も残るブートストラップ基盤：コミットされたシードから再構築され、自分を再現するか検査されるコンパイラ。</p></div></div>
+      <div class="tl tl-major"><span class="tl-date">2026-09 以前</span><div class="tl-body"><h3>0.1.3 Alpha</h3><p>別の言語のソースを Loment として読める：借りるのは綴りで、意味は Loment のまま。</p></div></div>
+      <div class="tl tl-major"><span class="tl-date">2026-09 以前</span><div class="tl-body"><h3>0.1.3.4 Alpha</h3><p>字句解析器、構文解析器、検査器、コード生成器をすべて Loment で書き、ブートストラップが三段的な不動点に達する。</p></div></div>
+      <div class="tl"><time class="tl-date" datetime="2026-09-22">2026-09-22</time><div class="tl-body"><h3>0.1.4 Pre</h3><p>最初のインストール可能なビルド。「リポジトリにはバージョンがある」を目に見えるものにするのが目的でした。</p></div></div>
+      <div class="tl"><time class="tl-date" datetime="2026-09-23">2026-09-23</time><div class="tl-body"><h3>0.1.4</h3><p>大きくするより使えることに重点。構文は変えず、最後のインタープリタ経路をビルドから外しました。Windows では zip を使ってください。あのインストーラーは壊れていると分かっています。</p></div></div>
+      <div class="tl tl-big"><time class="tl-date" datetime="2026-10-13">2026-10-13</time><div class="tl-body"><h3>0.1.4.5</h3><p>回収ラダー、保証としての <code>no_runtime</code>、両ターゲットのネットワーク、閉じたゲートの後ろの <code>vm</code> 設定。</p></div></div>
+      <div class="tl tl-big"><time class="tl-date" datetime="2026-10-17">2026-10-17</time><div class="tl-body"><h3>0.1.4.6</h3><p>インタープリタ層、libc と LibL、<code>vm</code> 設定がリリースから到達可能になる。</p></div></div>
+      <div class="tl tl-big"><time class="tl-date" datetime="2026-10-18">2026-10-18</time><div class="tl-body"><h3>0.1.4.7</h3><p>同梱のすべてのライブラリが 2 つの実装でバイト単位に同じ IR を出す：155 モジュール、飛ばしたものなし。</p></div></div>
+      <div class="tl tl-major"><time class="tl-date" datetime="2026-10-20">2026-10-20</time><div class="tl-body"><h3>0.1.5</h3><p><code>choose</code> が 7 次元の行列になり、すべての合法なセルを両実装がコンパイルする。LMS と LSPE が同梱される。</p></div></div>
+      <div class="tl tl-major"><time class="tl-date" datetime="2026-11-07">2026-11-07</time><div class="tl-body"><h3>0.1.5.1</h3><p>能力ドメインが形・極性・時間則の代数になる。ホットアップデートと JVM なしの Java ライブラリが入り、<code>tur2026.3</code> が既定の版になる。</p></div></div>
+    </div>
+    <figure class="tl-doodle" aria-hidden="true">
+      <img src="../../timeline-rabbit.svg" width="280" height="150" alt="">
+    </figure>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>詳細はどこに</h2>
+    <p class="body">
+      このページは線であり、アーカイブではありません。完全な記録、成果物、署名は GitHub に
+      あり、変更の背景はブログか番号付きの設計記録にあります。
+    </p>
+    <div style="margin-top: var(--s4)">
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/releases">
+        <span class="who">GitHub のリリース</span>
+        <span class="what">完全なノート、ダウンロード、チェックサム、署名。</span>
+      </a>
+      <a class="doclink" href="../blog/">
+        <span class="who">ブログ</span>
+        <span class="what">説明する価値のある瞬間の長い版。</span>
+      </a>
+      <a class="doclink" href="../roadmap/">
+        <span class="who">ロードマップ</span>
+        <span class="what">次に何をするか。計画として書き、日付は付けません。</span>
+      </a>
+      <a class="doclink" href="https://loment.fandom.com/wiki/Versions_and_roadmap">
+        <span class="who">Wiki</span>
+        <span class="what">同じ歴史を百科事典の項目として。</span>
+      </a>
+      <a class="doclink" href="../playground/">
+        <span class="who">オンライン実行</span>
+        <span class="what">インストールなしで現在のコンパイラを試す。</span>
+      </a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Loment は MIT OR Apache-2.0 の下で公開されている。制作: Fujo。</span>
+    <nav>
+      <a href="https://github.com/Loment-Lang/loment">ソース</a>
+      <a href="https://github.com/Loment-Lang/loment/releases/latest">リリース</a>
+      <a href="https://github.com/FujoJTOP/lompi">lompi</a>
+      <a href="https://loment.fandom.com/">Wiki</a>
+      <a href="https://github.com/Loment-Lang/loment/issues">イシュー</a>
+      <a class="mast" href="https://mastodon.social/@Loment" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z"/></svg>Mastodon</a>
+      <a class="mast" href="https://bsky.app/profile/loment.bsky.social" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364-3.136.521-5.919 1.517-2.244 5.449 3.944 4.011 5.42-1.005 6.237-3.242.653-1.79 1.03-2.81 1.03-2.81s.377 1.02 1.03 2.81c.817 2.237 2.293 7.253 6.237 3.242 3.675-3.932.892-4.928-2.244-5.449 2.67.296 5.568-.628 6.383-3.364.246-.829.624-5.789.624-6.479 0-.688-.139-1.86-.902-2.203-.659-.299-1.664-.621-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8z"/></svg>Bluesky</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

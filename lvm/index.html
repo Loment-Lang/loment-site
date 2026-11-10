@@ -1,0 +1,437 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LVM — Loment VM — Loment</title>
+<meta name="description" content="The Loment VM is not a faster path and not a way to write programs more easily. It is a second way to run one: an artifact an executor can adopt on demand, judging it by what it already carries. The interpreter ships with the toolchain as loment-lvm; the setting still does not change what the compiler emits.">
+<link rel="icon" href="../mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=JetBrains+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../style.css?v=20261110a">
+<link rel="alternate" hreflang="en" href="https://loment-lang.github.io/loment-site/lvm/">
+<link rel="alternate" hreflang="zh-Hans" href="https://loment-lang.github.io/loment-site/zh/lvm/">
+<link rel="alternate" hreflang="ja" href="https://loment-lang.github.io/loment-site/ja/lvm/">
+<link rel="alternate" hreflang="ru" href="https://loment-lang.github.io/loment-site/ru/lvm/">
+<link rel="alternate" hreflang="es" href="https://loment-lang.github.io/loment-site/es/lvm/">
+<link rel="alternate" hreflang="x-default" href="https://loment-lang.github.io/loment-site/lvm/">
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="../">
+      <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true">
+        <rect width="64" height="64" rx="14" fill="#2f4bff"/>
+        <path d="M18 14h12v24h16v12H18z" fill="#fff"/>
+      </svg>
+      Loment
+    </a>
+                        <nav>
+      <a href="../start/">Learn</a>
+      <a href="../blog/">Blog</a>
+      <a href="../examples/">Examples</a>
+      <a href="../playground/">Playground</a>
+      <a href="../standard/">Standard</a>
+      <a href="../releases/">Timeline</a>
+      <details class="navmenu" name="bar">
+        <summary>Systems</summary>
+        <ul>
+          <li><a href="../lgc/">LGC</a></li>
+          <li><a href="./">LVM</a></li>
+          <li><a href="../lompi/">lompi</a></li>
+          <li><a href="../libl/">LibL</a></li>
+          <li><a href="../lspe/">LSPE</a></li>
+        </ul>
+      </details>
+      <a href="https://github.com/Loment-Lang/loment">GitHub</a>
+    </nav>
+    <details class="lang" name="bar">
+      <summary>EN</summary>
+      <ul>
+        <li><a href="./" hreflang="en" aria-current="true">English</a></li>
+        <li><a href="../zh/lvm/" hreflang="zh-Hans">简体中文</a></li>
+        <li><a href="../ja/lvm/" hreflang="ja">日本語</a></li>
+        <li><a href="../ru/lvm/" hreflang="ru">Русский</a></li>
+        <li><a href="../es/lvm/" hreflang="es">Español</a></li>
+      </ul>
+    </details>
+  </div>
+</header>
+
+<main id="main">
+
+<section class="head">
+  <div class="wrap">
+    <p class="eyebrow">System · shipped in 0.1.5</p>
+    <h1>Loment VM</h1>
+    <p class="lede">
+      A <strong>second way to run a program</strong>. The binary can be handed to an executor
+      that adopts it on demand and decides whether to adopt it by reading what the binary
+      already carries. It is not a faster path, and it is not a way to write programs more
+      easily. <strong>The interpreter ships with the toolchain as <code>loment-lvm</code> &mdash; but the
+      setting still does not change what the compiler emits.</strong>
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>What exists, and what does not</h2>
+    <p class="body">
+      The repository now carries a working <strong>interpreter tier, T0 through T3</strong>,
+      reading the same intermediate form the linker does. T0 executes that form directly; T1
+      records a feedback profile without changing a byte of output; T2 decodes instruction by
+      instruction ahead of the execution loop and runs <strong>6.1&times; T0</strong> on the
+      corpus with byte-identical output; the compact serialisation is <strong>28.5%</strong> of
+      the text form for the same unit; T3 adds guarded specialisation and a way back.
+    </p>
+    <p class="body">
+      What ships is the interpreter itself, as <code>loment-lvm</code> beside the compiler, so an
+      installed toolchain can run a program this way. What does not ship is a <em>compiler
+      mode</em>: <code>choose vm</code> and <code>no_vm</code> still produce byte-identical
+      output, so the setting says how you intend to run the program, not what the compiler
+      emits.
+    </p>
+    <p class="limit">
+      <strong>A debt half paid.</strong> The <code>runtime</code> setting once had this same
+      shape: declared before it did anything, then brought up to what it claimed. Here the
+      engine and the shipping both exist; what is still a declaration is the setting itself.
+      The page says which half is which rather than leaving a reader to find out.
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>What it is not</h2>
+    <p class="body">
+      Three readings are wrong, and each is one a reader arrives with. They come before the
+      design, because saying them wrong turns this into something that tries to do everything
+      and does none of it well.
+    </p>
+
+    <div class="rows">
+      <div class="row">
+        <h3>Not the fast path</h3>
+        <p>
+          Backwards. Loment's native path already trades speed for independence, and it is not
+          fast to begin with: against C <code>-O2</code> on the array benchmark in
+          <a href="https://github.com/Loment-Lang/loment/blob/main/docs/212-loment-offload.md">docs/212</a>
+          it runs <strong>10.7&times; behind</strong> &mdash; a recorded measurement, not a
+          standing promise. A VM is a layer on top of that. <strong>The axis of this line is not
+          performance</strong>, and the escape hatch is a different line entirely.
+        </p>
+      </div>
+      <div class="row">
+        <h3>Not write once, run anywhere</h3>
+        <p>
+          That job was given to <em>compile time</em> long ago: one IR, three outputs &mdash;
+          Linux ELF, Windows PE, or a freestanding object. A bytecode format is no closer to
+          portability than that, and the claim fails its own test: if portability were the point,
+          the criterion would be "adding a target needs no new back end", and there are two
+          targets.
+        </p>
+      </div>
+      <div class="row">
+        <h3>Not a way to write programs faster</h3>
+        <p>
+          That is a different set of things and this touches none of them: the six other surface
+          syntaxes, the formatter, the language server, the compile-time syntax definitions, the
+          guide written for coding agents. LVM arrives <em>after</em> the program is written.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>The design, in three parts</h2>
+
+    <div class="rows">
+      <div class="row">
+        <h3>The bytecode is not a new invention</h3>
+        <p>
+          It is a <strong>serialisation of the intermediate form the compiler already
+          emits</strong>. The bundled back end is a stack machine &mdash; one stack slot per
+          value, arguments on the stack, aggregates through a hidden result pointer &mdash; so a
+          complete execution model for that subset already exists and is already exercised. What
+          is missing is the step that <em>executes</em> it. LVM would be a <strong>fourth
+          reader</strong> of the same form: no new front end, no new intermediate form, no new
+          type system.
+        </p>
+      </div>
+      <div class="row">
+        <h3>A fifth setting</h3>
+        <p>
+          <code>choose</code> already had four &mdash; which layer of the library the program
+          may use, how it reclaims memory, whether the binary may carry a runtime, and whether it
+          may reach outside itself. <code>vm</code> is the fifth, and it answers <strong>which
+          execution model is this program for?</strong> Left unwritten it is <code>no_vm</code>,
+          which is what everything was before the setting existed. A release build accepts it
+          as of 0.1.4.6; what that buys today is a declaration, not a different artifact.
+        </p>
+        <p>
+          The value says <em>whether</em>, never <em>which</em>. That is the rule the
+          <code>runtime</code> setting already follows: what sits inside will change over the
+          years, and a name that encoded today's rung would have to be renamed to add tomorrow's.
+        </p>
+      </div>
+      <div class="row">
+        <h3>The gate, and why it opened</h3>
+        <p>
+          Until 0.1.4.6, a <strong>release</strong> build refused <code>choose vm</code> at
+          compile time; only the development channel accepted it. The rule was blunt &mdash;
+          until the first usable engine exists, every call to it is illegal in a release &mdash;
+          so that an installed toolchain can never accept a promise it cannot keep.
+          <strong>A promise that falls through is worse than a refusal.</strong>
+        </p>
+        <p>
+          0.1.4.6 opens it, because the refusal's premise stopped being true: the first usable
+          engine arrived. The setting is a declaration in both channels now, and the correction
+          is recorded rather than deleted &mdash; the check that used to demand a refusal now
+          demands acceptance, so "this gate existed, and here is when it went" stays visible.
+        </p>
+        <p>
+          The gate needs a notion the repository did not have: is this compiler a release build,
+          or a development one? The design keeps it to <strong>one constant</strong>, one value
+          per side, flipped at packaging time. One line is deliberate &mdash; the packaged
+          language guide is copied into a distribution unmodified, so that "the copy in the
+          package is the copy in the repository" stays checkable, and one line is the smallest
+          way to bend that rule. The cost is stated with it: the shipped compiler seed would no
+          longer equal the repository's byte for byte, so the criterion drops from
+          <em>identical</em> to <em>reproducibly equal, and the difference is exactly that one
+          constant</em>.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>The ladder</h2>
+    <p class="body">
+      Read the VM as rungs, not as one thing to build. Each rung has to be beatable and each has
+      to be falsifiable &mdash; "write a JIT" is not a rung, because nothing could disprove it.
+      The parts list is taken from two systems that have done this at scale; the implementation
+      would be the project's own, and whether it stays that way is an open decision.
+    </p>
+
+    <div class="rows">
+      <div class="row">
+        <h3>T0 &mdash; bytecode and a direct interpreter</h3>
+        <p>
+          The floor. <strong>Built in the repository.</strong> <strong>Criterion:</strong> a
+          program run this way produces byte-identical output and the same exit code as the
+          native artifact.
+        </p>
+      </div>
+      <div class="row">
+        <h3>T1 &mdash; feedback</h3>
+        <p>
+          Profiles of types, branches and call sites. <strong>Built in the repository.</strong>
+          <strong>Criterion:</strong> the profile lands <em>in the artifact</em> and a third
+          party can read it &mdash; and switching it off leaves the artifact byte-identical.
+        </p>
+      </div>
+      <div class="row">
+        <h3>T2 &mdash; a baseline compiler</h3>
+        <p>
+          Removes the cost of interpretation without optimising. <strong>Built in the
+          repository &mdash; 6.1&times; T0 on the corpus.</strong> <strong>Criterion:</strong>
+          measurably faster than T0, semantically identical.
+        </p>
+      </div>
+      <div class="row">
+        <h3>T3 &mdash; an optimising compiler with a way back</h3>
+        <p>
+          A guess that turns out wrong has to be given up. <strong>Built in the repository, for
+          the one optimisation that carries a guess.</strong> <strong>That is the only hard
+          criterion at this rung:</strong> after a guess is abandoned, the program's result
+          matches the native artifact.
+        </p>
+      </div>
+      <div class="row">
+        <h3>T4 &mdash; generational and concurrent reclamation</h3>
+        <p>
+          The one rung that is not an extension of the others. The reclamation design used to say
+          this could not be done here at all: the back end kept pointers only in locals and
+          parameter slots, and that rules out the usual write barrier. <strong>That reason no
+          longer holds</strong> &mdash; a way to turn a pointer into an integer arrived, and the
+          generational half landed on the <a href="../lgc/">reclamation side</a>, with a card
+          table and a write barrier. What is still ahead is doing it <em>inside the VM</em>,
+          which is a different problem from doing it ahead of time.
+        </p>
+      </div>
+    </div>
+
+    <p class="limit">
+      <strong>The repository carries T0 through T3; the package carries none of them.</strong>
+      Building the interpreter and shipping it in the distribution are two different steps, and
+      only the first is done. The rungs above are the shape of the plan, not a schedule.
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>What it is for</h2>
+    <p class="body">
+      Cold water first: the two things large projects most often want &mdash; build faster, run
+      faster &mdash; are both out of scope. Build time is a problem <em>inside</em> the
+      compiler, and run time is the wrong axis for this line.
+    </p>
+    <p class="body">
+      But "large" has already exposed one problem that is structural rather than a defect, and
+      this is the only thing that can cure it. <strong>Emitted symbols are flat:</strong> a
+      hundred modules means the function names have to be made globally unique by hand, and two
+      modules that each define the same small name are refused. That is a consequence of "one
+      static link" as a model &mdash; the classic scalability wall of a large project, pushed
+      directly into the user's face by the language's own structure. The repository already runs
+      an oversized-project corpus as a criterion, so this is measured rather than guessed.
+    </p>
+
+    <div class="rows">
+      <div class="row">
+        <h3>Adopting a module at run time</h3>
+        <p>
+          Adding a module to a native artifact means relinking the whole program. Here it means
+          loading a unit.
+        </p>
+      </div>
+      <div class="row">
+        <h3>Replacing one without relinking</h3>
+        <p>
+          Change a module, reload it, and leave the rest of the program where it is.
+        </p>
+      </div>
+      <div class="row">
+        <h3>Running code you did not write</h3>
+        <p>
+          A third-party extension, or one a machine wrote. <strong>This is where the project's
+          own ideas first have a job to do.</strong> At link time the port table, the ranges a
+          unit declares it may reach, the record of what it does not have, and its reclamation
+          numbers are <em>audit</em> &mdash; something to read afterwards. At load time those
+          same records become a <em>gate</em> &mdash; something to decide with, before anything
+          runs.
+        </p>
+      </div>
+    </div>
+
+    <p class="caption">
+      Which is the one sentence this page will stand behind, and it is falsifiable:
+      <strong>adding an extension module does not mean relinking the whole program &mdash; and
+      before it is loaded, you can tell whether it can reach what it should not.</strong>
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>What it does not claim</h2>
+    <p class="body">
+      The design record keeps this list, and it belongs on the page rather than in it.
+    </p>
+
+    <div class="rows">
+      <div class="row">
+        <h3>That it is new</h3>
+        <p>
+          Nothing in it is a new brick. Execution evidence carried in the artifact and judged at
+          load time is from the 1990s; refusing to load what cannot be proved is how sandboxed
+          runtimes work; one input with several execution models is what the largest mobile
+          runtime does. What might be placed differently is the seam, not the parts.
+        </p>
+      </div>
+      <div class="row">
+        <h3>That nobody has done those two things</h3>
+        <p>
+          The wording throughout is <em>not found in a search</em>, which is not the same as
+          <em>not done</em>. Two searches that would kill the claim are written down as open
+          criteria, with the honest note that they were not run exhaustively.
+        </p>
+      </div>
+      <div class="row">
+        <h3>That it is useful</h3>
+        <p>
+          The box is empty today. And the third role above rests on a number nobody has measured
+          &mdash; how much of that oversized corpus is really code that should have been loaded
+          late. If the number comes out near zero, the role is a nice story.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Where it is written down</h2>
+    <div style="margin-top: var(--s4)">
+      <a class="doclink" href="https://loment.fandom.com/wiki/LVM">
+        <span class="who">LVM</span>
+        <span class="what">The same ground on the wiki, beside the rest of the language.</span>
+      </a>
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/blob/main/docs/232-loment-vm.md">
+        <span class="who">docs/232</span>
+        <span class="what">The design record. Written in Chinese, and it says so itself about which parts are settled and which are not.</span>
+      </a>
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/blob/main/docs/231-lvm-channel-and-vm-dimension.md">
+        <span class="who">docs/231</span>
+        <span class="what">The channel and the <code>vm</code> setting — and the record of that gate opening.</span>
+      </a>
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/blob/main/docs/243-lvm-t0-interpreter.md">
+        <span class="who">docs/243</span>
+        <span class="what">T0: the bytecode is the existing intermediate form, and what executing it means.</span>
+      </a>
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/blob/main/docs/259-lvm-t2-baseline.md">
+        <span class="who">docs/259</span>
+        <span class="what">T2: moving decoding out of the execution loop, and the criterion that counts decodes.</span>
+      </a>
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/blob/main/docs/250-lvm-compact-form.md">
+        <span class="who">docs/250</span>
+        <span class="what">The compact serialisation: the same form, 28.5% of the size.</span>
+      </a>
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/blob/main/docs/261-lvm-t3-implemented.md">
+        <span class="who">docs/261</span>
+        <span class="what">T3: guarded specialisation, and why deoptimisation is cheap on a slot machine.</span>
+      </a>
+      <a class="doclink" href="https://loment.fandom.com/wiki/Versions_and_roadmap">
+        <span class="who">Roadmap</span>
+        <span class="what">Where the VM sits against the versions &mdash; a plan, stated as a plan.</span>
+      </a>
+      <a class="doclink" href="../lgc/">
+        <span class="who">LomentGC</span>
+        <span class="what">The reclamation ladder &mdash; a system that is built, for comparison.</span>
+      </a>
+      <a class="doclink" href="../">
+        <span class="who">Back to the front page</span>
+        <span class="what">What Loment is, and the two kinds of program it builds.</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Loment is released under the MIT OR Apache-2.0 license. Program by Fujo.</span>
+    <nav>
+      <a href="https://github.com/Loment-Lang/loment">Source</a>
+      <a href="https://github.com/Loment-Lang/loment/releases/latest">Releases</a>
+      <a href="https://github.com/FujoJTOP/lompi">lompi</a>
+      <a href="https://loment.fandom.com/">Wiki</a>
+      <a href="https://github.com/Loment-Lang/loment/issues">Issues</a>
+      <a class="mast" href="https://mastodon.social/@Loment" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z"/></svg>Mastodon</a>
+      <a class="mast" href="https://bsky.app/profile/loment.bsky.social" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364-3.136.521-5.919 1.517-2.244 5.449 3.944 4.011 5.42-1.005 6.237-3.242.653-1.79 1.03-2.81 1.03-2.81s.377 1.02 1.03 2.81c.817 2.237 2.293 7.253 6.237 3.242 3.675-3.932.892-4.928-2.244-5.449 2.67.296 5.568-.628 6.383-3.364.246-.829.624-5.789.624-6.479 0-.688-.139-1.86-.902-2.203-.659-.299-1.664-.621-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8z"/></svg>Bluesky</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

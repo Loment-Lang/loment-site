@@ -1,0 +1,280 @@
+<!doctype html>
+<!-- translated-from: lgc/index.html -->
+<!-- source-sha256: b34e484722502d785150311c8bf4bfb489f1707eead12531630ffa1fd79eb828 -->
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LomentGC — Loment</title>
+<meta name="description" content="LomentGC: возврат памяти — контракт на каждый участок. Каждый участок alloc приписывается во время компиляции к одной ступени лестницы из четырёх уровней, а сколько памяти на ответственности сборщика — это число, которое несёт артефакт.">
+<link rel="icon" href="../../mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=JetBrains+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../../style.css?v=20261110a">
+<link rel="alternate" hreflang="en" href="https://loment-lang.github.io/loment-site/lgc/">
+<link rel="alternate" hreflang="zh-Hans" href="https://loment-lang.github.io/loment-site/zh/lgc/">
+<link rel="alternate" hreflang="ja" href="https://loment-lang.github.io/loment-site/ja/lgc/">
+<link rel="alternate" hreflang="ru" href="https://loment-lang.github.io/loment-site/ru/lgc/">
+<link rel="alternate" hreflang="es" href="https://loment-lang.github.io/loment-site/es/lgc/">
+<link rel="alternate" hreflang="x-default" href="https://loment-lang.github.io/loment-site/lgc/">
+</head>
+<body>
+
+<a class="skip" href="#main">Перейти к содержимому</a>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="../">
+      <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true">
+        <rect width="64" height="64" rx="14" fill="#2f4bff"/>
+        <path d="M18 14h12v24h16v12H18z" fill="#fff"/>
+      </svg>
+      Loment
+    </a>
+                        <nav>
+      <a href="../start/">Обучение</a>
+      <a href="../blog/">Блог</a>
+      <a href="../examples/">Примеры</a>
+      <a href="../playground/">Песочница</a>
+      <a href="../standard/">Стандарт</a>
+      <a href="../releases/">Хронология</a>
+      <details class="navmenu" name="bar">
+        <summary>Системы</summary>
+        <ul>
+          <li><a href="./">LGC</a></li>
+          <li><a href="../lvm/">LVM</a></li>
+          <li><a href="../lompi/">lompi</a></li>
+          <li><a href="../libl/">LibL</a></li>
+          <li><a href="../lspe/">LSPE</a></li>
+        </ul>
+      </details>
+      <a href="https://github.com/Loment-Lang/loment">GitHub</a>
+    </nav>
+    <details class="lang" name="bar">
+      <summary>RU</summary>
+      <ul>
+        <li><a href="../../lgc/" hreflang="en">English</a></li>
+        <li><a href="../../zh/lgc/" hreflang="zh-Hans">简体中文</a></li>
+        <li><a href="../../ja/lgc/" hreflang="ja">日本語</a></li>
+        <li><a href="./" hreflang="ru" aria-current="true">Русский</a></li>
+        <li><a href="../../es/lgc/" hreflang="es">Español</a></li>
+      </ul>
+    </details>
+  </div>
+</header>
+
+<main id="main">
+
+<section class="head">
+  <div class="wrap">
+    <p class="eyebrow">Система</p>
+    <h1>LomentGC</h1>
+    <p class="lede">
+      Когда программа на Loment освобождает память, она не отдаёт всю работу сборщику.
+      Каждое место, где происходит выделение, приписывается во время компиляции к одной из
+      четырёх стратегий — а сколько остаётся сборщику этапа выполнения, это число, записанное
+      в артефакт, а не утверждение в документе.
+    </p>
+    <p class="actions">
+      <a class="btn btn-solid" href="../lgc-paper/">Читать статью</a>
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Лестница</h2>
+    <p class="body">
+      От сильнейшего к слабейшему: компилятор берёт самую сильную ступень, какую может
+      <em>доказать</em>. Докажешь больше — платишь меньше. Цена каждой ступени написана рядом
+      с ней, а не оставлена в сноске.
+    </p>
+
+    <div class="rows">
+      <div class="row">
+        <h3>L0 — статическая</h3>
+        <p>
+          Размер выделения — литерал, и указатель всегда передаётся целиком как первый
+          аргумент загрузки, записи или атомарной операции. Он вообще не доходит до кучи, так
+          что возвращать нечего. <strong>Цена:</strong> более крупный кадр стека.
+        </p>
+      </div>
+      <div class="row">
+        <h3>L1 — последнее использование</h3>
+        <p>
+          Та же форма, объявленная на верхнем уровне тела функции, поэтому последнее
+          использование <em>исчислимо</em>. Компилятор вставляет <code>free</code> перед
+          самым ранним возвратом после него. <strong>Цена:</strong> на пути с ранним возвратом
+          точка вставки может быть пропущена, и этот путь течёт один раз. Утечка, а не ошибка.
+        </p>
+      </div>
+      <div class="row">
+        <h3>L2 — эпохи блоков</h3>
+        <p>
+          Внутри тела цикла каждое выделение — локальное, которое никогда не покидает тело.
+          Конец тела возвращает всю область разом, откатывая фронт аллокатора назад — без
+          списка, без сканирования. Эпоха <em>выводится</em> из структуры блоков и выхода за
+          их пределы, а не пишется вручную. <strong>Цена:</strong> если одно выделение в теле
+          уходит наружу, весь блок должен остаться.
+        </p>
+      </div>
+      <div class="row">
+        <h3>L3 — этап выполнения</h3>
+        <p>
+          Всё, что компилятор не смог доказать. Полная цена сборщика.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Три уровня</h2>
+    <p class="body">
+      Программа выбирает, как далеко вниз по лестнице она готова пойти, одной строкой в
+      корневом модуле.
+    </p>
+
+    <div class="rows">
+      <div class="row">
+        <h3><code>choose gc_manual</code></h3>
+        <p>
+          Значение по умолчанию. Ничего не возвращается автоматически; программа управляет
+          своей памятью сама. Если не написать ни строки, получите именно это — значение по
+          умолчанию есть поведение, которое было до появления измерения, и это правило
+          соблюдает каждое измерение.
+        </p>
+      </div>
+      <div class="row">
+        <h3><code>choose gc_auto</code></h3>
+        <p>
+          Сборщик этапа выполнения возвращает память: маркировка и очистка с точными корнями,
+          запускаемая по числу выделенных байт.
+        </p>
+      </div>
+      <div class="row">
+        <h3><code>choose gc_auto_alpha</code></h3>
+        <p>
+          Включены все четыре ступени, поэтому сборщик видит только то, что не смогли
+          доказать ступени времени компиляции, — и он адаптивный: порог следует за живым
+          набором, с триггером по пространству, так что потолок — не фиксированная доля
+          арены.
+        </p>
+      </div>
+    </div>
+
+    <p class="limit">
+      <strong>Предел, который назван, а не обнаружен.</strong> При <code>gc_auto</code>
+      триггер — фиксированные 32 KiB, тогда как арена — 64 KiB, поэтому программа, чей
+      <em>живой набор</em> превышает примерно 32 KB, всё равно исчерпает память. Закрыть этот
+      разрыв — то, для чего нужны адаптивный сборщик и поколенческий под
+      <code>gc_auto_alpha</code>.
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Внутри L3</h2>
+    <p class="body">
+      Ступень этапа выполнения — тоже не один алгоритм. Она росла в три шага, и каждый должен
+      был обойти предыдущий на измеримой программе.
+    </p>
+
+    <div class="rows">
+      <div class="row">
+        <h3>Маркировка и очистка</h3>
+        <p>
+          Корни <em>точные</em> — таблица корней хранит адреса слотов, — тогда как внутренность
+          блока трактуется консервативно, потому что <code>alloc</code> нетипизирован и ничто
+          не записывает, что хранит блок.
+        </p>
+      </div>
+      <div class="row">
+        <h3>Адаптивный запуск</h3>
+        <p>
+          Фиксированному порогу приходится угадывать, насколько большим станет живой набор.
+          Адаптивный его читает: собирать, когда живой набор удвоился, или когда пространство
+          на исходе.
+        </p>
+      </div>
+      <div class="row">
+        <h3>Поколенческий</h3>
+        <p>
+          Два поколения, разрезанных по <em>адресу</em>, а не по возрасту объектов:
+          неперемещающий сборщик повышает в конце каждой малой сборки, продвигая фронтир.
+          Таблица карточек и барьер записи ловят указатели из старого в молодое. Что это
+          экономит — проход маркировки и распространения, который затем покрывает только
+          молодое поколение.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Почему это попадает в артефакт</h2>
+    <p class="body">
+      Каждый модуль экспортирует форму-объект, несущий <code>gc_ladder</code>: сколько
+      участков <code>alloc</code> взяла каждая ступень, плюс всего. Четыре счётчика должны в
+      сумме давать итог, и <strong>два независимых валидатора проверяют эту арифметику, не
+      читая ни строки исходника</strong>. Так что «как управляется память этой программы?» —
+      это число в выводе сборки, а не утверждение в документе.
+    </p>
+
+    <p class="limit">
+      <strong>Что утверждается, а что нет.</strong> Лестница реализована дважды — эталонным
+      компилятором и самоподдерживающимся (self-hosted) — и эти двое должны совпадать
+      побайтово. Измерения за ступенями идут из собственных критериев проекта, а это
+      небольшие программы; сборщик не запускался на реальной нагрузке, и это стоит знать,
+      прежде чем читать всё это как утверждение о производительности.
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Читайте проектную запись</h2>
+    <div style="margin-top: var(--s4)">
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/blob/main/docs/210-loment-gc-design.md">
+        <span class="who">docs/210</span>
+        <span class="what">Запись о проектировании: лестница, критерий каждой ступени и то, что она нарочно не скопировала.</span>
+      </a>
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/blob/main/docs/202-loment-014-release-gate.md">
+        <span class="who">docs/202</span>
+        <span class="what">Выпускные ворота, включая то, какие из этих утверждений и когда были выпущены.</span>
+      </a>
+      <a class="doclink" href="../lvm/">
+        <span class="who">LVM</span>
+        <span class="what">Измерение модели выполнения — само измерение и его ворота в ветке main; движка нет.</span>
+      </a>
+      <a class="doclink" href="../">
+        <span class="who">Назад на главную</span>
+        <span class="what">Что такое Loment и два вида артефактов, которые он собирает.</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Loment выпускается под лицензией MIT OR Apache-2.0. Программа — Fujo.</span>
+    <nav>
+      <a href="https://github.com/Loment-Lang/loment">Исходники</a>
+      <a href="https://github.com/Loment-Lang/loment/releases/latest">Релизы</a>
+      <a href="https://github.com/FujoJTOP/lompi">lompi</a>
+      <a href="https://loment.fandom.com/">Вики</a>
+      <a href="https://github.com/Loment-Lang/loment/issues">Проблемы</a>
+      <a class="mast" href="https://mastodon.social/@Loment" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z"/></svg>Mastodon</a>
+      <a class="mast" href="https://bsky.app/profile/loment.bsky.social" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364-3.136.521-5.919 1.517-2.244 5.449 3.944 4.011 5.42-1.005 6.237-3.242.653-1.79 1.03-2.81 1.03-2.81s.377 1.02 1.03 2.81c.817 2.237 2.293 7.253 6.237 3.242 3.675-3.932.892-4.928-2.244-5.449 2.67.296 5.568-.628 6.383-3.364.246-.829.624-5.789.624-6.479 0-.688-.139-1.86-.902-2.203-.659-.299-1.664-.621-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8z"/></svg>Bluesky</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

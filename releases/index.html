@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Timeline — Loment</title>
+<meta name="description" content="A dated timeline of Loment releases and the one thing each was for. The per-version changelog lives on GitHub; this page keeps the shape of the line.">
+<link rel="icon" href="../mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=JetBrains+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../style.css?v=20261110a">
+<link rel="alternate" hreflang="en" href="https://loment-lang.github.io/loment-site/releases/">
+<link rel="alternate" hreflang="zh-Hans" href="https://loment-lang.github.io/loment-site/zh/releases/">
+<link rel="alternate" hreflang="ja" href="https://loment-lang.github.io/loment-site/ja/releases/">
+<link rel="alternate" hreflang="ru" href="https://loment-lang.github.io/loment-site/ru/releases/">
+<link rel="alternate" hreflang="es" href="https://loment-lang.github.io/loment-site/es/releases/">
+<link rel="alternate" hreflang="x-default" href="https://loment-lang.github.io/loment-site/releases/">
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="../">
+      <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true">
+        <rect width="64" height="64" rx="14" fill="#2f4bff"/>
+        <path d="M18 14h12v24h16v12H18z" fill="#fff"/>
+      </svg>
+      Loment
+    </a>
+                <nav>
+      <a href="../start/">Learn</a>
+      <a href="../blog/">Blog</a>
+      <a href="../examples/">Examples</a>
+      <a href="../playground/">Playground</a>
+      <a href="../standard/">Standard</a>
+      <a href="./" aria-current="page">Timeline</a>
+      <details class="navmenu" name="bar">
+        <summary>Systems</summary>
+        <ul>
+          <li><a href="../lgc/">LGC</a></li>
+          <li><a href="../lvm/">LVM</a></li>
+          <li><a href="../lompi/">lompi</a></li>
+          <li><a href="../libl/">LibL</a></li>
+          <li><a href="../lspe/">LSPE</a></li>
+        </ul>
+      </details>
+      <a href="https://github.com/Loment-Lang/loment">GitHub</a>
+    </nav>
+    <details class="lang" name="bar">
+      <summary>EN</summary>
+      <ul>
+        <li><a href="./" hreflang="en" aria-current="true">English</a></li>
+        <li><a href="../zh/releases/" hreflang="zh-Hans">简体中文</a></li>
+        <li><a href="../ja/releases/" hreflang="ja">日本語</a></li>
+        <li><a href="../ru/releases/" hreflang="ru">Русский</a></li>
+        <li><a href="../es/releases/" hreflang="es">Español</a></li>
+      </ul>
+    </details>
+  </div>
+</header>
+
+<main id="main">
+
+<section class="head">
+  <div class="wrap">
+    <p class="eyebrow">Timeline</p>
+    <h1>A timeline, not a changelog</h1>
+    <p class="lede">
+      Every Loment release, in order, with one sentence for what it was for. The detailed
+      lists of additions and fixes live on GitHub, where the artifacts and signatures are.
+      This page keeps only the shape of the line.
+    </p>
+    <p class="actions">
+      <a class="btn btn-solid" href="https://github.com/Loment-Lang/loment/releases/latest">Download the current release</a>
+      <a class="btn btn-quiet" href="../roadmap/">Roadmap</a>
+    </p>
+    <p class="limit">
+      <strong>This is the one page on this site that names versions.</strong> Everywhere else
+      the download link says <code>releases/latest</code>, because a version number copied
+      onto a page is a fact with an expiry date. Here the dates are the subject.
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>The line</h2>
+    <p class="body">
+      The first six versions came from the project's previous repository; their tags and
+      dates are not in this one, so they appear without a date. From 0.1.4 onward every entry
+      is a release in this repository.
+    </p>
+
+        <div class="tl-key">
+      <span><i class="tl-dot"></i>Major progress</span>
+      <span><i class="tl-dot tl-dot-big"></i>Large content update</span>
+      <span><i class="tl-dot tl-dot-normal"></i>Other releases</span>
+    </div>
+
+    <div class="timeline">
+      <div class="tl tl-major">
+        <span class="tl-date">before 2026-09</span>
+        <div class="tl-body">
+          <h3>0.1.1</h3>
+          <p>The first Loment: a strict subset of Rust's syntax. The subset claim has since been dropped; the overlapping syntax stayed.</p>
+        </div>
+      </div>
+      <div class="tl tl-major">
+        <span class="tl-date">before 2026-09</span>
+        <div class="tl-body">
+          <h3>0.1.2 Alpha</h3>
+          <p>The language begins to be written in itself &mdash; the only way to find out what it cannot express.</p>
+        </div>
+      </div>
+      <div class="tl">
+        <span class="tl-date">before 2026-09</span>
+        <div class="tl-body">
+          <h3>0.1.2 pre1</h3>
+          <p>Repairs for the problems the first self-hosting turned up.</p>
+        </div>
+      </div>
+      <div class="tl tl-major">
+        <span class="tl-date">before 2026-09</span>
+        <div class="tl-body">
+          <h3>0.1.2 pre2</h3>
+          <p>The bootstrap base that still stands: a compiler rebuilt from a committed seed, checked to reproduce itself.</p>
+        </div>
+      </div>
+      <div class="tl tl-major">
+        <span class="tl-date">before 2026-09</span>
+        <div class="tl-body">
+          <h3>0.1.3 Alpha</h3>
+          <p>Another language's source can be read as Loment: the spelling is borrowed, the meaning stays Loment's.</p>
+        </div>
+      </div>
+      <div class="tl tl-major">
+        <span class="tl-date">before 2026-09</span>
+        <div class="tl-body">
+          <h3>0.1.3.4 Alpha</h3>
+          <p>Lexer, parser, checker and code generator all written in Loment; the bootstrap reaches a three-stage fixed point.</p>
+        </div>
+      </div>
+      <div class="tl">
+        <time class="tl-date" datetime="2026-09-22">2026-09-22</time>
+        <div class="tl-body">
+          <h3>0.1.4 Pre</h3>
+          <p>The first installable build. Its point was to turn &ldquo;the repository has versions&rdquo; into something you can look at.</p>
+        </div>
+      </div>
+      <div class="tl">
+        <time class="tl-date" datetime="2026-09-23">2026-09-23</time>
+        <div class="tl-body">
+          <h3>0.1.4</h3>
+          <p>Usable rather than larger: no syntax changed, and the last interpreter path left the build. On Windows, use the zip; that installer is known broken.</p>
+        </div>
+      </div>
+      <div class="tl tl-big">
+        <time class="tl-date" datetime="2026-10-13">2026-10-13</time>
+        <div class="tl-body">
+          <h3>0.1.4.5</h3>
+          <p>The reclamation ladder, <code>no_runtime</code> as a guarantee, networking on both targets, and the <code>vm</code> setting behind a closed gate.</p>
+        </div>
+      </div>
+      <div class="tl tl-big">
+        <time class="tl-date" datetime="2026-10-17">2026-10-17</time>
+        <div class="tl-body">
+          <h3>0.1.4.6</h3>
+          <p>The interpreter tier, libc and LibL, and the <code>vm</code> setting become reachable from a release.</p>
+        </div>
+      </div>
+      <div class="tl tl-big">
+        <time class="tl-date" datetime="2026-10-18">2026-10-18</time>
+        <div class="tl-body">
+          <h3>0.1.4.7</h3>
+          <p>Every shipped library compiles to byte-identical IR in both implementations: 155 modules, none skipped.</p>
+        </div>
+      </div>
+      <div class="tl tl-major">
+        <time class="tl-date" datetime="2026-10-20">2026-10-20</time>
+        <div class="tl-body">
+          <h3>0.1.5</h3>
+          <p><code>choose</code> becomes a seven-dimension matrix whose legal cells are compiled by both implementations; LMS and LSPE ship.</p>
+        </div>
+      </div>
+      <div class="tl tl-major">
+        <time class="tl-date" datetime="2026-11-07">2026-11-07</time>
+        <div class="tl-body">
+          <h3>0.1.5.1</h3>
+          <p>Capability domains become an algebra of shape, polarity and time law; hot update and Java libraries without a JVM land; <code>tur2026.3</code> becomes the default edition.</p>
+        </div>
+      </div>
+    </div>
+    <figure class="tl-doodle" aria-hidden="true">
+      <img src="../timeline-rabbit.svg" width="280" height="150" alt="">
+    </figure>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Where the detail lives</h2>
+    <p class="body">
+      This page is a line, not an archive. The full notes, artifacts and signatures are on
+      GitHub; the argument behind a change is in the blog or in a numbered design record.
+    </p>
+    <div style="margin-top: var(--s4)">
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/releases">
+        <span class="who">Releases on GitHub</span>
+        <span class="what">Full notes, downloads, checksums and signatures.</span>
+      </a>
+      <a class="doclink" href="../blog/">
+        <span class="who">Blog</span>
+        <span class="what">The longer version of the moments worth explaining.</span>
+      </a>
+      <a class="doclink" href="../roadmap/">
+        <span class="who">Roadmap</span>
+        <span class="what">What comes next, written as a plan with no dates attached.</span>
+      </a>
+      <a class="doclink" href="https://loment.fandom.com/wiki/Versions_and_roadmap">
+        <span class="who">Wiki</span>
+        <span class="what">The same history as an encyclopedia entry.</span>
+      </a>
+      <a class="doclink" href="../playground/">
+        <span class="who">Playground</span>
+        <span class="what">Try the current compiler without installing anything.</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Loment is released under the MIT OR Apache-2.0 license. Program by Fujo.</span>
+    <nav>
+      <a href="https://github.com/Loment-Lang/loment">Source</a>
+      <a href="https://github.com/Loment-Lang/loment/releases/latest">Releases</a>
+      <a href="https://github.com/FujoJTOP/lompi">lompi</a>
+      <a href="https://loment.fandom.com/">Wiki</a>
+      <a href="https://github.com/Loment-Lang/loment/issues">Issues</a>
+      <a class="mast" href="https://mastodon.social/@Loment" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z"/></svg>Mastodon</a>
+      <a class="mast" href="https://bsky.app/profile/loment.bsky.social" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364-3.136.521-5.919 1.517-2.244 5.449 3.944 4.011 5.42-1.005 6.237-3.242.653-1.79 1.03-2.81 1.03-2.81s.377 1.02 1.03 2.81c.817 2.237 2.293 7.253 6.237 3.242 3.675-3.932.892-4.928-2.244-5.449 2.67.296 5.568-.628 6.383-3.364.246-.829.624-5.789.624-6.479 0-.688-.139-1.86-.902-2.203-.659-.299-1.664-.621-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8z"/></svg>Bluesky</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

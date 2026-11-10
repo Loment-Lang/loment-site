@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Playground — Loment</title>
+<meta name="description" content="Write and run Loment in your browser. The reference compiler and LVM run locally through WebAssembly; nothing is sent to a server.">
+<link rel="icon" href="../mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=JetBrains+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../style.css?v=20261110a">
+<link rel="alternate" hreflang="en" href="https://loment-lang.github.io/loment-site/playground/">
+<link rel="alternate" hreflang="zh-Hans" href="https://loment-lang.github.io/loment-site/zh/playground/">
+<link rel="alternate" hreflang="ja" href="https://loment-lang.github.io/loment-site/ja/playground/">
+<link rel="alternate" hreflang="ru" href="https://loment-lang.github.io/loment-site/ru/playground/">
+<link rel="alternate" hreflang="es" href="https://loment-lang.github.io/loment-site/es/playground/">
+<link rel="alternate" hreflang="x-default" href="https://loment-lang.github.io/loment-site/playground/">
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="../">
+      <svg width="22" height="22" viewBox="0 0 64 64" aria-hidden="true">
+        <rect width="64" height="64" rx="14" fill="#2f4bff"/>
+        <path d="M18 14h12v24h16v12H18z" fill="#fff"/>
+      </svg>
+      Loment
+    </a>
+                        <nav>
+      <a href="../start/">Learn</a>
+      <a href="../blog/">Blog</a>
+      <a href="../examples/">Examples</a>
+      <a href="./">Playground</a>
+      <a href="../standard/">Standard</a>
+      <a href="../releases/">Timeline</a>
+      <details class="navmenu" name="bar">
+        <summary>Systems</summary>
+        <ul>
+          <li><a href="../lgc/">LGC</a></li>
+          <li><a href="../lvm/">LVM</a></li>
+          <li><a href="../lompi/">lompi</a></li>
+          <li><a href="../libl/">LibL</a></li>
+          <li><a href="../lspe/">LSPE</a></li>
+        </ul>
+      </details>
+      <a href="https://github.com/Loment-Lang/loment">GitHub</a>
+    </nav>
+    <details class="lang" name="bar">
+      <summary>EN</summary>
+      <ul>
+        <li><a href="./" hreflang="en" aria-current="true">English</a></li>
+        <li><a href="../zh/playground/" hreflang="zh-Hans">简体中文</a></li>
+        <li><a href="../ja/playground/" hreflang="ja">日本語</a></li>
+        <li><a href="../ru/playground/" hreflang="ru">Русский</a></li>
+        <li><a href="../es/playground/" hreflang="es">Español</a></li>
+      </ul>
+    </details>
+  </div>
+</header>
+
+<main id="main">
+
+<section class="head">
+  <div class="wrap">
+    <h1>Playground</h1>
+    <p class="lede">Write Loment and run it here. The reference compiler and the LVM interpreter run in your browser; there is nothing to install, and nothing is sent to a server.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <div class="pg-shell" id="pg"
+         data-ready="Ready"
+         data-loading-engine="Loading engine…"
+         data-loading-compiler="Loading compiler…"
+         data-compiling="Compiling and running…"
+         data-finished="Finished"
+         data-finished-errors="Finished with errors"
+         data-error="Error"
+         data-exit="exit"
+         data-no-output="This surface ran; its current subset has no text output."
+         data-new-prompt="Name for the new program">
+      <div class="pg-toolbar">
+        <div class="pg-row">
+          <label class="pg-field">Action
+            <select id="pg-action">
+              <option value="run">Run</option>
+              <option value="check">Check</option>
+              <option value="build">Build</option>
+              <option value="ir">LLVM IR</option>
+              <option value="ast">AST</option>
+              <option value="potato">Potato</option>
+              <option value="asm">Machine code</option>
+              <option value="wasm">Wasm</option>
+            </select>
+          </label>
+          <button id="pg-run" class="btn btn-solid" type="button">Run</button>
+          <label class="pg-field">Language
+            <select id="pg-lang">
+              <option value="loment" selected>Loment</option>
+              <option value="python">Python</option>
+              <option value="java">Java</option>
+              <option value="c">C</option>
+              <option value="cpp">C++</option>
+              <option value="csharp">C#</option>
+              <option value="go">Go</option>
+            </select>
+          </label>
+          <label class="pg-field">Edition
+            <select id="pg-edition">
+              <option value="tur2026.3" selected>Tur 2026.3</option>
+              <option value="tur2026.2">Tur 2026.2</option>
+              <option value="tur2026.1">Tur 2026.1</option>
+            </select>
+          </label>
+          <label class="pg-field">Target
+            <select id="pg-target">
+              <option value="elf" selected>ELF</option>
+              <option value="pe">PE</option>
+            </select>
+          </label>
+        </div>
+        <div class="pg-row pg-row-2">
+          <label class="pg-field">Channel
+            <select id="pg-channel">
+              <option value="beta" selected>Beta (0.1.5.2.beta.2)</option>
+              <option value="stable">Stable (0.1.5.1)</option>
+            </select>
+          </label>
+          <label class="pg-field">Example
+            <select id="pg-example">
+              <option value="hello">Hello, world</option>
+              <option value="flow">Values and control flow</option>
+              <option value="data">Structs and enums</option>
+              <option value="domain">Capability domains</option>
+            </select>
+          </label>
+          <button id="pg-new" class="btn btn-quiet" type="button">New</button>
+          <button id="pg-download" class="btn btn-quiet" type="button">Download source</button>
+          
+        </div>
+      </div>
+      <div class="pg-main">
+        <div class="pg-pane">
+          <div class="pg-pane-head pg-source-head"><span>Source</span><input id="pg-name" class="pg-name" value="main" aria-label="Program name" spellcheck="false" autocomplete="off"><span class="pg-ext">.lomt</span></div>
+          <div class="pg-code-wrap">
+            <div class="pg-gutter" id="pg-gutter" aria-hidden="true">1</div>
+            <div class="pg-code">
+              <pre class="pg-hl" id="pg-hl" aria-hidden="true"><code></code></pre>
+              <textarea id="pg-src" spellcheck="false" autocapitalize="off" autocomplete="off" wrap="off" aria-label="Source"></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="pg-pane">
+          <div class="pg-pane-head">Output</div>
+          <div class="pg-out-wrap">
+            <div class="pg-block" id="pg-stdout-block"><div class="pg-label">stdout</div><pre id="pg-stdout" class="pg-out" aria-live="polite"></pre></div>
+            <div class="pg-block err" id="pg-stderr-block" hidden><div class="pg-label">Diagnostics</div><pre id="pg-stderr" class="pg-out"></pre></div>
+          </div>
+          <div id="pg-links" class="pg-links"></div>
+          <div class="pg-foot"><span id="pg-status" class="pg-status">Ready</span><span class="pg-hint">Ctrl/⌘ + Enter</span><span id="pg-exit">—</span><span id="pg-elapsed"></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>What this page runs</h2>
+    <p class="body">The source is compiled by the repository's reference compiler, then executed by LVM, the interpreter the project uses for its deterministic runtime tests. Both steps happen in this browser tab.</p>
+    <p class="limit"><strong>Boundaries.</strong> The first run downloads about 20 MB of engine. Programs may use <code>fn main()</code> or <code>fn _start()</code>; standard input, files and sockets are unavailable, and a step cap stops a runaway loop. Loment has no MIR or HIR: <em>AST</em> is the parsed module, <em>Potato</em> is the form object, and <em>Machine code</em> is a hex listing of what <code>lomelf</code> emits. <em>Channel</em> selects the compiler snapshot: Beta tracks the latest <code>main</code> (0.1.5.2.beta.2), Stable is the 0.1.5.1 release. <em>Wasm</em> output is planned for 0.1.5.2 (#1496).</p>
+    <p class="body">For the native toolchain, start at <a href="../start/">Get started</a>. More programs are on <a href="../examples/">Examples</a>.</p>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Loment is released under the MIT OR Apache-2.0 license. Program by Fujo.</span>
+    <nav>
+      <a href="https://github.com/Loment-Lang/loment">Source</a>
+      <a href="https://github.com/Loment-Lang/loment/releases/latest">Releases</a>
+      <a href="https://github.com/FujoJTOP/lompi">lompi</a>
+      <a href="https://github.com/Loment-Lang/loment/issues">Issues</a>
+      <a class="mast" href="https://mastodon.social/@Loment" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z"/></svg>Mastodon</a>
+      <a class="mast" href="https://bsky.app/profile/loment.bsky.social" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364-3.136.521-5.919 1.517-2.244 5.449 3.944 4.011 5.42-1.005 6.237-3.242.653-1.79 1.03-2.81 1.03-2.81s.377 1.02 1.03 2.81c.817 2.237 2.293 7.253 6.237 3.242 3.675-3.932.892-4.928-2.244-5.449 2.67.296 5.568-.628 6.383-3.364.246-.829.624-5.789.624-6.479 0-.688-.139-1.86-.902-2.203-.659-.299-1.664-.621-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8z"/></svg>Bluesky</a>
+    </nav>
+  </div>
+</footer>
+
+<script src="playground.js?v=20261108k"></script>
+</body>
+</html>

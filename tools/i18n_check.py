@@ -27,6 +27,7 @@
 from __future__ import annotations
 
 import hashlib
+import posixpath
 import re
 import sys
 from html.parser import HTMLParser
@@ -46,7 +47,7 @@ ORIGIN = "https://loment-lang.github.io/loment-site"
 #: 样式表的查询串。Pages 给 `style.css` 发 `max-age=600`，改了样式之后十分钟内
 #: 浏览器仍会用旧的 —— 这一条让新 HTML 拉新样式。**改 style.css 就把它加一版**，
 #: 然后 `--fix` 会把 70 个页面一起重写。
-STYLE_VERSION = "20261108g"
+STYLE_VERSION = "20261110a"
 
 #: (目录, <html lang>, hreflang, 切换器里的自称, summary 上的短标)
 LANGS = [
@@ -58,17 +59,23 @@ LANGS = [
 ]
 
 #: 英文页在根目录；译文各占一个子目录，页面名相同。
-PAGES = ["index.html", "start.html", "examples.html", "standard.html", "lgc.html", "lgc-paper.html",
-         "lvm.html",
-         "lompi.html",
-         "libl.html",
-         "lspe.html",
-         "releases.html",
-         "roadmap.html",
-         "blog.html",
-         "blog-0152-beta2-playground.html",
-         "blog-20261108-domains-lspe-lifetimes.html",
-         "playground.html"]
+PAGES = ["index.html",
+         "start/index.html",
+         "examples/index.html",
+         "standard/index.html",
+         "lgc/index.html",
+         "lgc-paper/index.html",
+         "lvm/index.html",
+         "lompi/index.html",
+         "libl/index.html",
+         "lspe/index.html",
+         "releases/index.html",
+         "roadmap/index.html",
+         "blog/index.html",
+         "blog/0152-beta2-playground/index.html",
+         "blog/20261108-domains-lspe-lifetimes/index.html",
+         "blog/20261110-tur3-test-build-two/index.html",
+         "playground/index.html"]
 
 #: 语言切换器与 alternate 组不进"散文面"：它们是镶边，不是内容。
 SKIP_CLASSES = {"codewrap", "lang"}
@@ -95,7 +102,7 @@ CODE_RE = re.compile(r'<div class="codewrap">.*?</div>', re.S)
 #: 注意**不能**把 `</head>` / `<body>` 也算进尾锚：那样匹配会停在它们之前，
 #: 而规范文本里又含着它们，重写一遍就是复制一份。
 HEAD_SPAN_RE = re.compile(
-    r'<link rel="stylesheet" href="(?:\.\./)?style\.css(?:\?[^"]*)?">.*?'
+    r'<link rel="stylesheet" href="(?:\.\./)*style\.css(?:\?[^"]*)?">.*?'
     r'(?=<a class="skip"|<header class="bar">)', re.S)
 BAR_SPAN_RE = re.compile(r'</nav>\n.*?</header>', re.S)
 #: 校验时只认整块出现在那里，不管它在不在行首。
@@ -130,8 +137,21 @@ def page_path(d: str, page: str) -> Path:
     return ROOT / d / page if d else ROOT / page
 
 
+def page_url(page: str) -> str:
+    """Directory-style URL path for a page: `start/index.html` -> `start/`."""
+    if page == "index.html":
+        return ""
+    if page.endswith("/index.html"):
+        return page[:-len("index.html")]
+    return page
+
+
+def page_depth(d: str, page: str) -> int:
+    return len([p for p in f"{d}/{posixpath.dirname(page)}".split("/") if p])
+
+
 def url(d: str, page: str) -> str:
-    return f"{ORIGIN}/{d + '/' if d else ''}{page}"
+    return f"{ORIGIN}/{d + '/' if d else ''}{page_url(page)}"
 
 
 # --------------------------------------------------------------- 规范文本
@@ -149,7 +169,7 @@ def canonical_head_span(d: str, page: str) -> str:
 
     --fix 与校验用的是同一个函数 —— 两处各写一份就会各漂各的。
     这一段**自带 `</head>`**，所以哪怕页上那个标签整个没了，重写一遍也就补回来了。"""
-    prefix = "../" if d else ""
+    prefix = "../" * page_depth(d, page)
     return (f'<link rel="stylesheet" href="{prefix}style.css?v={STYLE_VERSION}">\n'
             + canonical_alts(page) + "</head>\n<body>\n\n")
 
@@ -158,15 +178,13 @@ def canonical_bar_span(page: str, d: str) -> str:
     return "</nav>\n" + canonical_lang_block(page, d) + "\n  </div>\n</header>"
 
 
-def rel_href(cur: str, target: str, page: str) -> str:
-    """从 cur 目录里链到 target 目录同一页的相对路径。"""
-    if cur == target:
-        return page
-    if cur == "":
-        return f"{target}/{page}"
-    if target == "":
-        return f"../{page}"
-    return f"../{target}/{page}"
+def rel_page_href(cur: str, target: str, page: str) -> str:
+    """从 cur 语言的这一页链到 target 语言同一页的目录式相对路径。"""
+    page_dir = posixpath.dirname(page)
+    cur_dir = posixpath.join(cur, page_dir) if cur else page_dir
+    tgt_dir = posixpath.join(target, page_dir) if target else page_dir
+    rel = posixpath.relpath(tgt_dir or ".", cur_dir or ".")
+    return "./" if rel == "." else rel + "/"
 
 
 def canonical_lang_block(page: str, cur: str) -> str:
@@ -180,7 +198,7 @@ def canonical_lang_block(page: str, cur: str) -> str:
         attrs = f' hreflang="{hre}"'
         if d == cur:
             attrs += ' aria-current="true"'
-        out.append(f'        <li><a href="{rel_href(cur, d, page)}"{attrs}>{native}</a></li>')
+        out.append(f'        <li><a href="{rel_page_href(cur, d, page)}"{attrs}>{native}</a></li>')
     out += ['      </ul>',
             '    </details>']
     return "\n".join(out)
@@ -232,41 +250,38 @@ def prose_sha(text: str) -> str:
     return hashlib.sha256(prose_surface(text).encode("utf-8")).hexdigest()
 
 
-def local_hrefs(d: str, text: str) -> tuple[list[str], list[str]]:
-    """把本地链接**按这一页所在目录解析**成仓内路径。
+def local_hrefs(d: str, page: str, text: str) -> tuple[list[str], list[str]]:
+    """把本地链接**按这一页所在目录解析**成仓内路径（相对语言根）。
 
     返回 (归一化后的目标集合, 落不到实文件上的那些)。
 
-    这一步不能只看字符串：`zh/index.html` 里写 `style.css` 与写 `../style.css`
-    归一化之后都是 `style.css`，但前者指向 `zh/style.css` —— 一个不存在的文件，
-    页面会掉样式。所以"解析后这个文件在不在"要单独问一次。"""
+    这一步不能只看字符串：`zh/start/index.html` 里写 `style.css` 与写
+    `../../style.css` 归一化之后都是 `style.css`，但前者指向 `zh/start/style.css`
+    —— 一个不存在的文件，页面会掉样式。所以"解析后这个文件在不在"要单独问一次。
+    目录式 URL 以 `/` 结尾，查存在性时补 `index.html`。"""
     text = LANG_RE.sub("", text)
+    cur_dir = posixpath.join(d, posixpath.dirname(page)) if d else posixpath.dirname(page)
     ok: list[str] = []
     missing: list[str] = []
     for h in HREF_RE.findall(text):
-        if h.startswith(("http://", "https://", "#", "mailto:")):
+        if h.startswith(("http://", "https://", "#", "mailto:", "/")):
             continue
         target = h.split("#", 1)[0].split("?", 1)[0]
         if not target:
             continue
-        parts: list[str] = []
-        for seg in (f"{d}/{target}" if d else target).split("/"):
-            if seg == "..":
-                if parts:
-                    parts.pop()
-            elif seg not in ("", "."):
-                parts.append(seg)
-        rel = "/".join(parts)
+        if target.endswith("/"):
+            target += "index.html"
+        rel = posixpath.normpath(posixpath.join(cur_dir, target))
         if (ROOT / rel).exists():
             ok.append(rel[len(d) + 1:] if d and rel.startswith(d + "/") else rel)
         else:
-            missing.append(f"{d}/{h}" if d else h)
+            missing.append(f"{cur_dir}/{h}" if cur_dir else h)
     # 按**文档顺序**返回，不排序：比集合只能看出"少了一条/多了一条"，
     # 看不出"这条挪到别处去了" —— 而挪位子正是把一块内容插错地方时最先出现的症状。
     return ok, sorted(set(missing))
 
 
-def repair_asset_hrefs(d: str, text: str) -> str:
+def repair_asset_hrefs(d: str, page: str, text: str) -> str:
     """子目录页指向**仓根资源**的那几条相对路径要带 `../`。只认 `ROOT_ASSETS` 里的。
 
     早先它判的是"这个链接现在落不到实文件上、而加到仓根上就有" —— 那是个**启发式**，
@@ -275,44 +290,55 @@ def repair_asset_hrefs(d: str, text: str) -> str:
      —— 解析后那个文件确实存在 —— 而判据的链接比对也看不出，于是那条链接悄悄指到了
     **英文页**上。2026-10-11 实测：18 个页面中招。白名单把这类误伤从"靠运气"变成
     "不可能"。"""
-    if not d:
-        return text
+    cur_dir = posixpath.join(d, posixpath.dirname(page)) if d else posixpath.dirname(page)
 
     def sub(m: re.Match) -> str:
-        href = m.group(1)
-        if href.startswith(("http://", "https://", "#", "mailto:", "/", "../")):
+        attr, href = m.group(1), m.group(2)
+        if href.startswith(("http://", "https://", "#", "mailto:", "/", "data:")):
             return m.group(0)
-        target = href.split("#", 1)[0].split("?", 1)[0]
-        if target not in ROOT_ASSETS or (ROOT / d / target).exists():
+        head = href.split("#", 1)[0].split("?", 1)[0]
+        if not head:
             return m.group(0)
-        return f'href="../{href}"' if (ROOT / target).exists() else m.group(0)
+        resolved = posixpath.normpath(posixpath.join(cur_dir, head))
+        if head in ROOT_ASSETS:
+            want = posixpath.relpath(head, cur_dir or ".")
+        elif resolved in ROOT_ASSETS:
+            want = posixpath.relpath(resolved, cur_dir or ".")
+        else:
+            return m.group(0)
+        suffix = href[len(head):]
+        if want == head:
+            return m.group(0)
+        return f'{attr}="{want}{suffix}"'
 
-    return HREF_RE.sub(sub, text)
+    return re.sub(r'(href|src)="([^"]*)"', sub, text)
 
 
-def escapes_dir(d: str, text: str) -> list[str]:
-    """译文页里**链出自己目录**、又不是仓根资源的那些链接。
+def escapes_dir(d: str, page: str, text: str) -> list[str]:
+    """译文页里**链出自己语言目录**、又不是仓根资源的那些链接。
 
-    译文页的导航与正文链接一律是页内相对（`zh/lib.l` 里也写 `libl.html`）；
-    跨语言那一组由切换器负责，而它已经被 `local_hrefs` 排除在外。所以这一条是干净的：
-    凡是不在自己目录下、又不是 `ROOT_ASSETS` 的，都是错的 —— 而"错"的后果是跳到英文页，
-    链接还能点，最坏的那种错。"""
+    译文页的导航与正文链接一律留在自己的语言目录里；跨语言那一组由切换器负责，
+    而它已经被 `local_hrefs` 排除在外。所以这一条是干净的：凡是不在自己语言目录下、
+    又不是 `ROOT_ASSETS` 的，都是错的 —— 而"错"的后果是跳到英文页，链接还能点，
+    最坏的那种错。"""
     if not d:
         return []
+    cur_dir = posixpath.join(d, posixpath.dirname(page))
     out = []
     for h in HREF_RE.findall(LANG_RE.sub("", text)):
         if h.startswith(("http://", "https://", "#", "mailto:", "/")):
             continue
-        parts: list[str] = []
-        for seg in f"{d}/{h.split('#', 1)[0].split('?', 1)[0]}".split("/"):
-            if seg == "..":
-                if parts:
-                    parts.pop()
-            elif seg not in ("", "."):
-                parts.append(seg)
-        rel = "/".join(parts)
-        if not rel.startswith(d + "/") and rel not in ROOT_ASSETS:
-            out.append(h)
+        target = h.split("#", 1)[0].split("?", 1)[0]
+        if not target:
+            continue
+        if target.endswith("/"):
+            target += "index.html"
+        rel = posixpath.normpath(posixpath.join(cur_dir, target))
+        if rel == d or rel.startswith(d + "/"):
+            continue
+        if rel in ROOT_ASSETS:
+            continue
+        out.append(h)
     return sorted(set(out))
 
 
@@ -344,7 +370,7 @@ def fix_page(d: str, page: str) -> list[str]:
     if not BAR_SPAN_RE.search(text):
         return [f"{d or '.'}/{page}: 找不到顶栏段（</nav> 到 </header> 之间），没动"]
 
-    text = repair_asset_hrefs(d, text)
+    text = repair_asset_hrefs(d, page, text)
     text = HEAD_SPAN_RE.sub(lambda _m: canonical_head_span(d, page), text, count=1)
     text = BAR_SPAN_RE.sub(lambda _m: canonical_bar_span(page, d), text, count=1)
 
@@ -415,10 +441,16 @@ def check() -> int:
             p = page_path(d, page)
             if not p.exists():
                 rep.fail(f"{d or '.'}/ 少一页：{page}")
-        extra = sorted(x.name for x in (ROOT / d).glob("*.html")
-                       if d and x.name not in PAGES)
-        for name in extra:
-            rep.fail(f"{d}/ 多了个页面：{name}")
+        lang_dirs = {x for x, *_ in LANGS if x}
+        extra: list[str] = []
+        for p in (ROOT / d).rglob("*.html"):
+            rel = p.relative_to(ROOT / d).as_posix()
+            if d == "" and rel.split("/")[0] in lang_dirs:
+                continue
+            if rel not in PAGES and rel not in {"404.html", "404/index.html"}:
+                extra.append(rel)
+        for name in sorted(extra):
+            rep.fail(f"{d or '.'}/ 多了个页面：{name}")
     if not rep.bad:
         rep.ok(f"{len(LANGS)} 种语言 × {len(PAGES)} 页齐全")
 
@@ -430,7 +462,7 @@ def check() -> int:
     for page in PAGES:
         en_text = page_path("", page).read_text(encoding="utf-8")
         en_sections = SECTION_RE.findall(en_text)
-        en_hrefs, en_missing = local_hrefs("", en_text)
+        en_hrefs, en_missing = local_hrefs("", page, en_text)
         en_codes = CODE_RE.findall(en_text)
         en_sha = prose_sha(en_text)
 
@@ -476,13 +508,13 @@ def check() -> int:
             if CODE_RE.findall(text) != en_codes:
                 mis_code.append(tag)
 
-            page_hrefs, page_missing = local_hrefs(d, text)
+            page_hrefs, page_missing = local_hrefs(d, page, text)
             for miss in page_missing:
                 mis_missing.append(miss)
             if page_hrefs != en_hrefs:
                 mis_link.append(tag)
 
-            for h in escapes_dir(d, text):
+            for h in escapes_dir(d, page, text):
                 mis_escape.append(f"{tag} -> {h}")
 
             stamps = STAMP_ANY_RE.findall(text)

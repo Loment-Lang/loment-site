@@ -1,0 +1,189 @@
+<!doctype html>
+<!-- translated-from: standard/index.html -->
+<!-- source-sha256: 442ab3305989e5b66743394732f271ff7c48b8219b5b456cbfc0a0432769f3b7 -->
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>El estándar — Loment</title>
+<meta name="description" content="El lenguaje tiene un estándar con nombre y citable — LLS — y vive en el repositorio, junto al código que describe, no en esta página. Qué fija, qué decide la conformidad y qué se niega a hacer.">
+<link rel="icon" href="../../mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=JetBrains+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../../style.css?v=20261110a">
+<link rel="alternate" hreflang="en" href="https://loment-lang.github.io/loment-site/standard/">
+<link rel="alternate" hreflang="zh-Hans" href="https://loment-lang.github.io/loment-site/zh/standard/">
+<link rel="alternate" hreflang="ja" href="https://loment-lang.github.io/loment-site/ja/standard/">
+<link rel="alternate" hreflang="ru" href="https://loment-lang.github.io/loment-site/ru/standard/">
+<link rel="alternate" hreflang="es" href="https://loment-lang.github.io/loment-site/es/standard/">
+<link rel="alternate" hreflang="x-default" href="https://loment-lang.github.io/loment-site/standard/">
+</head>
+<body>
+
+<a class="skip" href="#main">Saltar al contenido</a>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="../">
+      <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true">
+        <rect width="64" height="64" rx="14" fill="#2f4bff"/>
+        <path d="M18 14h12v24h16v12H18z" fill="#fff"/>
+      </svg>
+      Loment
+    </a>
+                        <nav>
+      <a href="../start/">Aprender</a>
+      <a href="../blog/">Blog</a>
+      <a href="../examples/">Ejemplos</a>
+      <a href="../playground/">Probar</a>
+      <a href="./">Estándar</a>
+      <a href="../releases/">Cronología</a>
+      <details class="navmenu" name="bar">
+        <summary>Sistemas</summary>
+        <ul>
+          <li><a href="../lgc/">LGC</a></li>
+          <li><a href="../lvm/">LVM</a></li>
+          <li><a href="../lompi/">lompi</a></li>
+          <li><a href="../libl/">LibL</a></li>
+          <li><a href="../lspe/">LSPE</a></li>
+        </ul>
+      </details>
+      <a href="https://github.com/Loment-Lang/loment">GitHub</a>
+    </nav>
+    <details class="lang" name="bar">
+      <summary>ES</summary>
+      <ul>
+        <li><a href="../../standard/" hreflang="en">English</a></li>
+        <li><a href="../../zh/standard/" hreflang="zh-Hans">简体中文</a></li>
+        <li><a href="../../ja/standard/" hreflang="ja">日本語</a></li>
+        <li><a href="../../ru/standard/" hreflang="ru">Русский</a></li>
+        <li><a href="./" hreflang="es" aria-current="true">Español</a></li>
+      </ul>
+    </details>
+  </div>
+</header>
+
+<main id="main">
+
+<section class="head">
+  <div class="wrap">
+    <p class="eyebrow">Estándar</p>
+    <h1>El estándar del lenguaje Loment</h1>
+    <p class="lede">
+      El lenguaje tiene un <strong>estándar con nombre y citable</strong> &mdash; LLS, el Loment
+      Language Standard &mdash; y vive en el repositorio, junto al código que describe, en lugar
+      de en esta página.
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Para qué sirve, y qué se niega a ser</h2>
+    <p class="body">
+      Un estándar existe para que «¿es correcta esta implementación?» tenga una respuesta que no
+      dependa de a quién se pregunte. La mayoría de los estándares responden a eso enunciando ellos
+      mismos las reglas. Este no: la regla del proyecto es que la copia autoritativa de cualquier
+      cosa existe en un solo lugar, así que el estándar <strong>no enuncia reglas del lenguaje
+      propias</strong>. Es un marco alrededor de las reglas, y todo lo que contiene o es un puntero
+      a una única fuente o es una afirmación sobre qué significa la conformidad.
+    </p>
+    <p class="body">
+      Con ese marco hace dos cosas. <strong>Fija la superficie</strong> &mdash; qué partes del
+      lenguaje solo pueden cambiar mediante un procedimiento definido, y cuál es ese procedimiento.
+      Y <strong>decide la conformidad</strong>, al nombrar el conjunto de criterios que la decide.
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Qué decide la conformidad</h2>
+    <p class="body">
+      No el documento, ni ninguna implementación. El estándar lo dice con todas las letras: cuando
+      la prosa, una implementación y los criterios no coinciden, <strong>los criterios tienen
+      razón</strong>. Un criterio que falla no puede hacerse pasar relajando el criterio &mdash; solo
+      cambiando la implementación, o cambiando la superficie bajo el procedimiento.
+    </p>
+    <p class="limit">
+      <strong>Y lo que el conjunto no puede ver.</strong> Algunos criterios necesitan una
+      herramienta que una máquina dada puede no tener, y se reportan <em>omitidos</em> en vez de
+      aprobados &mdash; así que «verde» significa que los criterios que se ejecutaron estaban
+      verdes. El estándar nombra cada uno, y también deja escrita la frase menos cómoda de todo el
+      documento: el conjunto lo escribe el mismo autor que las implementaciones, así que dos
+      implementaciones que coinciden son evidencia de que <em>coinciden</em>.
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Los interruptores</h2>
+    <p class="body">
+      El estándar describe Loment por sus interruptores en vez de por lo que le falta. Cada
+      subsistema que el lenguaje puede tener &mdash; qué capa puede usar el programa, quién
+      recupera la memoria, si el binario lleva un runtime, si tiene puertos al mundo, y para qué
+      modelo de ejecución es &mdash; es un ajuste que el programa declara una vez, en su unidad
+      raíz, y que la compilación registra. Los valores por defecto son las posiciones que mantienen
+      el comportamiento de los programas existentes. Eso es una propiedad de los valores por
+      defecto, no una afirmación sobre el lenguaje.
+    </p>
+    <p class="body">
+      El estándar también traza una línea fácil de pasar por alto. Algunas combinaciones de
+      interruptores se rechazan porque los dos valores <em>significan cosas opuestas</em>; otras se
+      rechazan solo porque nadie las ha construido todavía. <strong>Un interruptor apagado no es un
+      interruptor prohibido</strong>, y el estándar mantiene los dos aparte a propósito.
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Dónde vive</h2>
+    <p class="body">
+      Junto al código que describe, y versionado con él: la versión del estándar <em>es</em> la
+      versión de la superficie que define. Un número, no dos &mdash; porque un eje de ediciones
+      aparte necesitaría una tabla que relacionara ediciones con versiones del lenguaje, y esa
+      tabla sería una segunda fuente de verdad.
+    </p>
+    <div style="margin-top: var(--s4)">
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/blob/main/standard/LLS.md">
+        <span class="who">standard/LLS.md</span>
+        <span class="what">El propio estándar. Escrito en inglés, y dice con claridad que la mayor parte de lo que referencia normativamente está escrito en chino.</span>
+      </a>
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/blob/main/docs/158-loment-freeze.md">
+        <span class="who">docs/158</span>
+        <span class="what">La superficie congelada y el procedimiento para cambiarla — el registro al que el estándar apunta para ambas cosas. En chino.</span>
+      </a>
+      <a class="doclink" href="../releases/">
+        <span class="who">Historial de versiones</span>
+        <span class="what">Lo que realmente se ha publicado — algo que el estándar no es, y que nunca pretende ser.</span>
+      </a>
+      <a class="doclink" href="../">
+        <span class="who">Volver a la página principal</span>
+        <span class="what">Qué es Loment, y las dos clases de programa que construye.</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Loment se publica bajo la licencia MIT OR Apache-2.0. Programa de Fujo.</span>
+    <nav>
+      <a href="https://github.com/Loment-Lang/loment">Código fuente</a>
+      <a href="https://github.com/Loment-Lang/loment/releases/latest">Versiones</a>
+      <a href="https://github.com/FujoJTOP/lompi">lompi</a>
+      <a href="https://loment.fandom.com/">Wiki</a>
+      <a href="https://github.com/Loment-Lang/loment/issues">Incidencias</a>
+      <a class="mast" href="https://mastodon.social/@Loment" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z"/></svg>Mastodon</a>
+      <a class="mast" href="https://bsky.app/profile/loment.bsky.social" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364-3.136.521-5.919 1.517-2.244 5.449 3.944 4.011 5.42-1.005 6.237-3.242.653-1.79 1.03-2.81 1.03-2.81s.377 1.02 1.03 2.81c.817 2.237 2.293 7.253 6.237 3.242 3.675-3.932.892-4.928-2.244-5.449 2.67.296 5.568-.628 6.383-3.364.246-.829.624-5.789.624-6.479 0-.688-.139-1.86-.902-2.203-.659-.299-1.664-.621-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8z"/></svg>Bluesky</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

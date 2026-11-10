@@ -1,0 +1,387 @@
+<!doctype html>
+<!-- translated-from: libl/index.html -->
+<!-- source-sha256: efd8c26fe69b026b1503106f0a62db60f777775d67ca8c998a4f0b4b341988d8 -->
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LibL — 標準ライブラリの libc の面 — Loment</title>
+<meta name="description" content="LibL は Loment の標準ライブラリの libc の面である: libc の名前、libc の引数順、libc の戻り値の意味論 —— 判定基準は Python ではなく、システムの実物の glibc とのバイト単位の比較である。0.1.4.6 から同梱されている; C の面は 0.1.5 で締めくくられた。">
+<link rel="icon" href="../../mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=JetBrains+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../../style.css?v=20261110a">
+<link rel="alternate" hreflang="en" href="https://loment-lang.github.io/loment-site/libl/">
+<link rel="alternate" hreflang="zh-Hans" href="https://loment-lang.github.io/loment-site/zh/libl/">
+<link rel="alternate" hreflang="ja" href="https://loment-lang.github.io/loment-site/ja/libl/">
+<link rel="alternate" hreflang="ru" href="https://loment-lang.github.io/loment-site/ru/libl/">
+<link rel="alternate" hreflang="es" href="https://loment-lang.github.io/loment-site/es/libl/">
+<link rel="alternate" hreflang="x-default" href="https://loment-lang.github.io/loment-site/libl/">
+</head>
+<body>
+
+<a class="skip" href="#main">本文へスキップ</a>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="../">
+      <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true">
+        <rect width="64" height="64" rx="14" fill="#2f4bff"/>
+        <path d="M18 14h12v24h16v12H18z" fill="#fff"/>
+      </svg>
+      Loment
+    </a>
+                        <nav>
+      <a href="../start/">学ぶ</a>
+      <a href="../blog/">ブログ</a>
+      <a href="../examples/">サンプル</a>
+      <a href="../playground/">オンライン実行</a>
+      <a href="../standard/">標準</a>
+      <a href="../releases/">タイムライン</a>
+      <details class="navmenu" name="bar">
+        <summary>システム</summary>
+        <ul>
+          <li><a href="../lgc/">LGC</a></li>
+          <li><a href="../lvm/">LVM</a></li>
+          <li><a href="../lompi/">lompi</a></li>
+          <li><a href="./">LibL</a></li>
+          <li><a href="../lspe/">LSPE</a></li>
+        </ul>
+      </details>
+      <a href="https://github.com/Loment-Lang/loment">GitHub</a>
+    </nav>
+    <details class="lang" name="bar">
+      <summary>日本語</summary>
+      <ul>
+        <li><a href="../../libl/" hreflang="en">English</a></li>
+        <li><a href="../../zh/libl/" hreflang="zh-Hans">简体中文</a></li>
+        <li><a href="./" hreflang="ja" aria-current="true">日本語</a></li>
+        <li><a href="../../ru/libl/" hreflang="ru">Русский</a></li>
+        <li><a href="../../es/libl/" hreflang="es">Español</a></li>
+      </ul>
+    </details>
+  </div>
+</header>
+
+<main id="main">
+
+<section class="head">
+  <div class="wrap">
+    <p class="eyebrow">システム · 0.1.4.6 から出荷</p>
+    <h1>LibL</h1>
+    <p class="lede">
+      Loment の標準ライブラリの<strong>libc の面</strong>である。libc と同じ名前、同じ
+      引数順、同じ戻り値の意味論 —— すでに C を知っている人のために。ひとつのライブラリの
+      第二の面であり、第二のライブラリではない。
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>0.1.4.6 から利用できる</h2>
+    <p class="body">
+      0.1.4.6 から、<strong>リリース</strong>ビルドは <code>use libl</code> を受け入れ、さらに
+      システムの本物の <code>libc.so.6</code> をリンクして最後まで動かせる。0.1.4.5 でこの二つを
+      止めていた錠は開いており、リリースノートがそう述べている。
+    </p>
+    <p class="body">
+      0.1.5 は、C のライブラリが実際に必要とする部分を締めくくった: 位置独立オブジェクト、TLS
+      リロケーション、弱いオブジェクト、さらに IFUNC と <code>STT_NOTYPE</code> のインポート、
+      SONAME を持たない共有オブジェクト、<code>PT_GNU_RELRO</code>。同梱のリンカと参照リンカは、
+      同じ入力に対してバイト単位で同一の成果物を生む。
+    </p>
+    <p class="limit">
+      <strong>「利用できる」は「揃っている」ではない。</strong>ここにある名前はすべてシステムの
+      glibc に対して判定され、欠けている組は読者がリンクの段で発見するのではなく、下に書かれて
+      いる。このページは理由も残している。理由のない libc の面は、誰も監査できない約束だからだ。
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>なぜ第二の面か</h2>
+    <p class="body">
+      標準ライブラリはすでに存在していたが、そこには<strong>libc の名前がひとつもなかった</strong>
+      —— <code>strlen</code> も、<code>printf</code> も、<code>malloc</code> も。それは省略では
+      なかった。ひとつの形であった。その関数は、終端文字を探すのではなく明示的な長さを取り、
+      バッファにはオフセットでアドレスし、可変個の引数を決して取らない。言語には NUL 終端文字列も
+      可変長引数関数もないので、ライブラリは言語のあるがままの形で書かれた。
+    </p>
+    <p class="body">
+      その形は Loment を書く人には正しいが、C を知っている人には壁である。第二の面は別の
+      問いに答える: <strong>もしあなたが Loment を聞いたことがなかったら、これは何と
+      呼ばれるだろうか?</strong> C のものと同じものを返す <code>strcmp</code>。
+      <code>qsort</code>。<code>isdigit</code>。学ぶものは何もない。
+    </p>
+    <p class="body">
+      二つの面は<strong>同じバイト</strong>を指す。<code>isdigit</code> はライブラリ自身の
+      文字判定を呼び、<code>memcpy</code> は自身のコピールーチンを呼ぶ。だから二つの面から
+      予想される破綻 —— 同じバイトが、どの名前で尋ねたかによって違う答えを返す —— は、
+      単に避けられているのではなく、構造的に不可能である。
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>二つの入り口</h2>
+    <p class="body">
+      <strong>LibL はライブラリの名前であり、<code>std</code> は今もパッケージの名前である。</strong>
+      どちらの入り口も同じパッケージに届くが、どれだけを一緒に引き込むかが異なる。
+    </p>
+
+    <div class="rows">
+      <div class="row">
+        <h3><code>use std</code></h3>
+        <p>
+          パッケージ全体。LibL より前に書かれたすべてがすでにそうしており、それはこれからも
+          動く。代償は、パッケージ全体の入り口がすべてのモジュールを<em>ひとつの</em>単位に
+          引き込むことであり、この言語の出力シンボル空間は平坦である —— だからそれらすべての
+          トップレベルの名前は互いに一意でなければならず、コンパイル時間はモジュール数より
+          速く増える。
+        </p>
+      </div>
+      <div class="row">
+        <h3><code>use libl</code></h3>
+        <p>
+          四つの libc の面と、それらが依存するもの —— 六つのモジュール。小さな面である:
+          素早くコンパイルし、衝突するものがほとんどない。libc の名前だけが欲しかったときの
+          入り口はこれである。
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>何を覆うか</h2>
+    <p class="body">
+      libc のヘッダひとつがモジュールひとつに対応し、その対応そのものが libc に従うことの
+      一部である。
+    </p>
+
+    <div class="rows">
+      <div class="row">
+        <h3><code>&lt;string.h&gt;</code></h3>
+        <p>
+          <code>strlen</code>, <code>strcpy</code>, <code>strncpy</code>, <code>strcat</code>,
+          <code>strcmp</code>, <code>strncmp</code>, <code>strchr</code>, <code>strrchr</code>,
+          <code>strstr</code>, <code>strspn</code>, <code>strcspn</code>, <code>strpbrk</code>,
+          <code>strtok_r</code>, <code>memchr</code>, <code>memcmp</code>, <code>memcpy</code>,
+          <code>memmove</code>, <code>memset</code>.
+        </p>
+      </div>
+      <div class="row">
+        <h3><code>&lt;ctype.h&gt;</code></h3>
+        <p>
+          <code>isdigit</code>, <code>isalpha</code>, <code>isalnum</code>,
+          <code>isspace</code>, <code>isupper</code>, <code>islower</code>,
+          <code>isxdigit</code>, <code>ispunct</code>, <code>isprint</code>, そしてその集合の
+          残りすべて、<code>toupper</code> と <code>tolower</code> を伴って。
+        </p>
+      </div>
+      <div class="row">
+        <h3><code>&lt;stdlib.h&gt;</code></h3>
+        <p>
+          ヒープなしで作れる半分: <code>atoi</code>, <code>atol</code>,
+          <code>strtol</code>, <code>strtoul</code>, <code>abs</code>, <code>labs</code>,
+          <code>llabs</code>, <code>qsort</code>, <code>bsearch</code>.
+        </p>
+      </div>
+      <div class="row">
+        <h3><code>&lt;stdio.h&gt;</code></h3>
+        <p>
+          書式の半分: <code>snprintf</code>、<code>sprintf</code>、そして残りの
+          <code>printf</code> 書式。ファイルの半分は 0.1.4.6 に別の <code>host</code> モジュール
+          として到来した —— <code>fopen</code>、<code>fclose</code>、<code>fread</code>、
+          <code>fwrite</code>、<code>fseek</code>、<code>ftell</code>、<code>fflush</code>、
+          <code>feof</code>、<code>fgets</code>、<code>fputs</code>、<code>puts</code>、
+          <code>putchar</code>、<code>getchar</code> —— これらはシステムコールを必要とし、
+          コアライブラリは一つも発しないからだ。
+        </p>
+      </div>
+    </div>
+
+    <p class="caption">
+      加えて、libc が持っていない関数がひとつ。そしてそれこそが面白い —— 下を見よ。
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>対照物は libc 自身である</h2>
+    <p class="body">
+      標準ライブラリの他のあらゆる部分は、Loment が計算するものを <em>Python</em> が計算するものと
+      比べて判定される。それはこの問いにとって間違った対照物であり、証明可能にそうである:
+      「libc のように振る舞う」を定義するまさにその縁 —— <code>strncpy</code> がゼロ埋めするか、
+      <code>strcmp</code> が符号を返すか<em>差</em>を返すか、<code>strchr</code> が終端文字を
+      見つけるか、範囲が重なったとき <code>memmove</code> が安全か —— において、Python と libc は
+      同じ答えではない。Python と比べれば、二つの実装が一緒に間違っていても通ってしまう。
+    </p>
+    <p class="body">
+      そこで判定基準は、システムの実物の glibc に対して C プログラムをコンパイルし、両側で同じ
+      呼び出しの組を走らせ、<strong>標準出力をバイト単位で比較し</strong>、最初に異なる行を報告する。
+      二つの正規化は意図的である。さもなければテストは意味論ではなく実装の細部を測ることになる
+      からだ: 標準は <code>strcmp</code> の<em>符号</em>しか約束しないので、符号と差の両方を検査し;
+      glibc の文字判定は 1 ではなく<em>ビットマスク</em>を返すので、比較の前に両側を yes-or-no に
+      還元する。
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>言語が強いたもの</h2>
+    <p class="body">
+      この作業の規則は「libc がどう実装していようと、LibL はその通りに実装する」であった。
+      言語は C ではないので、四か所は異ならざるを得ず、ひとつは加えざるを得なかった。それぞれは、
+      隠されるのではなく書き留められている。
+    </p>
+
+    <div class="rows">
+      <div class="row">
+        <h3>文字列リテラルは終端文字を運ばない</h3>
+        <p>
+          だからリテラルに対する <code>strlen</code> は末尾を越えて読む。最初の探針では、空文字列に
+          対して<strong>17</strong> を返した —— たまたまゼロバイトに出会うまで走り続けたのである。
+          C では <code>"abc"</code> がすでに自分の NUL を運んでいるので、このための関数は要らない。
+          <strong>これは省略ではない —— 二つの <code>str</code> 型は同じものではない:</strong>
+          この言語のものは長さを運び、C のものは運ばない。LibL は一方をもう一方へ変換するために
+          <code>cstr_of</code> を加える。ライブラリのすべての NUL 文字列関数はそれを必要とする。
+        </p>
+      </div>
+      <div class="row">
+        <h3>可変長引数関数はない</h3>
+        <p>
+          だから <code>snprintf</code> は libc のものより引数をひとつ多く取る:
+          <code>snprintf(buf, cap, fmt, args, nargs)</code>、ここで <code>args</code> は
+          64 ビット値の配列を指す。変換指定子は libc とまったく同じく、それぞれをどう読むかを
+          決める。<strong>これはライブラリで唯一食い違うシグネチャである</strong>、そしてそれは
+          純粋な損失ではない: libc は自分の引数を数えられないので、少なすぎるとスタック上にある
+          ものを読んでしまう; ここでは、少なすぎれば変換が止まり、それまでに作られたものが
+          正しく仕上げられる。
+        </p>
+      </div>
+      <div class="row">
+        <h3>関数ポインタはない</h3>
+        <p>
+          だから <code>qsort</code> の第四引数は、比較関数ではなく、何で比較するかを述べる列挙で
+          ある。それは実際の違いであり、一方方向への格下げではない: 「このソートは何で比較するか」
+          を実行時のアドレスから<strong>成果物の中の定数</strong>へと移すので、ソースを読まずに
+          答えられる。<strong>代償も一緒に述べられている:</strong> 組み込みの種類のどれでもない
+          順序は表現できない —— ループは自分で書く。
+        </p>
+      </div>
+      <div class="row">
+        <h3>モジュールレベルの可変グローバルはない</h3>
+        <p>
+          だから <code>strtok</code> は <code>strtok_r</code> になり、カーソルは呼び出し側が
+          持つ —— これは POSIX がすでに提供しているので、格下げではない。隠れた種を保つ
+          <code>rand</code> も存在できない; この言語が使う形は呼び出し側から状態を取るのであり、
+          意図的に <code>rand</code> とは名付けられて<em>いない</em>。そして <code>errno</code> も
+          ない: <code>strtol</code> は境界値へ飽和して正常に戻るので、呼び出し側は代わりに
+          境界と比較する。
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>何ではないか</h2>
+
+    <div class="rows">
+      <div class="row">
+        <h3>libc の置き換えではない</h3>
+        <p>
+          LibL は<strong>ソースライブラリ</strong>であり、C のオブジェクトファイルがリンクできる
+          アーカイブではない。C のコードからそれを呼ぶことはできない; それには「Loment から
+          オブジェクトファイルへ」の道が要るが、それは存在しない。置き換えるものはもっと狭く、
+          正確に言う価値がある: <strong>Loment のプログラムが <code>strcmp</code> を手書き
+          しなければならないこと、である。</strong>
+        </p>
+      </div>
+      <div class="row">
+        <h3>libc の全体ではない</h3>
+        <p>
+          <code>realloc</code> と <code>free</code> は意図的に欠けている: <code>realloc</code>
+          は古い長さを必要とし、その古い長さはコンパイラ私有のヒープヘッダにある。
+          <code>free</code> の名前はすでに組み込みが取っているので、ライブラリに同名の関数を
+          置いても呼び出し地点で解決されない。<code>malloc</code> と <code>calloc</code> は
+          0.1.4.6 からある —— 組み込みヒープへの綴りで、自前の長さヘッダを持たない。だから
+          組み込みの <code>free</code> が、それらが返したものを受け取れる。<code>stdin</code>、
+          <code>stdout</code>、<code>stderr</code> はモジュールレベルの可変グローバルになるが、
+          言語にそれはない。プロセスや環境の一族では、<code>exit</code> と <code>abort</code>
+          以外は一つもない。そして <code>%f</code>/<code>%e</code>/<code>%g</code> は「未実装」
+          ではなく「まだできない」である: 上流のフォーマッタはソフトウェア浮動小数点で、その逆方向は
+          この層が意図的に持たない広い除算を必要とする。
+        </p>
+      </div>
+      <div class="row">
+        <h3>完成しておらず、そう装ってもいない</h3>
+        <p>
+          それを書くことで、周囲のシステムの欠陥が露わになった —— その中には、重なりの検査で
+          libc がアドレスを比べるところをオフセットで比べてしまうヘルパー、システムのアセンブラが
+          拒む IR を出すフォーマッタ、そして間違ったモジュールを責める依存検査がある。それらは
+          通りがかりに直されるのではなく、イシューとして起票されている。そしてライブラリ自身の
+          判定基準は意図的に狭い: これらのモジュールが正しい単位であることは主張するが、それらの
+          依存がそうであることは<em>主張しない</em>。
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>どこに書き留められているか</h2>
+    <div style="margin-top: var(--s4)">
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/blob/main/docs/232-libl.md">
+        <span class="who">docs/232</span>
+        <span class="what">設計記録: 四つの面、見出しからモジュールへの対応、そして言語が逸脱を強いいた箇所すべて。中国語で書かれている。</span>
+      </a>
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/pull/245">
+        <span class="who">プルリクエスト #245</span>
+        <span class="what">これが着地した場所 —— ライブラリ、glibc に対して走らせる判定基準、そして論証。マージ済み。</span>
+      </a>
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/issues/246">
+        <span class="who">イシュー #246</span>
+        <span class="what">それが露わにした欠陥のひとつ —— 無実の葉モジュールを報告する依存検査。別に起票されており、ここでは直されていない。</span>
+      </a>
+      <a class="doclink" href="../lompi/">
+        <span class="who">lompi</span>
+        <span class="what">このようなライブラリが住む場所: ディレクトリであり、その内容のハッシュで指定される。</span>
+      </a>
+      <a class="doclink" href="../">
+        <span class="who">フロントページへ戻る</span>
+        <span class="what">Loment とは何か、そしてそれがビルドする二種類の成果物。</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Loment は MIT OR Apache-2.0 の下で公開されている。制作: Fujo。</span>
+    <nav>
+      <a href="https://github.com/Loment-Lang/loment">ソース</a>
+      <a href="https://github.com/Loment-Lang/loment/releases/latest">リリース</a>
+      <a href="https://github.com/FujoJTOP/lompi">lompi</a>
+      <a href="https://loment.fandom.com/">Wiki</a>
+      <a href="https://github.com/Loment-Lang/loment/issues">イシュー</a>
+      <a class="mast" href="https://mastodon.social/@Loment" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z"/></svg>Mastodon</a>
+      <a class="mast" href="https://bsky.app/profile/loment.bsky.social" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364-3.136.521-5.919 1.517-2.244 5.449 3.944 4.011 5.42-1.005 6.237-3.242.653-1.79 1.03-2.81 1.03-2.81s.377 1.02 1.03 2.81c.817 2.237 2.293 7.253 6.237 3.242 3.675-3.932.892-4.928-2.244-5.449 2.67.296 5.568-.628 6.383-3.364.246-.829.624-5.789.624-6.479 0-.688-.139-1.86-.902-2.203-.659-.299-1.664-.621-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8z"/></svg>Bluesky</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

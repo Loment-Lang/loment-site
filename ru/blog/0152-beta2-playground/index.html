@@ -1,0 +1,211 @@
+<!doctype html>
+<!-- translated-from: blog/0152-beta2-playground/index.html -->
+<!-- source-sha256: 8be04d8d2be6bf249170a287f2dfac240789e6d744f2292ba93916ebd1495893 -->
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Loment 0.1.5.2 Beta 2 теперь в Песочнице — Loment</title>
+<meta name="description" content="Эталонный компилятор и LVM теперь работают в браузере. Компилируйте, проверяйте, собирайте нативные образы и смотрите IR, AST, объект Potato и машинный код без установки.">
+<link rel="icon" href="../../../mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=JetBrains+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../../../style.css?v=20261110a">
+<link rel="alternate" hreflang="en" href="https://loment-lang.github.io/loment-site/blog/0152-beta2-playground/">
+<link rel="alternate" hreflang="zh-Hans" href="https://loment-lang.github.io/loment-site/zh/blog/0152-beta2-playground/">
+<link rel="alternate" hreflang="ja" href="https://loment-lang.github.io/loment-site/ja/blog/0152-beta2-playground/">
+<link rel="alternate" hreflang="ru" href="https://loment-lang.github.io/loment-site/ru/blog/0152-beta2-playground/">
+<link rel="alternate" hreflang="es" href="https://loment-lang.github.io/loment-site/es/blog/0152-beta2-playground/">
+<link rel="alternate" hreflang="x-default" href="https://loment-lang.github.io/loment-site/blog/0152-beta2-playground/">
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="../../">
+      <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true">
+        <rect width="64" height="64" rx="14" fill="#2f4bff"/>
+        <path d="M18 14h12v24h16v12H18z" fill="#fff"/>
+      </svg>
+      Loment
+    </a>
+                <nav>
+      <a href="../../start/">Обучение</a>
+      <a href="../" aria-current="page">Блог</a>
+      <a href="../../examples/">Примеры</a>
+      <a href="../../playground/">Песочница</a>
+      <a href="../../standard/">Стандарт</a>
+      <a href="../../releases/">Хронология</a>
+      <details class="navmenu" name="bar">
+        <summary>Системы</summary>
+        <ul>
+          <li><a href="../../lgc/">LGC</a></li>
+          <li><a href="../../lvm/">LVM</a></li>
+          <li><a href="../../lompi/">lompi</a></li>
+          <li><a href="../../libl/">LibL</a></li>
+          <li><a href="../../lspe/">LSPE</a></li>
+        </ul>
+      </details>
+      <a href="https://github.com/Loment-Lang/loment">GitHub</a>
+    </nav>
+    <details class="lang" name="bar">
+      <summary>RU</summary>
+      <ul>
+        <li><a href="../../../blog/0152-beta2-playground/" hreflang="en">English</a></li>
+        <li><a href="../../../zh/blog/0152-beta2-playground/" hreflang="zh-Hans">简体中文</a></li>
+        <li><a href="../../../ja/blog/0152-beta2-playground/" hreflang="ja">日本語</a></li>
+        <li><a href="./" hreflang="ru" aria-current="true">Русский</a></li>
+        <li><a href="../../../es/blog/0152-beta2-playground/" hreflang="es">Español</a></li>
+      </ul>
+    </details>
+  </div>
+</header>
+
+<main id="main">
+<section class="head">
+  <div class="wrap">
+    <p class="eyebrow">Блог · 2026-11-07</p>
+    <h1>Loment 0.1.5.2 Beta 2 теперь в Песочнице</h1>
+    <p class="lede">
+      Эталонный компилятор и LVM теперь работают во вкладке браузера. Можно компилировать,
+      проверять, собирать нативные образы и читать каждую промежуточную форму, которая у Loment
+      действительно есть, не устанавливая инструментарий.
+    </p>
+    <p class="limit">
+      <strong>Это beta-канал.</strong> Песочница запускает снимок, а не новый тег; стабильный
+      канал остаётся на 0.1.5.1.
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Компилятор переехал во вкладку</h2>
+    <p class="body">
+      Страница загружает Pyodide — сборку CPython, скомпилированную в WebAssembly, — и записывает
+      эталонный компилятор и его библиотеки в виртуальную файловую систему. Запуск компилирует
+      исходник через <code>tools/lomentc.py</code>, затем выполняет полученный IR в LVM. Ничего не
+      загружается на сервер: исходник, компиляция и вывод остаются во вкладке.
+    </p>
+
+    <div class="codewrap">
+<pre class="code"><code><span class="ln" data-n="1"><span class="k">module</span> hello</span><span class="ln" data-n="2"> </span><span class="ln" data-n="3"><span class="k">fn</span> _start() {</span><span class="ln" data-n="4">    <span class="k">let</span> s: <span class="t">str</span> = <span class="s">"hello from the browser\n"</span>;</span><span class="ln" data-n="5">    syscall4(<span class="n">1</span>, <span class="n">1</span>, str_ptr(s) <span class="k">as</span> <span class="t">u64</span>, str_len(s) <span class="k">as</span> <span class="t">u64</span>);</span><span class="ln" data-n="6">    syscall4(<span class="n">60</span>, <span class="n">0</span>, <span class="n">0</span>, <span class="n">0</span>);</span><span class="ln" data-n="7">}</span></code></pre>
+    </div>
+
+    <p class="caption">
+      Закрытая программа с явным <code>_start</code>. Программа с <code>fn main()</code> получает
+      синтезированную точку входа в памяти; исходник не переписывается.
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Действия определяет язык</h2>
+    <p class="body">
+      Список действий — это то, что Loment действительно может показать, поэтому кнопок MIR, HIR
+      или текстового ассемблера нет. Всего восемь действий.
+    </p>
+    <div class="rows">
+      <div class="row">
+        <h3>Запуск и проверка</h3>
+        <p>
+          <strong>Run</strong> компилирует и выполняет в LVM. <strong>Check</strong>
+          останавливается после загрузки и проверки, поэтому диагностику можно прочитать, ничего
+          не запуская.
+        </p>
+      </div>
+      <div class="row">
+        <h3>Сборка</h3>
+        <p>
+          Создаёт нативный образ через <code>lomelf</code> — ELF для Linux или PE для Windows — и
+          предлагает скачать. Образ собирается во вкладке, а не на сервере.
+        </p>
+      </div>
+      <div class="row">
+        <h3>LLVM IR и AST</h3>
+        <p>
+          Текстовый IR, который выдаёт компилятор, и разобранный модуль: константы, структуры,
+          перечисления, возможности и функции. Две формы, которые автор компилятора читает первыми.
+        </p>
+      </div>
+      <div class="row">
+        <h3>Potato и машинный код</h3>
+        <p>
+          Объект формы Potato в JSON и шестнадцатеричный список секции ELF <code>.text</code>.
+          Potato — собственный сериализованный артефакт Loment; машинный код — то, что фактически
+          записал встроенный линкер.
+        </p>
+      </div>
+      <div class="row">
+        <h3>Wasm</h3>
+        <p>
+          Пока не реализовано. Кнопка излагает план и ссылается на проектную запись, не притворяясь,
+          что создаёт артефакт.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Два канала, два разных вопроса</h2>
+    <p class="body">
+      <strong>Beta</strong> следует за последним <code>main</code> эталонного компилятора. Сегодня
+      он помечен 0.1.5.2.beta.2 и обновляется автоматически, поэтому отвечает на вопрос «что
+      компилятор делает сейчас». <strong>Stable</strong> — эталонный компилятор с тега
+      <code>v0.1.5.1</code> и отвечает на вопрос «что делает выпущенный инструментарий».
+    </p>
+    <p class="body">
+      У каналов отдельные компиляторы, библиотеки и хранилища пакетов. Переключение канала сохраняет
+      текущий исходник и перезагружает страницу, поэтому программа, написанная для одного, не меняет
+      смысл незаметно под другим.
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Чего он пока не умеет</h2>
+    <p class="body">
+      Нет стандартного ввода, файловой системы и сокетов; LVM знает только один дескриптор,
+      который создаёт раннер. У выполнения есть лимит шагов, поэтому бесконечный цикл обрывается и
+      сообщается. Диагностика — собственные китайские сообщения компилятора, страница их не
+      переводит.
+    </p>
+    <p class="body">
+      Самосборного компилятора в браузере нет: он выдаёт x86-64 ELF и PE, а не WebAssembly.
+      Бэкенд wasm32 спроектирован в <code>docs/313</code> и отслеживается в
+      <a href="https://github.com/Loment-Lang/loment/issues/1496">issue #1496</a>; когда он
+      появится, Песочницей сможет управлять компилятор, написанный на Loment, а не эталонная
+      реализация на Python.
+    </p>
+    <p class="actions">
+      <a class="btn btn-solid" href="../../playground/">Открыть Песочницу</a>
+      <a class="btn btn-quiet" href="../../releases/">Посмотреть хронологию</a>
+    </p>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Loment выпускается под лицензией MIT OR Apache-2.0. Программа — Fujo.</span>
+    <nav>
+      <a href="https://github.com/Loment-Lang/loment">Исходники</a>
+      <a href="https://github.com/Loment-Lang/loment/releases/latest">Релизы</a>
+      <a href="https://github.com/FujoJTOP/lompi">lompi</a>
+      <a href="https://loment.fandom.com/">Вики</a>
+      <a href="https://github.com/Loment-Lang/loment/issues">Проблемы</a>
+      <a class="mast" href="https://mastodon.social/@Loment" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z"/></svg>Mastodon</a>
+      <a class="mast" href="https://bsky.app/profile/loment.bsky.social" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364-3.136.521-5.919 1.517-2.244 5.449 3.944 4.011 5.42-1.005 6.237-3.242.653-1.79 1.03-2.81 1.03-2.81s.377 1.02 1.03 2.81c.817 2.237 2.293 7.253 6.237 3.242 3.675-3.932.892-4.928-2.244-5.449 2.67.296 5.568-.628 6.383-3.364.246-.829.624-5.789.624-6.479 0-.688-.139-1.86-.902-2.203-.659-.299-1.664-.621-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8z"/></svg>Bluesky</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,435 @@
+<!doctype html>
+<!-- translated-from: lvm/index.html -->
+<!-- source-sha256: f38c877784edaeb71935c6684a8114ea4ab28c10cb93d1e6345b5ef36a6267db -->
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LVM — Loment VM — Loment</title>
+<meta name="description" content="Loment VM は、速い道でも、プログラムを書きやすくする方法でもない。プログラムを走らせる第二の方法である: 実行者が要求に応じて採用し、すでに携えているものだけを読んで判定する成果物。インタプリタは loment-lvm としてツールチェインとともに同梱される。この設定は今もコンパイラが出すものを変えない。">
+<link rel="icon" href="../../mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=JetBrains+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../../style.css?v=20261110a">
+<link rel="alternate" hreflang="en" href="https://loment-lang.github.io/loment-site/lvm/">
+<link rel="alternate" hreflang="zh-Hans" href="https://loment-lang.github.io/loment-site/zh/lvm/">
+<link rel="alternate" hreflang="ja" href="https://loment-lang.github.io/loment-site/ja/lvm/">
+<link rel="alternate" hreflang="ru" href="https://loment-lang.github.io/loment-site/ru/lvm/">
+<link rel="alternate" hreflang="es" href="https://loment-lang.github.io/loment-site/es/lvm/">
+<link rel="alternate" hreflang="x-default" href="https://loment-lang.github.io/loment-site/lvm/">
+</head>
+<body>
+
+<a class="skip" href="#main">本文へスキップ</a>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="../">
+      <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true">
+        <rect width="64" height="64" rx="14" fill="#2f4bff"/>
+        <path d="M18 14h12v24h16v12H18z" fill="#fff"/>
+      </svg>
+      Loment
+    </a>
+                        <nav>
+      <a href="../start/">学ぶ</a>
+      <a href="../blog/">ブログ</a>
+      <a href="../examples/">サンプル</a>
+      <a href="../playground/">オンライン実行</a>
+      <a href="../standard/">標準</a>
+      <a href="../releases/">タイムライン</a>
+      <details class="navmenu" name="bar">
+        <summary>システム</summary>
+        <ul>
+          <li><a href="../lgc/">LGC</a></li>
+          <li><a href="./">LVM</a></li>
+          <li><a href="../lompi/">lompi</a></li>
+          <li><a href="../libl/">LibL</a></li>
+          <li><a href="../lspe/">LSPE</a></li>
+        </ul>
+      </details>
+      <a href="https://github.com/Loment-Lang/loment">GitHub</a>
+    </nav>
+    <details class="lang" name="bar">
+      <summary>日本語</summary>
+      <ul>
+        <li><a href="../../lvm/" hreflang="en">English</a></li>
+        <li><a href="../../zh/lvm/" hreflang="zh-Hans">简体中文</a></li>
+        <li><a href="./" hreflang="ja" aria-current="true">日本語</a></li>
+        <li><a href="../../ru/lvm/" hreflang="ru">Русский</a></li>
+        <li><a href="../../es/lvm/" hreflang="es">Español</a></li>
+      </ul>
+    </details>
+  </div>
+</header>
+
+<main id="main">
+
+<section class="head">
+  <div class="wrap">
+    <p class="eyebrow">システム · 0.1.5 から出荷</p>
+    <h1>Loment VM</h1>
+    <p class="lede">
+      プログラムを走らせる<strong>第二の方法</strong>。バイナリは、それを要求に応じて採用し、
+      採用するかどうかをバイナリがすでに携えているものだけを読んで決める実行者に手渡せる。
+      速い道ではなく、プログラムを書きやすくする方法でもない。<strong>インタプリタは
+      <code>loment-lvm</code> としてツールチェインとともに同梱される —— だがこの設定は
+      今もコンパイラが出すものを変えない。</strong>
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>存在するもの、存在しないもの</h2>
+    <p class="body">
+      リポジトリは今、<strong>動くインタプリタ層、T0 から T3</strong> を携えている。リンカが
+      読むのと同じ中間形式を読む。T0 はその形式を直接実行する。T1 は出力を一バイトも変えずに
+      フィードバックプロファイルを記録する。T2 は実行ループの手前で命令をひとつずつデコードし、
+      コーパス上で <strong>T0 の 6.1&times;</strong>、出力はバイト単位で同一。コンパクトな
+      直列化は同じユニットのテキスト形式の <strong>28.5%</strong>。T3 はガード付きの特化と
+      戻り道を加える。
+    </p>
+    <p class="body">
+      出荷されるのはインタプリタそのもので、コンパイラの隣に <code>loment-lvm</code> として
+      置かれるので、インストール済みツールチェインでこの方法でプログラムを走らせることができる。
+      出荷されないのは<em>コンパイラモード</em>である: <code>choose vm</code> と <code>no_vm</code>
+      の出力は今もバイト単位で同一であり、だからこの設定は、プログラムをどう走らせるつもりかを
+      述べるものであって、コンパイラが何を出すかではない。
+    </p>
+    <p class="limit">
+      <strong>半分だけ返された借り。</strong><code>runtime</code> 設定も以前に同じ形をしていた:
+      何もしないうちに宣言され、後にその主張に見合うところまで引き上げられた。ここではエンジンと
+      出荷の両方が存在する。まだ宣言でしかないのは、設定そのものである。このページはどちらが
+      どちらかを、読者に見つけさせるのではなく、自分で言う。
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>何ではないか</h2>
+    <p class="body">
+      三つの読み方が誤っている。いずれも読者が持ち込みがちなものである。これらを設計より先に
+      置く。誤って言われると、これはすべてをやろうとしてそのどれもまともにやらないものに
+      なってしまうからだ。
+    </p>
+
+    <div class="rows">
+      <div class="row">
+        <h3>速い道ではない</h3>
+        <p>
+          逆である。Loment のネイティブな道はすでに、独立性と引き換えに速度を手放しており、
+          そもそも速くない: <a href="https://github.com/Loment-Lang/loment/blob/main/docs/212-loment-offload.md">docs/212</a>
+          の配列ベンチマークで C の <code>-O2</code> に対して <strong>10.7 倍遅れている</strong>
+          —— 記録された測定値であり、常時の約束ではない。VM はその上に載る層である。
+          <strong>この線の軸は性能ではない。</strong>逃げ道はまったく別の線にある。
+        </p>
+      </div>
+      <div class="row">
+        <h3>Write once, run anywhere ではない</h3>
+        <p>
+          その仕事はとうの昔に<em>コンパイル時</em>に与えられた: ひとつの IR、三つの出力 ——
+          Linux ELF、Windows PE、あるいは freestanding オブジェクト。バイトコード形式が、
+          それよりポータビリティに近いわけではない。そしてこの主張は自らのテストに落ちる:
+          もしポータビリティが要点なら、判据は「ターゲットをひとつ足すのに新しいバックエンドを
+          要さない」ことになるはずだが、ターゲットは二つある。
+        </p>
+      </div>
+      <div class="row">
+        <h3>プログラムを速く書く方法ではない</h3>
+        <p>
+          それは別の一群のものであり、これが触れるのはそのどれでもない: 他の六つの表層構文、
+          フォーマッタ、言語サーバー、コンパイル時の構文定義、コーディングエージェント向けに
+          書かれたガイド。LVM が到来するのは、プログラムが書かれた<em>後</em>である。
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>三つの部分からなる設計</h2>
+
+    <div class="rows">
+      <div class="row">
+        <h3>バイトコードは新しい発明ではない</h3>
+        <p>
+          それは<strong>コンパイラがすでに出力する中間表現の直列化</strong>である。同梱のバック
+          エンドはスタックマシン —— 値ごとにスタックの一スロット、引数はスタック上、集約は隠れた
+          結果ポインタを経由 —— なので、その部分集合の完全な実行モデルはすでに存在し、
+          すでに実行されている。欠けているのは、それを<em>実行する</em>段である。LVM は同じ形の
+          <strong>第四の読み手</strong>となるだろう: 新しいフロントエンドも、新しい中間表現も、
+          新しい型システムもない。
+        </p>
+      </div>
+      <div class="row">
+        <h3>第五の設定</h3>
+        <p>
+          <code>choose</code> にはすでに四つあった —— プログラムが使ってよい層、メモリをどう回収するか、
+          バイナリが runtime を積んでよいか、自分自身の外に届いてよいか。<code>vm</code> が第五であり、
+          <strong>このプログラムはどの実行モデル向けか?</strong> に答える。書かなければ
+          <code>no_vm</code> になり、それはこの設定が存在する前にはすべてがそうだったものである。
+          0.1.4.6 からはリリースビルドもこれを受け入れる。今日それで買えるのは宣言であって、異なる成果物ではない。
+        </p>
+        <p>
+          その値は<em>あるかどうか</em>を述べ、決して<em>どれか</em>を述べない。それは
+          <code>runtime</code> 設定がすでに従っている規則である: 中に何が座るかは何年もかけて
+          変わるし、今日の段を符号化した名前は、明日のものを加えるのに改名を強いられることに
+          なる。
+        </p>
+      </div>
+      <div class="row">
+        <h3>ゲート、そしてそれが開いた理由</h3>
+        <p>
+          0.1.4.6 まで、<strong>リリース</strong>ビルドは <code>choose vm</code> をコンパイル時に
+          拒否した。開発チャネルだけが受け入れた。規則は乱暴だった —— 使えるエンジンが存在する
+          まで、リリースではそれへの呼び出しはすべて違法 —— それにより、インストール済みの
+          ツールチェインは決して果たせない約束を受け入れることがない。<strong>果たされない約束は
+          拒否より悪い。</strong>
+        </p>
+        <p>
+          0.1.4.6 はそれを開く。拒否の前提が真でなくなったからである: 最初の使えるエンジンが
+          来た。設定は今、両方のチャネルで宣言であり、訂正は削除ではなく記録される —— かつて
+          拒否を要求した検査は今、受容を要求する。だから「このゲートは存在した、そしてこれが
+          開いたときだ」が可視のまま残る。
+        </p>
+        <p>
+          ゲートはリポジトリが持っていなかった概念を必要とした: このコンパイラはリリースビルドか、
+          開発のものか? 設計はそれを<strong>ひとつの定数</strong>に収める。片側にひとつの値、
+          パッケージ時に反転する。一行なのは意図的である —— パッケージされた言語ガイドは変更
+          なしにディストリビューションへコピーされるので、「パッケージ内のコピーはリポジトリ内の
+          コピーである」が検査可能なまま残り、一行はその規則を曲げる最小の方法だからだ。代価も
+          一緒に述べられる: 出荷されるコンパイラの種はもはやリポジトリのものとバイト単位で等しく
+          ないので、判定基準は<em>同一</em>から<em>再現可能に等しく、その差はちょうどその一つの
+          定数</em>へと下がる。
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>はしご</h2>
+    <p class="body">
+      VM は一つのものとしてではなく、段として読む。それぞれの段は到達可能でなければならず、
+      反証可能でなければならない —— 「JIT を書く」は段ではない。何もそれを反証できないからだ。
+      部品表はこれを大規模にやった二つのシステムから取られている。実装はプロジェクト自身のものに
+      なり、それがそうであり続けるかは未決である。
+    </p>
+
+    <div class="rows">
+      <div class="row">
+        <h3>T0 —— バイトコードと直接インタプリタ</h3>
+        <p>
+          床。<strong>リポジトリに構築済み。</strong><strong>判定基準:</strong> この方法で走らせた
+          プログラムは、原生成物とバイト単位で同じ出力と同じ終了コードを生む。
+        </p>
+      </div>
+      <div class="row">
+        <h3>T1 —— フィードバック</h3>
+        <p>
+          型、分岐、呼び出し地点のプロファイル。<strong>リポジトリに構築済み。</strong>
+          <strong>判定基準:</strong> プロファイルが<em>成果物の中に</em>入り、第三者が読める ——
+          そしてそれを切ると成果物はバイト単位で変わらない。
+        </p>
+      </div>
+      <div class="row">
+        <h3>T2 —— ベースラインコンパイラ</h3>
+        <p>
+          最適化せずに解釈のコストを取り除く。<strong>リポジトリに構築済み —— コーパス上で
+          T0 の 6.1&times;。</strong><strong>判定基準:</strong> 測定可能に T0 より速く、意味論的
+          に同一。
+        </p>
+      </div>
+      <div class="row">
+        <h3>T3 —— 戻り道のある最適化コンパイラ</h3>
+        <p>
+          間違っていたと分かった推測は、放棄できなければならない。<strong>リポジトリに構築済み。
+          対象は推測を背負う唯一の最適化。</strong><strong>これがこの段で唯一の厳しい判定基準:
+          </strong>推測が放棄された後、プログラムの結果は原生成物と一致する。
+        </p>
+      </div>
+      <div class="row">
+        <h3>T4 —— 世代別かつ並行の回収</h3>
+        <p>
+          他の段の延長ではない唯一の段。回収の設計は、これがここでは全くできないと以前は言って
+          いた: バックエンドはポインタをローカルと引数スロットにしか置かず、それが通常の
+          ライトバリアを排除する。<strong>その理由はもう成り立たない</strong> —— ポインタを整数に
+          する方法が現れ、世代別の半分は<a href="../lgc/">回収の側</a>にカードテーブルと
+          ライトバリアを伴って着地した。まだ先にあるのは、それを<em>VM の内部で</em>行うことで
+          あり、事前に行うのとは別の問題である。
+        </p>
+      </div>
+    </div>
+
+    <p class="limit">
+      <strong>リポジトリは T0 から T3 を携えている。パッケージはそのどれも携えていない。</strong>
+      インタプリタを構築することと、それを配布物に載せることは二つの別の段階であり、終わっている
+      のは最初の一つだけである。上の段は計画の形であり、予定表ではない。
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>何のためのものか</h2>
+    <p class="body">
+      まず冷水を: 大規模プロジェクトが最もよく望む二つのこと —— より速くビルドする、より速く
+      走らせる —— はいずれも範囲外である。ビルド時間はコンパイラの<em>内側</em>の問題であり、
+      実行時間はこの線にとって間違った軸である。
+    </p>
+    <p class="body">
+      しかし「大規模」は、欠陥ではなく構造的な問題をすでに一つ露呈させており、これを癒やせる
+      のはこれだけである。<strong>出力されるシンボルは平坦である:</strong>モジュールが百個
+      あれば、関数名は手で大域的に一意にしなければならず、同じ小さな名前をそれぞれ定義する
+      二つのモジュールは拒否される。これは「ひとつの静的リンク」というモデルの帰結である ——
+      大規模プロジェクトの古典的なスケーラビリティの壁が、言語自身の構造によって、利用者の
+      面前にじかに押し出されたものだ。リポジトリはすでに、過大なプロジェクトのコーパスを
+      判据として走らせているので、これは推測ではなく測定である。
+    </p>
+
+    <div class="rows">
+      <div class="row">
+        <h3>実行時にモジュールを採用する</h3>
+        <p>
+          ネイティブの成果物にモジュールを足すことは、プログラム全体を再リンクすることを
+          意味する。ここでは、ひとつの単位をロードすることを意味する。
+        </p>
+      </div>
+      <div class="row">
+        <h3>再リンクせずにひとつを差し替える</h3>
+        <p>
+          モジュールを変え、それを再ロードし、プログラムの残りはそのままにしておく。
+        </p>
+      </div>
+      <div class="row">
+        <h3>自分が書いていないコードを走らせる</h3>
+        <p>
+          第三者の拡張、あるいは機械が書いたもの。<strong>プロジェクト自身の考えに、初めて
+          仕事が生まれるのはここである。</strong>リンク時には、ポート表、ユニットが届いてよいと
+          宣言する範囲、持っていないものの記録、そして回収の数値は<em>監査</em>である —— 後から
+          読むものだ。ロード時にはそれらは<em>ゲート</em>になる —— 何かが走る前に、それで
+          決めるものだ。
+        </p>
+      </div>
+    </div>
+
+    <p class="caption">
+      これがこのページの拠って立つ唯一の文であり、それは反証可能である:
+      <strong>拡張モジュールを足すことは、プログラム全体を再リンクすることを意味しない ——
+      そしてそれがロードされる前に、本来届くべきでないものに届きうるかどうかを知ることが
+      できる。</strong>
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>主張しないこと</h2>
+    <p class="body">
+      設計記録はこの一覧を保っているが、それは記録の中ではなく、このページに載るべきもので
+      ある。
+    </p>
+
+    <div class="rows">
+      <div class="row">
+        <h3>新しいということ</h3>
+        <p>
+          その中に新しい煉瓦はひとつもない。成果物に携えられ、ロード時に判定される実行の証拠は
+          1990 年代からある; 証明できないものをロードすることを拒むのは、サンドボックス化された
+          runtime がそう動くやり方である; ひとつの入力に複数の実行モデルというのは、最大の
+          モバイル runtime がやっていることである。置き方が違うかもしれないのは継ぎ目であって、
+          部品ではない。
+        </p>
+      </div>
+      <div class="row">
+        <h3>その二つを誰もやっていないということ</h3>
+        <p>
+          全体を通しての言い回しは<em>検索で見つからない</em>であり、それは<em>やられていない</em>
+          とは同じではない。この主張を殺すはずの二つの検索は、未解決の判据として書き留められて
+          おり、網羅的に走らせたわけではないという正直な注記が添えられている。
+        </p>
+      </div>
+      <div class="row">
+        <h3>役に立つということ</h3>
+        <p>
+          その箱は今日、空である。そして上の第三の役割は、誰も測っていない数字に依っている ——
+          あの過大なコーパスのどれだけが、本当に遅れてロードされるべきコードなのか。その数字が
+          ほぼゼロなら、その役割は美しい話にすぎない。
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>どこに書き留められているか</h2>
+    <div style="margin-top: var(--s4)">
+      <a class="doclink" href="https://loment.fandom.com/wiki/LVM">
+        <span class="who">LVM</span>
+        <span class="what">同じ領域を、言語の残りの話題と並べて wiki に。</span>
+      </a>
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/blob/main/docs/232-loment-vm.md">
+        <span class="who">docs/232</span>
+        <span class="what">設計記録。中国語で書かれており、どの部分が固まっていてどれがそうでないかを、それ自身が語っている。</span>
+      </a>
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/blob/main/docs/231-lvm-channel-and-vm-dimension.md">
+        <span class="who">docs/231</span>
+        <span class="what">チャネルと <code>vm</code> の設定 —— そしてそのゲートが開いた記録。</span>
+      </a>
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/blob/main/docs/243-lvm-t0-interpreter.md">
+        <span class="who">docs/243</span>
+        <span class="what">T0: バイトコードは既存の中間形式であり、それを実行するとはどういうことか。</span>
+      </a>
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/blob/main/docs/259-lvm-t2-baseline.md">
+        <span class="who">docs/259</span>
+        <span class="what">T2: デコードを実行ループの外へ出し、デコード回数を数える判定基準。</span>
+      </a>
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/blob/main/docs/250-lvm-compact-form.md">
+        <span class="who">docs/250</span>
+        <span class="what">コンパクト形: 同じ形式で、28.5% の大きさ。</span>
+      </a>
+      <a class="doclink" href="https://github.com/Loment-Lang/loment/blob/main/docs/261-lvm-t3-implemented.md">
+        <span class="who">docs/261</span>
+        <span class="what">T3: ガード付き特化と、なぜスタックマシンでは脱最適化が安いのか。</span>
+      </a>
+      <a class="doclink" href="https://loment.fandom.com/wiki/Versions_and_roadmap">
+        <span class="who">ロードマップ</span>
+        <span class="what">VM がバージョンに対してどこに位置するか —— 計画を、計画として述べたもの。</span>
+      </a>
+      <a class="doclink" href="../lgc/">
+        <span class="who">LomentGC</span>
+        <span class="what">回収のはしご —— 比較のために、すでに作られたシステム。</span>
+      </a>
+      <a class="doclink" href="../">
+        <span class="who">フロントページへ戻る</span>
+        <span class="what">Loment とは何か、そしてそれがビルドする二種類の成果物。</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Loment は MIT OR Apache-2.0 の下で公開されている。制作: Fujo。</span>
+    <nav>
+      <a href="https://github.com/Loment-Lang/loment">ソース</a>
+      <a href="https://github.com/Loment-Lang/loment/releases/latest">リリース</a>
+      <a href="https://github.com/FujoJTOP/lompi">lompi</a>
+      <a href="https://loment.fandom.com/">Wiki</a>
+      <a href="https://github.com/Loment-Lang/loment/issues">イシュー</a>
+      <a class="mast" href="https://mastodon.social/@Loment" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z"/></svg>Mastodon</a>
+      <a class="mast" href="https://bsky.app/profile/loment.bsky.social" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364-3.136.521-5.919 1.517-2.244 5.449 3.944 4.011 5.42-1.005 6.237-3.242.653-1.79 1.03-2.81 1.03-2.81s.377 1.02 1.03 2.81c.817 2.237 2.293 7.253 6.237 3.242 3.675-3.932.892-4.928-2.244-5.449 2.67.296 5.568-.628 6.383-3.364.246-.829.624-5.789.624-6.479 0-.688-.139-1.86-.902-2.203-.659-.299-1.664-.621-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8z"/></svg>Bluesky</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tur 2026.3, test build two: borrow lifetimes and a store that fills the gaps — Loment</title>
+<meta name="description" content="The second complete test build of Tur 2026.3 is ready: borrow lifetimes in both implementations, lgc timing control, and a store of 332 modules. The edition is still under development.">
+<link rel="icon" href="../../mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=JetBrains+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../../style.css?v=20261110a">
+<link rel="alternate" hreflang="en" href="https://loment-lang.github.io/loment-site/blog/20261110-tur3-test-build-two/">
+<link rel="alternate" hreflang="zh-Hans" href="https://loment-lang.github.io/loment-site/zh/blog/20261110-tur3-test-build-two/">
+<link rel="alternate" hreflang="ja" href="https://loment-lang.github.io/loment-site/ja/blog/20261110-tur3-test-build-two/">
+<link rel="alternate" hreflang="ru" href="https://loment-lang.github.io/loment-site/ru/blog/20261110-tur3-test-build-two/">
+<link rel="alternate" hreflang="es" href="https://loment-lang.github.io/loment-site/es/blog/20261110-tur3-test-build-two/">
+<link rel="alternate" hreflang="x-default" href="https://loment-lang.github.io/loment-site/blog/20261110-tur3-test-build-two/">
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="../../">
+      <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true">
+        <rect width="64" height="64" rx="14" fill="#2f4bff"/>
+        <path d="M18 14h12v24h16v12H18z" fill="#fff"/>
+      </svg>
+      Loment
+    </a>
+        <nav>
+      <a href="../../start/">Learn</a>
+      <a href="../" aria-current="page">Blog</a>
+      <a href="../../examples/">Examples</a>
+      <a href="../../playground/">Playground</a>
+      <a href="../../standard/">Standard</a>
+      <a href="../../releases/">Timeline</a>
+      <details class="navmenu" name="bar">
+        <summary>Systems</summary>
+        <ul>
+          <li><a href="../../lgc/">LGC</a></li>
+          <li><a href="../../lvm/">LVM</a></li>
+          <li><a href="../../lompi/">lompi</a></li>
+          <li><a href="../../libl/">LibL</a></li>
+          <li><a href="../../lspe/">LSPE</a></li>
+        </ul>
+      </details>
+      <a href="https://github.com/Loment-Lang/loment">GitHub</a>
+    </nav>
+    <details class="lang" name="bar">
+      <summary>EN</summary>
+      <ul>
+        <li><a href="./" hreflang="en" aria-current="true">English</a></li>
+        <li><a href="../../zh/blog/20261110-tur3-test-build-two/" hreflang="zh-Hans">简体中文</a></li>
+        <li><a href="../../ja/blog/20261110-tur3-test-build-two/" hreflang="ja">日本語</a></li>
+        <li><a href="../../ru/blog/20261110-tur3-test-build-two/" hreflang="ru">Русский</a></li>
+        <li><a href="../../es/blog/20261110-tur3-test-build-two/" hreflang="es">Español</a></li>
+      </ul>
+    </details>
+  </div>
+</header>
+
+<main id="main">
+
+<section class="head">
+  <div class="wrap">
+    <div class="tur3-banner" aria-hidden="true">
+      <span class="tur3-word">Tur2026.3</span>
+    </div>
+    <p class="eyebrow">Blog &middot; 2026-11-10</p>
+    <h1>Tur 2026.3, test build two: borrow lifetimes and a store that fills the gaps</h1>
+    <p class="lede">
+      The second complete test build of Tur 2026.3 is ready. Borrow lifetimes are now in
+      both implementations, <code>lgc</code> gives the collector a clock, and the store has
+      grown to 332 modules so a program can ask for the conveniences Loment leaves out.
+      The edition is still under development.
+    </p>
+    <p class="limit">
+      <strong>This is a test build, not a release, and Tur 2026.3 is not finished.</strong>
+      The stable channel stays on 0.1.5.1; the Playground's Beta channel follows
+      <code>main</code>. Anything described as coming next is a direction, not a date.
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>What a test build claims</h2>
+    <p class="body">
+      A test build is the whole edition put together and exercised at once: both compiler
+      implementations, both artifact paths, and the full store. The first build carried the
+      domain and LSPE work; lifetimes were the next line. This second build is the first
+      time borrow lifetimes and the expanded store are in the same tree. It is a checkpoint,
+      not a tag.
+    </p>
+    <p class="body">
+      The claim is narrow and testable: the reference compiler in <code>tools/lomentc.py</code>
+      and the self-hosted compiler in <code>loment/selfhost</code> read the same Tur 2026.3
+      surface and emit the same IR for the corpus. When they disagree, the build is not done.
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Borrow lifetimes, without a lifetime syntax</h2>
+    <p class="body">
+      <code>&amp;T</code> and <code>&amp;mut T</code> are now first-class types: parameters,
+      returns, struct fields and generic arguments. The dimension is
+      <code>choose lifetime_no | lifetime_auto | lifetime_manual</code>.
+      <code>lifetime_auto</code> is the default from <code>tur2026.3</code> on; older
+      editions keep <code>lifetime_no</code>, so their artifacts do not change by a byte.
+    </p>
+    <p class="body">
+      The surface stays quiet. One borrow input means every borrow output borrows from it;
+      several borrow inputs and one output means the shortest of them, so
+      <code>fn min(a: &amp;[u32], b: &amp;[u32]) -&gt; &amp;[u32]</code> needs no annotation.
+      Methods borrow from <code>self</code>. Only a return that must pick one specific input
+      writes that parameter's name, as in <code>-&gt; &amp;a [u32]</code>. A borrow is a
+      <code>ptr</code> in the artifact; slice borrows normalise to the existing views;
+      <code>*r</code> dereferences and <code>r.field</code> auto-dereferences.
+    </p>
+    <p class="body">
+      The self-hosted side caught up on 2026-11-08: it no longer rejects borrow types by
+      name. E041 now appears only when a region does not hold — a returned borrow with no
+      borrow parameter, a marker on a parameter that does not exist, or <code>free(p)</code>
+      while <code>p</code> is borrowed. A stored <code>&amp;mut</code> excludes later borrows
+      as E007. These are the same five rules on both sides.
+    </p>
+    <p class="limit">
+      <strong>The honest boundary.</strong> Borrows as generic arguments are reference-side
+      only; the self-hosted registration is name-level, so only <code>let x = &amp;mut y</code>
+      enters its exclusive table. The design is
+      <a href="https://github.com/Loment-Lang/loment/blob/main/docs/299-tur3-lifetimes.md">docs/299</a>.
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2><code>lgc</code> gives the collector a clock</h2>
+    <p class="body">
+      Tur 2026.3's other feature is <code>lgc</code>: manual timing for the collector.
+      <code>lgc start(10ms) { … }</code> opens a collection window with a cooperative time
+      budget; <code>lgc start { … }</code> opens one without a budget; <code>lgc end;</code>
+      pauses and <code>lgc start;</code> resumes. <code>lgc end { … }</code> is a scoped
+      pause that restores the previous state on exit.
+    </p>
+    <p class="body">
+      It works in every <code>choose gc</code> mode, and <code>no_gc</code> plus
+      <code>lgc</code> is E039 because there is no collector to control. The budget gates
+      <em>starting</em> a collection; it does not preempt one already running. It is not a
+      fourth GC tier — <code>choose gc</code> remains the tier choice.
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>The store reaches 332 modules</h2>
+    <p class="body">
+      Loment is small on purpose. The store is where the conveniences live: ordinary
+      Loment source, compiled by both implementations, with every public name listed in
+      <a href="https://github.com/Loment-Lang/loment/blob/main/docs/store-index.md">docs/store-index.md</a>.
+      It now holds 13 packages, 332 modules and 2791 public functions. <code>std</code> is
+      148 of them; the rest are <code>os</code> (44), <code>system</code> (41),
+      <code>world</code> (22), <code>dev</code> (15), <code>lowlevel</code> (12),
+      <code>internet</code> (11), <code>math</code> (9), <code>host</code> (8),
+      <code>science</code> (6), <code>baremetal</code> (6), <code>windows</code> (6) and
+      <code>engineering</code> (4).
+    </p>
+    <p class="body">
+      The latest batch closes five structural gaps. Cryptography and networking gained
+      ChaCha20, Poly1305, AEAD, AES-CTR/GCM, x25519 and ed25519, plus AF_UNIX with
+      <code>SCM_RIGHTS</code> and a TLS 1.3 client core. The composition layer gained an
+      event loop, atomic file operations, a bounded channel, a job queue and a small HTTP
+      server. A <code>windows</code> package names the Kernel32 surface. Shared modules
+      replaced duplicate code inside <code>os</code> and <code>system</code>. A generated
+      index and a task-oriented cookbook make the store searchable without reading every
+      file.
+    </p>
+    <p class="limit">
+      <strong>What the store does not hide.</strong> The TLS module is a client core, not a
+      claim of interoperability with real servers. The <code>windows</code> modules are a
+      declaration surface until PE FFI lands
+      (<a href="https://github.com/Loment-Lang/loment/issues/1262">#1262</a>). Loment has no
+      function pointers, so the event loop dispatches by tag and the HTTP server returns
+      handler ids. <code>thread_spawn</code> needs a compile-time function name, so the job
+      queue gives you a queue and you write the worker.
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>What is still missing</h2>
+    <p class="body">
+      Tur 2026.3 is not closed. <code>lifetime_manual</code> accepts the <code>&amp;a T</code>
+      marker, but the wider annotation surface is not there. Extension domains, the solid
+      body of the graph model, the <code>→</code> / <code>≺</code> / <code>×</code> domain
+      forms and the wasm32 backend remain design or later work. The store's platform and
+      protocol edges are written down as boundaries rather than filled in.
+    </p>
+    <p class="body">
+      The second test build is the point where the edition can be tried as a whole. It is not
+      the point where it is finished.
+    </p>
+    <p class="actions">
+      <a class="btn btn-solid" href="../../playground/">Try the Beta in the Playground</a>
+    </p>
+    <p class="caption">
+      Every claim above has a criterion behind it; the ones that do not are labelled as
+      design. &mdash; <strong>Loment Dev Fujo</strong>
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Loment is released under the MIT OR Apache-2.0 license. Program by Fujo.</span>
+    <nav>
+      <a href="https://github.com/Loment-Lang/loment">Source</a>
+      <a href="https://github.com/Loment-Lang/loment/releases/latest">Releases</a>
+      <a href="https://github.com/FujoJTOP/lompi">lompi</a>
+      <a href="https://loment.fandom.com/">Wiki</a>
+      <a href="https://github.com/Loment-Lang/loment/issues">Issues</a>
+      <a class="mast" href="https://mastodon.social/@Loment" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z"/></svg>Mastodon</a>
+      <a class="mast" href="https://bsky.app/profile/loment.bsky.social" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364-3.136.521-5.919 1.517-2.244 5.449 3.944 4.011 5.42-1.005 6.237-3.242.653-1.79 1.03-2.81 1.03-2.81s.377 1.02 1.03 2.81c.817 2.237 2.293 7.253 6.237 3.242 3.675-3.932.892-4.928-2.244-5.449 2.67.296 5.568-.628 6.383-3.364.246-.829.624-5.789.624-6.479 0-.688-.139-1.86-.902-2.203-.659-.299-1.664-.621-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8z"/></svg>Bluesky</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

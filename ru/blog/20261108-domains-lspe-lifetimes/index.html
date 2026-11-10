@@ -1,0 +1,264 @@
+<!doctype html>
+<!-- translated-from: blog/20261108-domains-lspe-lifetimes/index.html -->
+<!-- source-sha256: 539088b2b4190f00b91ac7fbc2c6e0505314885595071585cda1b3c54404069d -->
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Домен, в который можно войти, полный LSPE и времена жизни заимствований — Loment</title>
+<meta name="description" content="Домены стали блоками с местом и временем жизни, все восемнадцать видов поставляются, четыре части LSPE в бете 0.1.5.2, а проверка времён жизни заимствований — следующий шаг.">
+<link rel="icon" href="../../../mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=JetBrains+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../../../style.css?v=20261110a">
+<link rel="alternate" hreflang="en" href="https://loment-lang.github.io/loment-site/blog/20261108-domains-lspe-lifetimes/">
+<link rel="alternate" hreflang="zh-Hans" href="https://loment-lang.github.io/loment-site/zh/blog/20261108-domains-lspe-lifetimes/">
+<link rel="alternate" hreflang="ja" href="https://loment-lang.github.io/loment-site/ja/blog/20261108-domains-lspe-lifetimes/">
+<link rel="alternate" hreflang="ru" href="https://loment-lang.github.io/loment-site/ru/blog/20261108-domains-lspe-lifetimes/">
+<link rel="alternate" hreflang="es" href="https://loment-lang.github.io/loment-site/es/blog/20261108-domains-lspe-lifetimes/">
+<link rel="alternate" hreflang="x-default" href="https://loment-lang.github.io/loment-site/blog/20261108-domains-lspe-lifetimes/">
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="../../">
+      <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true">
+        <rect width="64" height="64" rx="14" fill="#2f4bff"/>
+        <path d="M18 14h12v24h16v12H18z" fill="#fff"/>
+      </svg>
+      Loment
+    </a>
+        <nav>
+      <a href="../../start/">Обучение</a>
+      <a href="../" aria-current="page">Блог</a>
+      <a href="../../examples/">Примеры</a>
+      <a href="../../playground/">Песочница</a>
+      <a href="../../standard/">Стандарт</a>
+      <a href="../../releases/">Хронология</a>
+      <details class="navmenu" name="bar">
+        <summary>Системы</summary>
+        <ul>
+          <li><a href="../../lgc/">LGC</a></li>
+          <li><a href="../../lvm/">LVM</a></li>
+          <li><a href="../../lompi/">lompi</a></li>
+          <li><a href="../../libl/">LibL</a></li>
+          <li><a href="../../lspe/">LSPE</a></li>
+        </ul>
+      </details>
+      <a href="https://github.com/Loment-Lang/loment">GitHub</a>
+    </nav>
+    <details class="lang" name="bar">
+      <summary>RU</summary>
+      <ul>
+        <li><a href="../../../blog/20261108-domains-lspe-lifetimes/" hreflang="en">English</a></li>
+        <li><a href="../../../zh/blog/20261108-domains-lspe-lifetimes/" hreflang="zh-Hans">简体中文</a></li>
+        <li><a href="../../../ja/blog/20261108-domains-lspe-lifetimes/" hreflang="ja">日本語</a></li>
+        <li><a href="./" hreflang="ru" aria-current="true">Русский</a></li>
+        <li><a href="../../../es/blog/20261108-domains-lspe-lifetimes/" hreflang="es">Español</a></li>
+      </ul>
+    </details>
+  </div>
+</header>
+
+<main id="main">
+<section class="head">
+  <div class="wrap">
+    <p class="eyebrow">Блог · 2026-11-08</p>
+    <h1>Домен, в который можно войти, полный LSPE и времена жизни заимствований</h1>
+    <p class="lede">
+      На этой неделе стоит записать три вещи. Домен перестал быть объявлением в начале файла
+      и стал блоком, в который входят. Все восемнадцать видов доменов теперь поставляются.
+      Четыре части LSPE уже в бете 0.1.5.2, а следующая работа — времена жизни заимствований.
+      Это версия простым языком.
+    </p>
+    <p class="limit">
+      <strong>Это заметка о ходе работы, а не анонс выпуска.</strong> Beta — снимок
+      <code>main</code>; стабильный канал по-прежнему 0.1.5.1. «Далее» означает направление,
+      а не дату.
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Домен теперь место в коде</h2>
+    <p class="body">
+      Раньше домен был объявлением. Вы писали
+      <code>capability blk_write : disk[0..4]</code> один раз в начале файла, а затем
+      <code>guard blk_write(slot)</code> в функции. Это объясняло читателю намерение, а
+      компилятор в основном верил этой строке. Новая форма — блок. Входите в него, домен
+      начинается; выходите, заканчивается. Значения говорят, в каком пространстве они живут,
+      а обращение по индексу к такому значению проверяется автоматически.
+    </p>
+    <p class="body">
+      Блок <code>domain buf : disk[0..63] consumed(1) { … }</code>, где значение объявлено как
+      <code>a: [u32; 64] in disk</code>, означает, что <code>a[i]</code> внутри блока
+      проверяет <code>buf(i)</code> перед доступом. Явный <code>guard buf(i)</code> тоже
+      работает; guard после блока — ошибка компиляции, потому что <code>buf</code> больше
+      не существует.
+    </p>
+    <p class="body">
+      Дело не в более красивом синтаксисе. У домена теперь есть место и время жизни. Виды с
+      состоянием размещают его в текущем кадре, поэтому каждая итерация цикла и каждый
+      рекурсивный вызов получают новый экземпляр, а не делят одну глобальную таблицу.
+    </p>
+    <p class="limit">
+      <strong>Честная граница.</strong> Метка пространства не передаётся через вызов;
+      вызываемый видит обычный тип. Автоматические guard покрывают только прямой индекс,
+      но не <code>ptr_add</code>. Блочные домены пока не входят в объект формы Potato.
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Восемнадцать видов, три вопроса</h2>
+    <p class="body">
+      Каждый домен отвечает на три вопроса: где может быть индекс (форма), разрешает он или
+      запрещает территорию (полярность) и когда ответ меняется (закон времени). Старые десять
+      видов покрывали обычные случаи. Остальные восемь вошли на этой неделе, так что теперь
+      поставляются все восемнадцать, и оба компилятора выдают для каждого побайтово одинаковый IR.
+    </p>
+    <p class="body">
+      Простыми словами: интервал говорит «где». <code>consumed(1)</code> говорит, что каждую
+      позицию можно использовать один раз за экземпляр. <code>cyclic(P)</code> заворачивает.
+      <code>generational(N)</code> переключает ответ каждые N тиков. <code>adaptive</code>
+      сужает разрешённый диапазон по байту качества. <code>reachable(K)</code> резервирует
+      позицию на K тиков и ждёт освобождения. <code>subject</code>, <code>witnessed</code> и
+      <code>flow</code> несут второй аргумент: битовую маску, талон или упакованное ребро.
+    </p>
+    <p class="body">
+      Граница важна. Талон для <code>subject</code> и <code>witnessed</code> передаёт
+      вызывающий; язык считает использования, но не может сделать талон неподделываемым — для
+      этого нужны линейные значения. <code>flow</code> — упакованный диапазон рёбер, а не
+      произвольный набор. Оба компилятора согласны по IR и оба пишут, чего не покрывают.
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>По домену можно идти</h2>
+    <p class="body">
+      Раньше домен был тем, что охраняют. Теперь по нему можно идти.
+      <code>domain:for i { … }</code> проходит по позициям текущего домена;
+      <code>domain:for i in buf step 2</code> называет домен и прыгает;
+      <code>domain:for i, j in A, B</code> идёт параллельно по двум доменам одной формы;
+      <code>step -N</code> идёт назад.
+    </p>
+    <p class="body">
+      В цикле один guard в голове и один тик виртуальных часов на каждом обратном ребре.
+      Модули, которые не используют домены, не меняются ни на байт.
+      <code>choose domain_clock_explicit</code> выключает автоматический тик, если часами
+      хотите управлять сами.
+    </p>
+    <p class="body">
+      Рёбра деревьев и графов тоже стали синтаксисом. <code>child_of</code> объявляет
+      родителя; <code>couple A, B</code> делает два домена одной единицей обновления, и guard
+      на любом из них тихо проверяет другой; <code>mutex A, B</code> — обещание времени
+      компиляции, что две конечные формы без danger никогда не пересекаются.
+      <code>tools/loment_geometry.py</code> печатает дерево, граф и оси позиций
+      детерминированным JSON.
+    </p>
+    <p class="limit">
+      <strong>Что ещё проектируется:</strong> делегирование <code>→</code>, порядок
+      <code>≺</code>, исключение <code>×</code>, расширяющие домены, инструментальный домен
+      и объёмная часть графа. Страницы и компилятор говорят об этом прямо, не делая вид,
+      что карта закончена.
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>LSPE завершён в бете 0.1.5.2</h2>
+    <p class="body">
+      LSPE — слой аудита: он записывает, на чём держится каждое суждение. В линии 0.1.5.2 были
+      четыре части, и теперь все четыре в бета-компиляторе.
+    </p>
+    <p class="body">
+      У спрашивающего восемь движков (E1–E8): циклы, корректность по типу и подстановке,
+      дифференциальные суждения, которые никогда не снимаются, и реестр проб, порождённый из
+      дерева тестов. У встречного спрашивающего фиксированные шаблоны вопросов (Q001–Q013) и
+      каналы ответов: по умолчанию разрешить, но пометить; <code>defer</code> и
+      <code>refuse</code> — явные действия, строгий режим делает неотвеченный вопрос ошибкой.
+      LSPC — предполётный лист: двенадцать семейств на пять столбцов, режимы
+      <code>full</code>, <code>quiet</code>, <code>strict</code> и <code>off</code>;
+      <code>loment lspc check</code> читает фронтенд и ничего не пишет.
+    </p>
+    <p class="body">
+      Журнал хранит дерево вывода, хеш доказательства для каждого места, боковой файл
+      <code>.lspe</code> и инварианты I1–I5. Его читают <code>loment lspe why</code> и
+      <code>loment lspe verify</code>. Это уже в канале Beta. Песочница запускает тот же
+      снимок, поэтому Run, Check и Build используют один компилятор. Кнопки LSPE в Песочнице
+      нет: журнал — артефакт командной строки, а не действие над текстовым полем.
+    </p>
+    <p class="actions">
+      <a class="btn btn-solid" href="../../playground/">Открыть Песочницу</a>
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Далее — времена жизни</h2>
+    <p class="body">
+      Следующая линия — времена жизни заимствований. Она включается в заголовке файла:
+      <code>choose lifetime_true</code>. Цель — гарантии Rust без шума аннотаций Rust:
+      никаких <code>'a</code>, никаких <code>&lt;'a&gt;</code>, никакого <code>where</code>.
+      <code>&amp;T</code> и <code>&amp;mut T</code> становятся полноценными типами в полях,
+      возвратах и generic-аргументах, а компилятор выводит регион для каждого заимствования и
+      проверяет, что оно не переживает источник.
+    </p>
+    <p class="body">
+      Правила элизии намеренно агрессивны. Один входной заём — все выходные займы берутся из
+      него. Несколько входных займов и один выход — берётся самый короткий. Поэтому
+      <code>fn min(a: &amp;[u32], b: &amp;[u32]) -&gt; &amp;[u32]</code> не требует аннотаций.
+      Методы берут из <code>self</code>. Только когда возврат должен быть привязан к
+      конкретному входу, вы пишете имя параметра: <code>-&gt; &amp;a [u32]</code>.
+    </p>
+    <p class="body">
+      Проверка следует мягкой философии LSPE: она называет источник — переменную и строку — и
+      объясняет путь, вместо того чтобы оставить вас с «ошибкой времени жизни». Строгость
+      доступна, но не включена по умолчанию. Серия доменов времени жизни продолжает ту же идею:
+      регион — это место с входом, выходом и правилом о том, что может его пересечь, а проверка
+      задаёт тот же род вопросов, что и LSPE.
+    </p>
+    <p class="limit">
+      <strong>Это работа в процессе, а не выпущенная возможность.</strong> Зонтик —
+      <a href="https://github.com/Loment-Lang/loment/issues/1240">#1240</a>, проект —
+      <a href="https://github.com/Loment-Lang/loment/blob/main/docs/299-tur3-lifetimes.md">docs/299</a>;
+      подзадачи входят по одной. Дат здесь нет.
+    </p>
+    <figure class="post-figure" aria-hidden="true">
+      <img src="../../../blog-rabbit-horizon.svg" width="360" height="160" alt="">
+    </figure>
+    <p class="caption">
+      Loment всё ещё строится: за каждым утверждением выше стоит критерий, а то, за чем его нет,
+      помечено как проект. — <strong>Loment Dev Fujo</strong>
+    </p>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Loment выпускается под лицензией MIT OR Apache-2.0. Программа — Fujo.</span>
+    <nav>
+      <a href="https://github.com/Loment-Lang/loment">Исходники</a>
+      <a href="https://github.com/Loment-Lang/loment/releases/latest">Релизы</a>
+      <a href="https://github.com/FujoJTOP/lompi">lompi</a>
+      <a href="https://loment.fandom.com/">Вики</a>
+      <a href="https://github.com/Loment-Lang/loment/issues">Проблемы</a>
+      <a class="mast" href="https://mastodon.social/@Loment" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z"/></svg>Mastodon</a>
+      <a class="mast" href="https://bsky.app/profile/loment.bsky.social" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364-3.136.521-5.919 1.517-2.244 5.449 3.944 4.011 5.42-1.005 6.237-3.242.653-1.79 1.03-2.81 1.03-2.81s.377 1.02 1.03 2.81c.817 2.237 2.293 7.253 6.237 3.242 3.675-3.932.892-4.928-2.244-5.449 2.67.296 5.568-.628 6.383-3.364.246-.829.624-5.789.624-6.479 0-.688-.139-1.86-.902-2.203-.659-.299-1.664-.621-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8z"/></svg>Bluesky</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>
