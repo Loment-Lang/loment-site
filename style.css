@@ -435,38 +435,19 @@ code {
   .row-featured .row-art { grid-column: auto; margin-top: 0; }
 }
 
-/* The 2026 year-end banner: a year-in-review panel rather than a decorative
-   strip. Deep space, aurora bands, a constellation, a data skyline and a
-   clipped HUD panel on the right. The palette and the shapes are deliberately
-   not the Tur 2026.3 banner's: neon cyan/magenta/violet, no rounded squares. */
-.finals-banner,
-.finals-art {
-  --finals-cyan: #22e6ff;
-  --finals-magenta: #ff2fb3;
-  --finals-violet: #7a5cff;
-  --finals-acid: #c8ff4d;
-  --finals-void: #05060f;
-}
+/* The 2026 year-end banner: a dark waterline, a blue grid and the Loment
+   mark inside a rising orb. This is deliberately a different object from the
+   Tur 2026.3 banner: one silhouette, one horizon, no rounded squares. */
 .finals-banner {
   position: relative;
-  height: clamp(210px, 28vw, 300px);
+  height: clamp(220px, 30vw, 320px);
   margin-bottom: var(--s4);
-  border-radius: 2px;
+  border: 1px solid rgba(90, 150, 255, 0.18);
+  border-radius: clamp(14px, 2vw, 22px);
   overflow: hidden;
-  background:
-    radial-gradient(110% 90% at 72% 34%, rgba(122, 92, 255, 0.28), transparent 55%),
-    radial-gradient(90% 80% at 18% 78%, rgba(255, 47, 179, 0.18), transparent 60%),
-    var(--finals-void);
+  background: #02040c;
+  box-shadow: 0 20px 50px rgba(2, 4, 12, 0.25);
   isolation: isolate;
-}
-.finals-banner::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 7;
-  pointer-events: none;
-  background: repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.035) 0 1px, transparent 1px 3px);
-  mix-blend-mode: screen;
 }
 .finals-scene {
   position: absolute;
@@ -475,215 +456,105 @@ code {
   height: 100%;
   z-index: 0;
 }
-.finals-aurora {
-  transform-origin: center;
-  animation: finals-aurora 16s ease-in-out infinite alternate;
+.finals-orb-rise {
+  animation: finals-rise 2.6s cubic-bezier(0.16, 1, 0.3, 1) 160ms backwards;
 }
-.finals-constellation .twinkle {
-  animation: finals-twinkle 3.6s ease-in-out infinite alternate;
+@keyframes finals-rise {
+  from { transform: translateY(58px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
 }
-.finals-constellation .twinkle:nth-child(2n) { animation-delay: 1.1s; }
-.finals-constellation .twinkle:nth-child(3n) { animation-delay: 2.2s; }
-.finals-bars .bar {
+.finals-ripples ellipse {
   transform-box: fill-box;
-  transform-origin: bottom;
-  animation: finals-bar 4.5s ease-in-out infinite alternate;
+  transform-origin: center;
+  animation: finals-ripple 7s ease-out infinite;
 }
-.finals-bars .bar:nth-child(2n) { animation-delay: 0.9s; }
-.finals-bars .bar:nth-child(3n) { animation-delay: 1.8s; }
-.finals-grid {
-  position: absolute;
-  left: -30%;
-  right: -30%;
-  bottom: -14%;
-  height: 74%;
-  z-index: 1;
-  background:
-    repeating-linear-gradient(90deg, transparent 0 44px, rgba(34, 230, 255, 0.38) 44px 45px),
-    repeating-linear-gradient(0deg, transparent 0 30px, rgba(255, 47, 179, 0.30) 30px 31px);
-  transform: perspective(260px) rotateX(62deg);
-  transform-origin: bottom center;
-  -webkit-mask-image: linear-gradient(to top, #000 8%, rgba(0, 0, 0, 0.55) 55%, transparent 96%);
-          mask-image: linear-gradient(to top, #000 8%, rgba(0, 0, 0, 0.55) 55%, transparent 96%);
-  animation: finals-grid-drift 11s linear infinite;
+.finals-ripples ellipse:nth-child(2) { animation-delay: 1.7s; }
+@keyframes finals-ripple {
+  0% { transform: scale(0.72); opacity: 0.75; }
+  75%, 100% { transform: scale(1.28); opacity: 0; }
 }
-.finals-gauge {
+.finals-label,
+.finals-tag {
   position: absolute;
-  right: calc(clamp(var(--s4), 5vw, var(--s6)) + 40px);
-  top: 50%;
-  width: 190px;
-  height: 190px;
-  transform: translateY(-50%);
-  background: conic-gradient(from 210deg, transparent 0 22%, var(--finals-cyan) 22% 54%, var(--finals-magenta) 54% 66%, transparent 66% 100%);
-  -webkit-mask: radial-gradient(circle, transparent 62%, #000 63%);
-          mask: radial-gradient(circle, transparent 62%, #000 63%);
-  opacity: 0.5;
   z-index: 3;
-  animation: finals-gauge 22s linear infinite;
-}
-.finals-hud {
-  position: absolute;
-  right: clamp(var(--s4), 5vw, var(--s6));
-  top: 50%;
-  transform: translateY(-50%);
-  width: clamp(220px, 26vw, 310px);
-  padding: var(--s4) var(--s4) var(--s3);
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.10), rgba(255, 255, 255, 0.015));
-  border: 1px solid rgba(34, 230, 255, 0.35);
-  box-shadow: 0 0 0 1px rgba(255, 47, 179, 0.10), 0 18px 50px rgba(0, 0, 0, 0.45), inset 0 0 40px rgba(34, 230, 255, 0.06);
-  clip-path: polygon(0 0, calc(100% - 22px) 0, 100% 22px, 100% 100%, 22px 100%, 0 calc(100% - 22px));
-  -webkit-backdrop-filter: blur(10px);
-          backdrop-filter: blur(10px);
-  z-index: 4;
-  animation: finals-hud-in 900ms cubic-bezier(0.22, 0.61, 0.36, 1) 120ms backwards;
-}
-.finals-hud-kicker {
-  display: block;
   font: 500 var(--t-xs)/1 var(--mono);
   letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: var(--finals-cyan);
 }
-.finals-hud-year {
-  display: block;
-  margin-top: var(--s3);
-  font: 700 clamp(3.2rem, 4.6vw, 4.8rem)/0.9 var(--mono);
-  letter-spacing: -0.08em;
-  background: linear-gradient(100deg, var(--finals-cyan), #fff 44%, var(--finals-magenta));
-  -webkit-background-clip: text;
-          background-clip: text;
-  color: transparent;
-  filter: drop-shadow(0 0 16px rgba(34, 230, 255, 0.35));
-}
-.finals-hud-sub {
-  display: block;
-  margin-top: var(--s2);
-  font: 500 var(--t-xs)/1 var(--mono);
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: var(--finals-magenta);
-}
-.finals-rail {
-  position: absolute;
+.finals-label {
   left: clamp(var(--s3), 4vw, var(--s5));
+  top: var(--s3);
+  color: #5a96ff;
+}
+.finals-tag {
+  right: clamp(var(--s3), 4vw, var(--s5));
   bottom: var(--s3);
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px var(--s3);
-  font: 500 var(--t-xs)/1 var(--mono);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.55);
-  z-index: 5;
-}
-.finals-rail span {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-.finals-rail span::before {
-  content: "";
-  width: 5px;
-  height: 5px;
-  background: var(--finals-cyan);
-  transform: rotate(45deg);
-  box-shadow: 0 0 6px var(--finals-cyan);
-}
-.finals-rail span:nth-child(even)::before {
-  background: var(--finals-magenta);
-  box-shadow: 0 0 6px var(--finals-magenta);
+  color: #9fc4ff;
 }
 .finals-sweep {
   position: absolute;
   inset: -20% -40%;
-  z-index: 6;
+  z-index: 2;
   pointer-events: none;
-  background: linear-gradient(115deg, transparent 40%, rgba(255, 255, 255, 0.08) 48%, rgba(34, 230, 255, 0.16) 50%, transparent 60%);
+  background: linear-gradient(115deg, transparent 42%, rgba(255, 255, 255, 0.06) 49%, rgba(90, 150, 255, 0.14) 51%, transparent 60%);
   transform: translateX(-55%);
-  animation: finals-sweep 10s ease-in-out infinite;
+  animation: finals-sweep 12s ease-in-out infinite;
   mix-blend-mode: screen;
 }
-@keyframes finals-aurora {
-  from { transform: translateX(-10px) scale(1); opacity: 0.62; }
-  to   { transform: translateX(15px) scale(1.05); opacity: 0.92; }
-}
-@keyframes finals-twinkle {
-  from { opacity: 0.35; }
-  to   { opacity: 1; }
-}
-@keyframes finals-bar {
-  from { transform: scaleY(0.55); opacity: 0.35; }
-  to   { transform: scaleY(1); opacity: 0.9; }
-}
-@keyframes finals-grid-drift {
-  from { background-position: 0 0, 0 0; }
-  to   { background-position: 44px 0, 0 30px; }
-}
-@keyframes finals-gauge {
-  to { rotate: 360deg; }
-}
-@keyframes finals-hud-in {
-  from { opacity: 0; transform: translate(22px, -50%); }
-  to   { opacity: 1; transform: translate(0, -50%); }
-}
 @keyframes finals-sweep {
-  0%, 52% { transform: translateX(-55%); opacity: 0; }
-  62% { opacity: 0.9; }
-  86%, 100% { transform: translateX(55%); opacity: 0; }
+  0%, 55% { transform: translateX(-55%); opacity: 0; }
+  65% { opacity: 0.8; }
+  88%, 100% { transform: translateX(55%); opacity: 0; }
 }
-@media (max-width: 760px) {
+@media (max-width: 640px) {
   .finals-banner { height: 190px; }
-  .finals-hud { width: clamp(170px, 44vw, 220px); right: var(--s3); padding: var(--s3); }
-  .finals-hud-year { font-size: clamp(2.4rem, 11vw, 3.2rem); }
-  .finals-gauge { display: none; }
-  .finals-rail { display: none; }
+  .finals-label, .finals-tag { font-size: 10px; letter-spacing: 0.16em; }
 }
 
-/* The same world in the index tile: one orbit, a receding grid, a neon 2026. */
+/* The index tile: the same orb, cropped to a small angular window. */
 .finals-art {
   background:
-    radial-gradient(120% 100% at 70% 20%, rgba(122, 92, 255, 0.35), transparent 60%),
-    var(--finals-void);
-  border-color: rgba(34, 230, 255, 0.28);
-  border-radius: 0;
-  clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
-  box-shadow: inset 0 0 30px rgba(34, 230, 255, 0.06);
+    linear-gradient(to bottom, transparent 0 69.2%, rgba(90, 150, 255, 0.5) 69.4% 69.8%, rgba(2, 4, 12, 0.94) 70% 100%),
+    radial-gradient(circle at 50% 70%, #123a9e 0, #0a1b45 34%, #02040c 64%),
+    #02040c;
+  border-color: rgba(90, 150, 255, 0.28);
+  border-radius: 14px;
+  box-shadow: inset 0 0 30px rgba(47, 111, 224, 0.10);
 }
 .finals-art::before {
   content: "";
   position: absolute;
-  inset: -20px;
-  background:
-    repeating-linear-gradient(90deg, transparent 0 30px, rgba(34, 230, 255, 0.34) 30px 31px),
-    repeating-linear-gradient(0deg, transparent 0 24px, rgba(255, 47, 179, 0.26) 24px 25px);
-  transform: perspective(180px) rotateX(58deg) scale(1.5);
-  transform-origin: bottom center;
-  -webkit-mask-image: linear-gradient(to top, #000, transparent 88%);
-          mask-image: linear-gradient(to top, #000, transparent 88%);
-  animation: finals-grid-drift 9s linear infinite;
+  inset: 0;
+  z-index: 0;
+  background-image:
+    repeating-linear-gradient(90deg, transparent 0 28px, rgba(47, 111, 224, 0.30) 28px 29px),
+    repeating-linear-gradient(0deg, transparent 0 24px, rgba(47, 111, 224, 0.22) 24px 25px);
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 26%, rgba(0, 0, 0, 0.5) 68%, transparent 92%);
+          mask-image: linear-gradient(to bottom, transparent, #000 26%, rgba(0, 0, 0, 0.5) 68%, transparent 92%);
 }
 .finals-art::after {
   content: "";
   position: absolute;
-  right: 14px;
-  top: 14px;
-  width: 38px;
-  height: 38px;
-  background: conic-gradient(from 0deg, var(--finals-cyan) 0 62%, rgba(255, 255, 255, 0.08) 62% 100%);
-  -webkit-mask: radial-gradient(circle, transparent 58%, #000 59%);
-          mask: radial-gradient(circle, transparent 58%, #000 59%);
-  animation: finals-gauge 7s linear infinite;
-  opacity: 0.85;
+  left: 50%;
+  top: 50%;
+  width: 58px;
+  height: 58px;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  background: url("mark.svg") center / contain no-repeat;
+  filter: drop-shadow(0 0 14px rgba(47, 111, 224, 0.75));
 }
-.finals-art .row-art-label { color: var(--finals-cyan); opacity: 0.85; }
+.finals-art .row-art-label {
+  color: #5a96ff;
+  opacity: 0.9;
+  z-index: 2;
+}
 .finals-art .row-art-word {
+  color: #9fc4ff;
   font-family: var(--mono);
-  font-size: clamp(1.4rem, 2.2vw, 1.9rem);
-  letter-spacing: -0.06em;
-  background: linear-gradient(100deg, var(--finals-cyan), #fff 45%, var(--finals-magenta));
-  -webkit-background-clip: text;
-          background-clip: text;
-  color: transparent;
+  font-size: clamp(1.3rem, 2vw, 1.7rem);
+  letter-spacing: -0.04em;
+  z-index: 2;
 }
 
 .hero .lede, .head .lede {

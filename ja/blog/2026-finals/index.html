@@ -1,6 +1,6 @@
 <!doctype html>
 <!-- translated-from: blog/2026-finals/index.html -->
-<!-- source-sha256: 823fb6cf5f3c1f32be77dc1f63356f40b5de33237bf14fe09c53d108ba0579f4 -->
+<!-- source-sha256: f8cf49d749ec6d16de47f1d837aeceba9bb927e8972db44346b016cfa2589881 -->
 <html lang="ja">
 <head>
 <meta charset="utf-8">
@@ -71,80 +71,56 @@
     <div class="finals-banner" aria-hidden="true">
       <svg class="finals-scene" viewBox="0 0 1200 360" preserveAspectRatio="xMidYMid slice">
         <defs>
-          <linearGradient id="finals-aurora-a" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stop-color="#22e6ff" stop-opacity="0"/>
-            <stop offset=".45" stop-color="#22e6ff" stop-opacity=".55"/>
-            <stop offset="1" stop-color="#7a5cff" stop-opacity="0"/>
+          <radialGradient id="finals-orb" cx="50%" cy="72%" r="58%">
+            <stop offset="0" stop-color="#1647b8"/>
+            <stop offset=".55" stop-color="#0a1f56"/>
+            <stop offset="1" stop-color="#02040c"/>
+          </radialGradient>
+          <linearGradient id="finals-water" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#030a1e"/>
+            <stop offset="1" stop-color="#000205"/>
           </linearGradient>
-          <linearGradient id="finals-aurora-b" x1="1" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="#ff2fb3" stop-opacity="0"/>
-            <stop offset=".5" stop-color="#ff2fb3" stop-opacity=".45"/>
-            <stop offset="1" stop-color="#7a5cff" stop-opacity="0"/>
+          <linearGradient id="finals-grid-fade-grad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#fff" stop-opacity=".04"/>
+            <stop offset=".55" stop-color="#fff" stop-opacity=".85"/>
+            <stop offset="1" stop-color="#fff" stop-opacity=".10"/>
           </linearGradient>
-          <linearGradient id="finals-bar" x1="0" y1="1" x2="0" y2="0">
-            <stop offset="0" stop-color="#22e6ff" stop-opacity=".05"/>
-            <stop offset=".6" stop-color="#22e6ff" stop-opacity=".55"/>
-            <stop offset="1" stop-color="#c8ff4d" stop-opacity=".9"/>
-          </linearGradient>
+          <pattern id="finals-grid" width="60" height="45" patternUnits="userSpaceOnUse">
+            <path d="M60 0H0V45" fill="none" stroke="#2255b8" stroke-opacity=".7" stroke-width="1"/>
+          </pattern>
+          <mask id="finals-grid-fade">
+            <rect width="1200" height="360" fill="url(#finals-grid-fade-grad)"/>
+          </mask>
+          <filter id="finals-blur" x="-40%" y="-40%" width="180%" height="180%">
+            <feGaussianBlur stdDeviation="28"/>
+          </filter>
           <filter id="finals-glow" x="-80%" y="-80%" width="260%" height="260%">
-            <feGaussianBlur stdDeviation="5" result="b"/>
+            <feGaussianBlur stdDeviation="6" result="b"/>
             <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
           </filter>
-          <filter id="finals-soft" x="-40%" y="-40%" width="180%" height="180%">
-            <feGaussianBlur stdDeviation="30"/>
-          </filter>
         </defs>
-        <rect width="1200" height="360" fill="#05060f"/>
-        <g class="finals-aurora" filter="url(#finals-soft)" opacity=".8">
-          <path d="M-100 270 C 170 90, 430 340, 690 150 S 1070 30, 1320 220" fill="none" stroke="url(#finals-aurora-a)" stroke-width="90"/>
-          <path d="M-80 80 C 230 220, 480 10, 760 200 S 1100 300, 1320 90" fill="none" stroke="url(#finals-aurora-b)" stroke-width="64"/>
-        </g>
-        <g class="finals-constellation" opacity=".7">
-          <g stroke="#22e6ff" stroke-opacity=".35" stroke-width="1">
-            <path d="M70 250 L 150 190 L 230 220 L 300 150 L 390 180 L 470 120"/>
-            <path d="M150 190 L 190 120 L 260 100 L 300 150"/>
-            <path d="M390 180 L 430 240 L 510 210"/>
+        <rect width="1200" height="360" fill="#02040c"/>
+        <rect width="1200" height="300" fill="url(#finals-grid)" mask="url(#finals-grid-fade)"/>
+        <ellipse cx="600" cy="250" rx="340" ry="115" fill="#2f6fe0" opacity=".26" filter="url(#finals-blur)"/>
+        <g class="finals-orb-rise">
+          <circle cx="600" cy="250" r="150" fill="none" stroke="#7aa9ff" stroke-opacity=".45" stroke-width="8" filter="url(#finals-glow)"/>
+          <circle cx="600" cy="250" r="150" fill="url(#finals-orb)" stroke="#5a96ff" stroke-opacity=".85" stroke-width="1.5"/>
+          <g class="finals-ico" transform="translate(542 146) scale(1.8)" filter="url(#finals-glow)">
+            <rect width="64" height="64" rx="14" fill="#2f4bff"/>
+            <path d="M18 14h12v24h16v12H18z" fill="#fff"/>
           </g>
-          <g fill="#22e6ff" filter="url(#finals-glow)">
-            <circle class="twinkle" cx="70" cy="250" r="3"/>
-            <circle class="twinkle" cx="150" cy="190" r="4"/>
-            <circle class="twinkle" cx="230" cy="220" r="2.5"/>
-            <circle class="twinkle" cx="300" cy="150" r="4.5"/>
-            <circle class="twinkle" cx="390" cy="180" r="3"/>
-            <circle class="twinkle" cx="470" cy="120" r="2.5"/>
-            <circle class="twinkle" cx="190" cy="120" r="2"/>
-            <circle class="twinkle" cx="260" cy="100" r="3"/>
-            <circle class="twinkle" cx="430" cy="240" r="2.5"/>
-            <circle class="twinkle" cx="510" cy="210" r="2"/>
-          </g>
+          <circle cx="700" cy="158" r="3.5" fill="#bfe0ff" filter="url(#finals-glow)"/>
         </g>
-        <g class="finals-bars" opacity=".8">
-          <rect class="bar" x="90" y="250" width="6" height="90" fill="url(#finals-bar)"/>
-          <rect class="bar" x="110" y="285" width="6" height="55" fill="url(#finals-bar)"/>
-          <rect class="bar" x="130" y="230" width="6" height="110" fill="url(#finals-bar)"/>
-          <rect class="bar" x="150" y="268" width="6" height="72" fill="url(#finals-bar)"/>
-          <rect class="bar" x="170" y="210" width="6" height="130" fill="url(#finals-bar)"/>
-          <rect class="bar" x="190" y="292" width="6" height="48" fill="url(#finals-bar)"/>
-          <rect class="bar" x="210" y="240" width="6" height="100" fill="url(#finals-bar)"/>
-          <rect class="bar" x="230" y="200" width="6" height="140" fill="url(#finals-bar)"/>
-          <rect class="bar" x="250" y="275" width="6" height="65" fill="url(#finals-bar)"/>
+        <rect y="250" width="1200" height="110" fill="url(#finals-water)"/>
+        <ellipse cx="600" cy="250" rx="180" ry="7" fill="none" stroke="#2f6fe0" stroke-opacity=".35"/>
+        <ellipse cx="600" cy="250" rx="250" ry="10" fill="none" stroke="#2f6fe0" stroke-opacity=".18"/>
+        <g class="finals-ripples">
+          <ellipse cx="600" cy="250" rx="190" ry="8" fill="none" stroke="#5a96ff" stroke-opacity=".4"/>
+          <ellipse cx="600" cy="250" rx="260" ry="11" fill="none" stroke="#5a96ff" stroke-opacity=".2"/>
         </g>
       </svg>
-      <span class="finals-grid"></span>
-      <span class="finals-gauge"></span>
-      <div class="finals-hud">
-        <span class="finals-hud-kicker">Year in review</span>
-        <span class="finals-hud-year">2026</span>
-        <span class="finals-hud-sub">Finals // EOF</span>
-      </div>
-      <div class="finals-rail">
-        <span>Tur 2026.1</span>
-        <span>2026.2</span>
-        <span>2026.3</span>
-        <span>18 domains</span>
-        <span>332 modules</span>
-        <span>0.1.5.1</span>
-      </div>
+      <span class="finals-label">Loment // 2026</span>
+      <span class="finals-tag">Finals // EOF</span>
       <span class="finals-sweep"></span>
     </div>
     <p class="eyebrow">ブログ &middot; 2026-11-11</p>
