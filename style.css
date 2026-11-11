@@ -333,11 +333,14 @@ code {
 .tur3-banner::before {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='116' height='116' viewBox='0 0 116 116'%3E%3Crect x='9' y='9' width='42' height='42' rx='12' fill='%232f4bff' fill-opacity='0.13'/%3E%3Crect x='65' y='9' width='42' height='42' rx='12' fill='%231d2733' fill-opacity='0.055'/%3E%3Crect x='9' y='65' width='42' height='42' rx='12' fill='%231d2733' fill-opacity='0.055'/%3E%3Crect x='65' y='65' width='42' height='42' rx='12' fill='%232f4bff' fill-opacity='0.09'/%3E%3C/svg%3E");
   background-size: 116px 116px;
+  animation: tur3-drift-a 20s ease-in-out infinite alternate;
 }
 .tur3-banner::after {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='188' height='188' viewBox='0 0 188 188'%3E%3Crect x='10' y='12' width='58' height='58' rx='17' fill='%232f4bff' fill-opacity='0.08'/%3E%3Crect x='84' y='28' width='44' height='44' rx='13' fill='%231d2733' fill-opacity='0.045'/%3E%3Crect x='28' y='92' width='46' height='46' rx='14' fill='%231d2733' fill-opacity='0.05'/%3E%3Crect x='92' y='86' width='76' height='76' rx='22' fill='%232f4bff' fill-opacity='0.06'/%3E%3C/svg%3E");
   background-position: 19px 27px;
   background-size: 188px 188px;
+  animation: tur3-drift-b 26s ease-in-out infinite alternate,
+             tur3-breathe 11s ease-in-out infinite alternate;
 }
 .tur3-word {
   position: absolute;
@@ -348,6 +351,23 @@ code {
   letter-spacing: -0.035em;
   color: var(--ink);
   white-space: nowrap;
+  animation: tur3-word-in 760ms cubic-bezier(0.22, 0.61, 0.36, 1) 180ms backwards;
+}
+@keyframes tur3-drift-a {
+  from { background-position: 0 0; }
+  to   { background-position: 26px -18px; }
+}
+@keyframes tur3-drift-b {
+  from { background-position: 19px 27px; }
+  to   { background-position: -12px 8px; }
+}
+@keyframes tur3-word-in {
+  from { opacity: 0; transform: translate(18px, -50%); }
+  to   { opacity: 1; transform: translate(0, -50%); }
+}
+@keyframes tur3-breathe {
+  from { opacity: 0.62; }
+  to   { opacity: 1; }
 }
 @media (max-width: 560px) {
   .tur3-word { right: var(--s2); }
