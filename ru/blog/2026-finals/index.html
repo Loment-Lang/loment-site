@@ -1,0 +1,254 @@
+<!doctype html>
+<!-- translated-from: blog/2026-finals/index.html -->
+<!-- source-sha256: 823fb6cf5f3c1f32be77dc1f63356f40b5de33237bf14fe09c53d108ba0579f4 -->
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Финал 2026 года — Loment</title>
+<meta name="description" content="Заметка о конце года: что 2026 год действительно произвёл, что ещё открыто в Tur 2026.3 и что может означать «готово», когда единственный срок — календарь.">
+<link rel="icon" href="../../../mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=JetBrains+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../../../style.css?v=20261111a">
+<link rel="alternate" hreflang="en" href="https://loment-lang.github.io/loment-site/blog/2026-finals/">
+<link rel="alternate" hreflang="zh-Hans" href="https://loment-lang.github.io/loment-site/zh/blog/2026-finals/">
+<link rel="alternate" hreflang="ja" href="https://loment-lang.github.io/loment-site/ja/blog/2026-finals/">
+<link rel="alternate" hreflang="ru" href="https://loment-lang.github.io/loment-site/ru/blog/2026-finals/">
+<link rel="alternate" hreflang="es" href="https://loment-lang.github.io/loment-site/es/blog/2026-finals/">
+<link rel="alternate" hreflang="x-default" href="https://loment-lang.github.io/loment-site/blog/2026-finals/">
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="../../">
+      <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true">
+        <rect width="64" height="64" rx="14" fill="#2f4bff"/>
+        <path d="M18 14h12v24h16v12H18z" fill="#fff"/>
+      </svg>
+      Loment
+    </a>
+        <nav>
+      <a href="../../start/">Обучение</a>
+      <a href="../" aria-current="page">Блог</a>
+      <a href="../../examples/">Примеры</a>
+      <a href="../../playground/">Песочница</a>
+      <a href="../../standard/">Стандарт</a>
+      <a href="../../releases/">Хронология</a>
+      <details class="navmenu" name="bar">
+        <summary>Системы</summary>
+        <ul>
+          <li><a href="../../lgc/">LGC</a></li>
+          <li><a href="../../lvm/">LVM</a></li>
+          <li><a href="../../lompi/">lompi</a></li>
+          <li><a href="../../libl/">LibL</a></li>
+          <li><a href="../../lspe/">LSPE</a></li>
+        </ul>
+      </details>
+      <a href="https://github.com/Loment-Lang/loment">GitHub</a>
+    </nav>
+    <details class="lang" name="bar">
+      <summary>RU</summary>
+      <ul>
+        <li><a href="../../../blog/2026-finals/" hreflang="en">English</a></li>
+        <li><a href="../../../zh/blog/2026-finals/" hreflang="zh-Hans">简体中文</a></li>
+        <li><a href="../../../ja/blog/2026-finals/" hreflang="ja">日本語</a></li>
+        <li><a href="./" hreflang="ru" aria-current="true">Русский</a></li>
+        <li><a href="../../../es/blog/2026-finals/" hreflang="es">Español</a></li>
+      </ul>
+    </details>
+  </div>
+</header>
+
+<main id="main">
+
+<section class="head">
+  <div class="wrap">
+    <div class="finals-banner" aria-hidden="true">
+      <svg class="finals-scene" viewBox="0 0 1200 360" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <linearGradient id="finals-aurora-a" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#22e6ff" stop-opacity="0"/>
+            <stop offset=".45" stop-color="#22e6ff" stop-opacity=".55"/>
+            <stop offset="1" stop-color="#7a5cff" stop-opacity="0"/>
+          </linearGradient>
+          <linearGradient id="finals-aurora-b" x1="1" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#ff2fb3" stop-opacity="0"/>
+            <stop offset=".5" stop-color="#ff2fb3" stop-opacity=".45"/>
+            <stop offset="1" stop-color="#7a5cff" stop-opacity="0"/>
+          </linearGradient>
+          <linearGradient id="finals-bar" x1="0" y1="1" x2="0" y2="0">
+            <stop offset="0" stop-color="#22e6ff" stop-opacity=".05"/>
+            <stop offset=".6" stop-color="#22e6ff" stop-opacity=".55"/>
+            <stop offset="1" stop-color="#c8ff4d" stop-opacity=".9"/>
+          </linearGradient>
+          <filter id="finals-glow" x="-80%" y="-80%" width="260%" height="260%">
+            <feGaussianBlur stdDeviation="5" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <filter id="finals-soft" x="-40%" y="-40%" width="180%" height="180%">
+            <feGaussianBlur stdDeviation="30"/>
+          </filter>
+        </defs>
+        <rect width="1200" height="360" fill="#05060f"/>
+        <g class="finals-aurora" filter="url(#finals-soft)" opacity=".8">
+          <path d="M-100 270 C 170 90, 430 340, 690 150 S 1070 30, 1320 220" fill="none" stroke="url(#finals-aurora-a)" stroke-width="90"/>
+          <path d="M-80 80 C 230 220, 480 10, 760 200 S 1100 300, 1320 90" fill="none" stroke="url(#finals-aurora-b)" stroke-width="64"/>
+        </g>
+        <g class="finals-constellation" opacity=".7">
+          <g stroke="#22e6ff" stroke-opacity=".35" stroke-width="1">
+            <path d="M70 250 L 150 190 L 230 220 L 300 150 L 390 180 L 470 120"/>
+            <path d="M150 190 L 190 120 L 260 100 L 300 150"/>
+            <path d="M390 180 L 430 240 L 510 210"/>
+          </g>
+          <g fill="#22e6ff" filter="url(#finals-glow)">
+            <circle class="twinkle" cx="70" cy="250" r="3"/>
+            <circle class="twinkle" cx="150" cy="190" r="4"/>
+            <circle class="twinkle" cx="230" cy="220" r="2.5"/>
+            <circle class="twinkle" cx="300" cy="150" r="4.5"/>
+            <circle class="twinkle" cx="390" cy="180" r="3"/>
+            <circle class="twinkle" cx="470" cy="120" r="2.5"/>
+            <circle class="twinkle" cx="190" cy="120" r="2"/>
+            <circle class="twinkle" cx="260" cy="100" r="3"/>
+            <circle class="twinkle" cx="430" cy="240" r="2.5"/>
+            <circle class="twinkle" cx="510" cy="210" r="2"/>
+          </g>
+        </g>
+        <g class="finals-bars" opacity=".8">
+          <rect class="bar" x="90" y="250" width="6" height="90" fill="url(#finals-bar)"/>
+          <rect class="bar" x="110" y="285" width="6" height="55" fill="url(#finals-bar)"/>
+          <rect class="bar" x="130" y="230" width="6" height="110" fill="url(#finals-bar)"/>
+          <rect class="bar" x="150" y="268" width="6" height="72" fill="url(#finals-bar)"/>
+          <rect class="bar" x="170" y="210" width="6" height="130" fill="url(#finals-bar)"/>
+          <rect class="bar" x="190" y="292" width="6" height="48" fill="url(#finals-bar)"/>
+          <rect class="bar" x="210" y="240" width="6" height="100" fill="url(#finals-bar)"/>
+          <rect class="bar" x="230" y="200" width="6" height="140" fill="url(#finals-bar)"/>
+          <rect class="bar" x="250" y="275" width="6" height="65" fill="url(#finals-bar)"/>
+        </g>
+      </svg>
+      <span class="finals-grid"></span>
+      <span class="finals-gauge"></span>
+      <div class="finals-hud">
+        <span class="finals-hud-kicker">Year in review</span>
+        <span class="finals-hud-year">2026</span>
+        <span class="finals-hud-sub">Finals // EOF</span>
+      </div>
+      <div class="finals-rail">
+        <span>Tur 2026.1</span>
+        <span>2026.2</span>
+        <span>2026.3</span>
+        <span>18 domains</span>
+        <span>332 modules</span>
+        <span>0.1.5.1</span>
+      </div>
+      <span class="finals-sweep"></span>
+    </div>
+    <p class="eyebrow">Блог &middot; 2026-11-11</p>
+    <h1>Финал 2026 года</h1>
+    <p class="lede">
+      2026 год уже достаточно близок к своему концу, чтобы посмотреть на него целиком. Это
+      заметка о конце года: что год действительно произвёл, что ещё открыто и что может
+      означать «готово», когда единственный срок — календарь.
+    </p>
+    <p class="limit">
+      <strong>Это заметка о состоянии, а не релиз.</strong> Стабильный канал по-прежнему
+      0.1.5.1; тестовый билд Tur 2026.3 не закрыт. Здесь нет дат.
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Год на одной странице</h2>
+    <p class="body">
+      2026 год провёл проект от 0.1.4 к 0.1.5.1. Поверхностная грамматика стала двухуровневой
+      системой изданий: Tur 2026.1 заморожен, Tur 2026.2 закрыт в ноябре, а Tur 2026.3 —
+      открытая линия. Домены стали блоками с местом и временем жизни; LSPE получил четыре
+      части; заимствованные времена жизни пришли без аннотации времени жизни; store вырос до
+      332 модулей; Playground поместил эталонный компилятор во вкладку браузера; библиотеки
+      Java стали вызываемыми без JVM; горячее обновление стало вещью в форме релиза.
+    </p>
+    <p class="body">
+      Этот список — не счёт функций. Это форма года: язык перестал быть набором обещаний и
+      стал набором артефактов, которые можно проверить, слинковать и выпустить.
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Последний тестовый билд — всё ещё тестовый билд</h2>
+    <p class="body">
+      Второй полный тестовый билд Tur 2026.3 вышел. Он сводит заимствованные времена жизни и
+      расширенный store в одно дерево, и обе реализации компилятора читают одну поверхность.
+      Это самое близкое к финишной черте, что есть у издания, — и всё же контрольная точка,
+      а не финиш.
+    </p>
+    <p class="body">
+      Открытое не спрятано: <code>lifetime_manual</code> принимает маркер
+      <code>&amp;a T</code>, но более широкой поверхности аннотаций нет; расширяющие домены и
+      тело графовой модели остаются проектом; бэкенд wasm32 — проектная запись, а не бэкенд,
+      которым можно пользоваться.
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Что здесь значит «финал»</h2>
+    <p class="body">
+      Учебный год заканчивается экзаменами, потому что так говорит календарь. Язык — нет.
+      Издание закрывается, когда поверхность перестаёт двигаться и критерии зелёные, а не
+      когда приходит декабрь. Поэтому «финал 2026 года» — место остановиться и посмотреть,
+      а не заявление, что работа закончена.
+    </p>
+    <p class="body">
+      Честное высказывание о конце года уже, чем запуск: проект теперь можно описать на одной
+      странице, ничего не выдумывая. Это и есть планка для следующего года.
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Что осталось на скамейке</h2>
+    <p class="body">
+      Следующие линии уже записаны: бэкенд wasm32
+      (<a href="https://github.com/Loment-Lang/loment/blob/main/docs/313-loment-wasm32-backend.md">docs/313</a>),
+      следующий бета-выпуск 0.1.5.2, домены графов и расширений, а также пробелы store,
+      которые пока остаются веткой, а не релизом. Ни у одного нет даты.
+    </p>
+    <p class="body">
+      Предыдущая заметка о тестовом билде — <a href="../20261110-tur3-test-build-two/">здесь</a>;
+      Playground — <a href="../../playground/">здесь</a>. Остальное в репозитории.
+    </p>
+    <p class="caption">
+      Год — удобная единица, чтобы оглянуться, и плохая единица, чтобы объявить язык
+      завершённым. &mdash; <strong>Loment Dev Fujo</strong>
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Loment выпускается под лицензией MIT OR Apache-2.0. Программа — Fujo.</span>
+    <nav>
+      <a href="https://github.com/Loment-Lang/loment">Исходники</a>
+      <a href="https://github.com/Loment-Lang/loment/releases/latest">Релизы</a>
+      <a href="https://github.com/FujoJTOP/lompi">lompi</a>
+      <a href="https://loment.fandom.com/">Вики</a>
+      <a href="https://github.com/Loment-Lang/loment/issues">Проблемы</a>
+      <a class="mast" href="https://mastodon.social/@Loment" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z"/></svg>Mastodon</a>
+      <a class="mast" href="https://bsky.app/profile/loment.bsky.social" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364-3.136.521-5.919 1.517-2.244 5.449 3.944 4.011 5.42-1.005 6.237-3.242.653-1.79 1.03-2.81 1.03-2.81s.377 1.02 1.03 2.81c.817 2.237 2.293 7.253 6.237 3.242 3.675-3.932.892-4.928-2.244-5.449 2.67.296 5.568-.628 6.383-3.364.246-.829.624-5.789.624-6.479 0-.688-.139-1.86-.902-2.203-.659-.299-1.664-.621-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8z"/></svg>Bluesky</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>
