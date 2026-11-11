@@ -1,12 +1,12 @@
 <!doctype html>
 <!-- translated-from: blog/2026-finals/index.html -->
-<!-- source-sha256: f8cf49d749ec6d16de47f1d837aeceba9bb927e8972db44346b016cfa2589881 -->
+<!-- source-sha256: 48cbf3a26b08e29b0fdbc3fe8af0512ddf48bd5def7ca86e03940103eea38b6a -->
 <html lang="zh-Hans">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>2026年的终点 — Loment</title>
-<meta name="description" content="一篇年终笔记：2026 实际产出了什么，Tur 2026.3 还开着什么，以及当日历是唯一的截止日期时，完成还能是什么意思。">
+<meta name="description" content="2026 年尾计划：0.1.5.2 正式版、0.1.5.3 首个测试版本、更好的在线编译，以及下一轮生命周期与 GC 工作。">
 <link rel="icon" href="../../../mark.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -68,7 +68,7 @@
 
 <section class="head">
   <div class="wrap">
-    <div class="finals-banner" aria-hidden="true">
+<div class="finals-banner" aria-hidden="true">
       <svg class="finals-scene" viewBox="0 0 1200 360" preserveAspectRatio="xMidYMid slice">
         <defs>
           <radialGradient id="finals-orb" cx="50%" cy="72%" r="58%">
@@ -126,44 +126,103 @@
     <p class="eyebrow">博客 &middot; 2026-11-11</p>
     <h1>2026年的终点</h1>
     <p class="lede">
-      2026 已经近到可以当成一个整体来看。这是一篇年终笔记：这一年实际产出了什么，什么还开着，
-      以及当日历是唯一的截止日期时，“完成”还能是什么意思。
+      2026 正在收尾，最后一段时间有一份明确的计划：0.1.5.2 正式版、0.1.5.3 的首个测试版本、
+      更好的在线编译，以及生命周期与 GC 时机的又一轮优化。这是那份计划的详细版：这一年实际
+      建成了什么、日历翻页前会发什么、以及什么仍然开着。
     </p>
     <p class="limit">
-      <strong>这是状态笔记，不是发布。</strong>稳定通道仍是 0.1.5.1；Tur 2026.3 的测试版本
-      没有封版。这里没有任何日期。
+      <strong>这是计划，不是发布说明。</strong>今天稳定通道仍是 0.1.5.1。顺序是定的，日期
+      不是。“正式版”指的是带标签、带签名、能被 Stable 通道指向的版本，不表示每个设计项都已
+      收口。
     </p>
   </div>
 </section>
 
 <section class="sec">
   <div class="wrap">
-    <h2>一年，一页</h2>
+    <h2>2026 实际落到了哪里</h2>
     <p class="body">
       2026 把项目从 0.1.4 推到 0.1.5.1。表层语法变成两级版次：Tur 2026.1 已冻结，
-      Tur 2026.2 在十一月封版，Tur 2026.3 是开着的那条线。域变成了带位置与生命周期的块；
-      LSPE 四件套齐了；借用生命周期不需要生命周期标注；store 长到 332 个模块；在线编译
-      把参考编译器放进浏览器标签页；Java 库不需要 JVM 就能调用；热更新成了发布形态的东西。
+      Tur 2026.2 在十一月封版，Tur 2026.3 是开着的那条线。这不是一次外观上的版本号变化。
+      它意味着一个文件可以钉住自己写给哪一版读，而最新语法可以前进，不会悄悄改掉旧产物。
     </p>
     <p class="body">
-      这份清单不是功能计数。它是这一年的形状：语言从一组承诺，变成了一组可以检查、链接、
-      发布的产物。
+      域变成了带位置与生命周期的块：走进去，域开始；离开，域结束。十八种域全部落地，
+      <code>domain:for</code> 能遍历位置；树与图的边也成了语法（<code>child_of</code>、
+      <code>couple</code>、<code>mutex</code>）。LSPE v2 以四件套的形式到来：质疑器
+      （E1–E8）、反问器（Q001–Q013）、LSPC 预检表，以及每个站点带证明哈希、带
+      <code>.lspe</code> 旁挂的台账。
+    </p>
+    <p class="body">
+      借用生命周期在没有生命周期语法的情况下落地。<code>&amp;T</code> 与
+      <code>&amp;mut T</code> 在形参、返回、结构体字段与泛型实参里都是一等类型；从
+      <code>tur2026.3</code> 起 <code>lifetime_auto</code> 是默认，常见情形不需要标注。
+      自举编译器在 2026-11-08 跟上：它不再因为见到借用类型本身发 E041，E041 只在区域不
+      成立时出现。<code>lgc</code> 让收集器有了时钟：<code>lgc start(10ms) { … }</code>
+      打开带协作式预算的收集窗口，<code>lgc end;</code> 暂停；<code>no_gc</code> 加
+      <code>lgc</code> 是 E039，因为没有收集器可控制。
+    </p>
+    <p class="body">
+      store 长到 13 个包、332 个模块、2791 个公开函数。最近一批补上了 ChaCha20、
+      Poly1305、AEAD、AES-CTR/GCM、x25519 与 ed25519，带 <code>SCM_RIGHTS</code> 的
+      AF_UNIX，TLS 1.3 客户端核心，事件循环、原子文件操作、有界 channel、任务队列、
+      小型 HTTP 服务器，以及一份 Windows 声明面。在线编译把参考编译器与 LVM 放进了浏览器
+      标签页；Java 库不需要 JVM 就能调用；热更新成了发布形态的东西；wasm32 从愿望变成了
+      一份设计记录。
+    </p>
+    <p class="body">
+      这就是一年，一页：语言从一组承诺，变成了一组可以检查、链接、发布的产物。
     </p>
   </div>
 </section>
 
 <section class="sec">
   <div class="wrap">
-    <h2>最后一个测试版本仍然是测试版本</h2>
+    <h2>最后一段有顺序</h2>
     <p class="body">
-      Tur 2026.3 的第二个完整测试版本已经出来。它让借用生命周期与扩充后的 store 进入同一棵
-      树，两套编译器读同一套表层。它是这个版次最接近终点线的东西 —— 但仍然是一个检查点，
-      不是终点。
+      2026 年尾的计划刻意很短。第一步，<strong>0.1.5.2 成为正式版</strong>。beta 线已经
+      带着域、LSPE v2、生命周期维度、扩充后的 store 与在线编译快照。升正式版不是再加一个
+      功能：它是通道、产物、签名与说明彼此对齐的那个点。只有两套实现读同一套表层、判据全绿，
+      稳定通道才会移动。
     </p>
     <p class="body">
-      还开着的东西没有被藏起来：<code>lifetime_manual</code> 接受 <code>&amp;a T</code>
-      标记，但更宽的标注面还没有；扩展域与图模型的实体部分仍是设计；wasm32 后端是一份设计
-      记录，不是你能用的后端。
+      然后，<strong>0.1.5.3 以首个测试版本开版</strong>。这是测试版本，不是发布：下一条线
+      在这里变得可以运行，仍然只是设计的东西在这里拿到第一副可执行的形状。顺序很重要。先有
+      稳定的 0.1.5.2，下一个版本才有固定的地板；测试版本跑到自己稳定通道前面，会教出错误的
+      一课。
+    </p>
+    <p class="body">
+      “正式版”在这里意思很窄。它指标签、签名产物、Stable 通道能指向的那一版，以及一份写明
+      什么不在里面的发布说明。它不表示每个开着的设计项都已收口。开着的清单在最后一节，
+      它会一直开着，直到对应的判据出现。
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>同一段时间里的三条线</h2>
+    <h3>在线编译</h3>
+    <p class="body">
+      在线编译是大多数人第一次见到这个编译器的地方，所以下一轮从它开始。目标很具体：更快的
+      首次加载与更小的快照；一个能保持行号、语法、诊断与选区正确的编辑器；更清楚的
+      Run、Check、Build、IR、AST、Potato 与机器码动作；以及能在手机上用的布局。两个通道
+      保留：Beta 跟 <code>main</code>，Stable 指向已发布的标签。在线编译不上传源码，也不长
+      出一个服务器。
+    </p>
+    <h3>生命周期</h3>
+    <p class="body">
+      生命周期已经进来，但表层还没做完。下一轮把 <code>lifetime_manual</code> 从
+      <code>&amp;a T</code> 标记往外扩，把借用作为泛型实参带到两套实现，并让诊断说出
+      来源、行号与路径，而不是只打一句“lifetime error”。零标注的情形仍是默认；显式的情形
+      应当少而清楚，而不是第二种方言。
+    </p>
+    <h3>GC 时机</h3>
+    <p class="body">
+      <code>lgc</code> 给了收集器一个时钟；下一件事是让这个时钟可预测。预算管的是
+      <em>开始</em>一次收集，不抢占已经在跑的收集。下一轮收紧预算语义，在四层梯下量收集器，
+      并把每一档在负载下承诺什么写下来。<code>no_gc</code> 仍是真模式，不是陷阱：
+      <code>no_gc</code> 加 <code>lgc</code> 仍然是 E039。
     </p>
   </div>
 </section>
@@ -176,19 +235,20 @@
       不是十二月到了就算。所以“2026 年的终点”是一个停下来看一眼的地方，不是宣布工作结束。
     </p>
     <p class="body">
-      诚实的年终陈述比发布会窄：这个项目现在可以在一页里被描述清楚，而不用编造任何东西。
-      这就是下一年的门槛。
+      0.1.5.2 正式版是一个带标签的检查点。0.1.5.3 的首个测试版本是下一条线开始移动。
+      两者都不封 Tur 2026.3，也都不让开着的清单消失。诚实的年终陈述比发布会窄：这个项目
+      现在可以在一页里被描述清楚，而不用编造任何东西；下一页也已经写好了。
     </p>
   </div>
 </section>
 
 <section class="sec">
   <div class="wrap">
-    <h2>还在长凳上的东西</h2>
+    <h2>仍然开着的</h2>
     <p class="body">
-      下一条线已经写下来了：wasm32 后端
-      （<a href="https://github.com/Loment-Lang/loment/blob/main/docs/313-loment-wasm32-backend.md">docs/313</a>）、
-      0.1.5.2 的下一个 beta、图与扩展域，以及仍然只是一个分支而不是一次发布的 store 缺口。
+      清单没有被藏起来。<code>lifetime_manual</code> 还需要更宽的标注面。扩展域与图模型的
+      实体部分仍是设计。wasm32 后端是一份设计记录，不是你能用的后端。store 的平台与协议边缘
+      被写成边界；Windows 模块在等 PE FFI。五个 store 缺口仍然是一个分支，不是一次发布。
       它们都没有日期。
     </p>
     <p class="body">

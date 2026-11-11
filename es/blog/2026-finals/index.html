@@ -1,12 +1,12 @@
 <!doctype html>
 <!-- translated-from: blog/2026-finals/index.html -->
-<!-- source-sha256: f8cf49d749ec6d16de47f1d837aeceba9bb927e8972db44346b016cfa2589881 -->
+<!-- source-sha256: 48cbf3a26b08e29b0fdbc3fe8af0512ddf48bd5def7ca86e03940103eea38b6a -->
 <html lang="es">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>El final de 2026 — Loment</title>
-<meta name="description" content="Una nota de fin de año: qué produjo realmente 2026, qué sigue abierto en Tur 2026.3 y qué puede significar «terminado» cuando el calendario es el único plazo.">
+<meta name="description" content="El plan para el final de 2026: 0.1.5.2 oficial, la primera compilación de prueba de 0.1.5.3, un Playground mejor y el siguiente trabajo en tiempos de vida y GC.">
 <link rel="icon" href="../../../mark.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -68,7 +68,7 @@
 
 <section class="head">
   <div class="wrap">
-    <div class="finals-banner" aria-hidden="true">
+<div class="finals-banner" aria-hidden="true">
       <svg class="finals-scene" viewBox="0 0 1200 360" preserveAspectRatio="xMidYMid slice">
         <defs>
           <radialGradient id="finals-orb" cx="50%" cy="72%" r="58%">
@@ -126,51 +126,122 @@
     <p class="eyebrow">Blog &middot; 2026-11-11</p>
     <h1>El final de 2026</h1>
     <p class="lede">
-      2026 está lo bastante cerca de su final como para mirarlo entero. Esta es una nota de fin
-      de año: qué produjo realmente el año, qué sigue abierto y qué puede significar «terminado»
-      cuando el calendario es el único plazo.
+      2026 se está cerrando y el último tramo tiene un plan concreto: la versión oficial 0.1.5.2,
+      la primera compilación de prueba de 0.1.5.3, un Playground mejor y otra pasada por los
+      tiempos de vida y el tiempo de GC. Esta es la versión larga del plan: qué construyó
+      realmente el año, qué sale antes de que cambie el calendario y qué sigue abierto.
     </p>
     <p class="limit">
-      <strong>Es una nota de estado, no una versión.</strong> El canal estable sigue en 0.1.5.1;
-      la compilación de prueba de Tur 2026.3 no está cerrada. Aquí no hay fechas.
+      <strong>Es un plan, no una nota de versión.</strong> Hoy el canal estable sigue en 0.1.5.1.
+      El orden está fijado; el día, no. «Oficial» significa un canal etiquetado y firmado, no que
+      todos los elementos de diseño estén cerrados.
     </p>
   </div>
 </section>
 
 <section class="sec">
   <div class="wrap">
-    <h2>El año en una página</h2>
+    <h2>Dónde aterrizó realmente 2026</h2>
     <p class="body">
       2026 llevó el proyecto de 0.1.4 a 0.1.5.1. La gramática de superficie se convirtió en un
       sistema de ediciones de dos niveles: Tur 2026.1 está congelada, Tur 2026.2 se cerró en
-      noviembre y Tur 2026.3 es la línea abierta. Los dominios se volvieron bloques con un lugar
-      y una vida; LSPE ganó sus cuatro partes; los tiempos de préstamo llegaron sin anotación de
-      tiempo de vida; el store creció a 332 módulos; el Playground puso el compilador de
-      referencia en una pestaña del navegador; las bibliotecas Java se pudieron llamar sin una
-      JVM; la actualización en caliente se volvió algo con forma de versión.
+      noviembre y Tur 2026.3 es la línea abierta. No es un cambio cosmético de número de versión.
+      Significa que un archivo puede fijar la lectura para la que fue escrito, y que la sintaxis
+      más nueva puede avanzar sin cambiar en silencio artefactos antiguos.
     </p>
     <p class="body">
-      Esa lista no es un recuento de funciones. Es la forma del año: el lenguaje dejó de ser un
-      conjunto de promesas y pasó a ser un conjunto de artefactos que se pueden comprobar,
-      enlazar y publicar.
+      Los dominios se volvieron bloques con un lugar y una vida: entras en un dominio, empieza;
+      sales, termina. Los dieciocho tipos ya se publican, y <code>domain:for</code> recorre
+      posiciones; las aristas de árboles y grafos también son sintaxis (<code>child_of</code>,
+      <code>couple</code>, <code>mutex</code>). LSPE v2 llegó en cuatro partes: el preguntador
+      (E1–E8), el contrapreguntador (Q001–Q013), la hoja de preflight LSPC y un libro con un hash
+      de prueba por sitio y un archivo lateral <code>.lspe</code>.
+    </p>
+    <p class="body">
+      Los tiempos de préstamo llegaron sin sintaxis de tiempos de vida. <code>&amp;T</code> y
+      <code>&amp;mut T</code> son tipos de primera clase en parámetros, retornos, campos de
+      estructura y argumentos genéricos; <code>lifetime_auto</code> es el valor por defecto desde
+      <code>tur2026.3</code>, y los casos comunes no necesitan anotación. El compilador
+      autoalojado se puso al día el 2026-11-08: ya no rechaza los tipos de préstamo por su nombre,
+      y E041 aparece solo cuando una región no se sostiene. <code>lgc</code> le dio un reloj al
+      recolector: <code>lgc start(10ms) { … }</code> abre una ventana de recolección con un
+      presupuesto cooperativo, <code>lgc end;</code> pausa, y <code>no_gc</code> con
+      <code>lgc</code> es E039 porque no hay recolector que controlar.
+    </p>
+    <p class="body">
+      El store creció a 13 paquetes, 332 módulos y 2791 funciones públicas. El último lote añadió
+      ChaCha20, Poly1305, AEAD, AES-CTR/GCM, x25519 y ed25519, AF_UNIX con
+      <code>SCM_RIGHTS</code>, un núcleo de cliente TLS 1.3, un bucle de eventos, operaciones de
+      archivo atómicas, un channel acotado, una cola de trabajos, un servidor HTTP pequeño y una
+      superficie de declaración de Windows. El Playground puso el compilador de referencia y la
+      LVM en una pestaña del navegador; las bibliotecas Java se pudieron llamar sin una JVM; la
+      actualización en caliente se volvió algo con forma de versión; wasm32 pasó de deseo a
+      registro de diseño.
+    </p>
+    <p class="body">
+      Eso es el año en una página: el lenguaje dejó de ser un conjunto de promesas y pasó a ser un
+      conjunto de artefactos que se pueden comprobar, enlazar y publicar.
     </p>
   </div>
 </section>
 
 <section class="sec">
   <div class="wrap">
-    <h2>La última compilación de prueba sigue siendo una compilación de prueba</h2>
+    <h2>El último tramo tiene un orden</h2>
     <p class="body">
-      La segunda compilación de prueba completa de Tur 2026.3 ya salió. Pone los tiempos de
-      préstamo y el store ampliado en el mismo árbol, y las dos implementaciones del compilador
-      leen la misma superficie. Es lo más parecido a una meta que tiene la edición, y aun así es
-      un punto de control, no un final.
+      El plan para el final de 2026 es deliberadamente corto. Primero, <strong>0.1.5.2 se convierte
+      en la versión oficial</strong>. La línea beta ya lleva el trabajo de dominios, LSPE v2, la
+      dimensión de tiempos de vida, el store ampliado y la instantánea del Playground. Promover no
+      es añadir una función: es el punto en que el canal, los artefactos, las firmas y las notas
+      coinciden. El canal estable se mueve solo cuando las dos implementaciones leen la misma
+      superficie y los criterios están en verde.
     </p>
     <p class="body">
-      Lo que sigue abierto no se esconde: <code>lifetime_manual</code> acepta la marca
-      <code>&amp;a T</code>, pero la superficie de anotaciones más amplia no está; los dominios
-      de extensión y el cuerpo sólido del modelo de grafo siguen siendo diseño; el backend
-      wasm32 es un registro de diseño, no un backend que se pueda usar.
+      Después, <strong>0.1.5.3 abre con su primera compilación de prueba</strong>. Es una
+      compilación de prueba, no una versión: es donde la siguiente línea se vuelve ejecutable y
+      donde lo que todavía es diseño obtiene su primera forma ejecutable. El orden importa. Una
+      0.1.5.2 estable primero le da a la siguiente compilación un suelo fijo; una compilación de
+      prueba que corre por delante de su propio canal estable enseña la lección equivocada.
+    </p>
+    <p class="body">
+      «Oficial» tiene aquí un significado estrecho. Significa la etiqueta, los artefactos firmados,
+      el canal al que puede apuntar el lado Stable del Playground y una nota de versión que dice
+      qué no incluye. No significa que cada elemento de diseño abierto esté cerrado. La lista
+      abierta está en la última sección, y sigue abierta hasta que existan sus criterios.
+    </p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Tres frentes para las mismas semanas</h2>
+    <h3>Playground</h3>
+    <p class="body">
+      El Playground es el primer lugar donde la mayoría de la gente conoce el compilador, así que
+      recibe la siguiente pasada. Los objetivos son concretos: una primera carga más rápida y una
+      instantánea más pequeña; un editor que mantenga correctos los números de línea, la sintaxis,
+      los diagnósticos y la selección; acciones más claras para Run, Check, Build, IR, AST, Potato
+      y código máquina; y una disposición que funcione en un teléfono. Los dos canales se quedan.
+      Beta sigue a <code>main</code>; Stable apunta a la etiqueta publicada. El Playground nunca
+      sube el código y no crece un servidor.
+    </p>
+    <h3>Tiempos de vida</h3>
+    <p class="body">
+      Los tiempos de vida están dentro, pero la superficie no está terminada. La siguiente pasada
+      amplía <code>lifetime_manual</code> más allá de la marca <code>&amp;a T</code>, lleva los
+      préstamos en argumentos genéricos a las dos implementaciones y hace que los diagnósticos
+      nombren la fuente, la línea y el camino en vez de imprimir un «lifetime error» pelado. Los
+      casos sin anotación siguen siendo el valor por defecto; los casos explícitos deben ser raros
+      y obvios, no un segundo dialecto.
+    </p>
+    <h3>Tiempo de GC</h3>
+    <p class="body">
+      <code>lgc</code> le dio un reloj al recolector; el siguiente trabajo es hacer ese reloj
+      predecible. El presupuesto limita <em>empezar</em> una recolección, no interrumpe una que ya
+      está en marcha. La siguiente pasada ajusta la semántica del presupuesto, mide el recolector
+      bajo la escalera de cuatro niveles y escribe qué promete cada nivel bajo carga.
+      <code>no_gc</code> sigue siendo un modo real, no una trampa: <code>no_gc</code> con
+      <code>lgc</code> sigue siendo E039.
     </p>
   </div>
 </section>
@@ -179,26 +250,31 @@
   <div class="wrap">
     <h2>Qué significa «final» aquí</h2>
     <p class="body">
-      Un año escolar termina con exámenes porque el calendario lo dice. Un lenguaje, no. La
-      edición se cierra cuando la superficie deja de moverse y los criterios están en verde, no
-      cuando llega diciembre. Así que «el final de 2026» es un lugar donde detenerse y mirar, no
-      una declaración de que el trabajo terminó.
+      Un año escolar termina con exámenes porque el calendario lo dice. Un lenguaje, no. La edición
+      se cierra cuando la superficie deja de moverse y los criterios están en verde, no cuando
+      llega diciembre. Así que «el final de 2026» es un lugar donde detenerse y mirar, no una
+      declaración de que el trabajo terminó.
     </p>
     <p class="body">
-      La afirmación honesta de fin de año es más estrecha que un lanzamiento: el proyecto ahora
-      se puede describir en una página sin inventar nada. Esa es la vara para el próximo año.
+      La 0.1.5.2 oficial es un punto de control con etiqueta. La primera compilación de prueba de
+      0.1.5.3 es la siguiente línea empezando a moverse. Ninguna cierra Tur 2026.3, y ninguna hace
+      desaparecer la lista abierta. La afirmación honesta de fin de año es más estrecha que un
+      lanzamiento: el proyecto ahora se puede describir en una página sin inventar nada, y la
+      siguiente página ya está escrita.
     </p>
   </div>
 </section>
 
 <section class="sec">
   <div class="wrap">
-    <h2>Lo que queda en el banco</h2>
+    <h2>Lo que sigue abierto</h2>
     <p class="body">
-      Las siguientes líneas ya están escritas: el backend wasm32
-      (<a href="https://github.com/Loment-Lang/loment/blob/main/docs/313-loment-wasm32-backend.md">docs/313</a>),
-      la siguiente beta de 0.1.5.2, los dominios de grafo y extensión, y los huecos del store que
-      todavía son una rama y no una versión. Ninguna tiene fecha.
+      La lista no está escondida. <code>lifetime_manual</code> todavía necesita su superficie de
+      anotaciones más amplia. Los dominios de extensión y el cuerpo sólido del modelo de grafo
+      siguen siendo diseño. El backend wasm32 es un registro de diseño, no un backend que se pueda
+      usar. Los bordes de plataforma y protocolo del store están escritos como límites; los módulos
+      de Windows esperan PE FFI. Los cinco huecos del store siguen siendo una rama y no una versión.
+      Ninguno tiene fecha.
     </p>
     <p class="body">
       La nota anterior de la compilación de prueba está <a href="../20261110-tur3-test-build-two/">aquí</a>;
