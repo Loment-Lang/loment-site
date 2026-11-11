@@ -124,87 +124,81 @@
     <p class="eyebrow">Blog &middot; 2026-11-11</p>
     <h1>The Finals Of 2026</h1>
     <p class="lede">
-      2026 is closing, and the last stretch has a concrete plan: the 0.1.5.2 official
-      release, the first test build of 0.1.5.3, a better Playground, and another pass over
-      lifetimes and GC timing. This is the long version of that plan — what the year
-      actually built, what ships before the calendar turns, and what remains open.
+      I am spending the last weeks of 2026 on a short list: 0.1.5.2 as the official
+      release, the first test build of 0.1.5.3, a Playground that feels more like a tool
+      than a demo, and another pass over lifetimes and GC timing. This is the long version
+      of that list.
     </p>
     <p class="limit">
-      <strong>This is a plan, not a release note.</strong> 0.1.5.1 is still the stable
-      channel today. The order is fixed; the day is not. “Official” means a tagged, signed
-      channel, not that every design item is finished.
+      <strong>This is the plan I am working to.</strong> 0.1.5.1 is still the stable channel
+      today. I have an order; I do not have a day.
     </p>
   </div>
 </section>
 
 <section class="sec">
   <div class="wrap">
-    <h2>Where 2026 actually landed</h2>
+    <h2>Where 2026 landed</h2>
     <p class="body">
-      2026 moved the project from 0.1.4 to 0.1.5.1. The surface grammar became a two-level
-      edition system: Tur 2026.1 is frozen, Tur 2026.2 closed in November, and Tur 2026.3
-      is the open line. That is not a cosmetic version bump. It means a file can pin the
-      reading it was written for, and the newest syntax can move without silently changing
-      older artifacts.
+      2026 carried the project from 0.1.4 to 0.1.5.1. The surface grammar now has three
+      editions: Tur 2026.1 is frozen, Tur 2026.2 closed in November, and Tur 2026.3 is the
+      one I am still moving. A file can pin the reading it was written for. That was the
+      point of the whole exercise.
     </p>
     <p class="body">
-      Domains became blocks with a place and a lifetime: you enter a domain, the domain
-      starts; you leave, it ends. All eighteen kinds now ship, and <code>domain:for</code>
-      walks positions; tree and graph edges became syntax too (<code>child_of</code>,
-      <code>couple</code>, <code>mutex</code>). LSPE v2 arrived as four parts: the
+      Domains became blocks you enter and leave: the domain starts when you walk in and
+      ends when you walk out. All eighteen kinds ship, <code>domain:for</code> walks
+      positions, and tree and graph edges became syntax (<code>child_of</code>,
+      <code>couple</code>, <code>mutex</code>). LSPE v2 arrived in four parts: the
       questioner (E1–E8), the counter-asker (Q001–Q013), the LSPC pre-flight sheet, and a
       ledger with a proof hash per site and a <code>.lspe</code> sidecar.
     </p>
     <p class="body">
-      Borrow lifetimes arrived without a lifetime syntax. <code>&amp;T</code> and
+      Borrow lifetimes landed without a lifetime syntax. <code>&amp;T</code> and
       <code>&amp;mut T</code> are first-class in parameters, returns, struct fields and
       generic arguments; <code>lifetime_auto</code> is the default from
       <code>tur2026.3</code> on, and the common cases need no annotation. The self-hosted
-      compiler caught up on 2026-11-08: it no longer rejects borrow types by name, and E041
-      appears only when a region does not hold. <code>lgc</code> gave the collector a clock:
-      <code>lgc start(10ms) { … }</code> opens a collection window with a cooperative
-      budget, <code>lgc end;</code> pauses, and <code>no_gc</code> plus <code>lgc</code> is
-      E039 because there is no collector to control.
+      compiler caught up on 2026-11-08: E041 now appears only when a region does not hold.
+      <code>lgc</code> gave the collector a clock: <code>lgc start(10ms) { … }</code> opens
+      a collection window with a cooperative budget, <code>lgc end;</code> pauses, and
+      <code>no_gc</code> plus <code>lgc</code> is E039 because there is no collector to
+      control.
     </p>
     <p class="body">
-      The store grew to 332 modules across 13 packages and 2791 public functions. The last
-      batch added ChaCha20, Poly1305, AEAD, AES-CTR/GCM, x25519 and ed25519, AF_UNIX with
-      <code>SCM_RIGHTS</code>, a TLS 1.3 client core, an event loop, atomic file operations,
-      a bounded channel, a job queue, a small HTTP server and a Windows declaration surface.
-      The Playground put the reference compiler and the LVM in a browser tab; Java libraries
-      became callable without a JVM; hot update became a release-shaped thing; wasm32 became
-      a design record instead of a wish.
+      The store reached 13 packages, 332 modules and 2791 public functions. I added ChaCha20,
+      Poly1305, AEAD, AES-CTR/GCM, x25519 and ed25519, AF_UNIX with <code>SCM_RIGHTS</code>,
+      a TLS 1.3 client core, an event loop, atomic file operations, a bounded channel, a job
+      queue, a small HTTP server and a Windows declaration surface. The Playground put the
+      reference compiler and the LVM in a browser tab; Java libraries became callable
+      without a JVM; hot update became a release-shaped thing; wasm32 became a design record.
     </p>
     <p class="body">
-      That is the year in one page: the language stopped being a set of promises and became
-      a set of artifacts that can be checked, linked and shipped.
+      I keep the open list in the last section. I would rather show it than round it off.
     </p>
   </div>
 </section>
 
 <section class="sec">
   <div class="wrap">
-    <h2>The last stretch has an order</h2>
+    <h2>The order for the last stretch</h2>
     <p class="body">
-      The plan for the end of 2026 is deliberately short. First, <strong>0.1.5.2 becomes the
-      official release</strong>. The beta line already carries the domain work, LSPE v2, the
-      lifetime dimension, the expanded store and the Playground snapshot. Promotion is not a
-      new feature: it is the point where the channel, the artifacts, the signatures and the
-      notes agree with each other. The stable channel moves only when both implementations
-      read the same surface and the criteria are green.
+      The order is short. <strong>0.1.5.2 becomes the official release first.</strong> The
+      beta line already carries the domains, LSPE v2, the lifetime dimension, the expanded
+      store and the Playground snapshot. Promotion is the week where the channel, the
+      artifacts, the signatures and the notes have to agree. I move the stable channel when
+      both implementations read the same surface and the criteria are green.
     </p>
     <p class="body">
-      Then, <strong>0.1.5.3 opens with its first test build</strong>. This is a test build,
-      not a release: it is where the next line becomes runnable, and where the things that
-      are still design get their first executable shape. The order matters. A stable 0.1.5.2
-      first gives the next build a fixed floor; a test build that runs ahead of its own
-      stable channel teaches the wrong lesson.
+      After that, <strong>0.1.5.3 opens with its first test build</strong>. I want the next
+      line runnable before I call the year done. The test build is where the things that are
+      still design get their first executable shape. I am keeping the order because a stable
+      floor makes the next build easier to judge.
     </p>
     <p class="body">
-      “Official” has a narrow meaning here. It means the tag, the signed artifacts, the
-      channel that the Playground's Stable side can point at, and a release note that says
-      what is not in it. It does not mean that every open design item is closed. The open
-      list is in the last section, and it stays open until its criteria exist.
+      Maybe the most useful meaning of “official” is narrow: a tag, signed artifacts, a
+      channel the Playground's Stable side can point at, and a note that says what is
+      missing. Some open design items will still be open after it. The list stays in the
+      last section until its criteria exist.
     </p>
   </div>
 </section>
@@ -214,29 +208,27 @@
     <h2>Three tracks for the same weeks</h2>
     <h3>Playground</h3>
     <p class="body">
-      The Playground is the first place most people meet the compiler, so it gets the next
-      pass. The goals are concrete: a faster first load and a smaller snapshot; an editor
+      I am spending the next weeks on the Playground because it is the first place most
+      people meet the compiler. I want a faster first load and a smaller snapshot; an editor
       that keeps line numbers, syntax, diagnostics and selections correct; clearer actions
       for Run, Check, Build, IR, AST, Potato and machine code; and a layout that works on a
-      phone. The two channels stay. Beta follows <code>main</code>; Stable points at the
-      released tag. The Playground never uploads source, and it does not grow a server.
+      phone. Beta will keep following <code>main</code>; Stable will keep pointing at the
+      released tag. No uploads, no server.
     </p>
     <h3>Lifetimes</h3>
     <p class="body">
-      Lifetimes are in, but the surface is not finished. The next pass widens
-      <code>lifetime_manual</code> beyond the <code>&amp;a T</code> marker, brings borrows
-      in generic arguments to both implementations, and makes the diagnostics name the
-      source, the line and the path instead of printing a bare “lifetime error”. The
-      zero-annotation cases stay the default; the explicit cases should be rare and obvious,
-      not a second dialect.
+      I am widening <code>lifetime_manual</code> past the <code>&amp;a T</code> marker,
+      bringing borrows in generic arguments to both implementations, and making the
+      diagnostics name the source, the line and the path. Maybe the zero-annotation cases
+      stay the default; the explicit cases should stay rare and obvious.
     </p>
     <h3>GC timing</h3>
     <p class="body">
-      <code>lgc</code> gave the collector a clock; the next work is making that clock
-      predictable. The budget gates <em>starting</em> a collection, not preempting one already
-      running. The next pass tightens the budget semantics, measures the collector under the
-      four-tier ladder, and writes down what each tier promises under load. <code>no_gc</code>
-      stays a real mode, not a trap: <code>no_gc</code> plus <code>lgc</code> remains E039.
+      I am tightening the <code>lgc</code> budget semantics, measuring the collector on the
+      four-tier ladder, and writing down what each tier promises under load. The budget
+      gates starting a collection; it does not preempt one already running.
+      <code>no_gc</code> stays a real mode, and <code>no_gc</code> plus <code>lgc</code>
+      stays E039.
     </p>
   </div>
 </section>
@@ -245,17 +237,14 @@
   <div class="wrap">
     <h2>What “finals” means here</h2>
     <p class="body">
-      A school year ends with finals because the calendar says so. A language does not. The
-      edition is closed when the surface stops moving and the criteria are green, not when
-      December arrives. So “the finals of 2026” is a place to stop and look, not a
-      declaration that the work is over.
+      A school year ends with finals because the calendar says so. A language ends
+      differently. I close an edition when the surface stops moving and the criteria are
+      green. December is a good time to stop and look; it is a bad reason to declare the
+      work finished.
     </p>
     <p class="body">
-      0.1.5.2 official is a checkpoint with a tag. 0.1.5.3's first test build is the next
-      line starting to move. Neither one closes Tur 2026.3, and neither one makes the open
-      list disappear. The honest year-end statement is narrower than a launch: the project
-      can now be described in one page without inventing anything, and the next page is
-      already written.
+      Maybe the honest year-end statement is smaller than a launch: I can describe the
+      project in one page without inventing anything. That is the bar I want for next year.
     </p>
   </div>
 </section>
@@ -264,11 +253,11 @@
   <div class="wrap">
     <h2>What remains open</h2>
     <p class="body">
-      The list is not hidden. <code>lifetime_manual</code> still needs its wider annotation
-      surface. Extension domains and the solid body of the graph model remain design. The
-      wasm32 backend is a design record, not a backend you can use. The store's platform and
-      protocol edges are written as boundaries; the Windows modules wait for PE FFI. The five
-      store gaps are still a branch rather than a release. None of them has a date.
+      The list is still here. <code>lifetime_manual</code> needs a wider annotation surface.
+      Extension domains and the solid body of the graph model are still design. The wasm32
+      backend is a design record; I cannot use it as a backend yet. The store's platform and
+      protocol edges are boundaries; the Windows modules wait for PE FFI. The five store gaps
+      are still only a branch. I have no dates for any of them.
     </p>
     <p class="body">
       The previous test-build note is
