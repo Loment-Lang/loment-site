@@ -1,6 +1,6 @@
 <!doctype html>
 <!-- translated-from: playground/index.html -->
-<!-- source-sha256: a43056bf6ff7b933a9ed2973928e68fc41476ae39580dad17d3278c2b067a5b7 -->
+<!-- source-sha256: e8f3ce1341aa1f756315513dbdfdc293b8f9b236aff5ff9361844eec51cb43e6 -->
 <html lang="zh-Hans">
 <head>
 <meta charset="utf-8">
@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=JetBrains+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="../../style.css?v=20261111a">
+<link rel="stylesheet" href="../../style.css?v=20261111i">
 <link rel="alternate" hreflang="en" href="https://loment-lang.github.io/loment-site/playground/">
 <link rel="alternate" hreflang="zh-Hans" href="https://loment-lang.github.io/loment-site/zh/playground/">
 <link rel="alternate" hreflang="ja" href="https://loment-lang.github.io/loment-site/ja/playground/">
@@ -64,121 +64,164 @@
   </div>
 </header>
 
-<main id="main">
+<main id="main" class="pg-app">
 
-<section class="head">
-  <div class="wrap">
-    <h1>在线编译</h1>
-    <p class="lede">在这里写并运行 Loment。参考编译器与 LVM 解释器都在浏览器里运行；不用安装，也不向服务器发送任何内容。</p>
-  </div>
-</section>
+<div class="pg-app-head">
+  <h1>在线编译</h1>
+  <p class="pg-app-lede">一个标签页就是编译器：单文件，或带文件树的小项目。</p>
+</div>
 
-<section class="sec">
-  <div class="wrap">
-    <div class="pg-shell" id="pg"
-         data-ready="就绪"
-         data-loading-engine="正在加载引擎…"
-         data-loading-compiler="正在加载编译器…"
-         data-compiling="正在编译并运行…"
-         data-finished="完成"
-         data-finished-errors="完成（有错误）"
-         data-error="错误"
-         data-exit="退出码"
-         data-no-output="这份写法已经运行；当前子集没有文本输出。"
-         data-new-prompt="新程序的名称">
-      <div class="pg-toolbar">
-        <div class="pg-row">
-          <label class="pg-field">操作
-            <select id="pg-action">
-              <option value="run">运行</option>
-              <option value="check">检查</option>
-              <option value="build">构建</option>
-              <option value="ir">LLVM IR</option>
-              <option value="ast">AST</option>
-              <option value="potato">Potato</option>
-              <option value="asm">机器码</option>
-              <option value="wasm">Wasm</option>
-            </select>
-          </label>
-          <button id="pg-run" class="btn btn-solid" type="button">运行</button>
-          <label class="pg-field">语言
-            <select id="pg-lang">
-              <option value="loment" selected>Loment</option>
-              <option value="python">Python</option>
-              <option value="java">Java</option>
-              <option value="c">C</option>
-              <option value="cpp">C++</option>
-              <option value="csharp">C#</option>
-              <option value="go">Go</option>
-            </select>
-          </label>
-          <label class="pg-field">版次
-            <select id="pg-edition">
-              <option value="tur2026.3" selected>Tur 2026.3</option>
-              <option value="tur2026.2">Tur 2026.2</option>
-              <option value="tur2026.1">Tur 2026.1</option>
-            </select>
-          </label>
-          <label class="pg-field">目标
-            <select id="pg-target">
-              <option value="elf" selected>ELF</option>
-              <option value="pe">PE</option>
-            </select>
-          </label>
-        </div>
-        <div class="pg-row pg-row-2">
-          <label class="pg-field">通道
-            <select id="pg-channel">
-              <option value="beta" selected>Beta (0.1.5.2.beta.2)</option>
-              <option value="stable">稳定版 (0.1.5.1)</option>
-            </select>
-          </label>
-          <label class="pg-field">示例
-            <select id="pg-example">
-              <option value="hello">你好，世界</option>
-              <option value="flow">值与控制流</option>
-              <option value="data">结构体与枚举</option>
-              <option value="domain">能力域</option>
-            </select>
-          </label>
-          <button id="pg-new" class="btn btn-quiet" type="button">新建</button>
-          <button id="pg-download" class="btn btn-quiet" type="button">下载源码</button>
-          
-        </div>
+<div class="pg-shell" id="pg"
+     data-ready="就绪"
+     data-loading-engine="正在加载引擎…"
+     data-loading-compiler="正在加载编译器…"
+     data-compiling="正在编译并运行…"
+     data-finished="完成"
+     data-finished-errors="完成（有错误）"
+     data-error="错误"
+     data-exit="退出码"
+     data-no-output="这份写法已经运行；当前子集没有文本输出。"
+     data-new-prompt="新程序的名称"
+     data-new-file-prompt="新文件路径"
+     data-delete-file="删除文件"
+     data-delete-confirm="删除这个文件？"
+     data-set-entry="设为入口"
+     data-last-file="项目至少要有一个文件。"
+     data-bad-file="用相对路径，并以 .lomt 或 .lom 结尾。"
+     data-exists-file="这个文件已经存在。"
+     data-new-folder-prompt="新文件夹路径"
+     data-delete-folder="删除文件夹"
+     data-delete-folder-confirm="删除这个文件夹及其中所有内容？"
+     data-bad-folder="用相对路径，不要以 / 开头。"
+     data-exists-folder="这个文件夹已经存在。"
+     data-bad-move="文件夹不能移动到自身内部。"
+     data-open-project="打开"
+     data-delete-project="删除"
+     data-delete-project-confirm="删除这个项目？"
+     data-new-project-prompt="项目名称"
+     data-bad-project-name="给项目起个名字。"
+     data-file-count="{n} 个文件"
+     data-last-opened="上次打开"
+     data-no-projects="还没有项目。新建一个开始。"
+     data-open-files="打开文件"
+     data-import-failed="没有导入：这些文件不是文本，或太大了。"
+     data-import-skipped="跳过了 {n} 个文件。"
+     data-entry-label="入口"
+     data-file-label="文件"
+     data-screen="manager">
+  <section class="pg-manager" id="pg-manager" aria-label="项目">
+    <div class="pg-manager-head">
+      <div>
+        <h2>项目</h2>
+        <p>打开一个项目，或新建一个。</p>
       </div>
-      <div class="pg-main">
-        <div class="pg-pane">
-          <div class="pg-pane-head pg-source-head"><span>源代码</span><input id="pg-name" class="pg-name" value="main" aria-label="程序名" spellcheck="false" autocomplete="off"><span class="pg-ext">.lomt</span></div>
-          <div class="pg-code-wrap">
-            <div class="pg-gutter" id="pg-gutter" aria-hidden="true">1</div>
-            <div class="pg-code">
-              <pre class="pg-hl" id="pg-hl" aria-hidden="true"><code></code></pre>
-              <textarea id="pg-src" spellcheck="false" autocapitalize="off" autocomplete="off" wrap="off" aria-label="源代码"></textarea>
-            </div>
-          </div>
-        </div>
-        <div class="pg-pane">
-          <div class="pg-pane-head">输出</div>
-          <div class="pg-out-wrap">
-            <div class="pg-block" id="pg-stdout-block"><div class="pg-label">标准输出</div><pre id="pg-stdout" class="pg-out" aria-live="polite"></pre></div>
-            <div class="pg-block err" id="pg-stderr-block" hidden><div class="pg-label">诊断</div><pre id="pg-stderr" class="pg-out"></pre></div>
-          </div>
-          <div id="pg-links" class="pg-links"></div>
-          <div class="pg-foot"><span id="pg-status" class="pg-status">就绪</span><span class="pg-hint">Ctrl/⌘ + Enter</span><span id="pg-exit">—</span><span id="pg-elapsed"></span></div>
+      <div class="pg-manager-actions">
+        <button id="pg-manager-folder" class="btn btn-quiet" type="button">打开文件夹</button>
+        <button id="pg-manager-import" class="btn btn-quiet" type="button">打开文件</button>
+        <button id="pg-manager-new" class="btn btn-solid" type="button">新建项目</button>
+      </div>
+    </div>
+    <div class="pg-manager-grid" id="pg-manager-list"></div>
+    <div class="pg-manager-foot">
+      <button id="pg-manager-single" class="btn btn-quiet" type="button">单文件</button>
+      <p class="pg-manager-note">项目保存在这个浏览器里。</p>
+    </div>
+  </section>
+  <div class="pg-toolbar">
+    <div class="pg-row">
+      <button id="pg-projects" class="pg-projects-btn" type="button"><svg width="13" height="13" viewBox="0 0 16 16" aria-hidden="true"><path d="M1.5 4.5h5l1.2 1.5h6.8v7H1.5z" fill="none" stroke="currentColor" stroke-width="1.2"/></svg><span>项目</span></button>
+      <span class="pg-sep" aria-hidden="true"></span>
+      <div class="pg-modes" role="group" aria-label="编辑器模式">
+        <button class="pg-mode is-on" type="button" data-mode="single" aria-pressed="true">单文件</button>
+        <button class="pg-mode" type="button" data-mode="project" aria-pressed="false">项目</button>
+      </div>
+      <span class="pg-sep" aria-hidden="true"></span>
+      <label class="pg-field">操作
+        <select id="pg-action">
+          <option value="run">运行</option>
+          <option value="check">检查</option>
+          <option value="build">构建</option>
+          <option value="ir">LLVM IR</option>
+          <option value="ast">AST</option>
+          <option value="potato">Potato</option>
+          <option value="asm">机器码</option>
+          <option value="wasm">Wasm</option>
+        </select>
+      </label>
+      <button id="pg-run" class="btn btn-solid" type="button">运行</button>
+      <label class="pg-field">语言
+        <select id="pg-lang">
+          <option value="loment" selected>Loment</option>
+          <option value="python">Python</option>
+          <option value="java">Java</option>
+          <option value="c">C</option>
+          <option value="cpp">C++</option>
+          <option value="csharp">C#</option>
+          <option value="go">Go</option>
+        </select>
+      </label>
+      <label class="pg-field">版次
+        <select id="pg-edition">
+          <option value="tur2026.3" selected>Tur 2026.3</option>
+          <option value="tur2026.2">Tur 2026.2</option>
+          <option value="tur2026.1">Tur 2026.1</option>
+        </select>
+      </label>
+      <label class="pg-field">目标
+        <select id="pg-target">
+          <option value="elf" selected>ELF</option>
+          <option value="pe">PE</option>
+        </select>
+      </label>
+    </div>
+    <div class="pg-row pg-row-2">
+      <label class="pg-field">通道
+        <select id="pg-channel">
+          <option value="beta" selected>Beta (0.1.5.2.beta.2)</option>
+          <option value="stable">稳定版 (0.1.5.1)</option>
+        </select>
+      </label>
+      <label class="pg-field">示例
+        <select id="pg-example">
+          <option value="hello">你好，世界</option>
+          <option value="flow">值与控制流</option>
+          <option value="data">结构体与枚举</option>
+          <option value="domain">能力域</option>
+        </select>
+      </label>
+      <button id="pg-new" class="btn btn-quiet" type="button">新建</button>
+      <button id="pg-download" class="btn btn-quiet" type="button">下载源码</button>
+    </div>
+  </div>
+  <div class="pg-main" id="pg-main" data-mode="single">
+    <aside class="pg-tree" id="pg-tree" hidden aria-label="文件">
+      <div class="pg-tree-head"><span>文件</span><div class="pg-tree-actions"><button id="pg-add-file" class="pg-tree-add" type="button" title="新建文件" aria-label="新建文件">+</button><button id="pg-add-folder" class="pg-tree-add" type="button" title="新建文件夹" aria-label="新建文件夹"><svg width="13" height="13" viewBox="0 0 16 16" aria-hidden="true"><path d="M1.5 4.5h5l1.2 1.5h6.8v7H1.5z" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M8 8.2v4M6 10.2h4" stroke="currentColor" stroke-width="1.2"/></svg></button><button id="pg-tree-import" class="pg-tree-add" type="button" title="打开文件" aria-label="打开文件"><svg width="13" height="13" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 1.5h7l3 3v10H3z" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M10 1.5v3h3M8 8v4M6 10h4" stroke="currentColor" stroke-width="1.2"/></svg></button></div></div>
+      <ul class="pg-tree-list" id="pg-tree-list"></ul>
+      <div class="pg-tree-foot"><span>入口</span><strong id="pg-entry-name">src/main.lomt</strong></div>
+    </aside>
+    <div class="pg-pane">
+      <div class="pg-pane-head pg-source-head"><span id="pg-project-name" class="pg-project-current" hidden></span><span>源代码</span><input id="pg-name" class="pg-name" value="main" aria-label="程序名" spellcheck="false" autocomplete="off"><span class="pg-ext" id="pg-ext">.lomt</span><span class="pg-file-name" id="pg-file-name" hidden>src/main.lomt</span></div>
+      <div class="pg-code-wrap">
+        <div class="pg-gutter" id="pg-gutter" aria-hidden="true">1</div>
+        <div class="pg-code">
+          <pre class="pg-hl" id="pg-hl" aria-hidden="true"><code></code></pre>
+          <textarea id="pg-src" spellcheck="false" autocapitalize="off" autocomplete="off" wrap="off" aria-label="源代码"></textarea>
         </div>
       </div>
     </div>
+    <div class="pg-pane">
+      <div class="pg-pane-head pg-output-head"><span>输出</span><span class="pg-output-meta"><span id="pg-output-target" class="pg-output-target" hidden></span><button id="pg-run-file" class="pg-run-file" type="button" hidden>运行当前文件</button></span></div>
+      <div class="pg-out-wrap">
+        <div class="pg-block" id="pg-stdout-block"><div class="pg-label">标准输出</div><pre id="pg-stdout" class="pg-out" aria-live="polite"></pre></div>
+        <div class="pg-block err" id="pg-stderr-block" hidden><div class="pg-label">诊断</div><pre id="pg-stderr" class="pg-out"></pre></div>
+      </div>
+      <div id="pg-links" class="pg-links"></div>
+      <div class="pg-foot"><span id="pg-status" class="pg-status">就绪</span><span class="pg-hint">Ctrl/⌘ + Enter</span><span id="pg-exit">—</span><span id="pg-elapsed"></span></div>
+    </div>
   </div>
-</section>
-
-<section class="sec">
-  <div class="wrap">
-    <h2>这个页面运行什么</h2>
-    <p class="body">源代码由仓库里的参考编译器编译，再交给 LVM 执行——项目用它做确定性的运行时判据。两步都发生在当前标签页里。</p>
-    <p class="limit"><strong>边界。</strong> 首次运行会下载约 20 MB 的引擎。程序可以用 <code>fn main()</code> 或 <code>fn _start()</code>；标准输入、文件与套接字不可用，死循环会被步数上限截断。Loment 没有 MIR / HIR：AST 是解析后的模块，Potato 是形式对象，机器码是 <code>lomelf</code> 产物中 .text 的十六进制清单。<em>通道</em>选编译器快照：Beta 跟踪最新 <code>main</code>（0.1.5.2.beta.2），稳定版是 0.1.5.1；Wasm 输出计划在 0.1.5.2（#1496）。</p>
-    <p class="body">想装原生工具链，从<a href="../start/">入门</a>开始；更多程序在<a href="../examples/">示例</a>页。</p>
-  </div>
-</section>
+  <input id="pg-file-input" type="file" multiple hidden>
+  <input id="pg-folder-input" type="file" webkitdirectory directory multiple hidden>
+</div>
 
 </main>
 
@@ -196,6 +239,6 @@
   </div>
 </footer>
 
-<script src="../../playground/playground.js?v=20261108k"></script>
+<script src="../../playground/playground.js?v=20261111n"></script>
 </body>
 </html>

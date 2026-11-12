@@ -1,0 +1,131 @@
+<!doctype html>
+<!-- translated-from: blog/20261111-playground-dev-environment/index.html -->
+<!-- source-sha256: fc92e818797a4dbe5037b139bfd311f982e264363b37fffdfcbab25652c0ac70 -->
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Playground は小さな開発環境になりました — Loment</title>
+<meta name="description" content="Playground はプロジェクトマネージャーから始まり、ファイルツリー付きのフォルダーを読み込み、エントリか現在のファイルを実行できます。短い更新メモ。">
+<link rel="icon" href="../../../mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=JetBrains+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../../../style.css?v=20261111i">
+<link rel="alternate" hreflang="en" href="https://loment-lang.github.io/loment-site/blog/20261111-playground-dev-environment/">
+<link rel="alternate" hreflang="zh-Hans" href="https://loment-lang.github.io/loment-site/zh/blog/20261111-playground-dev-environment/">
+<link rel="alternate" hreflang="ja" href="https://loment-lang.github.io/loment-site/ja/blog/20261111-playground-dev-environment/">
+<link rel="alternate" hreflang="ru" href="https://loment-lang.github.io/loment-site/ru/blog/20261111-playground-dev-environment/">
+<link rel="alternate" hreflang="es" href="https://loment-lang.github.io/loment-site/es/blog/20261111-playground-dev-environment/">
+<link rel="alternate" hreflang="x-default" href="https://loment-lang.github.io/loment-site/blog/20261111-playground-dev-environment/">
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="../../">
+      <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true">
+        <rect width="64" height="64" rx="14" fill="#2f4bff"/>
+        <path d="M18 14h12v24h16v12H18z" fill="#fff"/>
+      </svg>
+      Loment
+    </a>
+        <nav>
+      <a href="../../start/">学ぶ</a>
+      <a href="../" aria-current="page">ブログ</a>
+      <a href="../../examples/">サンプル</a>
+      <a href="../../playground/">オンライン実行</a>
+      <a href="../../standard/">標準</a>
+      <a href="../../releases/">タイムライン</a>
+      <details class="navmenu" name="bar">
+        <summary>システム</summary>
+        <ul>
+          <li><a href="../../lgc/">LGC</a></li>
+          <li><a href="../../lvm/">LVM</a></li>
+          <li><a href="../../lompi/">lompi</a></li>
+          <li><a href="../../libl/">LibL</a></li>
+          <li><a href="../../lspe/">LSPE</a></li>
+        </ul>
+      </details>
+      <a href="https://github.com/Loment-Lang/loment">GitHub</a>
+    </nav>
+    <details class="lang" name="bar">
+      <summary>日本語</summary>
+      <ul>
+        <li><a href="../../../blog/20261111-playground-dev-environment/" hreflang="en">English</a></li>
+        <li><a href="../../../zh/blog/20261111-playground-dev-environment/" hreflang="zh-Hans">简体中文</a></li>
+        <li><a href="./" hreflang="ja" aria-current="true">日本語</a></li>
+        <li><a href="../../../ru/blog/20261111-playground-dev-environment/" hreflang="ru">Русский</a></li>
+        <li><a href="../../../es/blog/20261111-playground-dev-environment/" hreflang="es">Español</a></li>
+      </ul>
+    </details>
+  </div>
+</header>
+
+<main id="main">
+
+<section class="head">
+  <div class="wrap">
+    <div class="pg-banner" aria-hidden="true">
+      <div class="pg-banner-top"><span>PLAYGROUND // LOCAL</span><span>DEV</span></div>
+      <div class="pg-banner-grid">
+        <div class="pg-banner-pane"><span class="pg-banner-cap">FILES</span><span class="pg-bar w60 b"></span><span class="pg-bar w45"></span><span class="pg-bar w55"></span><span class="pg-bar w35"></span></div>
+        <div class="pg-banner-pane"><span class="pg-banner-cap">CODE</span><span class="pg-bar w25 b"></span><span class="pg-bar w70"></span><span class="pg-bar w50"></span><span class="pg-bar w65"></span><span class="pg-bar w35 b"></span></div>
+        <div class="pg-banner-pane"><span class="pg-banner-cap">OUTPUT</span><span class="pg-bar w30 b"></span><span class="pg-bar w20"></span></div>
+      </div>
+    </div>
+    <p class="eyebrow">Blog &middot; 2026-11-11</p>
+    <h1>Playground は小さな開発環境になりました</h1>
+    <p class="lede">Playground を更新しました。最初にプロジェクトマネージャーが開き、ファイルツリーがあり、ローカルのフォルダーも読み込めます。リファレンスコンパイラは引き続きタブの中で動き、ページは作業する場所に近づきました。</p>
+    <p class="limit"><strong>これは Playground の更新です。</strong>言語版、コンパイラ、チャンネルは変えていません。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>変わったこと</h2>
+    <p class="body">最初の画面はプロジェクトマネージャーです。プロジェクトの作成、パソコンのフォルダーを開く、いくつかのテキストファイルを読み込む、ができます。フォルダーは相対パスを保つので、<code>src/main.lomt</code> と <code>docs/README.md</code> は元の場所に届きます。</p>
+    <p class="body">プロジェクトの中にはファイルツリーがあります。ファイルとフォルダーの作成、ドラッグ、丸印でエントリの選択、エントリか現在のファイルの実行ができます。出力欄には今回どちらをコンパイルしたかが出ます。テキストは UTF-8、UTF-16、GB18030 として読み、バイナリと大きすぎるファイルは飛ばします。</p>
+    <p class="body"><code>addin</code> の <code>chooseset</code> がプロジェクトに入っていれば動きます。<code>Run</code> は Check/Build と同じ <code>load_unit</code> を通るので、スイッチの事前走査が addin の対象を見つけます。</p>
+    <p class="body">プロジェクトはこのブラウザーに保存され、アップロードされません。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>変わらないこと</h2>
+    <p class="body">ブラウザーの中のツールのままです。ターミナル、デバッガー、Git、パッケージ導入、常駐サーバーはありません。編集、コンパイル、実行は 1 つのタブで行い、LVM にはステップ上限、ブラウザーには保存容量の上限があります。</p>
+    <p class="body">今回は Playground だけを変えました。次の作業はライフタイム、GC のタイミング、0.1.5.3 の残りに戻れます。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>試す</h2>
+    <p class="body"><a href="../../playground/">Playground</a> を開き、ディスク上のプロジェクトは「フォルダーを開く」、新しく始めるなら「新規プロジェクト」で <code>src/main.lomt</code> から。</p>
+    <p class="actions"><a class="btn btn-solid" href="../../playground/">Playground を開く</a></p>
+    <p class="caption">作業できる場所へ、小さな一歩。&mdash; <strong>Loment Dev Fujo</strong></p>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Loment は MIT OR Apache-2.0 の下で公開されている。制作: Fujo。</span>
+    <nav>
+      <a href="https://github.com/Loment-Lang/loment">ソース</a>
+      <a href="https://github.com/Loment-Lang/loment/releases/latest">リリース</a>
+      <a href="https://github.com/FujoJTOP/lompi">lompi</a>
+      <a href="https://loment.fandom.com/">Wiki</a>
+      <a href="https://github.com/Loment-Lang/loment/issues">イシュー</a>
+      <a class="mast" href="https://mastodon.social/@Loment" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z"/></svg>Mastodon</a>
+      <a class="mast" href="https://bsky.app/profile/loment.bsky.social" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364-3.136.521-5.919 1.517-2.244 5.449 3.944 4.011 5.42-1.005 6.237-3.242.653-1.79 1.03-2.81 1.03-2.81s.377 1.02 1.03 2.81c.817 2.237 2.293 7.253 6.237 3.242 3.675-3.932.892-4.928-2.244-5.449 2.67.296 5.568-.628 6.383-3.364.246-.829.624-5.789.624-6.479 0-.688-.139-1.86-.902-2.203-.659-.299-1.664-.621-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8z"/></svg>Bluesky</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

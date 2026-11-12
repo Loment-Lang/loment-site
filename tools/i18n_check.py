@@ -47,7 +47,7 @@ ORIGIN = "https://loment-lang.github.io/loment-site"
 #: 样式表的查询串。Pages 给 `style.css` 发 `max-age=600`，改了样式之后十分钟内
 #: 浏览器仍会用旧的 —— 这一条让新 HTML 拉新样式。**改 style.css 就把它加一版**，
 #: 然后 `--fix` 会把 70 个页面一起重写。
-STYLE_VERSION = "20261111a"
+STYLE_VERSION = "20261111i"
 
 #: (目录, <html lang>, hreflang, 切换器里的自称, summary 上的短标)
 LANGS = [
@@ -76,6 +76,7 @@ PAGES = ["index.html",
          "blog/20261108-domains-lspe-lifetimes/index.html",
          "blog/20261110-tur3-test-build-two/index.html",
          "blog/2026-finals/index.html",
+         "blog/20261111-playground-dev-environment/index.html",
          "playground/index.html"]
 
 #: 语言切换器与 alternate 组不进"散文面"：它们是镶边，不是内容。

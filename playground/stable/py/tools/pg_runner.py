@@ -50,6 +50,62 @@ def _grammar(text: str, edition: str, language: str) -> str:
     return "choose write grammar " + language + "\n\n" + text
 
 
+def _native_grammar(text: str) -> bool:
+    """True when the source reads as Loment, not as a foreign surface."""
+    m = re.search(r"^\s*choose\s+write\s+grammar\s+([A-Za-z0-9_.]+)", text, re.M)
+    return not m or m.group(1) in NATIVE
+
+
+#: Project-local modules written for the current multi-file run. They live at
+#: ROOT/deps/<module>/<module>.lomt, the layer the compiler already resolves.
+_PROJECT_FILES: set[Path] = set()
+
+
+def _write_project(files_json) -> None:
+    """Replace the project-local deps with the files sent by the page.
+
+    The entry file stays WORK; every other file becomes a project module. The
+    module name comes from the file's `module` declaration, so a file can be
+    named differently from its module.
+    """
+    for path in sorted(_PROJECT_FILES, reverse=True):
+        try:
+            path.unlink()
+        except OSError:
+            pass
+        try:
+            path.parent.rmdir()
+        except OSError:
+            pass
+    _PROJECT_FILES.clear()
+    if not files_json:
+        return
+    if isinstance(files_json, dict):
+        files = files_json
+    else:
+        try:
+            files = json.loads(files_json)
+        except ValueError:
+            return
+    if not isinstance(files, dict):
+        return
+    for name, text in files.items():
+        if not isinstance(name, str) or not isinstance(text, str):
+            continue
+        # Text assets (README, .c, .json, …) stay in the editor; only Loment
+        # sources participate in the project module layer.
+        if not name.lower().endswith((".lomt", ".lom")):
+            continue
+        m = re.search(r"^\s*module\s+([A-Za-z_][A-Za-z0-9_]*)", text, re.M)
+        mod = m.group(1) if m else Path(name).stem
+        if not re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", mod):
+            continue
+        dst = ROOT / "deps" / mod / (mod + ".lomt")
+        dst.parent.mkdir(parents=True, exist_ok=True)
+        dst.write_text(text, encoding="utf-8", newline="\n")
+        _PROJECT_FILES.add(dst)
+
+
 def _describe(mod) -> str:
     lines = ["module " + mod.name, ""]
     for c in mod.consts:
@@ -133,13 +189,14 @@ def _result(kind, rc=0, out="", err="", **extra):
 
 def run_text(text: str, action: str = "run", edition: str = "tur2026.3",
              target: str = "elf", name: str = "main",
-             language: str = "loment") -> dict:
+             language: str = "loment", files_json="") -> dict:
     import lomentc
     import lomelf
     import lvm
 
     action = action if action in ACTIONS else "run"
     target = "pe" if target == "pe" else "elf"
+    _write_project(files_json)
 
     if action == "wasm":
         return _result(
@@ -150,25 +207,15 @@ def run_text(text: str, action: str = "run", edition: str = "tur2026.3",
 
     language = (language or "loment").strip().lower()
     src = _grammar(text, edition, language)
-    if language in NATIVE:
+    if language in NATIVE and _native_grammar(src):
         src = _shim(src)
     WORK.parent.mkdir(parents=True, exist_ok=True)
     WORK.write_text(src, encoding="utf-8", newline="\n")
 
-    if action == "run":
-        out = io.BytesIO()
-        err = io.StringIO()
-        old = sys.stderr
-        sys.stderr = err
-        try:
-            rc = lvm.run_source(WORK, ROOT, out)
-        except Exception as e:                       # noqa: BLE001
-            rc = 2
-            err.write(type(e).__name__ + ": " + str(e))
-        finally:
-            sys.stderr = old
-        return _result("run", rc, out.getvalue().decode("utf-8", "replace"), err.getvalue())
-
+    # `lvm.run_source` calls `lomentc.load` + `resolve_deps` directly; that skips
+    # the switch pre-scan, so `addin` targets are never loaded. `load_unit` is the
+    # single front door that does the pre-scan (docs/182 §1.10), so Run uses it
+    # too and then runs the resulting IR.
     try:
         mod, deps = lomentc.load_unit(WORK, ROOT)
         errs = lomentc.check(mod, deps=deps)
@@ -176,6 +223,21 @@ def run_text(text: str, action: str = "run", edition: str = "tur2026.3",
         return _result(action, 2, err=type(e).__name__ + ": " + str(e))
     if errs:
         return _result(action, 2, err="check: " + repr(errs[:4]))
+
+    if action == "run":
+        out = io.BytesIO()
+        err = io.StringIO()
+        old = sys.stderr
+        sys.stderr = err
+        try:
+            ir = lomentc.emit_llvm(mod, ROOT, deps)
+            rc = lvm.run_ir(ir, out, argv=[str(WORK)])
+        except Exception as e:                       # noqa: BLE001
+            rc = 2
+            err.write(type(e).__name__ + ": " + str(e))
+        finally:
+            sys.stderr = old
+        return _result("run", rc, out.getvalue().decode("utf-8", "replace"), err.getvalue())
 
     if action == "check":
         return _result("check", 0,

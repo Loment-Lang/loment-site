@@ -19,6 +19,27 @@ Pyodide（CPython 的 WebAssembly 构建），再把所选**通道**的 Python �
 通道选中后**从自己的目录**取 `manifest.json` 与全部资产，编译器模块、`loment/lib` 与
 `lompi/store` 不跨通道共用。切换通道会保存当前源码并带 `?channel=` 重新加载页面。
 
+## 项目、文件树与本地导入
+
+打开 Playground 先进入**项目管理器**。项目保存在浏览器的 `localStorage`，不上传；
+每张卡片有名字、文件数与入口文件。`Open folder` 用目录选择器导入整个文件夹并**保留
+相对路径**（`src/main.lomt`、`docs/README.md`），`Open files` 导入单文件，`New project`
+建一个带 `src/main.lomt` 与 `src/lib.lomt` 的空项目。导入时跳过 `.git`、`node_modules`、
+`target` 等目录；单个文件上限 256 KB、总量上限 2 MB，二进制文件跳过。
+
+项目模式的文件树可以新建文件/文件夹、拖动文件或文件夹到别的目录、删除，并点文件名旁
+的圆点设入口。**`Run` 编译的是入口文件**；输出栏右侧会写明 `Entry <path>`。`Run file`
+则把当前选中的文件当根编译（所有其它文件仍作为项目依赖），输出栏改写为
+`File <path>`，用来单独跑一个模块或确认某次修改确实进入了编译。
+
+**`addin` 的开关设定单元必须作为项目文件出现在树里**（例如 `src/chooseset.lomt`）。
+Run、Check、Build 等动作都走 `lomentc.load_unit`，会先做开关预扫再装载 `addin` 目标；
+单文件模式只有一个文件，`addin` 会报“找不到”。导入整个目录（`Open folder`）会保留
+`chooseset.lomt` 与入口的相对路径。
+
+本地文件按文本读取：UTF-8（含 BOM）、UTF-16 LE/BE（有 BOM）与 GB18030；非文本内容
+会跳过。导入的项目同样只存在这个浏览器里。
+
 ## 动作由 Loment 的能力决定
 
 | 动作 | 做什么 | 对应的 Loment 面 |
@@ -51,7 +72,7 @@ Stable 仍是 0.1.5.1 的旧行为，只有 Beta 带这项修复。
 
 | 路径 | 内容 |
 |---|---|
-| `playground.js` | 编辑器、高亮、Pyodide 引导、动作分发与产物下载 |
+| `playground.js` | 项目管理器、文件树、编辑器、高亮、Pyodide 引导、动作分发、产物下载与本地导入 |
 | `beta/` `stable/` | 两个通道各自的 `py/` 与 `manifest.json` |
 | `beta/py/tools/` | 参考编译器、`lomelf`、`lvm`、`pg_runner.py` 及其依赖 |
 | `beta/py/tools/*trans.py` | 表层语法翻译器（`pytrans` / `jtrans` / `ctrans` / `cpptrans` / `cstrans` / `gotrans`）与 `trans_core.py`；`choose write grammar <名>` 按需导入 |
@@ -90,8 +111,9 @@ python playground/make_manifest.py
 `pg_runner.py` 与 `helpers.lomt` 是站点自己的文件，两个通道用同一份。Beta 用最新
 `main` 的检出，Stable 用 `v0.1.5.1` 的检出。
 
-更新后跑一次页面：默认示例、一个 `use num` 的程序、一个带 `helpers.lomt` 的书内示例，
-以及 Build 的 ELF 与 PE 下载都通过才算过。
+更新后跑一次页面：默认示例、一个 `use num` 的程序、一个 `addin` 工程（入口 +
+`chooseset.lomt` 两个项目文件）、一个带 `helpers.lomt` 的书内示例，以及 Build 的
+ELF 与 PE 下载都通过才算过。
 
 ## 边界
 

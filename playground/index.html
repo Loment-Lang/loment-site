@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=JetBrains+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="../style.css?v=20261111a">
+<link rel="stylesheet" href="../style.css?v=20261111i">
 <link rel="alternate" hreflang="en" href="https://loment-lang.github.io/loment-site/playground/">
 <link rel="alternate" hreflang="zh-Hans" href="https://loment-lang.github.io/loment-site/zh/playground/">
 <link rel="alternate" hreflang="ja" href="https://loment-lang.github.io/loment-site/ja/playground/">
@@ -62,121 +62,164 @@
   </div>
 </header>
 
-<main id="main">
+<main id="main" class="pg-app">
 
-<section class="head">
-  <div class="wrap">
-    <h1>Playground</h1>
-    <p class="lede">Write Loment and run it here. The reference compiler and the LVM interpreter run in your browser; there is nothing to install, and nothing is sent to a server.</p>
-  </div>
-</section>
+<div class="pg-app-head">
+  <h1>Playground</h1>
+  <p class="pg-app-lede">One tab, the reference compiler. A single file, or a small project with a file tree.</p>
+</div>
 
-<section class="sec">
-  <div class="wrap">
-    <div class="pg-shell" id="pg"
-         data-ready="Ready"
-         data-loading-engine="Loading engine…"
-         data-loading-compiler="Loading compiler…"
-         data-compiling="Compiling and running…"
-         data-finished="Finished"
-         data-finished-errors="Finished with errors"
-         data-error="Error"
-         data-exit="exit"
-         data-no-output="This surface ran; its current subset has no text output."
-         data-new-prompt="Name for the new program">
-      <div class="pg-toolbar">
-        <div class="pg-row">
-          <label class="pg-field">Action
-            <select id="pg-action">
-              <option value="run">Run</option>
-              <option value="check">Check</option>
-              <option value="build">Build</option>
-              <option value="ir">LLVM IR</option>
-              <option value="ast">AST</option>
-              <option value="potato">Potato</option>
-              <option value="asm">Machine code</option>
-              <option value="wasm">Wasm</option>
-            </select>
-          </label>
-          <button id="pg-run" class="btn btn-solid" type="button">Run</button>
-          <label class="pg-field">Language
-            <select id="pg-lang">
-              <option value="loment" selected>Loment</option>
-              <option value="python">Python</option>
-              <option value="java">Java</option>
-              <option value="c">C</option>
-              <option value="cpp">C++</option>
-              <option value="csharp">C#</option>
-              <option value="go">Go</option>
-            </select>
-          </label>
-          <label class="pg-field">Edition
-            <select id="pg-edition">
-              <option value="tur2026.3" selected>Tur 2026.3</option>
-              <option value="tur2026.2">Tur 2026.2</option>
-              <option value="tur2026.1">Tur 2026.1</option>
-            </select>
-          </label>
-          <label class="pg-field">Target
-            <select id="pg-target">
-              <option value="elf" selected>ELF</option>
-              <option value="pe">PE</option>
-            </select>
-          </label>
-        </div>
-        <div class="pg-row pg-row-2">
-          <label class="pg-field">Channel
-            <select id="pg-channel">
-              <option value="beta" selected>Beta (0.1.5.2.beta.2)</option>
-              <option value="stable">Stable (0.1.5.1)</option>
-            </select>
-          </label>
-          <label class="pg-field">Example
-            <select id="pg-example">
-              <option value="hello">Hello, world</option>
-              <option value="flow">Values and control flow</option>
-              <option value="data">Structs and enums</option>
-              <option value="domain">Capability domains</option>
-            </select>
-          </label>
-          <button id="pg-new" class="btn btn-quiet" type="button">New</button>
-          <button id="pg-download" class="btn btn-quiet" type="button">Download source</button>
-          
-        </div>
+<div class="pg-shell" id="pg"
+     data-ready="Ready"
+     data-loading-engine="Loading engine…"
+     data-loading-compiler="Loading compiler…"
+     data-compiling="Compiling and running…"
+     data-finished="Finished"
+     data-finished-errors="Finished with errors"
+     data-error="Error"
+     data-exit="exit"
+     data-no-output="This surface ran; its current subset has no text output."
+     data-new-prompt="Name for the new program"
+     data-new-file-prompt="New file path"
+     data-delete-file="Delete file"
+     data-delete-confirm="Delete this file?"
+     data-set-entry="Set as entry"
+     data-last-file="A project needs at least one file."
+     data-bad-file="Use a relative path ending in .lomt or .lom."
+     data-exists-file="That file already exists."
+     data-new-folder-prompt="New folder path"
+     data-delete-folder="Delete folder"
+     data-delete-folder-confirm="Delete this folder and everything inside it?"
+     data-bad-folder="Use a relative folder path."
+     data-exists-folder="That folder already exists."
+     data-bad-move="A folder cannot move inside itself."
+     data-open-project="Open"
+     data-delete-project="Delete"
+     data-delete-project-confirm="Delete this project?"
+     data-new-project-prompt="Project name"
+     data-bad-project-name="Give the project a name."
+     data-file-count="{n} files"
+     data-last-opened="Last opened"
+     data-no-projects="No projects yet. Create one to start."
+     data-open-files="Open files"
+     data-import-failed="Nothing was imported: the files are not text, or they are too large."
+     data-import-skipped="Skipped files: {n}."
+     data-entry-label="Entry"
+     data-file-label="File"
+     data-screen="manager">
+  <section class="pg-manager" id="pg-manager" aria-label="Projects">
+    <div class="pg-manager-head">
+      <div>
+        <h2>Projects</h2>
+        <p>Open a project, or start a new one.</p>
       </div>
-      <div class="pg-main">
-        <div class="pg-pane">
-          <div class="pg-pane-head pg-source-head"><span>Source</span><input id="pg-name" class="pg-name" value="main" aria-label="Program name" spellcheck="false" autocomplete="off"><span class="pg-ext">.lomt</span></div>
-          <div class="pg-code-wrap">
-            <div class="pg-gutter" id="pg-gutter" aria-hidden="true">1</div>
-            <div class="pg-code">
-              <pre class="pg-hl" id="pg-hl" aria-hidden="true"><code></code></pre>
-              <textarea id="pg-src" spellcheck="false" autocapitalize="off" autocomplete="off" wrap="off" aria-label="Source"></textarea>
-            </div>
-          </div>
-        </div>
-        <div class="pg-pane">
-          <div class="pg-pane-head">Output</div>
-          <div class="pg-out-wrap">
-            <div class="pg-block" id="pg-stdout-block"><div class="pg-label">stdout</div><pre id="pg-stdout" class="pg-out" aria-live="polite"></pre></div>
-            <div class="pg-block err" id="pg-stderr-block" hidden><div class="pg-label">Diagnostics</div><pre id="pg-stderr" class="pg-out"></pre></div>
-          </div>
-          <div id="pg-links" class="pg-links"></div>
-          <div class="pg-foot"><span id="pg-status" class="pg-status">Ready</span><span class="pg-hint">Ctrl/⌘ + Enter</span><span id="pg-exit">—</span><span id="pg-elapsed"></span></div>
+      <div class="pg-manager-actions">
+        <button id="pg-manager-folder" class="btn btn-quiet" type="button">Open folder</button>
+        <button id="pg-manager-import" class="btn btn-quiet" type="button">Open files</button>
+        <button id="pg-manager-new" class="btn btn-solid" type="button">New project</button>
+      </div>
+    </div>
+    <div class="pg-manager-grid" id="pg-manager-list"></div>
+    <div class="pg-manager-foot">
+      <button id="pg-manager-single" class="btn btn-quiet" type="button">Single file</button>
+      <p class="pg-manager-note">Projects are saved in this browser.</p>
+    </div>
+  </section>
+  <div class="pg-toolbar">
+    <div class="pg-row">
+      <button id="pg-projects" class="pg-projects-btn" type="button"><svg width="13" height="13" viewBox="0 0 16 16" aria-hidden="true"><path d="M1.5 4.5h5l1.2 1.5h6.8v7H1.5z" fill="none" stroke="currentColor" stroke-width="1.2"/></svg><span>Projects</span></button>
+      <span class="pg-sep" aria-hidden="true"></span>
+      <div class="pg-modes" role="group" aria-label="Editor mode">
+        <button class="pg-mode is-on" type="button" data-mode="single" aria-pressed="true">Single file</button>
+        <button class="pg-mode" type="button" data-mode="project" aria-pressed="false">Project</button>
+      </div>
+      <span class="pg-sep" aria-hidden="true"></span>
+      <label class="pg-field">Action
+        <select id="pg-action">
+          <option value="run">Run</option>
+          <option value="check">Check</option>
+          <option value="build">Build</option>
+          <option value="ir">LLVM IR</option>
+          <option value="ast">AST</option>
+          <option value="potato">Potato</option>
+          <option value="asm">Machine code</option>
+          <option value="wasm">Wasm</option>
+        </select>
+      </label>
+      <button id="pg-run" class="btn btn-solid" type="button">Run</button>
+      <label class="pg-field">Language
+        <select id="pg-lang">
+          <option value="loment" selected>Loment</option>
+          <option value="python">Python</option>
+          <option value="java">Java</option>
+          <option value="c">C</option>
+          <option value="cpp">C++</option>
+          <option value="csharp">C#</option>
+          <option value="go">Go</option>
+        </select>
+      </label>
+      <label class="pg-field">Edition
+        <select id="pg-edition">
+          <option value="tur2026.3" selected>Tur 2026.3</option>
+          <option value="tur2026.2">Tur 2026.2</option>
+          <option value="tur2026.1">Tur 2026.1</option>
+        </select>
+      </label>
+      <label class="pg-field">Target
+        <select id="pg-target">
+          <option value="elf" selected>ELF</option>
+          <option value="pe">PE</option>
+        </select>
+      </label>
+    </div>
+    <div class="pg-row pg-row-2">
+      <label class="pg-field">Channel
+        <select id="pg-channel">
+          <option value="beta" selected>Beta (0.1.5.2.beta.2)</option>
+          <option value="stable">Stable (0.1.5.1)</option>
+        </select>
+      </label>
+      <label class="pg-field">Example
+        <select id="pg-example">
+          <option value="hello">Hello, world</option>
+          <option value="flow">Values and control flow</option>
+          <option value="data">Structs and enums</option>
+          <option value="domain">Capability domains</option>
+        </select>
+      </label>
+      <button id="pg-new" class="btn btn-quiet" type="button">New</button>
+      <button id="pg-download" class="btn btn-quiet" type="button">Download source</button>
+    </div>
+  </div>
+  <div class="pg-main" id="pg-main" data-mode="single">
+    <aside class="pg-tree" id="pg-tree" hidden aria-label="Files">
+      <div class="pg-tree-head"><span>Files</span><div class="pg-tree-actions"><button id="pg-add-file" class="pg-tree-add" type="button" title="New file" aria-label="New file">+</button><button id="pg-add-folder" class="pg-tree-add" type="button" title="New folder" aria-label="New folder"><svg width="13" height="13" viewBox="0 0 16 16" aria-hidden="true"><path d="M1.5 4.5h5l1.2 1.5h6.8v7H1.5z" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M8 8.2v4M6 10.2h4" stroke="currentColor" stroke-width="1.2"/></svg></button><button id="pg-tree-import" class="pg-tree-add" type="button" title="Open files" aria-label="Open files"><svg width="13" height="13" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 1.5h7l3 3v10H3z" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M10 1.5v3h3M8 8v4M6 10h4" stroke="currentColor" stroke-width="1.2"/></svg></button></div></div>
+      <ul class="pg-tree-list" id="pg-tree-list"></ul>
+      <div class="pg-tree-foot"><span>Entry</span><strong id="pg-entry-name">src/main.lomt</strong></div>
+    </aside>
+    <div class="pg-pane">
+      <div class="pg-pane-head pg-source-head"><span id="pg-project-name" class="pg-project-current" hidden></span><span>Source</span><input id="pg-name" class="pg-name" value="main" aria-label="Program name" spellcheck="false" autocomplete="off"><span class="pg-ext" id="pg-ext">.lomt</span><span class="pg-file-name" id="pg-file-name" hidden>src/main.lomt</span></div>
+      <div class="pg-code-wrap">
+        <div class="pg-gutter" id="pg-gutter" aria-hidden="true">1</div>
+        <div class="pg-code">
+          <pre class="pg-hl" id="pg-hl" aria-hidden="true"><code></code></pre>
+          <textarea id="pg-src" spellcheck="false" autocapitalize="off" autocomplete="off" wrap="off" aria-label="Source"></textarea>
         </div>
       </div>
     </div>
+    <div class="pg-pane">
+      <div class="pg-pane-head pg-output-head"><span>Output</span><span class="pg-output-meta"><span id="pg-output-target" class="pg-output-target" hidden></span><button id="pg-run-file" class="pg-run-file" type="button" hidden>Run file</button></span></div>
+      <div class="pg-out-wrap">
+        <div class="pg-block" id="pg-stdout-block"><div class="pg-label">stdout</div><pre id="pg-stdout" class="pg-out" aria-live="polite"></pre></div>
+        <div class="pg-block err" id="pg-stderr-block" hidden><div class="pg-label">Diagnostics</div><pre id="pg-stderr" class="pg-out"></pre></div>
+      </div>
+      <div id="pg-links" class="pg-links"></div>
+      <div class="pg-foot"><span id="pg-status" class="pg-status">Ready</span><span class="pg-hint">Ctrl/⌘ + Enter</span><span id="pg-exit">—</span><span id="pg-elapsed"></span></div>
+    </div>
   </div>
-</section>
-
-<section class="sec">
-  <div class="wrap">
-    <h2>What this page runs</h2>
-    <p class="body">The source is compiled by the repository's reference compiler, then executed by LVM, the interpreter the project uses for its deterministic runtime tests. Both steps happen in this browser tab.</p>
-    <p class="limit"><strong>Boundaries.</strong> The first run downloads about 20 MB of engine. Programs may use <code>fn main()</code> or <code>fn _start()</code>; standard input, files and sockets are unavailable, and a step cap stops a runaway loop. Loment has no MIR or HIR: <em>AST</em> is the parsed module, <em>Potato</em> is the form object, and <em>Machine code</em> is a hex listing of what <code>lomelf</code> emits. <em>Channel</em> selects the compiler snapshot: Beta tracks the latest <code>main</code> (0.1.5.2.beta.2), Stable is the 0.1.5.1 release. <em>Wasm</em> output is planned for 0.1.5.2 (#1496).</p>
-    <p class="body">For the native toolchain, start at <a href="../start/">Get started</a>. More programs are on <a href="../examples/">Examples</a>.</p>
-  </div>
-</section>
+  <input id="pg-file-input" type="file" multiple hidden>
+  <input id="pg-folder-input" type="file" webkitdirectory directory multiple hidden>
+</div>
 
 </main>
 
@@ -194,6 +237,6 @@
   </div>
 </footer>
 
-<script src="playground.js?v=20261108k"></script>
+<script src="playground.js?v=20261111n"></script>
 </body>
 </html>
