@@ -1,0 +1,165 @@
+<!doctype html>
+<!-- translated-from: blog/20261117-road-to-future/index.html -->
+<!-- source-sha256: bfe0d5c591b8492947ce27bd5ca474a187bd54e6221185e4bb54ce9d5d555177 -->
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Road To Future: un plan hacia el futuro — Loment</title>
+<meta name="description" content="Siete líneas para el siguiente tramo: LSPE, las piezas que faltan del lenguaje, dominios, tipos de grafo, Tur, LMS y efectos algebraicos. Una dirección con orden, sin fecha.">
+<link rel="icon" href="../../../mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=JetBrains+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../../../style.css?v=20261117a">
+<link rel="alternate" hreflang="en" href="https://loment-lang.github.io/loment-site/blog/20261117-road-to-future/">
+<link rel="alternate" hreflang="zh-Hans" href="https://loment-lang.github.io/loment-site/zh/blog/20261117-road-to-future/">
+<link rel="alternate" hreflang="ja" href="https://loment-lang.github.io/loment-site/ja/blog/20261117-road-to-future/">
+<link rel="alternate" hreflang="ru" href="https://loment-lang.github.io/loment-site/ru/blog/20261117-road-to-future/">
+<link rel="alternate" hreflang="es" href="https://loment-lang.github.io/loment-site/es/blog/20261117-road-to-future/">
+<link rel="alternate" hreflang="x-default" href="https://loment-lang.github.io/loment-site/blog/20261117-road-to-future/">
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="../../">
+      <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true">
+        <rect width="64" height="64" rx="14" fill="#2f4bff"/>
+        <path d="M18 14h12v24h16v12H18z" fill="#fff"/>
+      </svg>
+      Loment
+    </a>
+        <nav>
+      <a href="../../start/">Aprender</a>
+      <a href="../" aria-current="page">Blog</a>
+      <a href="../../examples/">Ejemplos</a>
+      <a href="../../playground/">Probar</a>
+      <a href="../../standard/">Estándar</a>
+      <a href="../../releases/">Cronología</a>
+      <details class="navmenu" name="bar">
+        <summary>Sistemas</summary>
+        <ul>
+          <li><a href="../../lgc/">LGC</a></li>
+          <li><a href="../../lvm/">LVM</a></li>
+          <li><a href="../../lompi/">lompi</a></li>
+          <li><a href="../../libl/">LibL</a></li>
+          <li><a href="../../lspe/">LSPE</a></li>
+        </ul>
+      </details>
+      <a href="https://github.com/Loment-Lang/loment">GitHub</a>
+    </nav>
+    <details class="lang" name="bar">
+      <summary>ES</summary>
+      <ul>
+        <li><a href="../../../blog/20261117-road-to-future/" hreflang="en">English</a></li>
+        <li><a href="../../../zh/blog/20261117-road-to-future/" hreflang="zh-Hans">简体中文</a></li>
+        <li><a href="../../../ja/blog/20261117-road-to-future/" hreflang="ja">日本語</a></li>
+        <li><a href="../../../ru/blog/20261117-road-to-future/" hreflang="ru">Русский</a></li>
+        <li><a href="./" hreflang="es" aria-current="true">Español</a></li>
+      </ul>
+    </details>
+  </div>
+</header>
+
+<main id="main">
+<section class="head">
+  <div class="wrap">
+    <div class="road-banner" aria-hidden="true">
+      <span class="road-sun"></span>
+      <div class="road-track">
+        <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+      </div>
+      <span class="road-label">ROAD TO FUTURE // PLAN</span>
+      <span class="road-tag">2026 &rarr;</span>
+      <span class="road-sweep"></span>
+    </div>
+    <p class="eyebrow">Blog &middot; 2026-11-17</p>
+    <h1>Road To Future: un plan hacia el futuro</h1>
+    <p class="lede">Creo que es hora de anunciar un plan ambicioso: Road To Future. El nombre es sencillo a propósito. Detrás hay una cola de trabajo que ocupará más de un lanzamiento.</p>
+    <p class="limit"><strong>Esto es una dirección, no un lanzamiento.</strong> Tengo un orden; no tengo un calendario.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Por qué ahora</h2>
+    <p class="body">2026 llevó al proyecto a cruzar una línea. El compilador de referencia y el autoalojado coinciden en el núcleo, existen los dominios y los tiempos de vida prestados, LSPE tiene sus cuatro partes, LVM tiene niveles, y ELF, PE y el Playground funcionan. La base sirve. La pregunta es cuánto lenguaje puede crecer encima.</p>
+    <p class="body">Vuelvo a chocar con la misma lista. Las clases no están completas. Los efectos tienen declaraciones y no tienen tiempo de ejecución. Los tipos de grafo se comportan como una codificación dentro de una biblioteca. Parte de la historia de los dominios termina en la puerta del compilador. Algunos niveles de LMS son presupuestos y declaraciones. No son huecos pequeños; son la forma del próximo año.</p>
+    <p class="body">Road To Future convierte esa lista en una cola. Dice qué va primero y por qué. No le pone fecha al final.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Siete líneas</h2>
+
+    <h3>1. LSPE: ordenar y acelerar</h3>
+    <p class="body">LSPE funciona. Añadir una comprobación todavía exige conocer demasiado del interior del compilador. Quiero que el registro, el planificador y el libro mayor sean la vía normal para añadir una comprobación, con un SDK pequeño de dos niveles: avisos y comprobaciones que pueden detener un artefacto. Las clases también están aquí: el marco debería escribirse con la herencia que va a auditar.</p>
+
+    <h3>2. Lo que le falta al lenguaje</h3>
+    <p class="body">Primero, clases. Herencia simple, campos, métodos no virtuales, <code>self</code> y construcción están en revisión; después vienen el despacho virtual, las vtable y <code>super</code>. Los valores de función y las llamadas indirectas entraron a principios de mes. Luego quiero coincidencia de patrones y desestructuración, una historia más clara de módulos y visibilidad, y las piezas poco vistosas: colecciones, manejo de errores y diagnósticos que nombren el valor que escribió el usuario.</p>
+
+    <h3>3. Dominios de capacidad: investigar y completar</h3>
+    <p class="body">Los dieciocho tipos de dominio ya salen. El siguiente trabajo es semántico. Una etiqueta de espacio debería sobrevivir a una llamada. Un guard automático debería cubrir más que el índice directo. Los dominios de bloque deberían aparecer en Potato. <code>subject</code> y <code>witnessed</code> necesitan una historia real de procedencia. Parte es trabajo del compilador, parte es diseño del lenguaje y parte puede terminar en un límite documentado.</p>
+
+    <h3>4. Tipos de grafo como ciudadanos de primera clase</h3>
+    <p class="body">DGT es el segundo núcleo de 0.1.5.2. <code>digraph&lt;K&gt;</code> es un valor de grafo en tiempo de compilación con retícula de capacidades, especialización de diseño y verificación estática. Quiero que los tipos de grafo sean de primera clase: un grafo que se puede nombrar, pasar, consultar, recorrer, serializar y verificar antes de que el programa se ejecute, en lugar de una codificación de biblioteca que el comprobador no ve.</p>
+
+    <h3>5. Más sustancia en Tur</h3>
+    <p class="body">Tur tiene una lectura congelada, una cerrada y una que se mueve. La sintaxis superficial nueva entra solo cuando coinciden las dos implementaciones, el comprobador y el artefacto. Los candidatos incluyen sintaxis de efectos, literales de grafo, sintaxis de clases y coincidencia de patrones. Cada añadido mantiene los artefactos por defecto idénticos byte a byte; una dimensión <code>choose</code> o una frontera de edición es lo que sostiene esa promesa.</p>
+
+    <h3>6. LMS: optimizar y modernizar</h3>
+    <p class="body">LMS tiene siete niveles y muchas buenas intenciones. Algunos niveles siguen siendo presupuestos y declaraciones. Quiero aplicación real donde el nivel la promete, costes que el lector pueda ver y vías de escape claras. Tiene que encontrarse con los tiempos de vida y LGC en un mismo modelo de objetos, o el mismo puntero recibirá tres historias distintas de tres comprobadores.</p>
+
+    <h3>7. Efectos algebraicos: comprobador y gestor</h3>
+    <p class="body">A2 analiza declaraciones y filas de efectos. <code>perform</code>, <code>handle</code> y <code>resume</code> se detienen en E023. La siguiente etapa es un tiempo de ejecución real: manejadores, continuaciones, planificación, cancelación y presupuestos, más un comprobador de subtipos de filas y exhaustividad. Es el punto más parecido a investigación de la lista. No voy a llamarlo parche de fin de semana.</p>
+
+    <p class="body"><strong>Y el resto.</strong> Paridad del autoalojado, almacén de paquetes, Playground, documentación y rendimiento. Es una línea permanente, no una fase.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>El orden</h2>
+    <p class="body">Primero las clases, porque el marco de LSPE se escribirá con ellas. Después dominios y tipos de grafo, porque comparten la historia de verificación estática. Luego efectos, porque tocan capacidades, tiempos de vida y GC a la vez. La superficie de Tur sigue a cada sustrato. LMS avanza en paralelo; es demasiado transversal para dejarlo al final.</p>
+    <p class="body">Cada paso pasa la misma puerta: una nota de diseño en <code>docs</code>, pruebas rojas antes del cambio y verdes después, artefactos generados en su propio commit y ningún movimiento en el artefacto por defecto. Si una pieza no lo cumple, espera o recibe una exención explícita.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Lo que sigue siendo cierto</h2>
+    <p class="body">Los dos valores <code>_off</code> siguen idénticos byte a byte. L0 es un contrato congelado; añadir o quitar una primitiva es un cambio de versión con aviso a las líneas de abajo. Sigue sin haber mundo abierto, reflexión ni nombres de tipo en tiempo de ejecución. El compilador autoalojado sigue en la cadena, o el cambio no aterriza.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Dónde seguir</h2>
+    <p class="body"><code>docs/345</code> tiene la escalera de clases, <code>docs/344</code> el marco de LSPE, y la <a href="../../roadmap/">hoja de ruta</a> el orden de lanzamientos. Seguiré abriendo issues con el programa más pequeño que muestre un hueco. Si chocas con una pared, ese programa pequeño es lo más útil que puedes enviar.</p>
+    <p class="actions"><a class="btn btn-solid" href="../../roadmap/">Leer la hoja de ruta</a></p>
+    <p class="caption">El camino es largo; el primer marcador ya está en revisión. &mdash; <strong>Loment Dev Fujo</strong></p>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Loment se publica bajo la licencia MIT OR Apache-2.0. Programa de Fujo.</span>
+    <nav>
+      <a href="https://github.com/Loment-Lang/loment">Código fuente</a>
+      <a href="https://github.com/Loment-Lang/loment/releases/latest">Versiones</a>
+      <a href="https://github.com/FujoJTOP/lompi">lompi</a>
+      <a href="https://loment.fandom.com/">Wiki</a>
+      <a href="https://github.com/Loment-Lang/loment/issues">Incidencias</a>
+      <a class="mast" href="https://mastodon.social/@Loment" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z"/></svg>Mastodon</a>
+      <a class="mast" href="https://bsky.app/profile/loment.bsky.social" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364-3.136.521-5.919 1.517-2.244 5.449 3.944 4.011 5.42-1.005 6.237-3.242.653-1.79 1.03-2.81 1.03-2.81s.377 1.02 1.03 2.81c.817 2.237 2.293 7.253 6.237 3.242 3.675-3.932.892-4.928-2.244-5.449 2.67.296 5.568-.628 6.383-3.364.246-.829.624-5.789.624-6.479 0-.688-.139-1.86-.902-2.203-.659-.299-1.664-.621-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8z"/></svg>Bluesky</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

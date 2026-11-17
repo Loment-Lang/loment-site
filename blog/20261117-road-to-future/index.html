@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Road To Future — Loment</title>
+<meta name="description" content="Seven strands for the next stretch: LSPE, missing language features, capability domains, graph types, Tur, LMS and algebraic effects. A direction with an order, without a date.">
+<link rel="icon" href="../../mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=JetBrains+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../../style.css?v=20261117a">
+<link rel="alternate" hreflang="en" href="https://loment-lang.github.io/loment-site/blog/20261117-road-to-future/">
+<link rel="alternate" hreflang="zh-Hans" href="https://loment-lang.github.io/loment-site/zh/blog/20261117-road-to-future/">
+<link rel="alternate" hreflang="ja" href="https://loment-lang.github.io/loment-site/ja/blog/20261117-road-to-future/">
+<link rel="alternate" hreflang="ru" href="https://loment-lang.github.io/loment-site/ru/blog/20261117-road-to-future/">
+<link rel="alternate" hreflang="es" href="https://loment-lang.github.io/loment-site/es/blog/20261117-road-to-future/">
+<link rel="alternate" hreflang="x-default" href="https://loment-lang.github.io/loment-site/blog/20261117-road-to-future/">
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="../../">
+      <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true">
+        <rect width="64" height="64" rx="14" fill="#2f4bff"/>
+        <path d="M18 14h12v24h16v12H18z" fill="#fff"/>
+      </svg>
+      Loment
+    </a>
+        <nav>
+      <a href="../../start/">Learn</a>
+      <a href="../" aria-current="page">Blog</a>
+      <a href="../../examples/">Examples</a>
+      <a href="../../playground/">Playground</a>
+      <a href="../../standard/">Standard</a>
+      <a href="../../releases/">Timeline</a>
+      <details class="navmenu" name="bar">
+        <summary>Systems</summary>
+        <ul>
+          <li><a href="../../lgc/">LGC</a></li>
+          <li><a href="../../lvm/">LVM</a></li>
+          <li><a href="../../lompi/">lompi</a></li>
+          <li><a href="../../libl/">LibL</a></li>
+          <li><a href="../../lspe/">LSPE</a></li>
+        </ul>
+      </details>
+      <a href="https://github.com/Loment-Lang/loment">GitHub</a>
+    </nav>
+    <details class="lang" name="bar">
+      <summary>EN</summary>
+      <ul>
+        <li><a href="./" hreflang="en" aria-current="true">English</a></li>
+        <li><a href="../../zh/blog/20261117-road-to-future/" hreflang="zh-Hans">简体中文</a></li>
+        <li><a href="../../ja/blog/20261117-road-to-future/" hreflang="ja">日本語</a></li>
+        <li><a href="../../ru/blog/20261117-road-to-future/" hreflang="ru">Русский</a></li>
+        <li><a href="../../es/blog/20261117-road-to-future/" hreflang="es">Español</a></li>
+      </ul>
+    </details>
+  </div>
+</header>
+
+<main id="main">
+<section class="head">
+  <div class="wrap">
+    <div class="road-banner" aria-hidden="true">
+      <span class="road-sun"></span>
+      <div class="road-track">
+        <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+      </div>
+      <span class="road-label">ROAD TO FUTURE // PLAN</span>
+      <span class="road-tag">2026 &rarr;</span>
+      <span class="road-sweep"></span>
+    </div>
+    <p class="eyebrow">Blog &middot; 2026-11-17</p>
+    <h1>Road To Future</h1>
+    <p class="lede">I think it is time to announce an ambitious plan: Road To Future. The name is plain on purpose. What sits behind it is a queue of work that will take more than one release.</p>
+    <p class="limit"><strong>This is a direction, not a release.</strong> I have an order; I do not have a calendar.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Why now</h2>
+    <p class="body">2026 carried the project across a line. The reference compiler and the self-host compiler agree on the core, domains and borrow lifetimes exist, LSPE has its four parts, LVM has tiers, and ELF, PE and the Playground all run. The base is good enough to build on. The question is how much language can stand on it.</p>
+    <p class="body">I keep running into the same list. Classes are not finished. Effects have declarations and no runtime. Graph types still behave like an encoding inside a library. Part of the domain story stops at the compiler's front door. Some LMS levels are budgets and declarations. These are not small gaps; they are the shape of the next year.</p>
+    <p class="body">Road To Future is that list turned into a queue. It says what comes first and why. It does not put a date on the end.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Seven strands</h2>
+
+    <h3>1. LSPE, organized and faster</h3>
+    <p class="body">LSPE works. Adding a checker still means knowing too much about the compiler's insides. I want the registry, the scheduler and the ledger to be the normal way to add a check, with a small SDK at two levels: advisory checks, and checks that can stop an artifact. Classes belong here too: the framework should be written with the inheritance it is meant to audit.</p>
+
+    <h3>2. The features the language is missing</h3>
+    <p class="body">Classes are first. Single inheritance, fields, non-virtual methods, <code>self</code> and construction are in review now; virtual dispatch, vtables and <code>super</code> come next. Function values and indirect calls landed earlier this month. After that I want pattern matching and destructuring, a clearer module and visibility story, and the unglamorous pieces: collections, error handling, and diagnostics that name the value the user wrote.</p>
+
+    <h3>3. Capability domains, researched and completed</h3>
+    <p class="body">All eighteen domain kinds ship. The next work is semantic. A space tag should survive a call. An automatic guard should cover more than direct indexing. Block domains should appear in Potato. <code>subject</code> and <code>witnessed</code> need a real provenance story. Some of this is compiler work, some is language design, and some may end with a documented limit.</p>
+
+    <h3>4. Graph types as first-class values</h3>
+    <p class="body">DGT is the second core of 0.1.5.2. <code>digraph&lt;K&gt;</code> is a compile-time graph value with a capability lattice, layout specialization and static verification. I want graph types to be first-class: a graph you can name, pass, query, traverse, serialize and verify before the program runs, instead of a library encoding the checker cannot see.</p>
+
+    <h3>5. More substance in Tur</h3>
+    <p class="body">Tur has a frozen reading, a closed reading and a moving one. New surface syntax enters only when both implementations, the checker and the artifact agree. Candidates include effect syntax, graph literals, class syntax and pattern matching. Every addition keeps the default artifacts byte-identical; a <code>choose</code> dimension or an edition boundary is how that stays honest.</p>
+
+    <h3>6. LMS, optimized and modernized</h3>
+    <p class="body">LMS has seven levels and a lot of good intentions. Some levels are still budgets and declarations. I want enforcement where the level promises it, costs a reader can see, and clearer escape hatches. It has to meet lifetimes and LGC in one object model, or the same pointer will get three different stories from three checkers.</p>
+
+    <h3>7. Algebraic effects: checker and manager</h3>
+    <p class="body">A2 parses effect declarations and rows. <code>perform</code>, <code>handle</code> and <code>resume</code> stop at E023. The next stage is a real runtime: handlers, continuations, scheduling, cancellation and budgets, plus a checker for row subtyping and exhaustiveness. This is the most research-shaped item on the list. I am not going to call it a weekend patch.</p>
+
+    <p class="body"><strong>And the rest.</strong> Self-host parity, the package store, the Playground, documentation and performance. These are a standing line, not a phase.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>The order</h2>
+    <p class="body">Classes first, because the LSPE framework will be written in them. Domains and graph types next, because they share the static-verification story. Effects after that, because they touch capabilities, lifetimes and GC at once. Tur surface follows each substrate. LMS moves alongside; it is too cross-cutting to leave for the end.</p>
+    <p class="body">Each step follows the same gate: a design note in <code>docs</code>, tests that are red before the change and green after, generated artifacts in their own commit, and no movement in the default artifact. If a piece cannot meet that, it waits or gets an explicit exemption.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>What stays true</h2>
+    <p class="body">The two <code>_off</code> values stay byte-identical. L0 is a frozen contract; adding or removing a primitive is a versioned change with downstream notice. There is still no open world, no reflection and no runtime type names. The self-host compiler stays in the loop, or the change does not land.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Where to follow</h2>
+    <p class="body"><code>docs/345</code> has the class ladder, <code>docs/344</code> has the LSPE framework, and the <a href="../../roadmap/">roadmap</a> has the release order. I will keep opening issues with the smallest program that shows a gap. If you hit a wall, that small program is the most useful thing to send.</p>
+    <p class="actions"><a class="btn btn-solid" href="../../roadmap/">Read the roadmap</a></p>
+    <p class="caption">The road is long; the first marker is already in review. &mdash; <strong>Loment Dev Fujo</strong></p>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Loment is released under the MIT OR Apache-2.0 license. Program by Fujo.</span>
+    <nav>
+      <a href="https://github.com/Loment-Lang/loment">Source</a>
+      <a href="https://github.com/Loment-Lang/loment/releases/latest">Releases</a>
+      <a href="https://github.com/FujoJTOP/lompi">lompi</a>
+      <a href="https://loment.fandom.com/">Wiki</a>
+      <a href="https://github.com/Loment-Lang/loment/issues">Issues</a>
+      <a class="mast" href="https://mastodon.social/@Loment" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z"/></svg>Mastodon</a>
+      <a class="mast" href="https://bsky.app/profile/loment.bsky.social" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364-3.136.521-5.919 1.517-2.244 5.449 3.944 4.011 5.42-1.005 6.237-3.242.653-1.79 1.03-2.81 1.03-2.81s.377 1.02 1.03 2.81c.817 2.237 2.293 7.253 6.237 3.242 3.675-3.932.892-4.928-2.244-5.449 2.67.296 5.568-.628 6.383-3.364.246-.829.624-5.789.624-6.479 0-.688-.139-1.86-.902-2.203-.659-.299-1.664-.621-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8z"/></svg>Bluesky</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

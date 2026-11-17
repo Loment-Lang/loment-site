@@ -1,0 +1,165 @@
+<!doctype html>
+<!-- translated-from: blog/20261117-road-to-future/index.html -->
+<!-- source-sha256: bfe0d5c591b8492947ce27bd5ca474a187bd54e6221185e4bb54ce9d5d555177 -->
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Road To Future：通向未来的计划 — Loment</title>
+<meta name="description" content="接下来一段路的七条线：LSPE、语言缺口、能力域、图类型、Tur、LMS 与代数效应。一个有先后次序的方向，没有日期。">
+<link rel="icon" href="../../../mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=JetBrains+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../../../style.css?v=20261117a">
+<link rel="alternate" hreflang="en" href="https://loment-lang.github.io/loment-site/blog/20261117-road-to-future/">
+<link rel="alternate" hreflang="zh-Hans" href="https://loment-lang.github.io/loment-site/zh/blog/20261117-road-to-future/">
+<link rel="alternate" hreflang="ja" href="https://loment-lang.github.io/loment-site/ja/blog/20261117-road-to-future/">
+<link rel="alternate" hreflang="ru" href="https://loment-lang.github.io/loment-site/ru/blog/20261117-road-to-future/">
+<link rel="alternate" hreflang="es" href="https://loment-lang.github.io/loment-site/es/blog/20261117-road-to-future/">
+<link rel="alternate" hreflang="x-default" href="https://loment-lang.github.io/loment-site/blog/20261117-road-to-future/">
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="../../">
+      <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true">
+        <rect width="64" height="64" rx="14" fill="#2f4bff"/>
+        <path d="M18 14h12v24h16v12H18z" fill="#fff"/>
+      </svg>
+      Loment
+    </a>
+        <nav>
+      <a href="../../start/">学习</a>
+      <a href="../" aria-current="page">博客</a>
+      <a href="../../examples/">示例</a>
+      <a href="../../playground/">在线编译</a>
+      <a href="../../standard/">标准</a>
+      <a href="../../releases/">时间线</a>
+      <details class="navmenu" name="bar">
+        <summary>系统</summary>
+        <ul>
+          <li><a href="../../lgc/">LGC</a></li>
+          <li><a href="../../lvm/">LVM</a></li>
+          <li><a href="../../lompi/">lompi</a></li>
+          <li><a href="../../libl/">LibL</a></li>
+          <li><a href="../../lspe/">LSPE</a></li>
+        </ul>
+      </details>
+      <a href="https://github.com/Loment-Lang/loment">GitHub</a>
+    </nav>
+    <details class="lang" name="bar">
+      <summary>中文</summary>
+      <ul>
+        <li><a href="../../../blog/20261117-road-to-future/" hreflang="en">English</a></li>
+        <li><a href="./" hreflang="zh-Hans" aria-current="true">简体中文</a></li>
+        <li><a href="../../../ja/blog/20261117-road-to-future/" hreflang="ja">日本語</a></li>
+        <li><a href="../../../ru/blog/20261117-road-to-future/" hreflang="ru">Русский</a></li>
+        <li><a href="../../../es/blog/20261117-road-to-future/" hreflang="es">Español</a></li>
+      </ul>
+    </details>
+  </div>
+</header>
+
+<main id="main">
+<section class="head">
+  <div class="wrap">
+    <div class="road-banner" aria-hidden="true">
+      <span class="road-sun"></span>
+      <div class="road-track">
+        <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+      </div>
+      <span class="road-label">ROAD TO FUTURE // PLAN</span>
+      <span class="road-tag">2026 &rarr;</span>
+      <span class="road-sweep"></span>
+    </div>
+    <p class="eyebrow">Blog &middot; 2026-11-17</p>
+    <h1>Road To Future：通向未来的计划</h1>
+    <p class="lede">我觉得是时候向各位宣布一个野心勃勃的计划，Road To Future。名字很直白，要做的事不直白；它是一张会跨过好几个版本的队列。</p>
+    <p class="limit"><strong>这是一个方向，不是一次发布。</strong>我有先后次序，没有日历。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>为什么是现在</h2>
+    <p class="body">2026 年把项目推过了一条线。参考实现和自举实现能在核心上对上，域与借用生命周期已经存在，LSPE 有四件套，LVM 有分层，ELF、PE 和 Playground 都能跑。基础够用了，接下来要问的是语言能在上面长多高。</p>
+    <p class="body">我最近反复撞到同一张清单：类还没长齐；效应只有声明，没有运行期；图类型还像库里的编码；域的一部分故事停在编译器的前门；LMS 有些档位只是预算和声明。这些都不是小缺口，它们就是下一年的形状。</p>
+    <p class="body">Road To Future 把这张清单变成队列。它说先做什么、为什么，不把终点写成日期。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>七条线</h2>
+
+    <h3>1. LSPE：整理，并让它更快</h3>
+    <p class="body">LSPE 已经能用。问题是给编译器加一条检查仍然要懂太多内部结构。我想把注册表、调度器和台账做成默认路径，并给出两层小 SDK：一层给提示性检查，一层给能拦住产物的检查。类也在这条线上——框架本身应该用它要审计的继承来写。</p>
+
+    <h3>2. 补上语言缺的东西</h3>
+    <p class="body">第一块是类：单继承、字段、非虚方法、<code>self</code> 与构造正在审阅中；虚派发、vtable 和 <code>super</code> 排在后面。函数值与间接调用在这个月早些时候已经落地。再往后是模式匹配与解构、更清楚的模块与可见性，以及那些不体面的小东西：集合、错误处理，和能点出用户写的那个值的诊断。</p>
+
+    <h3>3. 能力域：研究并补全</h3>
+    <p class="body">十八种域都已经发出去。下一步是语义：空间标签应该跟过一次调用；自动 guard 应该覆盖直接下标以外的情况；块级域应该进 Potato；<code>subject</code> 与 <code>witnessed</code> 需要真正的来源故事。这里面有编译器工作，有语言设计，也会有一部分以一句写清楚的边界收尾。</p>
+
+    <h3>4. 图类型成为一等公民</h3>
+    <p class="body">DGT 是 0.1.5.2 的第二个核心。<code>digraph&lt;K&gt;</code> 是编译期图值，带能力格、布局特化与静态验证。我想让图类型成为一等公民：能命名、能传参、能查询、能遍历、能序列化，也能在程序跑起来之前被验证，而不是一个检查器看不见的库编码。</p>
+
+    <h3>5. Tur 加入更多内容</h3>
+    <p class="body">Tur 现在有冻结的一版、封版的一版和仍在移动的一版。新表层语法要同时过两套实现、检查器与产物。候选包括效应语法、图字面量、类语法、模式匹配。每加一样都要保证默认产物逐字节不变；<code>choose</code> 维度或版次边界是让这句话成立的装置。</p>
+
+    <h3>6. LMS：优化与现代化</h3>
+    <p class="body">LMS 有七级，也有不少善意。有些级别今天仍然只是预算与声明。我想在该拦住的地方真的拦住，让代价能被读者看见，并把逃生舱写明白。它必须和生命周期、LGC 落在同一个对象模型里，否则同一个指针会被三个检查器讲成三个故事。</p>
+
+    <h3>7. 代数效应：检查器与效应管理器</h3>
+    <p class="body">A2 已经能解析效应声明与效应行，<code>perform</code>、<code>handle</code> 与 <code>resume</code> 停在 E023。下一阶段要做真的运行期：处理器、续体、调度、取消与预算，再加一个检查器去管效应行的子类型与穷尽性。这是清单里最像研究的一项，我不会把它说成一个周末补丁。</p>
+
+    <p class="body"><strong>以及其他。</strong>自举对齐、包仓库、Playground、文档与性能。这些是常设的一条线，不单独占一个阶段。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>这个顺序</h2>
+    <p class="body">先做类，因为 LSPE 框架会用类来写。然后做域与图类型，它们共享同一套静态验证。再做效应，因为它同时碰能力域、生命周期与 GC。Tur 表层跟着每一层地基走。LMS 并行推进；它太横切，留到最后会挡住所有东西。</p>
+    <p class="body">每一步都过同一道门：<code>docs</code> 里有一份设计，判据先红后绿，生成物单独一条提交，默认产物不动。做不到就等，或者写一条明确的豁免。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>哪些东西不变</h2>
+    <p class="body">两个 <code>_off</code> 取值继续逐字节不变。L0 是冻结契约，增删原语要单独升版并通知下游。开放世界、反射、运行期类型名仍然不做。自举实现必须在这条链里，否则改动不落地。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>在哪儿看进展</h2>
+    <p class="body"><code>docs/345</code> 是类的梯子，<code>docs/344</code> 是 LSPE 框架，<a href="../../roadmap/">路线图</a>放发布顺序。我会继续用最小的复现程序开 issue。你如果撞到墙，把那个小程序发来，比一条功能请求有用得多。</p>
+    <p class="actions"><a class="btn btn-solid" href="../../roadmap/">阅读路线图</a></p>
+    <p class="caption">路很长，第一个路标已经在审阅里。&mdash; <strong>Loment Dev Fujo</strong></p>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Loment 依据 MIT OR Apache-2.0 双许可发布。由 Fujo 编写。</span>
+    <nav>
+      <a href="https://github.com/Loment-Lang/loment">源码</a>
+      <a href="https://github.com/Loment-Lang/loment/releases/latest">发布</a>
+      <a href="https://github.com/FujoJTOP/lompi">lompi</a>
+      <a href="https://loment.fandom.com/">Wiki</a>
+      <a href="https://github.com/Loment-Lang/loment/issues">Issues</a>
+      <a class="mast" href="https://mastodon.social/@Loment" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z"/></svg>Mastodon</a>
+      <a class="mast" href="https://bsky.app/profile/loment.bsky.social" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364-3.136.521-5.919 1.517-2.244 5.449 3.944 4.011 5.42-1.005 6.237-3.242.653-1.79 1.03-2.81 1.03-2.81s.377 1.02 1.03 2.81c.817 2.237 2.293 7.253 6.237 3.242 3.675-3.932.892-4.928-2.244-5.449 2.67.296 5.568-.628 6.383-3.364.246-.829.624-5.789.624-6.479 0-.688-.139-1.86-.902-2.203-.659-.299-1.664-.621-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8z"/></svg>Bluesky</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>
