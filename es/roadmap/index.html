@@ -1,12 +1,12 @@
 <!doctype html>
 <!-- translated-from: roadmap/index.html -->
-<!-- source-sha256: 73bc5439eddf9bf4bf523e0223b78344a661641667f737e4acdd585dce484432 -->
+<!-- source-sha256: d4df9663e2f8af0bee2cc5252dbfb97d25b14b820a10d584dee1aef809b8ccf9 -->
 <html lang="es">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Hoja de ruta — Loment</title>
-<meta name="description" content="Lo que Loment pretende construir a continuación, de 0.1.5.2 a 0.1.8 — un plan, no una promesa. Sin fechas, y nada de esto se puede descargar hoy.">
+<meta name="description" content="Lo que Loment pretende construir a continuación, de 0.1.6 a 0.1.8 — un plan, no una promesa. Sin fechas, y nada de esto se puede descargar hoy.">
 <link rel="icon" href="../../mark.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -71,7 +71,7 @@
     <p class="eyebrow">Hoja de ruta</p>
     <h1>Lo que viene después</h1>
     <p class="lede">
-      Las versiones a las que apunta el proyecto, desde 0.1.5.2 en adelante, y para <em>qué</em> es
+      Las versiones a las que apunta el proyecto, desde 0.1.6 en adelante, y para <em>qué</em> es
       cada una. Esto es un <strong>plan</strong> &mdash; la forma del trabajo que el proyecto se ha
       impuesto, no un calendario.
     </p>
@@ -87,16 +87,21 @@
 
 <section class="sec">
   <div class="wrap">
-    <h2>El hito más cercano: 0.1.5.2</h2>
+    <h2>El hito más cercano: 0.1.6</h2>
     <p class="body">
-      0.1.5.1 desmontó sus costuras. Lo que queda es trabajo de otra clase: el tipo de grafo del
-      compilador, <code>digraph&lt;K&gt;</code>, se convierte en un valor de tiempo de compilación
-      con su propia retícula de capacidades y especialización de diseño
-      (<code>#1196</code>&ndash;<code>#1203</code>), junto a una línea de defectos que solo ve la
-      puerta — una asignación barrida que sigue viva, un arreglo de auditoría de capacidades
-      compartido por dos módulos, una identidad que es un hash de 32 bits, una longitud de cabecera
-      que se desborda. No es una versión de funciones; es la línea donde lo ya prometido deja de
-      poder mentir.
+      0.1.5.1 cerró el hito 0.1.5, y la línea 0.1.5.x termina con ella. Las versiones que
+      esperaban detrás — 0.1.5.2 para los dominios de capacidad en profundidad, 0.1.5.3 para el
+      interrogador de LSPE, 0.1.5.4 para los invariantes del registro y la autoevaluación, 0.1.5.5
+      para la paralelización automática — no recibirán etiqueta. Su trabajo se funde en 0.1.6.
+    </p>
+    <p class="body">
+      0.1.6 tiene un objetivo propio y estrecho: el intérprete pasa a ser un objetivo, así que
+      <code>choose vm</code> y <code>no_vm</code> dejan de emitir los mismos bytes. A su lado está
+      la cola fusionada: el tipo de grafo <code>digraph&lt;K&gt;</code> como valor de tiempo de
+      compilación con su retícula de capacidades y especialización de diseño, los dominios en
+      profundidad, el marco LSPE, la escalera de clases, los valores de función y el verificador de
+      tiempos de vida prestados. Es una versión más grande que cualquier 0.1.5.x por separado, y la
+      comprueba la misma puerta.
     </p>
     <p class="body">
       La disciplina no cambia. Cada afirmación recibe un criterio capaz de refutarla, y las dos
@@ -184,13 +189,14 @@
         </p>
       </div>
       <div class="row">
-        <h3>0.1.5.x &mdash; el runtime queda terminado</h3>
+        <h3>0.1.5.x &mdash; fundida en 0.1.6</h3>
         <p>
-          El ajuste <code>runtime</code> ya existe, con un valor por defecto, y es
-          <strong>obligatorio en vez de orientativo</strong>: pedir el nivel de recuperación que
-          necesita un recolector mientras se declara que no hay runtime es un error de
-          compilación, porque los dos se contradicen por definición. Lo que el runtime contiene hoy
-          es exactamente la parte que ese nivel necesita. Esta línea añade el resto.
+          La línea se detiene en 0.1.5.1. El ajuste <code>runtime</code> ya existe, con un valor
+          por defecto, y es <strong>obligatorio en vez de orientativo</strong>: pedir el nivel de
+          recuperación que necesita un recolector mientras se declara que no hay runtime es un
+          error de compilación, porque los dos se contradicen por definición. Lo que el runtime
+          contiene hoy es exactamente la parte que ese nivel necesita. El resto del trabajo sale
+          ahora con la siguiente versión, no en versiones propias.
         </p>
       </div>
       <div class="row">

@@ -1,0 +1,148 @@
+<!doctype html>
+<!-- translated-from: blog/20261118-015x-era-ends/index.html -->
+<!-- source-sha256: bda6bfb3799d27a30cc4a9eba5da3377956429e52ef21f53987b48771c2a1fc3 -->
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>0.1.5.x 的时代结束了 — Loment</title>
+<meta name="description" content="0.1.5.x 这条线停在 0.1.5.1；剩下的里程碑全部并入 0.1.6，目标是 2027 年的开头。">
+<link rel="icon" href="../../../mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=JetBrains+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../../../style.css?v=20261117a">
+<link rel="alternate" hreflang="en" href="https://loment-lang.github.io/loment-site/blog/20261118-015x-era-ends/">
+<link rel="alternate" hreflang="zh-Hans" href="https://loment-lang.github.io/loment-site/zh/blog/20261118-015x-era-ends/">
+<link rel="alternate" hreflang="ja" href="https://loment-lang.github.io/loment-site/ja/blog/20261118-015x-era-ends/">
+<link rel="alternate" hreflang="ru" href="https://loment-lang.github.io/loment-site/ru/blog/20261118-015x-era-ends/">
+<link rel="alternate" hreflang="es" href="https://loment-lang.github.io/loment-site/es/blog/20261118-015x-era-ends/">
+<link rel="alternate" hreflang="x-default" href="https://loment-lang.github.io/loment-site/blog/20261118-015x-era-ends/">
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="../../">
+      <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true">
+        <rect width="64" height="64" rx="14" fill="#2f4bff"/>
+        <path d="M18 14h12v24h16v12H18z" fill="#fff"/>
+      </svg>
+      Loment
+    </a>
+        <nav>
+      <a href="../../start/">学习</a>
+      <a href="../" aria-current="page">博客</a>
+      <a href="../../examples/">示例</a>
+      <a href="../../playground/">在线编译</a>
+      <a href="../../standard/">标准</a>
+      <a href="../../releases/">时间线</a>
+      <details class="navmenu" name="bar">
+        <summary>系统</summary>
+        <ul>
+          <li><a href="../../lgc/">LGC</a></li>
+          <li><a href="../../lvm/">LVM</a></li>
+          <li><a href="../../lompi/">lompi</a></li>
+          <li><a href="../../libl/">LibL</a></li>
+          <li><a href="../../lspe/">LSPE</a></li>
+        </ul>
+      </details>
+      <a href="https://github.com/Loment-Lang/loment">GitHub</a>
+    </nav>
+    <details class="lang" name="bar">
+      <summary>中文</summary>
+      <ul>
+        <li><a href="../../../blog/20261118-015x-era-ends/" hreflang="en">English</a></li>
+        <li><a href="./" hreflang="zh-Hans" aria-current="true">简体中文</a></li>
+        <li><a href="../../../ja/blog/20261118-015x-era-ends/" hreflang="ja">日本語</a></li>
+        <li><a href="../../../ru/blog/20261118-015x-era-ends/" hreflang="ru">Русский</a></li>
+        <li><a href="../../../es/blog/20261118-015x-era-ends/" hreflang="es">Español</a></li>
+      </ul>
+    </details>
+  </div>
+</header>
+
+<main id="main">
+<section class="head">
+  <div class="wrap">
+    <p class="eyebrow">Blog &middot; 2026-11-18</p>
+    <h1>0.1.5.x 的时代结束了</h1>
+    <p class="lede">在 2026 年的最后，在 2027 年的开始，在一切开发仍在进行时，在功能准备完备时——<br><strong>0.1.6 即将到来。</strong></p>
+    <p class="body">0.1.5.x 这条线停在 0.1.5.1。排在它后面的里程碑——0.1.5.2 到 0.1.5.5——全部并入 0.1.6。我瞄准 2027 年的开头，把这一版当作新年礼物发出来。</p>
+    <p class="limit"><strong>这是计划，不是已经发布的版本。</strong>你现在能装到的仍是 0.1.5.1；下面那个日期是目标。这里没有任何一样今天可以下载。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>这条线停在 0.1.5.1</h2>
+    <p class="body">0.1.5.1 在 2026-11-07 发出，关掉了 0.1.5 里程碑。当时的计划是在它之后发一串小版本：0.1.5.2 做能力域的深入与图类型，0.1.5.3 做 LSPE 的反问者，0.1.5.4 做台账不变量与自审计，0.1.5.5 做自动并行化。</p>
+    <p class="body">这个计划变了。那四个版本都不会打标签。队列还在；退场的只有版本号，工作量整体挪进 0.1.6。</p>
+    <p class="body">0.1.5.2 从来没有离开开发树。这个月月初起，Playground 的 Beta 通道一直在跑它的快照，那个通道会继续跟 <code>main</code>。稳定通道停在 0.1.5.1，直到 0.1.6 发出。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>为什么合并，而不是再发四个小版本</h2>
+    <p class="body">0.1.5.x 的号，是在工作看起来还能切开的时候画的：一个域版本、一个审计版本、一个台账版本、一个并行版本。后来它切不开了。图类型、类系统、LSPE 框架、函数值与借用生命周期检查器，落在同一个对象模型、同一个检查器里。现在硬拆，只会在并不存在的接缝上冻结产物，让你去装一些仅仅为了让队列好看而存在的版本。</p>
+    <p class="body">代价不小。0.1.6 会比任何一个单独的 0.1.5.x 都大，而更大的发布更难验证：门禁要覆盖的面更多，种子重算得更频繁，必须一起工作的东西排得更长。我接受这笔代价，因为四个小版本会把同一笔代价付四遍，还换不来更容易相信的结果。</p>
+    <p class="limit"><strong>0.1.6 不会装下四张里程碑清单上的每一条。</strong>它会装下合并后的队列扛得住、门禁证得了的部分。装不下的，会在发布之前像这篇一样明说；不会从清单里悄悄删掉。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>0.1.6 是什么</h2>
+    <p class="body"><code>#922</code> 里写下的目标很窄：解释器成为一个目标。今天 <code>choose vm</code> 与 <code>no_vm</code> 发出的字节相同，这个设置只是一句声明，不改变产物是什么。0.1.6 让它成为真正的选择：产物可以交给一个执行器，由它按需接收，并在接收之前先审一遍。</p>
+    <p class="body">并入同一版的，还有 0.1.5.x 这条线原本扛着的工作：能力域的深入——带语义的撤销、guard 检查不到的 subject、信息流、逐条规则的一致性套件，以及作为钉死契约的描述符；<code>digraph&lt;K&gt;</code> 作为编译期图值，带能力格、布局特化与静态验证；LSPE 框架的注册表、调度器、两层 SDK、台账不变量与自审计；从单继承到 vtable、虚派发与 <code>super</code> 的类梯子；以及把域与生命周期绑在一起的借用生命周期检查器。</p>
+    <p class="body">其中一部分已经在 <code>main</code> 上、还没发布：LSPE 框架、类梯子的头三级、函数值与效应检查器。我说的是这条线落在哪里；清单上还有很多仍然开着。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>日期</h2>
+    <p class="body"><a href="../../roadmap/">路线图那一页</a>写着没有日期，它是认真的。这篇博文破例一次：我瞄准 <strong>2027-01-01</strong>。一份新年礼物。</p>
+    <p class="body">目标是目标，不是承诺。我宁愿把数字写下来，也不愿躲在“很快”后面。如果工作没准备好，日期就往后挪。不会发生的事，是为了赶日期而悄悄砍范围；如果有什么必须离开 0.1.6，它会带着一段说明离开。</p>
+    <p class="limit"><strong>礼物可以迟到，盒子不能是空的。</strong></p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>什么不变</h2>
+    <p class="body">L0 仍是冻结契约：增删一条原语是带版本的改动，要通知下游。两套实现在产物上继续逐字节一致，自举编译器继续留在这条链里，生成物继续单独成一条提交。每一条主张仍然需要一条能证明它错的判据。</p>
+    <p class="body">稳定通道在 0.1.6 发出之前都是 0.1.5.1。Beta 通道跟 <code>main</code>，所以这里说的工作在构建过程中就能在 <a href="../../playground/">Playground</a> 里看到。开放世界、反射、运行期类型名仍然不做。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>在哪儿看进展</h2>
+    <p class="body"><code>#922</code> 跟踪 0.1.6，<a href="../../roadmap/">路线图</a>放顺序，<a href="../../releases/">时间线</a>等日期成为事实之后才记日期。我会继续用最小的复现程序开 issue；你如果撞到墙，把那个小程序发来，比什么都管用。</p>
+    <p class="actions"><a class="btn btn-solid" href="../../roadmap/">阅读路线图</a></p>
+    <p class="caption">版本号退场，工作照发。&mdash; <strong>Loment Dev Fujo</strong></p>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Loment 依据 MIT OR Apache-2.0 双许可发布。由 Fujo 编写。</span>
+    <nav>
+      <a href="https://github.com/Loment-Lang/loment">源码</a>
+      <a href="https://github.com/Loment-Lang/loment/releases/latest">发布</a>
+      <a href="https://github.com/FujoJTOP/lompi">lompi</a>
+      <a href="https://loment.fandom.com/">Wiki</a>
+      <a href="https://github.com/Loment-Lang/loment/issues">Issues</a>
+      <a class="mast" href="https://mastodon.social/@Loment" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z"/></svg>Mastodon</a>
+      <a class="mast" href="https://bsky.app/profile/loment.bsky.social" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364-3.136.521-5.919 1.517-2.244 5.449 3.944 4.011 5.42-1.005 6.237-3.242.653-1.79 1.03-2.81 1.03-2.81s.377 1.02 1.03 2.81c.817 2.237 2.293 7.253 6.237 3.242 3.675-3.932.892-4.928-2.244-5.449 2.67.296 5.568-.628 6.383-3.364.246-.829.624-5.789.624-6.479 0-.688-.139-1.86-.902-2.203-.659-.299-1.664-.621-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8z"/></svg>Bluesky</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

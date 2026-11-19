@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Roadmap — Loment</title>
-<meta name="description" content="What Loment intends to build next, from 0.1.5.1 to 0.1.8 — a plan, not a promise. No dates, and none of it is downloadable today.">
+<meta name="description" content="What Loment intends to build next, from 0.1.6 to 0.1.8 — a plan, not a promise. No dates, and none of it is downloadable today.">
 <link rel="icon" href="../mark.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -69,7 +69,7 @@
     <p class="eyebrow">Roadmap</p>
     <h1>What comes next</h1>
     <p class="lede">
-      The versions the project is aiming at, from 0.1.5.2 onward, and what each of them is
+      The versions the project is aiming at, from 0.1.6 onward, and what each of them is
       <em>for</em>. This is a <strong>plan</strong> &mdash; the shape of the work the project has
       set itself, not a schedule.
     </p>
@@ -85,15 +85,20 @@
 
 <section class="sec">
   <div class="wrap">
-    <h2>The nearest milestone: 0.1.5.2</h2>
+    <h2>The nearest milestone: 0.1.6</h2>
     <p class="body">
-      0.1.5.1 closed its seams. What is left is a different kind of work: the compiler's graph
-      type, <code>digraph&lt;K&gt;</code>, becomes a compile-time value with its own capability
-      lattice and layout specialisation (<code>#1196</code>&ndash;<code>#1203</code>), beside a
-      defect line that only a gate can see &mdash; a swept allocation that is still live, a
-      capability audit array shared by two modules, an identity that is a 32-bit hash, a header
-      length that wraps. It is not a feature release; it is the line where the things already
-      promised stop being able to lie.
+      0.1.5.1 closed the 0.1.5 milestone, and the 0.1.5.x line ends with it. The versions that
+      were queued behind it &mdash; 0.1.5.2 for capability domains in depth, 0.1.5.3 for the LSPE
+      counter-asker, 0.1.5.4 for the ledger invariants and the self-audit, 0.1.5.5 for automatic
+      parallelization &mdash; will not be tagged. Their work folds into 0.1.6.
+    </p>
+    <p class="body">
+      0.1.6 has a narrow goal of its own: the interpreter becomes a target, so
+      <code>choose vm</code> and <code>no_vm</code> stop emitting the same bytes. Beside it sits
+      the folded queue: the graph type <code>digraph&lt;K&gt;</code> as a compile-time value with
+      its own capability lattice and layout specialization, domains in depth, the LSPE framework,
+      the class ladder, function values and the borrow-lifetime checker. It is a larger release
+      than any single 0.1.5.x would have been, and it is checked by the same gate.
     </p>
     <p class="body">
       The discipline does not change. Every claim gets a criterion that could prove it wrong, and
@@ -179,13 +184,14 @@
         </p>
       </div>
       <div class="row">
-        <h3>0.1.5.x &mdash; the runtime is finished</h3>
+        <h3>0.1.5.x &mdash; folded into 0.1.6</h3>
         <p>
-          The <code>runtime</code> setting already exists, with a default, and it is
-          <strong>enforced rather than advisory</strong>: asking for the reclamation tier that
-          needs a collector while declaring there is no runtime is a compile error, because the
-          two contradict each other by definition. What the runtime holds today is exactly the
-          part that tier needs. This line adds the rest of it.
+          The line stops at 0.1.5.1. The <code>runtime</code> setting already exists, with a
+          default, and it is <strong>enforced rather than advisory</strong>: asking for the
+          reclamation tier that needs a collector while declaring there is no runtime is a compile
+          error, because the two contradict each other by definition. What the runtime holds today
+          is exactly the part that tier needs. The rest of that work now ships with the next
+          version instead of in versions of its own.
         </p>
       </div>
       <div class="row">

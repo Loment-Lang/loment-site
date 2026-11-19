@@ -1,12 +1,12 @@
 <!doctype html>
 <!-- translated-from: roadmap/index.html -->
-<!-- source-sha256: 73bc5439eddf9bf4bf523e0223b78344a661641667f737e4acdd585dce484432 -->
+<!-- source-sha256: d4df9663e2f8af0bee2cc5252dbfb97d25b14b820a10d584dee1aef809b8ccf9 -->
 <html lang="zh-Hans">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>路线图 — Loment</title>
-<meta name="description" content="Loment 接下来打算构建什么，从 0.1.5.2 到 0.1.8 —— 一份计划，而不是一份承诺。没有日期，而且其中没有任何一样今天可以下载。">
+<meta name="description" content="Loment 接下来打算构建什么，从 0.1.6 到 0.1.8 —— 一份计划，而不是一份承诺。没有日期，而且其中没有任何一样今天可以下载。">
 <link rel="icon" href="../../mark.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -71,7 +71,7 @@
     <p class="eyebrow">路线图</p>
     <h1>接下来是什么</h1>
     <p class="lede">
-      项目瞄准的那些版本，从 0.1.5.2 往后，以及每一版是<em>为了</em>什么。这是一份<strong>计划</strong>
+      项目瞄准的那些版本，从 0.1.6 往后，以及每一版是<em>为了</em>什么。这是一份<strong>计划</strong>
       —— 项目给自己定下的工作的形状，而不是一份时间表。
     </p>
     <p class="limit">
@@ -86,13 +86,17 @@
 
 <section class="sec">
   <div class="wrap">
-    <h2>最近的里程碑：0.1.5.2</h2>
+    <h2>最近的里程碑：0.1.6</h2>
     <p class="body">
-      0.1.5.1 把那些接缝拆完了。剩下的是另一种工作：编译器的图类型
-      <code>digraph&lt;K&gt;</code> 变成编译期值，带自己的能力格与布局特化
-      （<code>#1196</code>&ndash;<code>#1203</code>）；同时还有一条只有门禁看得见的缺陷线——
-      被回收却仍然活着的分配、两个模块共用的能力审计数组、以 32 位哈希当身份、会回绕的头部长度。
-      它不是功能版本；它是让已经承诺过的东西不能再撒谎的那条线。
+      0.1.5.1 关掉了 0.1.5 里程碑，0.1.5.x 这条线也停在它这里。排在后面的那四个版本——
+      0.1.5.2 做能力域的深入、0.1.5.3 做 LSPE 的反问者、0.1.5.4 做台账不变量与自审计、
+      0.1.5.5 做自动并行化——都不会打标签。它们的工作全部并入 0.1.6。
+    </p>
+    <p class="body">
+      0.1.6 有自己的窄目标：解释器成为一个目标，<code>choose vm</code> 与 <code>no_vm</code>
+      不再发出相同的字节。并入的队列就在它旁边：图类型 <code>digraph&lt;K&gt;</code> 作为编译期值，
+      带自己的能力格与布局特化；能力域的深入；LSPE 框架；类梯子；函数值；以及借用生命周期检查器。
+      它比任何单个 0.1.5.x 都大，而它过的仍是同一道门禁。
     </p>
     <p class="body">
       纪律不变。每条声称都配一条能证伪它的判据，两套实现在发射物上仍然逐字节相同。
@@ -168,12 +172,12 @@
         </p>
       </div>
       <div class="row">
-        <h3>0.1.5.x —— runtime 完成</h3>
+        <h3>0.1.5.x —— 并入 0.1.6</h3>
         <p>
-          <code>runtime</code> 设置已经存在，带一个默认值，而且它是<strong>被强制的，而不只是
-          提示</strong>：在声明没有 runtime 的同时，要求那个需要收集器的回收档，是一个编译错误，
-          因为两者按定义就互相矛盾。runtime 今天装着的，恰好就是那一档需要的那部分。这一条要
-          补上其余的部分。
+          这条线停在 0.1.5.1。<code>runtime</code> 设置已经存在，带一个默认值，而且它是
+          <strong>被强制的，而不只是提示</strong>：在声明没有 runtime 的同时，要求那个需要收集器的
+          回收档，是一个编译错误，因为两者按定义就互相矛盾。runtime 今天装着的，恰好就是那一档
+          需要的那部分。其余的工作现在跟着下一版一起发，不再单独占版本号。
         </p>
       </div>
       <div class="row">
