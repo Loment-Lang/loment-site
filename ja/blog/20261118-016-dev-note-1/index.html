@@ -1,0 +1,161 @@
+<!doctype html>
+<!-- translated-from: blog/20261118-016-dev-note-1/index.html -->
+<!-- source-sha256: 1487684abc0e6ec02c47106e88ad756e48636d247a525725e29f8b5e8875d20b -->
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>0.1.6 開発ノート #1 — Loment</title>
+<meta name="description" content="0.1.6 開発の最初の区切り：関数値、型推論、catch、クラス、エフェクト、独立した意味の oracle、監査フレームワーク、そして二つの設計。">
+<link rel="icon" href="../../../mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=JetBrains+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../../../style.css?v=20261117a">
+<link rel="alternate" hreflang="en" href="https://loment-lang.github.io/loment-site/blog/20261118-016-dev-note-1/">
+<link rel="alternate" hreflang="zh-Hans" href="https://loment-lang.github.io/loment-site/zh/blog/20261118-016-dev-note-1/">
+<link rel="alternate" hreflang="ja" href="https://loment-lang.github.io/loment-site/ja/blog/20261118-016-dev-note-1/">
+<link rel="alternate" hreflang="ru" href="https://loment-lang.github.io/loment-site/ru/blog/20261118-016-dev-note-1/">
+<link rel="alternate" hreflang="es" href="https://loment-lang.github.io/loment-site/es/blog/20261118-016-dev-note-1/">
+<link rel="alternate" hreflang="x-default" href="https://loment-lang.github.io/loment-site/blog/20261118-016-dev-note-1/">
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="../../">
+      <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true">
+        <rect width="64" height="64" rx="14" fill="#2f4bff"/>
+        <path d="M18 14h12v24h16v12H18z" fill="#fff"/>
+      </svg>
+      Loment
+    </a>
+        <nav>
+      <a href="../../start/">学ぶ</a>
+      <a href="../" aria-current="page">ブログ</a>
+      <a href="../../examples/">サンプル</a>
+      <a href="../../playground/">オンライン実行</a>
+      <a href="../../standard/">標準</a>
+      <a href="../../releases/">タイムライン</a>
+      <details class="navmenu" name="bar">
+        <summary>システム</summary>
+        <ul>
+          <li><a href="../../lgc/">LGC</a></li>
+          <li><a href="../../lvm/">LVM</a></li>
+          <li><a href="../../lompi/">lompi</a></li>
+          <li><a href="../../libl/">LibL</a></li>
+          <li><a href="../../lspe/">LSPE</a></li>
+        </ul>
+      </details>
+      <a href="https://github.com/Loment-Lang/loment">GitHub</a>
+    </nav>
+    <details class="lang" name="bar">
+      <summary>日本語</summary>
+      <ul>
+        <li><a href="../../../blog/20261118-016-dev-note-1/" hreflang="en">English</a></li>
+        <li><a href="../../../zh/blog/20261118-016-dev-note-1/" hreflang="zh-Hans">简体中文</a></li>
+        <li><a href="./" hreflang="ja" aria-current="true">日本語</a></li>
+        <li><a href="../../../ru/blog/20261118-016-dev-note-1/" hreflang="ru">Русский</a></li>
+        <li><a href="../../../es/blog/20261118-016-dev-note-1/" hreflang="es">Español</a></li>
+      </ul>
+    </details>
+  </div>
+</header>
+
+<main id="main">
+<section class="head">
+  <div class="wrap">
+    <p class="eyebrow">Blog &middot; 2026-11-18</p>
+    <h1>0.1.6 開発ノート #1</h1>
+    <p class="lede">0.1.5.x は閉じ、0.1.6 はロードマップの一行ではなくなった。これはその内側で何が動いているかについての最初のノートで、作業台の隣に立つ人に説明するつもりで書いている。</p>
+    <p class="limit"><strong>ノートは瞬間を記録するもので、リリースではない。</strong>ここにあるものの一部は参照実装にあり、セルフホスト実装にはまだない。一部はコードのない設計である。どの段落がどれかは明記する。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>関数が値になった</h2>
+    <p class="body">関数を変数に入れ、別の関数に渡し、戻り値として返し、その変数を通して呼べる。クロージャは周りの値を捕まえられる。値として、あるいは参照だと明示すれば参照として。値を通した呼び出しは名前で呼ぶのとまったく同じ綴りなので、コードの読み味は変わらない。違いを知っているのはコンパイラだけだ。</p>
+    <p class="body">これは新しいスイッチ <code>choose fp</code> の後ろにあり、既定では切ってある。切ったままなら、ビルドはバイト単位で以前と同じ。入れると、コンパイラはすべての呼び出し先を見られなくなる。そこで、プログラムがアドレスを取った関数を集め、同じ型の行き先がない間接呼び出しを拒否する。その検査がこの機能の代価であり、はっきり書いてある。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>コンパイラが値から型を取れる</h2>
+    <p class="body"><code>let x := e</code> と <code>let x: auto = e</code> は同じ意味になった。ローカルの型は初期化式から来る。最初の版は厳しめの規則を守る。初期化式はどこかで型を綴っていなければならない。変数、引数、フィールドの連鎖、全体のキャスト、あるいは <code>true</code> と <code>false</code>。裸のリテラル、呼び出し、演算子は拒否する。いくつかの組み込みはソースに綴りのない型を返す。片方の実装が推測し、もう片方が拒否すれば、小さな便利が二つのビルドの差になってしまう。この機能は Tur 2026.3 以降のもので、古い版次は答えを変えない。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>エラーは起きた場所で扱える</h2>
+    <p class="body"><code>catch</code> はこれまでフォールバック値だけを返した。今はエラーを捕まえて小さな式を走らせることもできる — <code>catch |e| { &hellip; }</code> — し、<code>catch return</code> で失敗を早期リターンに変えることもできる。コンパイラにはどちらにも使う switch とペイロードのスロットがもともとあったので、代価は小さく、エラーの道は書いたコードの中に見えたままになる。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>クラス：骨組みから本物のディスパッチへ</h2>
+    <p class="body">クラスは、親のフィールドを前に置いた構造体と、メソッド名で名付けられた普通の関数に降りる。単一継承、フィールド、非仮想メソッド、<code>self</code>、構築は参照実装で動く。続いて仮想メソッドが来た。仮想の階層はオブジェクトの先頭に表を持ち、override は固定のスロットを取り、<code>super</code> は親を直接呼び、抽象メソッドは本体のない署名になり、子への参照は親が期待される場所で使える。</p>
+    <p class="body">境界を二つ、声に出しておく。仮想クラスには runtime が要る。表がアロケータで作られるからだ。セルフホスト実装はまだクラスを読めない。この仕事は参照側である。既定のビルドは変わらない。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>エフェクト：実際に走る最初の一片</h2>
+    <p class="body">エフェクト宣言はしばらく前から解析できた。足りなかったのは、それを走らせる半分だ。いま狭い一片がコンパイルできる。腕が一度の resume で終わるハンドラである。降ろし方はインライン化だ。<code>perform</code> は幾つかの束縛と腕の本体になり、<code>handle</code> は自分の本体になる。だからコンパイラの残りはハンドラのノードに会わない。継続オブジェクトはなく、ヒープにも何も確保しない。だからこの一片は <code>no_runtime</code> と手動回収の下でも動く。</p>
+    <p class="body">その形の外は名前で拒否する。捕まえるハンドラ、中止するハンドラ、二度以上 resume するハンドラ。両方の実装が構文を読める。実行時の降ろしは今のところ参照側だけだ。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>プログラムの意味についての第三の意見</h2>
+    <p class="body">この木のほとんどすべての判定は、二つの実装を互いに比べる。食い違いを見つけるのは得意だ。両方が同じように間違っている場合は見つけられない。今年、それが二度起きた。新しい部品は、標準だけから Loment で書いたインタプリタである。コンパイラもリンカもフォーマッタも import しない。小さなプログラムを走らせ、結果を手で書いた期待値と比べる。最初はスカラー、次にループ、<code>break</code>、<code>continue</code>、文字列、構造体を覚えた。すでに二つの版次の間に本物の違いを一つ見つけている。一方は構造体フィールドへの代入を受け入れ、もう一方は拒む。二つの実装が一致しているとき、それは彼らには教えられない種類のことだ。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>監査フレームワークは検査の山ではなくなった</h2>
+    <p class="body">コンパイラの検査は、レジストリ、決定的なスケジュール、二層の SDK、そしてそれらを走らせるホストを通る。計画には十四の組み込みがあり、それぞれに段階、ID、飛ばす理由がある。助言だけを出す検査は質問しかできない。証拠を主張する検査は、義務の受け入れ集合を満たさなければならない。外部の証拠を受け入れる義務はまだ一つもない。検査を足すのは登録するだけになった。フレームワークの公開版は、その証拠の面が動きを止めるまでゼロのままだ。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>作業台の上の二つの設計</h2>
+    <p class="body">二つはコードのない設計だ。一つ目は借用とドメインを結ぶ。すでに三つのライフタイムがあった。値がどこに住むか、その時間窓がまだ有効か、誰が書いてよいか。どれも互いに話さなかった。新しい規則は借用を時間窓の中に置き、両側に書き込み権限を要求し、法ごとに一本の排他的貸与だけを許す。二つ目はコンパイラ加速器だ。五千行のプログラムは今日およそ二秒かかり、前端と検査器が大半を占める。目標は一秒。第三の実装になり、その IR、ELF、Potato の出力は参照とバイト単位で一致しなければならない。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>まだ開いているもの</h2>
+    <p class="body">セルフホスト実装には関数値とエフェクト構文があるが、クラスはない。エフェクトの実行時は狭い一片だけ。合同の借用検査器と加速器は紙の上だ。最初のノートとしては普通のことだ。規則は変わっていない。両方の実装が一致し、ゲートが証明できて初めて機能は完成する。既定のビルドは、新しいスイッチがそれを求めるまで動かない。</p>
+    <p class="caption">次に語る価値のある区切りが来たら、またノートを書く。&mdash; <strong>Loment Dev Fujo</strong></p>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Loment は MIT OR Apache-2.0 の下で公開されている。制作: Fujo。</span>
+    <nav>
+      <a href="https://github.com/Loment-Lang/loment">ソース</a>
+      <a href="https://github.com/Loment-Lang/loment/releases/latest">リリース</a>
+      <a href="https://github.com/FujoJTOP/lompi">lompi</a>
+      <a href="https://loment.fandom.com/">Wiki</a>
+      <a href="https://github.com/Loment-Lang/loment/issues">イシュー</a>
+      <a class="mast" href="https://mastodon.social/@Loment" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z"/></svg>Mastodon</a>
+      <a class="mast" href="https://bsky.app/profile/loment.bsky.social" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364-3.136.521-5.919 1.517-2.244 5.449 3.944 4.011 5.42-1.005 6.237-3.242.653-1.79 1.03-2.81 1.03-2.81s.377 1.02 1.03 2.81c.817 2.237 2.293 7.253 6.237 3.242 3.675-3.932.892-4.928-2.244-5.449 2.67.296 5.568-.628 6.383-3.364.246-.829.624-5.789.624-6.479 0-.688-.139-1.86-.902-2.203-.659-.299-1.664-.621-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8z"/></svg>Bluesky</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

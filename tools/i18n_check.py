@@ -79,6 +79,7 @@ PAGES = ["index.html",
          "blog/20261111-playground-dev-environment/index.html",
          "blog/20261117-road-to-future/index.html",
          "blog/20261118-015x-era-ends/index.html",
+         "blog/20261118-016-dev-note-1/index.html",
          "playground/index.html"]
 
 #: 语言切换器与 alternate 组不进"散文面"：它们是镶边，不是内容。

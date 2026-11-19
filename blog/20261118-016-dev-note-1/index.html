@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>0.1.6 development note #1 — Loment</title>
+<meta name="description" content="What moved in the first stretch of 0.1.6: function values, inferred locals, catch handlers, classes, effect handlers, an independent semantics oracle, the audit framework, and two designs on the bench.">
+<link rel="icon" href="../../mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=JetBrains+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../../style.css?v=20261117a">
+<link rel="alternate" hreflang="en" href="https://loment-lang.github.io/loment-site/blog/20261118-016-dev-note-1/">
+<link rel="alternate" hreflang="zh-Hans" href="https://loment-lang.github.io/loment-site/zh/blog/20261118-016-dev-note-1/">
+<link rel="alternate" hreflang="ja" href="https://loment-lang.github.io/loment-site/ja/blog/20261118-016-dev-note-1/">
+<link rel="alternate" hreflang="ru" href="https://loment-lang.github.io/loment-site/ru/blog/20261118-016-dev-note-1/">
+<link rel="alternate" hreflang="es" href="https://loment-lang.github.io/loment-site/es/blog/20261118-016-dev-note-1/">
+<link rel="alternate" hreflang="x-default" href="https://loment-lang.github.io/loment-site/blog/20261118-016-dev-note-1/">
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="../../">
+      <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true">
+        <rect width="64" height="64" rx="14" fill="#2f4bff"/>
+        <path d="M18 14h12v24h16v12H18z" fill="#fff"/>
+      </svg>
+      Loment
+    </a>
+        <nav>
+      <a href="../../start/">Learn</a>
+      <a href="../" aria-current="page">Blog</a>
+      <a href="../../examples/">Examples</a>
+      <a href="../../playground/">Playground</a>
+      <a href="../../standard/">Standard</a>
+      <a href="../../releases/">Timeline</a>
+      <details class="navmenu" name="bar">
+        <summary>Systems</summary>
+        <ul>
+          <li><a href="../../lgc/">LGC</a></li>
+          <li><a href="../../lvm/">LVM</a></li>
+          <li><a href="../../lompi/">lompi</a></li>
+          <li><a href="../../libl/">LibL</a></li>
+          <li><a href="../../lspe/">LSPE</a></li>
+        </ul>
+      </details>
+      <a href="https://github.com/Loment-Lang/loment">GitHub</a>
+    </nav>
+    <details class="lang" name="bar">
+      <summary>EN</summary>
+      <ul>
+        <li><a href="./" hreflang="en" aria-current="true">English</a></li>
+        <li><a href="../../zh/blog/20261118-016-dev-note-1/" hreflang="zh-Hans">简体中文</a></li>
+        <li><a href="../../ja/blog/20261118-016-dev-note-1/" hreflang="ja">日本語</a></li>
+        <li><a href="../../ru/blog/20261118-016-dev-note-1/" hreflang="ru">Русский</a></li>
+        <li><a href="../../es/blog/20261118-016-dev-note-1/" hreflang="es">Español</a></li>
+      </ul>
+    </details>
+  </div>
+</header>
+
+<main id="main">
+<section class="head">
+  <div class="wrap">
+    <p class="eyebrow">Blog &middot; 2026-11-18</p>
+    <h1>0.1.6 development note #1</h1>
+    <p class="lede">0.1.5.x is closed, and 0.1.6 has stopped being a line on a roadmap. This is the first note about what is moving inside it, written the way I would explain it to someone standing next to the bench.</p>
+    <p class="limit"><strong>A note records a moment, not a release.</strong> Some of this is in the reference compiler and not yet in the self-hosted one; some is a design with no code behind it. Each paragraph says which.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>A function is a value now</h2>
+    <p class="body">You can put a function in a variable, pass it to another function, return it, and call it through the variable. A closure can capture the values around it, by value, or by reference if you name the reference. Calling through a value is spelled exactly like calling by name, so the code reads the same; only the compiler knows the difference.</p>
+    <p class="body">This sits behind a new switch, <code>choose fp</code>, and it is off by default. With it off, the build is byte for byte what it was. With it on, the compiler can no longer see every call target, so it collects the functions whose address the program takes and refuses an indirect call that has no target of its own type. That check is the price of the feature, and it is stated plainly.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>The compiler can take the type from the value</h2>
+    <p class="body"><code>let x := e</code> and <code>let x: auto = e</code> now mean the same thing: the local's type comes from the initializer. The first version keeps a tight rule — the initializer has to spell a type somewhere, in a variable, a parameter, a field chain, a whole cast, or <code>true</code> and <code>false</code>. A bare literal, a call or an operator is refused. A few built-ins return types that have no spelling in the source, and guessing them on one compiler while the other refused would turn a small convenience into a difference between two builds. The feature belongs to Tur 2026.3 and later; older editions keep their answers.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>An error can be handled where it happens</h2>
+    <p class="body"><code>catch</code> used to give a fallback value and nothing else. Now it can also bind the error and run a small expression on it — <code>catch |e| { &hellip; }</code> — or turn the failure into an early return with <code>catch return</code>. The compiler already had the switch and the payload slot for both, so the cost is small and the error path stays visible in the code you wrote.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Classes: from a skeleton to real dispatch</h2>
+    <p class="body">A class lowers to a struct with the parent's fields in front, plus ordinary functions named after its methods. Single inheritance, fields, non-virtual methods, <code>self</code> and construction work in the reference compiler. Virtual methods followed: a virtual hierarchy carries a table at the front of the object, an override takes a fixed slot, <code>super</code> calls the parent directly, abstract methods are signatures with no body, and a reference to a child can be used where the parent is expected.</p>
+    <p class="body">Two boundaries are worth saying out loud. Virtual classes need a runtime, because the tables are built with the allocator. The self-hosted compiler cannot read classes yet; this work is reference-side. The default build is unchanged.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Effects: the first slice that actually runs</h2>
+    <p class="body">Effect declarations have parsed for a while. Running them was the half that did not exist. A narrow slice now compiles: handlers whose arms finish by resuming once. The lowering is inlining — <code>perform</code> turns into a few bindings and the arm's body, and <code>handle</code> turns into its own body, so the rest of the compiler never meets a handler node. There is no continuation object and nothing is allocated on the heap, which is why the slice works under <code>no_runtime</code> with manual collection.</p>
+    <p class="body">Everything outside that shape is refused by name: a handler that captures, aborts, or resumes more than once. Both compilers read the syntax; the runtime lowering is reference-side for now.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>A third opinion on what a program means</h2>
+    <p class="body">Almost every test in the tree compares two implementations with each other. That is good at finding disagreement. It cannot find the case where both are wrong in the same way, and that has happened twice this year. The new piece is an interpreter written in Loment from the standard alone; it does not import the compiler, the linker or the formatter. It runs small programs and compares their results with expectations written by hand. It started with scalars, then learned loops, <code>break</code>, <code>continue</code>, strings and structs. It has already found a real difference between two editions — one accepts an assignment to a struct field that the other refuses. That is the kind of thing two implementations cannot tell you when they agree.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>The audit framework stopped being a pile of checks</h2>
+    <p class="body">The compiler's checks now go through a registry, a deterministic schedule, two SDK tiers and a host that runs them. Fourteen built-ins sit in the plan, each with a phase, an id and a reason to be skipped. A check that only offers advice can ask a question. A check that claims evidence has to satisfy the obligation's acceptance set, and no obligation accepts outside evidence yet. Adding a check is now a matter of registering it, and the framework's public version stays at zero until that evidence surface stops moving.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Two designs on the bench</h2>
+    <p class="body">Two pieces are designs with no code behind them. The first joins borrows to domains. Three lifetimes already existed — where a value lives, whether its time window is still current, and who may write — and none of them talked to the others. The new rule set puts a borrow inside a time window, requires write authority on both sides, and allows one exclusive loan per law. The second is a compiler accelerator. A 5,000-line program takes about two seconds today, with the front end and the checker taking most of it; the target is one second. It would be a third implementation, and its IR, ELF and Potato output would have to match the reference byte for byte.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>What is still open</h2>
+    <p class="body">The self-hosted compiler has function values and effect syntax, but not classes. The effect runtime is one narrow slice. The joint borrow checker and the accelerator are paper. That is normal for a first note. The rule has not changed: a feature is finished when both implementations agree and the gate can prove it, and the default build does not move until a switch asks for the new thing.</p>
+    <p class="caption">I will write the next note when there is another stretch worth describing. &mdash; <strong>Loment Dev Fujo</strong></p>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Loment is released under the MIT OR Apache-2.0 license. Program by Fujo.</span>
+    <nav>
+      <a href="https://github.com/Loment-Lang/loment">Source</a>
+      <a href="https://github.com/Loment-Lang/loment/releases/latest">Releases</a>
+      <a href="https://github.com/FujoJTOP/lompi">lompi</a>
+      <a href="https://loment.fandom.com/">Wiki</a>
+      <a href="https://github.com/Loment-Lang/loment/issues">Issues</a>
+      <a class="mast" href="https://mastodon.social/@Loment" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z"/></svg>Mastodon</a>
+      <a class="mast" href="https://bsky.app/profile/loment.bsky.social" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364-3.136.521-5.919 1.517-2.244 5.449 3.944 4.011 5.42-1.005 6.237-3.242.653-1.79 1.03-2.81 1.03-2.81s.377 1.02 1.03 2.81c.817 2.237 2.293 7.253 6.237 3.242 3.675-3.932.892-4.928-2.244-5.449 2.67.296 5.568-.628 6.383-3.364.246-.829.624-5.789.624-6.479 0-.688-.139-1.86-.902-2.203-.659-.299-1.664-.621-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8z"/></svg>Bluesky</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,161 @@
+<!doctype html>
+<!-- translated-from: blog/20261118-016-dev-note-1/index.html -->
+<!-- source-sha256: 1487684abc0e6ec02c47106e88ad756e48636d247a525725e29f8b5e8875d20b -->
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>0.1.6 开发笔记 #1 — Loment</title>
+<meta name="description" content="0.1.6 开发的第一段：函数值、类型推断、catch、类、效应、独立的语义 oracle、审计框架，以及两张设计图。">
+<link rel="icon" href="../../../mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=JetBrains+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../../../style.css?v=20261117a">
+<link rel="alternate" hreflang="en" href="https://loment-lang.github.io/loment-site/blog/20261118-016-dev-note-1/">
+<link rel="alternate" hreflang="zh-Hans" href="https://loment-lang.github.io/loment-site/zh/blog/20261118-016-dev-note-1/">
+<link rel="alternate" hreflang="ja" href="https://loment-lang.github.io/loment-site/ja/blog/20261118-016-dev-note-1/">
+<link rel="alternate" hreflang="ru" href="https://loment-lang.github.io/loment-site/ru/blog/20261118-016-dev-note-1/">
+<link rel="alternate" hreflang="es" href="https://loment-lang.github.io/loment-site/es/blog/20261118-016-dev-note-1/">
+<link rel="alternate" hreflang="x-default" href="https://loment-lang.github.io/loment-site/blog/20261118-016-dev-note-1/">
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="../../">
+      <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true">
+        <rect width="64" height="64" rx="14" fill="#2f4bff"/>
+        <path d="M18 14h12v24h16v12H18z" fill="#fff"/>
+      </svg>
+      Loment
+    </a>
+        <nav>
+      <a href="../../start/">学习</a>
+      <a href="../" aria-current="page">博客</a>
+      <a href="../../examples/">示例</a>
+      <a href="../../playground/">在线编译</a>
+      <a href="../../standard/">标准</a>
+      <a href="../../releases/">时间线</a>
+      <details class="navmenu" name="bar">
+        <summary>系统</summary>
+        <ul>
+          <li><a href="../../lgc/">LGC</a></li>
+          <li><a href="../../lvm/">LVM</a></li>
+          <li><a href="../../lompi/">lompi</a></li>
+          <li><a href="../../libl/">LibL</a></li>
+          <li><a href="../../lspe/">LSPE</a></li>
+        </ul>
+      </details>
+      <a href="https://github.com/Loment-Lang/loment">GitHub</a>
+    </nav>
+    <details class="lang" name="bar">
+      <summary>中文</summary>
+      <ul>
+        <li><a href="../../../blog/20261118-016-dev-note-1/" hreflang="en">English</a></li>
+        <li><a href="./" hreflang="zh-Hans" aria-current="true">简体中文</a></li>
+        <li><a href="../../../ja/blog/20261118-016-dev-note-1/" hreflang="ja">日本語</a></li>
+        <li><a href="../../../ru/blog/20261118-016-dev-note-1/" hreflang="ru">Русский</a></li>
+        <li><a href="../../../es/blog/20261118-016-dev-note-1/" hreflang="es">Español</a></li>
+      </ul>
+    </details>
+  </div>
+</header>
+
+<main id="main">
+<section class="head">
+  <div class="wrap">
+    <p class="eyebrow">Blog &middot; 2026-11-18</p>
+    <h1>0.1.6 开发笔记 #1</h1>
+    <p class="lede">0.1.5.x 已经合上，0.1.6 也不再是路线图上的一行。这是第一篇关于它内部正在动什么的笔记，写法就像我站在工作台边跟人解释。</p>
+    <p class="limit"><strong>笔记记录一个时刻，不是一次发布。</strong>下面有些东西在参考实现里、还不在自举实现里；有些只是设计，背后还没有代码。每一段都会说清楚是哪一种。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>函数现在是一个值</h2>
+    <p class="body">你可以把函数放进变量、传给另一个函数、把它返回，也可以通过变量调用它。闭包可以捕获身边的值：按值捕获，或者在你写明引用时按引用捕获。通过值调用和按名字调用写法完全一样，代码读起来没有区别；只有编译器知道其中的不同。</p>
+    <p class="body">这个能力放在一个新的开关 <code>choose fp</code> 后面，默认关闭。关着时，产物与以前逐字节相同。打开后，编译器再也看不全每个调用目标，于是它收集程序取过地址的函数，并拒绝那种找不到同类型目标的间接调用。这条检查就是这项能力的代价，而且它被明明白白写出来。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>编译器可以替你把类型拿过来</h2>
+    <p class="body"><code>let x := e</code> 与 <code>let x: auto = e</code> 现在是同一件事：局部变量的类型来自初始化表达式。第一版守一条很紧的规则——初始化表达式必须在某处写出类型：一个变量、一个参数、一条字段链、一次完整的转换，或者 <code>true</code>、<code>false</code>。裸字面量、调用和运算符一律拒绝。有几个内建函数返回的类型在源码里没有写法，如果一边猜、另一边拒绝，一点小方便就会变成两套构建之间的差异。这个特性属于 Tur 2026.3 及以后；旧版次保持原来的答案。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>错误可以在发生的地方处理</h2>
+    <p class="body"><code>catch</code> 过去只给一个兜底值，别的什么都不给。现在它还能接住错误并跑一小段表达式——<code>catch |e| { &hellip; }</code>——或者用 <code>catch return</code> 把失败变成提前返回。编译器本来就有这两种形状要用的 switch 和载荷槽，所以代价很小，错误路径也仍然留在你写下的代码里。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>类：从骨架到真正的派发</h2>
+    <p class="body">一个类会降成一个结构体：父类字段排在前面，后面是自己的字段；方法则是以类名开头的普通函数。单继承、字段、非虚方法、<code>self</code> 与构造在参考实现里已经能用。虚方法随后到位：虚继承层次在对象最前面带一张表，override 占固定槽位，<code>super</code> 直接调用父类，抽象方法只有签名没有函数体，子类的引用可以用在要求父类的地方。</p>
+    <p class="body">两条边界要说清楚。虚类需要 runtime，因为那张表是用分配器建起来的。自举实现还读不懂类；这部分工作是参考侧的。默认构建不变。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>效应：第一片真正跑起来的部分</h2>
+    <p class="body">效应声明已经能解析一阵子了；缺的是让它们跑起来的那一半。现在有一小片能编译：处理器的分支以一次 resume 收尾。降级方式就是内联——<code>perform</code> 变成几个绑定加分支体，<code>handle</code> 变成它自己的函数体，于是编译器其余部分根本见不到处理器节点。没有续体对象，堆上也不分配任何东西，所以这一片在 <code>no_runtime</code> 配手动回收下也能工作。</p>
+    <p class="body">这个形状之外的东西会按名字被拒绝：会捕获的、会中止的、resume 不止一次的处理器。两套实现都能读语法；运行期降级目前只在参考侧。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>关于程序含义的第三种意见</h2>
+    <p class="body">这棵树里几乎所有判据都是拿两套实现互相比。这很擅长发现分歧，却找不到两边一起错的情形，而今年已经发生过两次。新的东西是一个用 Loment 从标准本身写出来的解释器；它不导入编译器、链接器或格式化器。它运行小程序，把结果与手写的期望值对照。它先覆盖标量，后来学会循环、<code>break</code>、<code>continue</code>、字符串和结构体。它已经找出两个版次之间一处真实的差异——一个版次接受对结构体字段赋值，另一个拒绝。两套实现意见一致时，正是这种东西它们没法告诉你。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>审计框架不再是一堆检查</h2>
+    <p class="body">编译器的检查现在经过一张注册表、一份确定的调度、两层 SDK，以及一个运行它们的宿主。计划里有十四个内建检查，每个都有阶段、编号和被跳过的理由。只提供建议的检查只能提问；声称给出证据的检查必须满足义务的接受集合，而目前还没有义务接受外部证据。现在加一条检查就是登记一下；框架的公开版本停在零，直到证据面不再移动。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>工作台上的两张设计</h2>
+    <p class="body">有两件事目前只是设计，背后没有代码。第一件把借用与域接起来。此前已经存在三种生命周期——值住在哪里、它的时间窗是否仍然有效、谁有权写——它们彼此不说话。新的规则集把借用放进时间窗，要求两侧都具备写权限，并且每条法则只允许一笔独占借用。第二件是编译器加速器。五千行的程序今天要跑大约两秒，前端与检查器占了大头；目标是压到一秒。它会成为第三套实现，它的 IR、ELF 与 Potato 产物必须与参考实现逐字节相同。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>还开着什么</h2>
+    <p class="body">自举实现有函数值与效应语法，但还没有类。效应运行期只是窄窄的一片。联合借用检查器与加速器还是纸面。第一篇笔记就是这种形状。规则没有变：两套实现意见一致、门禁证得了，一个特性才算完成；默认构建在新开关点名之前不动。</p>
+    <p class="caption">下一段值得描述的路走完，我再写下一篇。&mdash; <strong>Loment Dev Fujo</strong></p>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Loment 依据 MIT OR Apache-2.0 双许可发布。由 Fujo 编写。</span>
+    <nav>
+      <a href="https://github.com/Loment-Lang/loment">源码</a>
+      <a href="https://github.com/Loment-Lang/loment/releases/latest">发布</a>
+      <a href="https://github.com/FujoJTOP/lompi">lompi</a>
+      <a href="https://loment.fandom.com/">Wiki</a>
+      <a href="https://github.com/Loment-Lang/loment/issues">Issues</a>
+      <a class="mast" href="https://mastodon.social/@Loment" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z"/></svg>Mastodon</a>
+      <a class="mast" href="https://bsky.app/profile/loment.bsky.social" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364-3.136.521-5.919 1.517-2.244 5.449 3.944 4.011 5.42-1.005 6.237-3.242.653-1.79 1.03-2.81 1.03-2.81s.377 1.02 1.03 2.81c.817 2.237 2.293 7.253 6.237 3.242 3.675-3.932.892-4.928-2.244-5.449 2.67.296 5.568-.628 6.383-3.364.246-.829.624-5.789.624-6.479 0-.688-.139-1.86-.902-2.203-.659-.299-1.664-.621-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8z"/></svg>Bluesky</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,161 @@
+<!doctype html>
+<!-- translated-from: blog/20261118-016-dev-note-1/index.html -->
+<!-- source-sha256: 1487684abc0e6ec02c47106e88ad756e48636d247a525725e29f8b5e8875d20b -->
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nota de desarrollo de 0.1.6 #1 — Loment</title>
+<meta name="description" content="El primer tramo del desarrollo de 0.1.6: valores de función, inferencia de tipos, catch, clases, efectos, un oráculo semántico independiente, el marco de auditoría y dos diseños.">
+<link rel="icon" href="../../../mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=JetBrains+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../../../style.css?v=20261117a">
+<link rel="alternate" hreflang="en" href="https://loment-lang.github.io/loment-site/blog/20261118-016-dev-note-1/">
+<link rel="alternate" hreflang="zh-Hans" href="https://loment-lang.github.io/loment-site/zh/blog/20261118-016-dev-note-1/">
+<link rel="alternate" hreflang="ja" href="https://loment-lang.github.io/loment-site/ja/blog/20261118-016-dev-note-1/">
+<link rel="alternate" hreflang="ru" href="https://loment-lang.github.io/loment-site/ru/blog/20261118-016-dev-note-1/">
+<link rel="alternate" hreflang="es" href="https://loment-lang.github.io/loment-site/es/blog/20261118-016-dev-note-1/">
+<link rel="alternate" hreflang="x-default" href="https://loment-lang.github.io/loment-site/blog/20261118-016-dev-note-1/">
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="../../">
+      <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true">
+        <rect width="64" height="64" rx="14" fill="#2f4bff"/>
+        <path d="M18 14h12v24h16v12H18z" fill="#fff"/>
+      </svg>
+      Loment
+    </a>
+        <nav>
+      <a href="../../start/">Aprender</a>
+      <a href="../" aria-current="page">Blog</a>
+      <a href="../../examples/">Ejemplos</a>
+      <a href="../../playground/">Probar</a>
+      <a href="../../standard/">Estándar</a>
+      <a href="../../releases/">Cronología</a>
+      <details class="navmenu" name="bar">
+        <summary>Sistemas</summary>
+        <ul>
+          <li><a href="../../lgc/">LGC</a></li>
+          <li><a href="../../lvm/">LVM</a></li>
+          <li><a href="../../lompi/">lompi</a></li>
+          <li><a href="../../libl/">LibL</a></li>
+          <li><a href="../../lspe/">LSPE</a></li>
+        </ul>
+      </details>
+      <a href="https://github.com/Loment-Lang/loment">GitHub</a>
+    </nav>
+    <details class="lang" name="bar">
+      <summary>ES</summary>
+      <ul>
+        <li><a href="../../../blog/20261118-016-dev-note-1/" hreflang="en">English</a></li>
+        <li><a href="../../../zh/blog/20261118-016-dev-note-1/" hreflang="zh-Hans">简体中文</a></li>
+        <li><a href="../../../ja/blog/20261118-016-dev-note-1/" hreflang="ja">日本語</a></li>
+        <li><a href="../../../ru/blog/20261118-016-dev-note-1/" hreflang="ru">Русский</a></li>
+        <li><a href="./" hreflang="es" aria-current="true">Español</a></li>
+      </ul>
+    </details>
+  </div>
+</header>
+
+<main id="main">
+<section class="head">
+  <div class="wrap">
+    <p class="eyebrow">Blog &middot; 2026-11-18</p>
+    <h1>Nota de desarrollo de 0.1.6 #1</h1>
+    <p class="lede">0.1.5.x está cerrada y 0.1.6 ha dejado de ser una línea de la hoja de ruta. Esta es la primera nota sobre lo que se mueve dentro de ella, escrita como se lo explicaría a alguien de pie junto al banco de trabajo.</p>
+    <p class="limit"><strong>Una nota registra un momento, no una versión.</strong> Parte de esto está en el compilador de referencia y todavía no en el autoalojado; parte es un diseño sin código detrás. Cada párrafo dice cuál.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Una función ahora es un valor</h2>
+    <p class="body">Puedes poner una función en una variable, pasarla a otra función, devolverla y llamarla a través de la variable. Un cierre puede capturar los valores de alrededor, por valor, o por referencia si nombras la referencia. Llamar a través de un valor se escribe exactamente igual que llamar por nombre, así que el código se lee igual; solo el compilador conoce la diferencia.</p>
+    <p class="body">Esto vive detrás de un interruptor nuevo, <code>choose fp</code>, apagado por defecto. Apagado, la compilación es byte a byte la de antes. Encendido, el compilador ya no ve todos los destinos de llamada: recoge las funciones cuya dirección toma el programa y rechaza una llamada indirecta que no tenga un destino de su propio tipo. Esa comprobación es el precio de la función, y está dicho sin rodeos.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>El compilador puede tomar el tipo del valor</h2>
+    <p class="body"><code>let x := e</code> y <code>let x: auto = e</code> ahora significan lo mismo: el tipo de la local viene del inicializador. La primera versión mantiene una regla estricta: el inicializador tiene que escribir un tipo en algún sitio, en una variable, un parámetro, una cadena de campos, una conversión completa, o <code>true</code> y <code>false</code>. Un literal desnudo, una llamada o un operador se rechazan. Algunas funciones integradas devuelven tipos que no tienen escritura en el código fuente; adivinarlos en un compilador mientras el otro rechaza convertiría una pequeña comodidad en una diferencia entre dos compilaciones. La función pertenece a Tur 2026.3 y posteriores; las ediciones antiguas conservan sus respuestas.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Un error se puede tratar donde ocurre</h2>
+    <p class="body"><code>catch</code> antes daba un valor de reserva y nada más. Ahora también puede enlazar el error y ejecutar una pequeña expresión — <code>catch |e| { &hellip; }</code> — o convertir el fallo en un retorno temprano con <code>catch return</code>. El compilador ya tenía el switch y la ranura de carga útil para ambas formas, así que el costo es pequeño y el camino del error sigue visible en el código que escribiste.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Clases: de esqueleto a despacho real</h2>
+    <p class="body">Una clase baja a una estructura con los campos del padre delante y funciones ordinarias con el nombre de sus métodos. La herencia simple, los campos, los métodos no virtuales, <code>self</code> y la construcción funcionan en el compilador de referencia. Después llegaron los métodos virtuales: una jerarquía virtual lleva una tabla al frente del objeto, un override ocupa una ranura fija, <code>super</code> llama al padre directamente, los métodos abstractos son firmas sin cuerpo, y una referencia a un hijo puede usarse donde se espera al padre.</p>
+    <p class="body">Dos límites merecen decirse en voz alta. Las clases virtuales necesitan un runtime, porque las tablas se construyen con el asignador. El compilador autoalojado todavía no lee clases; este trabajo es del lado de referencia. La compilación por defecto no cambia.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Efectos: el primer fragmento que de verdad se ejecuta</h2>
+    <p class="body">Las declaraciones de efectos se analizan desde hace tiempo. Faltaba la mitad que los ejecuta. Ahora se compila un fragmento estrecho: manejadores cuyas ramas terminan reanudando una vez. La bajada es inserción en línea: <code>perform</code> se convierte en unos enlaces y el cuerpo de la rama, y <code>handle</code> se convierte en su propio cuerpo, así que el resto del compilador nunca ve un nodo de manejador. No hay objeto de continuación y no se asigna nada en el montículo, por eso el fragmento funciona con <code>no_runtime</code> y recolección manual.</p>
+    <p class="body">Todo lo que queda fuera de esa forma se rechaza por nombre: un manejador que captura, aborta o reanuda más de una vez. Los dos compiladores leen la sintaxis; la bajada de ejecución es del lado de referencia por ahora.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Una tercera opinión sobre lo que significa un programa</h2>
+    <p class="body">Casi todas las pruebas del árbol comparan dos implementaciones entre sí. Eso es bueno para encontrar desacuerdos. No encuentra el caso en que ambas se equivocan igual, y este año ha pasado dos veces. La pieza nueva es un intérprete escrito en Loment solo a partir del estándar; no importa el compilador, el enlazador ni el formateador. Ejecuta programas pequeños y compara sus resultados con expectativas escritas a mano. Empezó con escalares y luego aprendió bucles, <code>break</code>, <code>continue</code>, cadenas y estructuras. Ya ha encontrado una diferencia real entre dos ediciones: una acepta una asignación a un campo de estructura que la otra rechaza. Eso es lo que dos implementaciones no pueden contarte cuando están de acuerdo.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>El marco de auditoría dejó de ser un montón de comprobaciones</h2>
+    <p class="body">Las comprobaciones del compilador ahora pasan por un registro, una agenda determinista, dos niveles de SDK y un anfitrión que las ejecuta. En el plan hay catorce integradas, cada una con una fase, un identificador y un motivo para saltarse. Una comprobación que solo aconseja puede hacer una pregunta. Una que afirma aportar evidencia tiene que satisfacer el conjunto de aceptación de la obligación, y ninguna obligación acepta evidencia externa todavía. Añadir una comprobación ahora es registrarla, y la versión pública del marco sigue en cero hasta que esa superficie de evidencia deje de moverse.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Dos diseños en el banco</h2>
+    <p class="body">Dos piezas son diseños sin código detrás. La primera une préstamos con dominios. Ya existían tres tiempos de vida —dónde vive un valor, si su ventana temporal sigue vigente y quién puede escribir— y ninguno hablaba con los otros. El nuevo conjunto de reglas pone un préstamo dentro de una ventana temporal, exige autoridad de escritura en ambos lados y permite un préstamo exclusivo por ley. La segunda es un acelerador del compilador. Un programa de cinco mil líneas tarda hoy unos dos segundos, y el front end y el verificador se llevan la mayor parte; el objetivo es un segundo. Sería una tercera implementación, y su salida IR, ELF y Potato tendría que coincidir con la referencia byte a byte.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Qué sigue abierto</h2>
+    <p class="body">El compilador autoalojado tiene valores de función y sintaxis de efectos, pero no clases. El runtime de efectos es un fragmento estrecho. El verificador conjunto de préstamos y el acelerador son papel. Es normal para una primera nota. La regla no ha cambiado: una función está terminada cuando las dos implementaciones coinciden y la puerta puede demostrarlo, y la compilación por defecto no se mueve hasta que un interruptor nuevo lo pida.</p>
+    <p class="caption">Escribiré la siguiente nota cuando haya otro tramo que merezca contarse. &mdash; <strong>Loment Dev Fujo</strong></p>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Loment se publica bajo la licencia MIT OR Apache-2.0. Programa de Fujo.</span>
+    <nav>
+      <a href="https://github.com/Loment-Lang/loment">Código fuente</a>
+      <a href="https://github.com/Loment-Lang/loment/releases/latest">Versiones</a>
+      <a href="https://github.com/FujoJTOP/lompi">lompi</a>
+      <a href="https://loment.fandom.com/">Wiki</a>
+      <a href="https://github.com/Loment-Lang/loment/issues">Incidencias</a>
+      <a class="mast" href="https://mastodon.social/@Loment" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z"/></svg>Mastodon</a>
+      <a class="mast" href="https://bsky.app/profile/loment.bsky.social" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364-3.136.521-5.919 1.517-2.244 5.449 3.944 4.011 5.42-1.005 6.237-3.242.653-1.79 1.03-2.81 1.03-2.81s.377 1.02 1.03 2.81c.817 2.237 2.293 7.253 6.237 3.242 3.675-3.932.892-4.928-2.244-5.449 2.67.296 5.568-.628 6.383-3.364.246-.829.624-5.789.624-6.479 0-.688-.139-1.86-.902-2.203-.659-.299-1.664-.621-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8z"/></svg>Bluesky</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>
