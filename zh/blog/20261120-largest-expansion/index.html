@@ -1,0 +1,170 @@
+<!doctype html>
+<!-- translated-from: blog/20261120-largest-expansion/index.html -->
+<!-- source-sha256: 84ffa893ca4ad7ab998de52592b327b737aff25939a0b6f4e77580ae56705934 -->
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>有史以来最大的一次扩充 — Loment</title>
+<meta name="description" content="open 与最近关闭的改动：Tur 2026.3 语法批次、函数值、类、效应、借用最后的缺口、域、Flomtc、缺陷清扫，以及一个 alpha 版次。">
+<link rel="icon" href="../../../mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=JetBrains+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../../../style.css?v=20261117a">
+<link rel="alternate" hreflang="en" href="https://loment-lang.github.io/loment-site/blog/20261120-largest-expansion/">
+<link rel="alternate" hreflang="zh-Hans" href="https://loment-lang.github.io/loment-site/zh/blog/20261120-largest-expansion/">
+<link rel="alternate" hreflang="ja" href="https://loment-lang.github.io/loment-site/ja/blog/20261120-largest-expansion/">
+<link rel="alternate" hreflang="ru" href="https://loment-lang.github.io/loment-site/ru/blog/20261120-largest-expansion/">
+<link rel="alternate" hreflang="es" href="https://loment-lang.github.io/loment-site/es/blog/20261120-largest-expansion/">
+<link rel="alternate" hreflang="x-default" href="https://loment-lang.github.io/loment-site/blog/20261120-largest-expansion/">
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="../../">
+      <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true">
+        <rect width="64" height="64" rx="14" fill="#2f4bff"/>
+        <path d="M18 14h12v24h16v12H18z" fill="#fff"/>
+      </svg>
+      Loment
+    </a>
+        <nav>
+      <a href="../../start/">学习</a>
+      <a href="../" aria-current="page">博客</a>
+      <a href="../../examples/">示例</a>
+      <a href="../../playground/">在线编译</a>
+      <a href="../../standard/">标准</a>
+      <a href="../../releases/">时间线</a>
+      <details class="navmenu" name="bar">
+        <summary>系统</summary>
+        <ul>
+          <li><a href="../../lgc/">LGC</a></li>
+          <li><a href="../../lvm/">LVM</a></li>
+          <li><a href="../../lompi/">lompi</a></li>
+          <li><a href="../../libl/">LibL</a></li>
+          <li><a href="../../lspe/">LSPE</a></li>
+        </ul>
+      </details>
+      <a href="https://github.com/Loment-Lang/loment">GitHub</a>
+    </nav>
+    <details class="lang" name="bar">
+      <summary>中文</summary>
+      <ul>
+        <li><a href="../../../blog/20261120-largest-expansion/" hreflang="en">English</a></li>
+        <li><a href="./" hreflang="zh-Hans" aria-current="true">简体中文</a></li>
+        <li><a href="../../../ja/blog/20261120-largest-expansion/" hreflang="ja">日本語</a></li>
+        <li><a href="../../../ru/blog/20261120-largest-expansion/" hreflang="ru">Русский</a></li>
+        <li><a href="../../../es/blog/20261120-largest-expansion/" hreflang="es">Español</a></li>
+      </ul>
+    </details>
+  </div>
+</header>
+
+<main id="main">
+<section class="head">
+  <div class="wrap">
+    <p class="eyebrow">Blog &middot; 2026-11-20</p>
+    <h1>有史以来最大的一次扩充</h1>
+    <p class="lede">很显然，如果你一直在看仓库，会发现一长串 PR 排在那里。是的：项目正在经历有史以来最大的一次功能扩充，规模超过 0.1.5。过去两周有几十个改动合入，还有十几个开着；这篇笔记把两堆都走一遍。</p>
+    <p class="limit"><strong>笔记记录一个时刻，不是一次发布。</strong>下面每一个开着的改动都在审阅中；有些会按原样合入，有些会变形，还有一个只是生成物刷新。稳定版仍是 0.1.5.1。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>表层语法变短了</h2>
+    <p class="body">Tur 2026.3 现在有一整批语法。先到的是字符串插值：<code>f"a{x}b"</code> 与 <code>rf"..."</code> 由前端改写成 <code>str_concat</code> 调用，词法器、解析器和代码生成器都不认识新节点。接着是格式说明——<code>{x:&gt;8}</code>、<code>{x:&lt;8}</code>、<code>{x:^8}</code>、<code>{x:08}</code>——以及具名字符串常量 <code>const NAME: str = "...";</code>。<code>str_num</code> 现在接受所有整数类型，包括无符号。</p>
+    <p class="body">然后是控制流的便利写法。<code>if</code> 与 <code>match</code> 表达式可以放在整个 <code>let</code> 初始化表达式里；<code>catch |e| { &hellip; }</code> 与 <code>catch return</code> 给错误两种形状；<code>let x := e</code> 与 <code>let x: auto = e</code> 在初始化表达式写出类型时做推断；<code>args(i)</code> 暴露进程命令行。每一条都受版次约束：旧版次照旧拒绝同样的文本，两套实现发出相同的 IR。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>函数成了一个值</h2>
+    <p class="body">函数指针、闭包与间接调用落在 <code>choose fp</code> 后面，这是第九维。裸函数名是一个值；闭包按值捕获，写明引用时按引用捕获；通过值调用与按名字调用的写法一样。默认构建一个字节都不变。开关打开后，编译器收集被取地址的目标，并拒绝找不到同类型目标的间接调用。现在有一条运行时判据，让闭包程序过两只链接器。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>类，以及一个审计框架</h2>
+    <p class="body">类梯子从布局走到了派发。C1 把类降成结构体：父类字段在前，方法变成普通函数；C2/C3 加了 vtable、虚派发、<code>super</code>、抽象方法与闭世界目标检查。虚类需要 runtime，自举实现还在追——这就是开着的 C4a：把非虚类带到自举侧，并配三条逐字节相同的夹具。</p>
+    <p class="body">在它下面，审计框架变成了真正的框架：注册表、确定的调度、两层 SDK、十四个内建检查、每个引擎的跳过理由与预算。效应站点现在进 Potato 台账。框架的公开版本停在零，直到证据面冻结。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>效应：先有声明，再有一片能跑的</h2>
+    <p class="body">效应声明已经能解析一阵子了。运行期那一半分几步到：<code>lspe_effects_true</code> 后面的参考前端、自举侧镜像、台账里的 E11 站点，然后是一小片真正执行尾续处理器的实现——把它内联成普通语句。没有续体对象，也不碰堆。开着的 A3b 把这一片加宽：分支可以读外层局部变量，以 <code>return e;</code> 收尾的分支会中止。降级刻意做到不带名字，好让自举侧照着镜像；在它落地之前，自举实现仍报 E0217。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>借用，分批落地</h2>
+    <p class="body">借用系统是流水线式落地的。设计把区域、时间窗与写权限接在一起；检查器成了按位置键控的 loan 图，最后一次使用就是 kill 点；切片成为结构体字段；存进字段的 <code>&amp;mut</code> 会挡住之后的借用；不相交的字段不再互撞。这个窗口里 B1 合入：<code>slice_len</code> 接受 <code>&amp;[T; N]</code>，切片借用上也能写来源标记。开着的 B2+B3 带着下两批——由调用返回的借用按被调方摘要登记、存下的 <code>&amp;mut</code> 只能用一次、从结构体字段移出会被追踪。此前堆叠的两版被关掉，改在新错误表上重新落地。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>域，以及下一个安全故事</h2>
+    <p class="body">域有了显式的同级边，读者能分辨“声明为同一层”和“碰巧挨着”；<code>domain:for</code> 现在拒绝空范围，不再接受一条什么都不覆盖的规则。域与借用联合检查器的设计已经合入：借用必须落在时间窗里，写权限要在两侧都成立，每条法则只允许一笔独占借用。</p>
+    <p class="body">一份开着的 safety 研究把这个方向推得更远。它量了安全子集里三处不检查的访问——字面量数组越界下标、动态切片下标、裸 <code>load8</code>——指出连今天的陷阱路径也是一个信号（<code>ud2</code>，SIGILL），并提出四层方案、一套故障 ABI，以及产物里逐站点的 fault ladder。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Flomtc：编译器的第二个引擎</h2>
+    <p class="body">Flomtc 起初是一份设计：把五千行程序编到一秒以内。维度与独立可执行文件已经合入；开着的是第一次真正的优化：<code>prepare</code> 的快路径在有泛型声明但没人用时跳掉整模块深拷贝，Potato 事实从五趟 AST 走成一趟，字符串改写加一条恒等快路径。在目标程序上量出来，冷编译从约 2.1 秒降到约 1 秒，原生编译器从 15.8 秒降到 466 毫秒。它在 <code>choose flomtc_true</code> 后面，而且不写进 Potato——它说的是产物怎么做出来的。</p>
+    <p class="body">另一条研究线问的是另一个问题：程序的启动工作能不能搬进构建里，让运行期从准备好的状态开始。那条线还停在纸面与探针上。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>缺陷清扫与门禁</h2>
+    <p class="body">开着的列表也在清缺陷积压的顶部。十四个 sev-0 与 sev-1 全部关掉，其中七个是对着当前 main 复核过的。GC alpha 的根记账修了：每个提升到栈上的缓冲区占一个根，而不是每个字占一个——以前 8 KB 就能把 1024 槽的表填满，然后静默中止。错误报告器的真源移到自举侧，并配了一个完整正则引擎去分类消息文本。诊断行号对齐的缺口归零。</p>
+    <p class="body">开着的改动接着扫：两只链接器里 <code>getelementptr</code> 首下标的 bug（有状态能力会读到邻居的状态）、PE 的 <code>openat</code> 标志语义、钉死的热更新信任锚、GC 测量工具、五个工具 bug，以及十一个 Java 前门问题。基础设施这边，门禁的 stage1 上限在 CI 实测分片负载下要 330–420 秒之后抬到 900 秒，分片重排；还有一个开着的改动加上 merge queue 需要的 <code>merge_group</code> 触发。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>新版本正在审阅</h2>
+    <p class="body">一个开着的改动开启了下一个版次：<code>tur2027.1Alpha</code>，带块作用域。每个花括号块都是词法作用域，嵌套块可以遮蔽，同一块里第二次 <code>let</code> 是 E013，<code>lspe pass</code>、<code>lgc</code> 时间窗与 <code>domain</code> 块也是作用域。它还加了一个专用 GC 检查器，配 <code>ReclaimScoped</code> 义务。默认版次仍是 Tur 2026.3。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>这一堆加起来是什么</h2>
+    <p class="body">把清单放在一起，形状很清楚：一批语法、函数值、两套编译器里的类、能跑的效应、借用的最后几道缺口、域的几何、第二个编译引擎、缺陷积压的顶部、一份安全设计，以及门禁前的一条队列。这一波比 0.1.5 大，因为功能下面那一层在同时重铺。它们没有一样在稳定版里。规则没变：两套实现意见一致、门禁证得了，一个改动才落地；默认产物只在新开关或新版次点名时才移动。</p>
+    <p class="caption">下一篇笔记会说哪些合入了。&mdash; <strong>Loment Dev Fujo</strong></p>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Loment 依据 MIT OR Apache-2.0 双许可发布。由 Fujo 编写。</span>
+    <nav>
+      <a href="https://github.com/Loment-Lang/loment">源码</a>
+      <a href="https://github.com/Loment-Lang/loment/releases/latest">发布</a>
+      <a href="https://github.com/FujoJTOP/lompi">lompi</a>
+      <a href="https://loment.fandom.com/">Wiki</a>
+      <a href="https://github.com/Loment-Lang/loment/issues">Issues</a>
+      <a class="mast" href="https://mastodon.social/@Loment" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z"/></svg>Mastodon</a>
+      <a class="mast" href="https://bsky.app/profile/loment.bsky.social" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364-3.136.521-5.919 1.517-2.244 5.449 3.944 4.011 5.42-1.005 6.237-3.242.653-1.79 1.03-2.81 1.03-2.81s.377 1.02 1.03 2.81c.817 2.237 2.293 7.253 6.237 3.242 3.675-3.932.892-4.928-2.244-5.449 2.67.296 5.568-.628 6.383-3.364.246-.829.624-5.789.624-6.479 0-.688-.139-1.86-.902-2.203-.659-.299-1.664-.621-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8z"/></svg>Bluesky</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

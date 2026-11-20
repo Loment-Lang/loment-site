@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The largest expansion yet — Loment</title>
+<meta name="description" content="The open and recently closed changes: a Tur 2026.3 syntax batch, function values, classes, effects, the last borrow gaps, domains, Flomtc, the defect sweep and a new alpha edition.">
+<link rel="icon" href="../../mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=JetBrains+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../../style.css?v=20261117a">
+<link rel="alternate" hreflang="en" href="https://loment-lang.github.io/loment-site/blog/20261120-largest-expansion/">
+<link rel="alternate" hreflang="zh-Hans" href="https://loment-lang.github.io/loment-site/zh/blog/20261120-largest-expansion/">
+<link rel="alternate" hreflang="ja" href="https://loment-lang.github.io/loment-site/ja/blog/20261120-largest-expansion/">
+<link rel="alternate" hreflang="ru" href="https://loment-lang.github.io/loment-site/ru/blog/20261120-largest-expansion/">
+<link rel="alternate" hreflang="es" href="https://loment-lang.github.io/loment-site/es/blog/20261120-largest-expansion/">
+<link rel="alternate" hreflang="x-default" href="https://loment-lang.github.io/loment-site/blog/20261120-largest-expansion/">
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="../../">
+      <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true">
+        <rect width="64" height="64" rx="14" fill="#2f4bff"/>
+        <path d="M18 14h12v24h16v12H18z" fill="#fff"/>
+      </svg>
+      Loment
+    </a>
+        <nav>
+      <a href="../../start/">Learn</a>
+      <a href="../" aria-current="page">Blog</a>
+      <a href="../../examples/">Examples</a>
+      <a href="../../playground/">Playground</a>
+      <a href="../../standard/">Standard</a>
+      <a href="../../releases/">Timeline</a>
+      <details class="navmenu" name="bar">
+        <summary>Systems</summary>
+        <ul>
+          <li><a href="../../lgc/">LGC</a></li>
+          <li><a href="../../lvm/">LVM</a></li>
+          <li><a href="../../lompi/">lompi</a></li>
+          <li><a href="../../libl/">LibL</a></li>
+          <li><a href="../../lspe/">LSPE</a></li>
+        </ul>
+      </details>
+      <a href="https://github.com/Loment-Lang/loment">GitHub</a>
+    </nav>
+    <details class="lang" name="bar">
+      <summary>EN</summary>
+      <ul>
+        <li><a href="./" hreflang="en" aria-current="true">English</a></li>
+        <li><a href="../../zh/blog/20261120-largest-expansion/" hreflang="zh-Hans">简体中文</a></li>
+        <li><a href="../../ja/blog/20261120-largest-expansion/" hreflang="ja">日本語</a></li>
+        <li><a href="../../ru/blog/20261120-largest-expansion/" hreflang="ru">Русский</a></li>
+        <li><a href="../../es/blog/20261120-largest-expansion/" hreflang="es">Español</a></li>
+      </ul>
+    </details>
+  </div>
+</header>
+
+<main id="main">
+<section class="head">
+  <div class="wrap">
+    <p class="eyebrow">Blog &middot; 2026-11-20</p>
+    <h1>The largest expansion yet</h1>
+    <p class="lede">Clearly, if you have been watching the repository, you will have noticed a long line of pull requests. Yes: we are in the middle of the largest feature expansion the project has ever carried, larger than 0.1.5. The last two weeks produced dozens of merged changes and a dozen open ones; this note walks through both piles.</p>
+    <p class="limit"><strong>A note about a moment, not a release.</strong> Every open change below is in review; some will merge as written, some will change shape, and one is a generated-artifact refresh. The stable release is still 0.1.5.1.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>The surface got shorter to write</h2>
+    <p class="body">Tur 2026.3 now has a full syntax batch. String interpolation arrived first: <code>f"a{x}b"</code> and <code>rf"..."</code> are rewritten by the front end into <code>str_concat</code> calls, so the lexer, parser and code generators never learn a new node. A format spec followed — <code>{x:&gt;8}</code>, <code>{x:&lt;8}</code>, <code>{x:^8}</code>, <code>{x:08}</code> — and named string constants, <code>const NAME: str = "...";</code>. <code>str_num</code> now accepts every integer type, unsigned included.</p>
+    <p class="body">The control-flow conveniences came next. <code>if</code> and <code>match</code> expressions work as a whole <code>let</code> initialiser; <code>catch |e| { &hellip; }</code> and <code>catch return</code> give errors two shapes; <code>let x := e</code> and <code>let x: auto = e</code> infer the type when the initialiser spells one; <code>args(i)</code> exposes the process command line. Every item is edition-gated: older editions reject the same text exactly as before, and both implementations emit the same IR.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>A function became a value</h2>
+    <p class="body">Function pointers, closures and indirect calls landed behind <code>choose fp</code>, the ninth dimension. A bare function name is a value; a closure captures by value, or by reference when the reference is named; calling through a value is spelled like calling by name. The default build does not change a byte. With the switch on, the compiler collects address-taken targets and rejects an indirect call with no target of its own type. A runtime criterion now exercises closure programs through both linkers.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Classes and an audit framework</h2>
+    <p class="body">The class ladder went from layout to dispatch. C1 lowered classes to structs with parent fields in front and methods as ordinary functions; C2/C3 added vtables, virtual dispatch, <code>super</code>, abstract methods and the closed-world target check. Virtual classes need a runtime, and the self-hosted compiler is still catching up — that is the open C4a change, which brings non-virtual classes to the self-hosted side with three byte-identical fixtures.</p>
+    <p class="body">Underneath, the audit framework became a framework: a registry, a deterministic schedule, two SDK tiers, fourteen built-in checkers, per-engine skip reasons and budgets. The effect sites now enter the Potato ledger. The framework's public version stays at zero until the evidence surface freezes.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Effects: declarations, then a slice that runs</h2>
+    <p class="body">Effect declarations had parsed for a while. The runtime half arrived in stages: a reference front end behind <code>lspe_effects_true</code>, a self-hosted mirror, the E11 sites in the ledger, and then a narrow slice that actually executes tail-resumptive handlers by inlining them into ordinary statements. No continuation object, no heap. The open A3b change widens the slice: arms may read enclosing locals, and an arm ending in <code>return e;</code> aborts. The lowering is deliberately name-free so the self-hosted side can mirror it; until that lands, the self-hosted compiler still reports E0217.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Borrows, in batches</h2>
+    <p class="body">The borrow system has been landing as a pipeline. The design joined regions, time windows and write authority; the checker became a loan graph keyed by place, with the last use as the kill point; slices became struct fields; a <code>&amp;mut</code> stored in a field excludes later borrows; disjoint fields stopped colliding. B1 landed in this window: <code>slice_len</code> through <code>&amp;[T; N]</code>, and the source marker on slice borrows. The open B2+B3 change carries the next two batches — a borrow returned by a call registered from the callee's summary, a stored <code>&amp;mut</code> usable exactly once, and moves out of struct fields tracked. Two earlier stacked versions of that work were closed and re-landed on the new error-table source.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Domains, and the next safety story</h2>
+    <p class="body">Domains gained explicit sibling edges, so a reader can tell a declared same-layer pair from an accidental one, and <code>domain:for</code> now rejects an empty range instead of accepting a rule that covers nothing. The design for the joint domain-and-borrow checker landed: a borrow has to sit inside a time window, write authority has to hold on both sides, and each law allows one exclusive loan.</p>
+    <p class="body">An open research document pushes the same direction further. It measures three unchecked accesses in the safe subset — a literal array index out of bounds, a dynamic slice index, a raw <code>load8</code> — notes that even the current trap path is a signal (<code>ud2</code>, SIGILL), and proposes four layers, a fault ABI and a per-site fault ladder in the artifact.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Flomtc: a second engine for the compiler</h2>
+    <p class="body">Flomtc started as a design for compiling five thousand lines in under a second. The dimension and a standalone executable landed; the open change is the first real optimization: a <code>prepare</code> fast path that skips a whole-module deep copy when generics are declared but unused, one AST walk instead of five for the Potato facts, and an identity fast path in the string rewrite. Measured on the target program, cold compile goes from about 2.1 s to about 1 s, and the native compiler from 15.8 s to 466 ms. It sits behind <code>choose flomtc_true</code>, and the dimension is not recorded in Potato because it says how an artifact was made.</p>
+    <p class="body">A second research line asks a different question: whether a program's start-up work can be moved into the build, so the runtime begins from a prepared state. That one is still paper and probes.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>The defect sweep and the gate</h2>
+    <p class="body">The open list is also clearing the top of the defect backlog. All fourteen sev-0 and sev-1 issues were closed, seven of them verified against current main. The GC alpha root accounting was fixed: one stack-region root per promoted buffer instead of one per word, which used to fill a 1024-slot table on its own and abort silently at 8 KB. The error reporter's source of truth moved to the self-hosted side, with a complete regex engine to classify message text. Diagnostic line parity reached zero gaps.</p>
+    <p class="body">The open changes continue the sweep: a <code>getelementptr</code> first-index bug in both linkers that made stateful capabilities read their neighbour's state, PE <code>openat</code> flag semantics, a pinned hot-update trust anchor, the GC measurement tools, five tool bugs, and eleven Java front-door issues. On the infrastructure side, the gate's stage1 ceiling rose to 900 s after CI measured 330&ndash;420 s under shard load, the shards were rebalanced, and an open change adds the <code>merge_group</code> trigger a merge queue needs.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>A new edition is in review</h2>
+    <p class="body">One open change starts the next edition: <code>tur2027.1Alpha</code>, with block scoping. Every braced block becomes a lexical scope, nested blocks may shadow, a second <code>let</code> in the same block is E013, and <code>lspe pass</code>, <code>lgc</code> windows and <code>domain</code> blocks are scopes too. It also adds a dedicated GC checker with a <code>ReclaimScoped</code> obligation. The default edition stays Tur 2026.3.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>What the pile adds up to</h2>
+    <p class="body">Put the lists together and the shape is clear: a syntax batch, function values, classes in both compilers, effects that run, the last borrow gaps, domain geometry, a second compiler engine, the top of the defect backlog, a safety design, and a queue at the gate. This wave is larger than 0.1.5 because the layer underneath the features is being rebuilt at the same time. None of it is in the stable release. The rule has not changed: a change lands when both implementations agree and the gate can prove it, and the default artifact moves only when a switch or an edition asks for it.</p>
+    <p class="caption">The next note will say what merged. &mdash; <strong>Loment Dev Fujo</strong></p>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Loment is released under the MIT OR Apache-2.0 license. Program by Fujo.</span>
+    <nav>
+      <a href="https://github.com/Loment-Lang/loment">Source</a>
+      <a href="https://github.com/Loment-Lang/loment/releases/latest">Releases</a>
+      <a href="https://github.com/FujoJTOP/lompi">lompi</a>
+      <a href="https://loment.fandom.com/">Wiki</a>
+      <a href="https://github.com/Loment-Lang/loment/issues">Issues</a>
+      <a class="mast" href="https://mastodon.social/@Loment" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z"/></svg>Mastodon</a>
+      <a class="mast" href="https://bsky.app/profile/loment.bsky.social" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364-3.136.521-5.919 1.517-2.244 5.449 3.944 4.011 5.42-1.005 6.237-3.242.653-1.79 1.03-2.81 1.03-2.81s.377 1.02 1.03 2.81c.817 2.237 2.293 7.253 6.237 3.242 3.675-3.932.892-4.928-2.244-5.449 2.67.296 5.568-.628 6.383-3.364.246-.829.624-5.789.624-6.479 0-.688-.139-1.86-.902-2.203-.659-.299-1.664-.621-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8z"/></svg>Bluesky</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

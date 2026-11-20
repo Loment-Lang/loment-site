@@ -1,0 +1,170 @@
+<!doctype html>
+<!-- translated-from: blog/20261120-largest-expansion/index.html -->
+<!-- source-sha256: 84ffa893ca4ad7ab998de52592b327b737aff25939a0b6f4e77580ae56705934 -->
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>これまでで最大の拡張 — Loment</title>
+<meta name="description" content="開いている変更と最近閉じた変更：Tur 2026.3 の構文一揃い、関数値、クラス、エフェクト、借用の最後の缺口、ドメイン、Flomtc、欠陥の掃除、新しい alpha 版次。">
+<link rel="icon" href="../../../mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=JetBrains+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../../../style.css?v=20261117a">
+<link rel="alternate" hreflang="en" href="https://loment-lang.github.io/loment-site/blog/20261120-largest-expansion/">
+<link rel="alternate" hreflang="zh-Hans" href="https://loment-lang.github.io/loment-site/zh/blog/20261120-largest-expansion/">
+<link rel="alternate" hreflang="ja" href="https://loment-lang.github.io/loment-site/ja/blog/20261120-largest-expansion/">
+<link rel="alternate" hreflang="ru" href="https://loment-lang.github.io/loment-site/ru/blog/20261120-largest-expansion/">
+<link rel="alternate" hreflang="es" href="https://loment-lang.github.io/loment-site/es/blog/20261120-largest-expansion/">
+<link rel="alternate" hreflang="x-default" href="https://loment-lang.github.io/loment-site/blog/20261120-largest-expansion/">
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="../../">
+      <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true">
+        <rect width="64" height="64" rx="14" fill="#2f4bff"/>
+        <path d="M18 14h12v24h16v12H18z" fill="#fff"/>
+      </svg>
+      Loment
+    </a>
+        <nav>
+      <a href="../../start/">学ぶ</a>
+      <a href="../" aria-current="page">ブログ</a>
+      <a href="../../examples/">サンプル</a>
+      <a href="../../playground/">オンライン実行</a>
+      <a href="../../standard/">標準</a>
+      <a href="../../releases/">タイムライン</a>
+      <details class="navmenu" name="bar">
+        <summary>システム</summary>
+        <ul>
+          <li><a href="../../lgc/">LGC</a></li>
+          <li><a href="../../lvm/">LVM</a></li>
+          <li><a href="../../lompi/">lompi</a></li>
+          <li><a href="../../libl/">LibL</a></li>
+          <li><a href="../../lspe/">LSPE</a></li>
+        </ul>
+      </details>
+      <a href="https://github.com/Loment-Lang/loment">GitHub</a>
+    </nav>
+    <details class="lang" name="bar">
+      <summary>日本語</summary>
+      <ul>
+        <li><a href="../../../blog/20261120-largest-expansion/" hreflang="en">English</a></li>
+        <li><a href="../../../zh/blog/20261120-largest-expansion/" hreflang="zh-Hans">简体中文</a></li>
+        <li><a href="./" hreflang="ja" aria-current="true">日本語</a></li>
+        <li><a href="../../../ru/blog/20261120-largest-expansion/" hreflang="ru">Русский</a></li>
+        <li><a href="../../../es/blog/20261120-largest-expansion/" hreflang="es">Español</a></li>
+      </ul>
+    </details>
+  </div>
+</header>
+
+<main id="main">
+<section class="head">
+  <div class="wrap">
+    <p class="eyebrow">Blog &middot; 2026-11-20</p>
+    <h1>これまでで最大の拡張</h1>
+    <p class="lede">明白だろう。リポジトリを見ていれば、長い列のプルリクエストに気づいたはずだ。そう —— プロジェクトはこれまでで最大の機能拡張のただ中にいる。0.1.5 より大きい。この二週間で数十の変更がマージされ、十数の変更が開いている。このノートは両方の山を歩く。</p>
+    <p class="limit"><strong>ノートは瞬間についてのもので、リリースではない。</strong>以下の開いている変更はすべてレビュー中だ。そのままマージされるものもあれば、形を変えるものもあり、生成物の更新が一つある。安定版はまだ 0.1.5.1 だ。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>書く量が減った</h2>
+    <p class="body">Tur 2026.3 には今、一揃いの構文がある。最初に来たのは文字列補間だ。<code>f"a{x}b"</code> と <code>rf"..."</code> はフロントエンドで <code>str_concat</code> 呼び出しに書き換えられるので、字句解析器も解析器もコード生成器も新しいノードを知らない。続いて書式指定 —— <code>{x:&gt;8}</code>、<code>{x:&lt;8}</code>、<code>{x:^8}</code>、<code>{x:08}</code> —— と名前付き文字列定数 <code>const NAME: str = "...";</code>。<code>str_num</code> はすべての整数型を受け取る。符号なしも含む。</p>
+    <p class="body">次は制御フローの便利さだ。<code>if</code> と <code>match</code> 式は <code>let</code> の初期化子全体に置ける。<code>catch |e| { &hellip; }</code> と <code>catch return</code> はエラーに二つの形を与える。<code>let x := e</code> と <code>let x: auto = e</code> は初期化子が型を綴っていれば推論する。<code>args(i)</code> はプロセスのコマンドラインを見せる。どれも版次で門番されており、古い版次は同じテキストをこれまで通り拒否し、両方の実装が同じ IR を出す。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>関数が値になった</h2>
+    <p class="body">関数ポインタ、クロージャ、間接呼び出しは九番目の次元 <code>choose fp</code> の後ろに着地した。裸の関数名は値であり、クロージャは値で捕まえ、参照を名付ければ参照で捕まえる。値を通した呼び出しは名前で呼ぶのと同じ綴りだ。既定のビルドは一バイトも変わらない。スイッチを入れると、コンパイラはアドレスを取られた関数を集め、同じ型の行き先のない間接呼び出しを拒否する。クロージャのプログラムを両方のリンカで走らせる実行時判定も加わった。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>クラスと監査フレームワーク</h2>
+    <p class="body">クラスの梯子はレイアウトからディスパッチへ進んだ。C1 はクラスを、親のフィールドを前に置いた構造体と、通常の関数になったメソッドに降ろした。C2/C3 は vtable、仮想ディスパッチ、<code>super</code>、抽象メソッド、閉世界の行き先検査を加えた。仮想クラスには runtime が要り、セルフホスト実装はまだ追いついている途中だ —— 開いている C4a が非仮想クラスを自ホスト側へ運び、バイト単位で一致する三つのフィクスチャを添える。</p>
+    <p class="body">その下では、監査フレームワークが本当のフレームワークになった。レジストリ、決定的なスケジュール、二層の SDK、十四の組み込み検査、エンジンごとのスキップ理由と予算。エフェクトのサイトは Potato 台帳に入る。フレームワークの公開版は、証拠の面が凍るまでゼロのままだ。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>エフェクト：宣言、そして走る一片</h2>
+    <p class="body">エフェクト宣言はしばらく前から解析されていた。実行時の半分は段階的に来た。<code>lspe_effects_true</code> の後ろの参照フロントエンド、セルフホストの鏡、台帳の E11 サイト、そして末尾再開ハンドラを普通の文へインライン化して実際に走らせる狭い一片。継続オブジェクトはなく、ヒープも使わない。開いている A3b はこの一片を広げる。腕は外側のローカルを読め、<code>return e;</code> で終わる腕は中止する。降ろしはわざと名前を使わない形にして、セルフホスト側が鏡にできるようにしている。それが着地するまで、セルフホスト実装は E0217 を出す。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>借用、バッチで</h2>
+    <p class="body">借用システムはパイプラインとして着地してきた。設計は領域、時間窓、書き込み権限を結んだ。検査器は場所をキーにした loan グラフになり、最後の使用が kill 点になった。スライスは構造体フィールドになり、フィールドに格納した <code>&amp;mut</code> は後の借用を排除し、交わらないフィールドは衝突しなくなった。この窓では B1 が着地した。<code>slice_len</code> が <code>&amp;[T; N]</code> を通り、スライス借用に来源マーカーが付く。開いている B2+B3 は次の二バッチを運ぶ —— 呼び出しが返す借用を被呼び出し側の要約から登録し、格納した <code>&amp;mut</code> を一度だけ使い、構造体フィールドからの移動を追跡する。以前の積み重ね版二つは閉じられ、新しいエラー表の上で再着地した。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>ドメイン、そして次の安全の物語</h2>
+    <p class="body">ドメインは明示的な兄弟辺を得た。読む人は、宣言された同じ層の組と、偶然隣り合った組を見分けられる。<code>domain:for</code> は空の範囲を拒否し、何も覆わない規則を受け入れなくなった。ドメインと借用の合同検査器の設計が着地した。借用は時間窓の中に収まり、書き込み権限は両側で成り立ち、各法は一つの排他的貸与だけを許す。</p>
+    <p class="body">開いている研究文書は同じ方向をさらに押す。安全部分集合の中の三つの未検査アクセス —— リテラル配列の範囲外添字、動的スライス添字、生の <code>load8</code> —— を測り、現在のトラップ経路さえ信号（<code>ud2</code>、SIGILL）だと指摘し、四層、故障 ABI、成果物の中のサイトごとの fault ladder を提案する。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Flomtc：コンパイラの第二エンジン</h2>
+    <p class="body">Flomtc は五千行を一秒未満でコンパイルする設計として始まった。次元と独立した実行ファイルが着地し、開いている変更が最初の本物の最適化だ。<code>prepare</code> の速い道は、ジェネリクスが宣言されていて使われていないとき、モジュール全体の深いコピーを飛ばす。Potato の事実は五回の AST 走査ではなく一回で集め、文字列書き換えには恒等の速い道を置く。対象プログラムの測定で、コールドコンパイルは約 2.1 秒から約 1 秒、ネイティブコンパイラは 15.8 秒から 466 ミリ秒になる。<code>choose flomtc_true</code> の後ろにあり、Potato には記録しない —— 成果物がどう作られたかの話だからだ。</p>
+    <p class="body">もう一つの研究線は別の問いを立てる。プログラムの起動時の仕事をビルドへ移し、実行時を準備済みの状態から始められるか。それはまだ紙とプローブの上にある。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>欠陥の掃除とゲート</h2>
+    <p class="body">開いている一覧は欠陥の山の頂上も片付けている。sev-0 と sev-1 の十四件がすべて閉じられ、七件は現在の main に対して検証された。GC alpha のルート会計が直った。昇格したバッファごとに一つのスタック領域ルートで、語ごとに一つではない。以前は 8 KB で 1024 スロットの表が埋まり、静かに中止していた。エラー報告器の真実の源はセルフホスト側へ移り、メッセージ文を分類する完全な正規表現エンジンを伴う。診断行の一致は缺口ゼロになった。</p>
+    <p class="body">開いている変更が掃除を続ける。両方のリンカにあった <code>getelementptr</code> の最初の添字のバグ（状態を持つ能力が隣の状態を読んでいた）、PE の <code>openat</code> フラグ意味論、固定されたホットアップデート信頼アンカー、GC 計測ツール、五つのツールバグ、十一の Java フロントドア問題。インフラ側では、CI がシャード負荷下で 330〜420 秒を測ったあと、ゲートの stage1 上限が 900 秒に上がり、シャードが再配分され、開いている変更がマージキューに必要な <code>merge_group</code> トリガーを加える。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>新しい版次がレビュー中</h2>
+    <p class="body">開いている変更の一つが次の版次を始める。<code>tur2027.1Alpha</code>、ブロックスコープ付きだ。すべての波括弧ブロックが字句スコープになり、入れ子のブロックは影を作れ、同じブロックの二度目の <code>let</code> は E013、<code>lspe pass</code>、<code>lgc</code> の窓、<code>domain</code> ブロックもスコープになる。専用の GC 検査器と <code>ReclaimScoped</code> 義務も加わる。既定の版次は Tur 2026.3 のままだ。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>この山は何になるか</h2>
+    <p class="body">一覧を並べると形は明らかだ。構文の一揃い、関数値、両方のコンパイラのクラス、走るエフェクト、借用の最後の缺口、ドメインの幾何、第二のコンパイルエンジン、欠陥の山の頂上、安全の設計、ゲートの前の行列。この波が 0.1.5 より大きいのは、機能の下の層を同時に作り直しているからだ。そのどれも安定版には入っていない。規則は変わらない。両方の実装が一致し、ゲートが証明できて初めて変更は着地する。既定の成果物は、新しいスイッチか版次が求めたときにだけ動く。</p>
+    <p class="caption">次のノートでは何がマージされたかを書く。&mdash; <strong>Loment Dev Fujo</strong></p>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Loment は MIT OR Apache-2.0 の下で公開されている。制作: Fujo。</span>
+    <nav>
+      <a href="https://github.com/Loment-Lang/loment">ソース</a>
+      <a href="https://github.com/Loment-Lang/loment/releases/latest">リリース</a>
+      <a href="https://github.com/FujoJTOP/lompi">lompi</a>
+      <a href="https://loment.fandom.com/">Wiki</a>
+      <a href="https://github.com/Loment-Lang/loment/issues">イシュー</a>
+      <a class="mast" href="https://mastodon.social/@Loment" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z"/></svg>Mastodon</a>
+      <a class="mast" href="https://bsky.app/profile/loment.bsky.social" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364-3.136.521-5.919 1.517-2.244 5.449 3.944 4.011 5.42-1.005 6.237-3.242.653-1.79 1.03-2.81 1.03-2.81s.377 1.02 1.03 2.81c.817 2.237 2.293 7.253 6.237 3.242 3.675-3.932.892-4.928-2.244-5.449 2.67.296 5.568-.628 6.383-3.364.246-.829.624-5.789.624-6.479 0-.688-.139-1.86-.902-2.203-.659-.299-1.664-.621-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8z"/></svg>Bluesky</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

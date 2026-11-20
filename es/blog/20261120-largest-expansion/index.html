@@ -1,0 +1,170 @@
+<!doctype html>
+<!-- translated-from: blog/20261120-largest-expansion/index.html -->
+<!-- source-sha256: 84ffa893ca4ad7ab998de52592b327b737aff25939a0b6f4e77580ae56705934 -->
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>La mayor expansión hasta ahora — Loment</title>
+<meta name="description" content="Los cambios abiertos y los cerrados recientes: un lote de sintaxis de Tur 2026.3, valores de función, clases, efectos, los últimos huecos de préstamos, dominios, Flomtc, la barrida de defectos y una nueva edición alpha.">
+<link rel="icon" href="../../../mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=JetBrains+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../../../style.css?v=20261117a">
+<link rel="alternate" hreflang="en" href="https://loment-lang.github.io/loment-site/blog/20261120-largest-expansion/">
+<link rel="alternate" hreflang="zh-Hans" href="https://loment-lang.github.io/loment-site/zh/blog/20261120-largest-expansion/">
+<link rel="alternate" hreflang="ja" href="https://loment-lang.github.io/loment-site/ja/blog/20261120-largest-expansion/">
+<link rel="alternate" hreflang="ru" href="https://loment-lang.github.io/loment-site/ru/blog/20261120-largest-expansion/">
+<link rel="alternate" hreflang="es" href="https://loment-lang.github.io/loment-site/es/blog/20261120-largest-expansion/">
+<link rel="alternate" hreflang="x-default" href="https://loment-lang.github.io/loment-site/blog/20261120-largest-expansion/">
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="../../">
+      <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true">
+        <rect width="64" height="64" rx="14" fill="#2f4bff"/>
+        <path d="M18 14h12v24h16v12H18z" fill="#fff"/>
+      </svg>
+      Loment
+    </a>
+        <nav>
+      <a href="../../start/">Aprender</a>
+      <a href="../" aria-current="page">Blog</a>
+      <a href="../../examples/">Ejemplos</a>
+      <a href="../../playground/">Probar</a>
+      <a href="../../standard/">Estándar</a>
+      <a href="../../releases/">Cronología</a>
+      <details class="navmenu" name="bar">
+        <summary>Sistemas</summary>
+        <ul>
+          <li><a href="../../lgc/">LGC</a></li>
+          <li><a href="../../lvm/">LVM</a></li>
+          <li><a href="../../lompi/">lompi</a></li>
+          <li><a href="../../libl/">LibL</a></li>
+          <li><a href="../../lspe/">LSPE</a></li>
+        </ul>
+      </details>
+      <a href="https://github.com/Loment-Lang/loment">GitHub</a>
+    </nav>
+    <details class="lang" name="bar">
+      <summary>ES</summary>
+      <ul>
+        <li><a href="../../../blog/20261120-largest-expansion/" hreflang="en">English</a></li>
+        <li><a href="../../../zh/blog/20261120-largest-expansion/" hreflang="zh-Hans">简体中文</a></li>
+        <li><a href="../../../ja/blog/20261120-largest-expansion/" hreflang="ja">日本語</a></li>
+        <li><a href="../../../ru/blog/20261120-largest-expansion/" hreflang="ru">Русский</a></li>
+        <li><a href="./" hreflang="es" aria-current="true">Español</a></li>
+      </ul>
+    </details>
+  </div>
+</header>
+
+<main id="main">
+<section class="head">
+  <div class="wrap">
+    <p class="eyebrow">Blog &middot; 2026-11-20</p>
+    <h1>La mayor expansión hasta ahora</h1>
+    <p class="lede">Claramente, si has estado mirando el repositorio, habrás notado una larga fila de pull requests. Sí: estamos en medio de la mayor expansión de funciones que el proyecto ha emprendido, más grande que 0.1.5. Las últimas dos semanas produjeron decenas de cambios fusionados y una docena abiertos; esta nota recorre ambas pilas.</p>
+    <p class="limit"><strong>Una nota sobre un momento, no una versión.</strong> Cada cambio abierto de abajo está en revisión; algunos se fusionarán tal cual, otros cambiarán de forma y uno es una actualización de artefactos generados. La versión estable sigue siendo 0.1.5.1.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>La superficie se volvió más corta de escribir</h2>
+    <p class="body">Tur 2026.3 tiene ahora un lote completo de sintaxis. Primero llegó la interpolación de cadenas: <code>f"a{x}b"</code> y <code>rf"..."</code> se reescriben en el front end como llamadas a <code>str_concat</code>, así que el lexer, el parser y los generadores de código no conocen un nodo nuevo. Siguió una especificación de formato — <code>{x:&gt;8}</code>, <code>{x:&lt;8}</code>, <code>{x:^8}</code>, <code>{x:08}</code> — y constantes de cadena con nombre, <code>const NAME: str = "...";</code>. <code>str_num</code> acepta ahora todos los tipos enteros, incluidos los sin signo.</p>
+    <p class="body">Luego llegaron las comodidades de control de flujo. Las expresiones <code>if</code> y <code>match</code> funcionan como todo el inicializador de un <code>let</code>; <code>catch |e| { &hellip; }</code> y <code>catch return</code> dan dos formas a los errores; <code>let x := e</code> y <code>let x: auto = e</code> infieren el tipo cuando el inicializador lo escribe; <code>args(i)</code> expone la línea de comandos del proceso. Cada elemento está limitado por edición: las ediciones antiguas rechazan el mismo texto como antes, y las dos implementaciones emiten el mismo IR.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Una función se volvió un valor</h2>
+    <p class="body">Los punteros a función, los cierres y las llamadas indirectas llegaron detrás de <code>choose fp</code>, la novena dimensión. Un nombre de función desnudo es un valor; un cierre captura por valor, o por referencia cuando se nombra la referencia; llamar a través de un valor se escribe igual que llamar por nombre. La compilación por defecto no cambia un byte. Con el interruptor encendido, el compilador recoge los destinos cuya dirección se toma y rechaza una llamada indirecta sin destino de su propio tipo. Un criterio de ejecución ejercita ahora programas con cierres por ambos enlazadores.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Clases y un marco de auditoría</h2>
+    <p class="body">La escalera de clases pasó de la disposición al despacho. C1 bajó las clases a estructuras con los campos del padre delante y métodos como funciones ordinarias; C2/C3 añadieron vtables, despacho virtual, <code>super</code>, métodos abstractos y la comprobación de destinos del mundo cerrado. Las clases virtuales necesitan un runtime, y el compilador autoalojado todavía se está poniendo al día: ese es el cambio abierto C4a, que lleva las clases no virtuales al lado autoalojado con tres fixtures idénticas byte a byte.</p>
+    <p class="body">Debajo, el marco de auditoría se convirtió en un marco: un registro, una agenda determinista, dos niveles de SDK, catorce comprobaciones integradas, motivos de omisión y presupuestos por motor. Los sitios de efectos entran ahora en el registro de Potato. La versión pública del marco sigue en cero hasta que la superficie de evidencia se congele.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Efectos: declaraciones y luego un fragmento que se ejecuta</h2>
+    <p class="body">Las declaraciones de efectos se analizaban desde hace tiempo. La mitad de ejecución llegó por etapas: un front end de referencia detrás de <code>lspe_effects_true</code>, un espejo autoalojado, los sitios E11 en el registro y luego un fragmento estrecho que de verdad ejecuta manejadores con reanudación final, insertándolos en línea como sentencias ordinarias. Sin objeto de continuación y sin montículo. El cambio abierto A3b ensancha el fragmento: las ramas pueden leer locales externas, y una rama que termina en <code>return e;</code> aborta. La bajada es deliberadamente sin nombres para que el lado autoalojado pueda espejarla; hasta que eso llegue, el compilador autoalojado sigue informando E0217.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Préstamos, por lotes</h2>
+    <p class="body">El sistema de préstamos ha llegado como un oleoducto. El diseño unió regiones, ventanas temporales y autoridad de escritura; el verificador se convirtió en un grafo de préstamos con clave por lugar, donde el último uso es el punto de muerte; los cortes se volvieron campos de estructura; un <code>&amp;mut</code> guardado en un campo excluye préstamos posteriores; los campos disjuntos dejaron de colisionar. B1 llegó en esta ventana: <code>slice_len</code> a través de <code>&amp;[T; N]</code>, y la marca de origen en préstamos de corte. El cambio abierto B2+B3 trae los dos lotes siguientes: un préstamo devuelto por una llamada se registra desde el resumen del llamado, un <code>&amp;mut</code> guardado se usa exactamente una vez, y los movimientos fuera de un campo de estructura se rastrean. Dos versiones apiladas anteriores de ese trabajo se cerraron y se volvieron a aterrizar sobre la nueva fuente de tablas de error.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Dominios y la siguiente historia de seguridad</h2>
+    <p class="body">Los dominios ganaron aristas hermanas explícitas, para que un lector distinga una pareja declarada de la misma capa de una accidental, y <code>domain:for</code> ahora rechaza un rango vacío en vez de aceptar una regla que no cubre nada. Aterrizó el diseño del verificador conjunto de dominios y préstamos: un préstamo tiene que estar dentro de una ventana temporal, la autoridad de escritura tiene que valer en ambos lados y cada ley permite un préstamo exclusivo.</p>
+    <p class="body">Un documento de investigación abierto empuja en la misma dirección. Mide tres accesos sin comprobar en el subconjunto seguro —un índice literal fuera de límites, un índice dinámico de corte, un <code>load8</code> crudo—, señala que incluso el camino de trampa actual es una señal (<code>ud2</code>, SIGILL), y propone cuatro capas, una ABI de fallos y una escalera de fallos por sitio en el artefacto.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Flomtc: un segundo motor para el compilador</h2>
+    <p class="body">Flomtc empezó como un diseño para compilar cinco mil líneas en menos de un segundo. La dimensión y un ejecutable independiente aterrizaron; el cambio abierto es la primera optimización real: una vía rápida en <code>prepare</code> que se salta una copia profunda de todo el módulo cuando hay genéricos declarados pero sin usar, un solo recorrido del AST en lugar de cinco para los hechos de Potato, y una vía rápida de identidad en la reescritura de cadenas. Medido en el programa objetivo, la compilación en frío pasa de unos 2,1 s a unos 1 s, y el compilador nativo de 15,8 s a 466 ms. Está detrás de <code>choose flomtc_true</code>, y la dimensión no se registra en Potato porque dice cómo se hizo el artefacto.</p>
+    <p class="body">Una segunda línea de investigación pregunta otra cosa: si el trabajo de arranque de un programa puede trasladarse a la compilación, para que el runtime empiece desde un estado preparado. Eso sigue en papel y sondas.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>La barrida de defectos y la puerta</h2>
+    <p class="body">La lista abierta también está despejando la cima del atraso de defectos. Los catorce sev-0 y sev-1 se cerraron, siete de ellos verificados contra el main actual. Se arregló la contabilidad de raíces del GC alpha: una raíz de región de pila por búfer promovido en vez de una por palabra, que antes llenaba por sí sola una tabla de 1024 ranuras y abortaba en silencio a los 8 KB. La fuente de verdad del reporte de errores se mudó al lado autoalojado, con un motor de expresiones regulares completo para clasificar el texto de los mensajes. La paridad de líneas de diagnóstico llegó a cero huecos.</p>
+    <p class="body">Los cambios abiertos continúan la barrida: un error del primer índice de <code>getelementptr</code> en ambos enlazadores que hacía que las capacidades con estado leyeran el estado del vecino, la semántica de banderas de <code>openat</code> en PE, un ancla de confianza fijada para la actualización en caliente, las herramientas de medición del GC, cinco errores de herramientas y once problemas de la puerta Java. En infraestructura, el techo de stage1 subió a 900 s después de que CI midiera 330–420 s bajo carga de fragmentos, los fragmentos se reequilibraron, y un cambio abierto añade el disparador <code>merge_group</code> que necesita una cola de fusión.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Una nueva edición está en revisión</h2>
+    <p class="body">Un cambio abierto empieza la siguiente edición: <code>tur2027.1Alpha</code>, con ámbito de bloque. Cada bloque entre llaves es un ámbito léxico, los bloques anidados pueden ensombrecer, un segundo <code>let</code> en el mismo bloque es E013, y <code>lspe pass</code>, las ventanas de <code>lgc</code> y los bloques <code>domain</code> también son ámbitos. Añade además un verificador de GC dedicado con la obligación <code>ReclaimScoped</code>. La edición por defecto sigue siendo Tur 2026.3.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Qué suma la pila</h2>
+    <p class="body">Juntando las listas, la forma es clara: un lote de sintaxis, valores de función, clases en ambos compiladores, efectos que se ejecutan, los últimos huecos de préstamos, geometría de dominios, un segundo motor de compilación, la cima del atraso de defectos, un diseño de seguridad y una cola en la puerta. Esta ola es más grande que 0.1.5 porque la capa bajo las funciones se está reconstruyendo al mismo tiempo. Nada de esto está en la versión estable. La regla no ha cambiado: un cambio aterriza cuando las dos implementaciones coinciden y la puerta puede demostrarlo, y el artefacto por defecto solo se mueve cuando un interruptor o una edición lo pide.</p>
+    <p class="caption">La próxima nota dirá qué se fusionó. &mdash; <strong>Loment Dev Fujo</strong></p>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Loment se publica bajo la licencia MIT OR Apache-2.0. Programa de Fujo.</span>
+    <nav>
+      <a href="https://github.com/Loment-Lang/loment">Código fuente</a>
+      <a href="https://github.com/Loment-Lang/loment/releases/latest">Versiones</a>
+      <a href="https://github.com/FujoJTOP/lompi">lompi</a>
+      <a href="https://loment.fandom.com/">Wiki</a>
+      <a href="https://github.com/Loment-Lang/loment/issues">Incidencias</a>
+      <a class="mast" href="https://mastodon.social/@Loment" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z"/></svg>Mastodon</a>
+      <a class="mast" href="https://bsky.app/profile/loment.bsky.social" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364-3.136.521-5.919 1.517-2.244 5.449 3.944 4.011 5.42-1.005 6.237-3.242.653-1.79 1.03-2.81 1.03-2.81s.377 1.02 1.03 2.81c.817 2.237 2.293 7.253 6.237 3.242 3.675-3.932.892-4.928-2.244-5.449 2.67.296 5.568-.628 6.383-3.364.246-.829.624-5.789.624-6.479 0-.688-.139-1.86-.902-2.203-.659-.299-1.664-.621-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8z"/></svg>Bluesky</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>
