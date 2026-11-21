@@ -30,5 +30,10 @@ jobs:
         with:
           path: _site
 
+      # GitHub 的 artifact 列表接口在上传成功后还会延迟一两秒才可见，而
+      # deploy-pages 只查一次。等一会儿比一次失败的部署便宜。
+      - name: Wait for the artifact to be indexed
+        run: sleep 15
+
       - id: deployment
         uses: actions/deploy-pages@v4
