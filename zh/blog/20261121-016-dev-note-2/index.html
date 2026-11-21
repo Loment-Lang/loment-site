@@ -1,0 +1,165 @@
+<!doctype html>
+<!-- translated-from: blog/20261121-016-dev-note-2/index.html -->
+<!-- source-sha256: ab5dd666e410d618c812239ca6e12cbaf261ff471e5f270bef7c4c690358f4f0 -->
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>时间之桥 — Loment</title>
+<meta name="description" content="0.1.6 第二篇开发笔记：LMS 有了 fault ABI，LVM 变成带基质的机器，故障变得可读，LNotary 审计产物，以及 LVM 的时间之桥。">
+<link rel="icon" href="../../../mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=JetBrains+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../../../style.css?v=20261117a">
+<link rel="alternate" hreflang="en" href="https://loment-lang.github.io/loment-site/blog/20261121-016-dev-note-2/">
+<link rel="alternate" hreflang="zh-Hans" href="https://loment-lang.github.io/loment-site/zh/blog/20261121-016-dev-note-2/">
+<link rel="alternate" hreflang="ja" href="https://loment-lang.github.io/loment-site/ja/blog/20261121-016-dev-note-2/">
+<link rel="alternate" hreflang="ru" href="https://loment-lang.github.io/loment-site/ru/blog/20261121-016-dev-note-2/">
+<link rel="alternate" hreflang="es" href="https://loment-lang.github.io/loment-site/es/blog/20261121-016-dev-note-2/">
+<link rel="alternate" hreflang="x-default" href="https://loment-lang.github.io/loment-site/blog/20261121-016-dev-note-2/">
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="../../">
+      <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true">
+        <rect width="64" height="64" rx="14" fill="#2f4bff"/>
+        <path d="M18 14h12v24h16v12H18z" fill="#fff"/>
+      </svg>
+      Loment
+    </a>
+        <nav>
+      <a href="../../start/">学习</a>
+      <a href="../" aria-current="page">博客</a>
+      <a href="../../examples/">示例</a>
+      <a href="../../playground/">在线编译</a>
+      <a href="../../standard/">标准</a>
+      <a href="../../releases/">时间线</a>
+      <details class="navmenu" name="bar">
+        <summary>系统</summary>
+        <ul>
+          <li><a href="../../lgc/">LGC</a></li>
+          <li><a href="../../lvm/">LVM</a></li>
+          <li><a href="../../lompi/">lompi</a></li>
+          <li><a href="../../libl/">LibL</a></li>
+          <li><a href="../../lspe/">LSPE</a></li>
+        </ul>
+      </details>
+      <a href="https://github.com/Loment-Lang/loment">GitHub</a>
+    </nav>
+    <details class="lang" name="bar">
+      <summary>中文</summary>
+      <ul>
+        <li><a href="../../../blog/20261121-016-dev-note-2/" hreflang="en">English</a></li>
+        <li><a href="./" hreflang="zh-Hans" aria-current="true">简体中文</a></li>
+        <li><a href="../../../ja/blog/20261121-016-dev-note-2/" hreflang="ja">日本語</a></li>
+        <li><a href="../../../ru/blog/20261121-016-dev-note-2/" hreflang="ru">Русский</a></li>
+        <li><a href="../../../es/blog/20261121-016-dev-note-2/" hreflang="es">Español</a></li>
+      </ul>
+    </details>
+  </div>
+</header>
+
+<main id="main">
+<section class="head">
+  <div class="wrap">
+    <p class="eyebrow">Blog &middot; 2026-11-21</p>
+    <h1>时间之桥</h1>
+    <p class="lede">内存安全是一件极其应该认真对待的事情。Loment 的开发者一直在想办法，从各种路径去解决系统编程里最难的那个问题；答案现在以 LVM 与 LMS 的一次重大更新出现。这是 0.1.6 的第二篇开发笔记。</p>
+    <p class="limit"><strong>这篇笔记写的是审阅中的工作。</strong>它讲的三个改动都还开着，没有合入；稳定版仍是 0.1.5.1。已经在 main 上的部分会写明。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>内存就是全部题目</h2>
+    <p class="body">一个指针活得比它的对象久，一个下标越过了边界，一代对象没被检查，程序读到或写到不属于它的东西。这个领域背着这个问题已经几十年。Loment 的答案从来不是单一机制：LMS 分级检查，能力域划定权限，借用检查器推理生命周期，GC 梯子选择回收方式，LSPE 审计结果。LVM 是这一切最终跑在其上的引擎。</p>
+    <p class="body">一份外部提案 PANGU &Omega; 带着七层架构到来。我们把它和树里的东西对了一遍：五层已经有对应物，真正缺的是三件。那三件变成了文档，文档变成了下面的改动。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>LMS 长出 fault ABI</h2>
+    <p class="body">原生的 g1 溢出检查过去以 <code>__loment_abort</code> 收尾，它降成 <code>ud2</code>——SIGILL，退出码 132，工具什么也读不到。在 <code>choose lms_pangu_true</code> 下，它改成调用 <code>__loment_fault(1)</code>，退出 101；另外两类故障是 102 和 103。每个故障都用 <code>fn:blk#idx</code> 点名站点，与 LVM 基质报告的坐标相同。一次普查走遍每个 guest 的 load、store 与原子读改写，把坐标写下来。自举实现发出相同的故障文本，种子重新生成，两套实现的故障段逐字节相同。</p>
+    <p class="body">这次工作还揪出一个真 bug：IR 缓存键把用户开关漏在源摘要之外，改一行 <code>choose</code> 可能拿回旧产物。已修。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>LVM 变成一台机器</h2>
+    <p class="body">LVM-A 是一台有六个原语的抽象机：站点、能力检查、代检查、故障、检查点、恢复。它可以在四种基质上实现：<code>sw_cap</code>、<code>sw_tag</code>、<code>hw_cap</code>、<code>hw_tag</code>。第一档已经落地：对象表带 base、limit、generation、alive 与 kind；能力沿 SSA 值、GEP 基、形参、存储的指针、phi 与 inttoptr 传播；每个 guest load 与 store 之前都做检查。失败退出 101、102 或 103，并点名站点。默认基质是 <code>none</code>，所以普通程序发出的东西和以前一样。</p>
+    <p class="body">边界和功能一样写清楚：地址被 <code>as u64</code> 洗过之后能力会丢；地址复用后的悬垂暂时抓不住，因为对象代必须跟着指针走。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>两个解释器都能读的快照</h2>
+    <p class="body">检查点过去是内部细节，现在是一种格式：两个解释器写出相同的 <code>LVMC</code> 字节——4 MiB 内存、32768 字节的帧、深度 32——并且能恢复彼此的快照。程序按名字携带，不按块号，因为两个解析器给块编号的方式不同。命令行也是快照的一部分，恢复时可以交给它另一组宿主参数。</p>
+    <p class="body">修了一个恢复 bug：某个基址写入时是字节偏移，读出来却当字偏移，于是恢复后的第一次返回把整张对象表都退掉了。封印是旁挂文件，不是编译器输出：它携带产物哈希、逐站点台账、带保证与假设的基质档案、零 import 验证器，以及同产物创世衰减。schema 2 还带两个解释器各自的字节与行数价格，以及一份预算——8000 行、320 KiB，今天实测 7,936 行。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>故障变得可读</h2>
+    <p class="body">程序死掉时，有意思的部分通常不是那个信号。LVM 故障现在会在稳定的第一行之后打印一个 Lomenterr 形状的块：对象表项、偏移与越界量、退役的代、站点、建议；<code>llvm.trap</code> 也一样。原生侧分几级：ptrace 报告器给出信号、<code>si_code</code>、地址、PC、RSP 与可选源码行；<code>lomelf --fault-report</code> 让产物自己在备用栈上报告，带读/写方向、地址、PC/RSP、站点与栈溢出提示；自举链接器产出逐字节相同的 ELF。还有一小步可选的：<code>--fault-heal N</code> 把 1 MiB 以下未映射的页零映射，再回到同一条指令，受预算限制；页 0 默认仍是致命的。</p>
+    <p class="body">做镜像时掉出两个 bug：<code>fn main</code> 入口被发成 <code>call i32 @main</code>，少了括号，那条路从没编译过；函数序言里的故障会被算到上一个函数的最后一个站点。现在站点带着降级后的代码长度，查找是半开区间。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>公证人</h2>
+    <p class="body">审计只有在审计者站在被审计物之外时才值钱。LNotary 是一个独立的产物审计器，只读 Potato，不导入工具链的任何部分——不导入编译器、不导入 Potato 模块、不导入 LSPE。它核对 systems 表、GC 梯子、LMS 等级与预算、LSPE 台账与开关的自洽；派生一个旁挂的 lawspace，带维度、法则与内容寻址的封印；核对站点表并绑进封印；还能核对同产物派生链，能力、预算与深度只许收缩。它只在启用了 LVM 的产物上生效，否则按名字说明原因。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>时间之桥</h2>
+    <p class="body">下面是值得这个名字的部分。六个原语在每种基质上都是同一台抽象机。封印记录产物是为哪种基质构建的，连同它的保证与假设。唯一硬判据是 B5：同一份 IR 按 <code>sw_cap</code> 封印、按 <code>hw_cap</code> 封印，字节码哈希相同。这就是让硬件换代变成重新封印、而不是重新编译的东西。</p>
+    <p class="body">当前硅片上，六个硬件原语有五个缺失或只有一半。LVM 档是这门语言不等下一代硬件就翻过这堵墙的方式：指令级标记在机器内部消失，两个边界检查从墙变成成本，写权限变成一条指令，精确检查点变得可行，不可核 ISA 那堵墙下移一层，公理变成“CPU 正确地执行解释器”。信任链四层：字节码与封印、LVM-A 模型、两个解释器、宿主 ISA。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>更新路径</h2>
+    <p class="body">还有一个开着的改动属于这个故事。热更新过去只替换正在跑的语言服务器映像；<code>bin/</code> 里的链接器、编译器、CLI 与构建工具从来没有到达安装。新的载荷带上每个工具，从发布种子上的投影树构建，打包并签名。更新器用随工具链发布的标准库验证原始 Ed25519 签名与每个 SHA-512 摘要，写进非活动的那一代，然后才切换 <code>current</code>。支持 check、rollback 与 status。一个原装的 0.1.5.1 安装会得到一次性的 bootstrap，因为它没有更新器，也没有可作起点的固定公钥。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>还没做什么</h2>
+    <p class="body">这三个改动都开着。<code>sw_tag</code> 只在参考解释器里。跨实现恢复只在孪生夹具上证明过，没有真实文件 I/O，也没有在 phi 中间恢复。自举侧的能力精度是按地址重建的。原生诊断只支持 ELF，默认关闭；Windows PE 是后面的阶段，报告在一个小程序上会让产物大约变成 3.3 倍。修复只覆盖 Linux 下 1 MiB 以下的 <code>SIGSEGV</code>/<code>SEGV_MAPERR</code>，并且受预算限制。默认构建发出的东西和以前一样。</p>
+    <p class="body">在 2027 年的开始，你将能够使用这座时间之桥。</p>
+    <p class="caption">下一篇笔记会说哪些合入了。&mdash; <strong>Loment Dev Fujo</strong></p>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Loment 依据 MIT OR Apache-2.0 双许可发布。由 Fujo 编写。</span>
+    <nav>
+      <a href="https://github.com/Loment-Lang/loment">源码</a>
+      <a href="https://github.com/Loment-Lang/loment/releases/latest">发布</a>
+      <a href="https://github.com/FujoJTOP/lompi">lompi</a>
+      <a href="https://loment.fandom.com/">Wiki</a>
+      <a href="https://github.com/Loment-Lang/loment/issues">Issues</a>
+      <a class="mast" href="https://mastodon.social/@Loment" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z"/></svg>Mastodon</a>
+      <a class="mast" href="https://bsky.app/profile/loment.bsky.social" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364-3.136.521-5.919 1.517-2.244 5.449 3.944 4.011 5.42-1.005 6.237-3.242.653-1.79 1.03-2.81 1.03-2.81s.377 1.02 1.03 2.81c.817 2.237 2.293 7.253 6.237 3.242 3.675-3.932.892-4.928-2.244-5.449 2.67.296 5.568-.628 6.383-3.364.246-.829.624-5.789.624-6.479 0-.688-.139-1.86-.902-2.203-.659-.299-1.664-.621-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8z"/></svg>Bluesky</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

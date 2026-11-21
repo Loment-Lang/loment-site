@@ -1,0 +1,165 @@
+<!doctype html>
+<!-- translated-from: blog/20261121-016-dev-note-2/index.html -->
+<!-- source-sha256: ab5dd666e410d618c812239ca6e12cbaf261ff471e5f270bef7c4c690358f4f0 -->
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>時間の橋 — Loment</title>
+<meta name="description" content="0.1.6 の二番目の開発ノート：LMS の fault ABI、基質を持つ機械になった LVM、読める故障、LNotary の成果物監査、そして LVM の時間の橋。">
+<link rel="icon" href="../../../mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=JetBrains+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../../../style.css?v=20261117a">
+<link rel="alternate" hreflang="en" href="https://loment-lang.github.io/loment-site/blog/20261121-016-dev-note-2/">
+<link rel="alternate" hreflang="zh-Hans" href="https://loment-lang.github.io/loment-site/zh/blog/20261121-016-dev-note-2/">
+<link rel="alternate" hreflang="ja" href="https://loment-lang.github.io/loment-site/ja/blog/20261121-016-dev-note-2/">
+<link rel="alternate" hreflang="ru" href="https://loment-lang.github.io/loment-site/ru/blog/20261121-016-dev-note-2/">
+<link rel="alternate" hreflang="es" href="https://loment-lang.github.io/loment-site/es/blog/20261121-016-dev-note-2/">
+<link rel="alternate" hreflang="x-default" href="https://loment-lang.github.io/loment-site/blog/20261121-016-dev-note-2/">
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="../../">
+      <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true">
+        <rect width="64" height="64" rx="14" fill="#2f4bff"/>
+        <path d="M18 14h12v24h16v12H18z" fill="#fff"/>
+      </svg>
+      Loment
+    </a>
+        <nav>
+      <a href="../../start/">学ぶ</a>
+      <a href="../" aria-current="page">ブログ</a>
+      <a href="../../examples/">サンプル</a>
+      <a href="../../playground/">オンライン実行</a>
+      <a href="../../standard/">標準</a>
+      <a href="../../releases/">タイムライン</a>
+      <details class="navmenu" name="bar">
+        <summary>システム</summary>
+        <ul>
+          <li><a href="../../lgc/">LGC</a></li>
+          <li><a href="../../lvm/">LVM</a></li>
+          <li><a href="../../lompi/">lompi</a></li>
+          <li><a href="../../libl/">LibL</a></li>
+          <li><a href="../../lspe/">LSPE</a></li>
+        </ul>
+      </details>
+      <a href="https://github.com/Loment-Lang/loment">GitHub</a>
+    </nav>
+    <details class="lang" name="bar">
+      <summary>日本語</summary>
+      <ul>
+        <li><a href="../../../blog/20261121-016-dev-note-2/" hreflang="en">English</a></li>
+        <li><a href="../../../zh/blog/20261121-016-dev-note-2/" hreflang="zh-Hans">简体中文</a></li>
+        <li><a href="./" hreflang="ja" aria-current="true">日本語</a></li>
+        <li><a href="../../../ru/blog/20261121-016-dev-note-2/" hreflang="ru">Русский</a></li>
+        <li><a href="../../../es/blog/20261121-016-dev-note-2/" hreflang="es">Español</a></li>
+      </ul>
+    </details>
+  </div>
+</header>
+
+<main id="main">
+<section class="head">
+  <div class="wrap">
+    <p class="eyebrow">Blog &middot; 2026-11-21</p>
+    <h1>時間の橋</h1>
+    <p class="lede">メモリ安全は、真剣に扱うべき問題だ。Loment の開発者は、システムプログラミングで最も難しい問題をさまざまな道から解こうとしてきた。その答えが、LVM と LMS の大きな更新として現れた。これは 0.1.6 の二番目の開発ノートである。</p>
+    <p class="limit"><strong>このノートはレビュー中の仕事について書く。</strong>取り上げる三つの変更は開いていて、まだマージされていない。安定版はまだ 0.1.5.1 だ。すでに main にある部分はそのように書く。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>メモリが題目のすべて</h2>
+    <p class="body">ポインタがオブジェクトより長く生き、添字が境界を越え、世代が検査されず、プログラムは自分のものでないものを読むか書く。この分野はその問題を何十年も抱えてきた。Loment の答えは単一の機構ではなかった。LMS は段階で検査し、能力ドメインは権限を区切り、借用検査器はライフタイムを推論し、GC の梯子は回収を選び、LSPE は結果を監査する。LVM はそのすべてが最終的に走るエンジンだ。</p>
+    <p class="body">外部の提案 PANGU &Omega; が七層のアーキテクチャを伴って来た。木と突き合わせると、五層にはすでに対応物があり、本当に欠けていたのは三つだった。その三つは文書になり、文書は下の変更になった。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>LMS に fault ABI が生える</h2>
+    <p class="body">ネイティブの g1 オーバーフロー検査は <code>__loment_abort</code> で終わり、それは <code>ud2</code> に降りる —— SIGILL、終了コード 132、ツールが読めるものは何もない。<code>choose lms_pangu_true</code> の下では <code>__loment_fault(1)</code> を呼び、101 で終わる。他の二種類は 102 と 103 だ。どの故障も <code>fn:blk#idx</code> でサイトを名指しし、LVM 基質が報告する座標と同じだ。センサスがすべての guest の load、store、atomic read-modify-write を歩いて座標を書き留める。セルフホスト実装は同じ故障テキストを出し、シードは再生成され、二つの実装の故障セクションはバイト単位で同じだ。</p>
+    <p class="body">この仕事から本物のバグが一つ落ちた。IR キャッシュのキーがユーザースイッチをソースダイジェストから外していたので、<code>choose</code> の一行を変えると古い成果物が返ることがあった。修正済みだ。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>LVM が機械になる</h2>
+    <p class="body">LVM-A は六つのプリミティブを持つ抽象機械だ。サイト、能力検査、世代検査、故障、チェックポイント、再開。四つの基質で実装できる。<code>sw_cap</code>、<code>sw_tag</code>、<code>hw_cap</code>、<code>hw_tag</code>。最初の一つが着地した。base、limit、generation、alive、kind を持つオブジェクト表。能力は SSA 値、GEP の基、引数、格納されたポインタ、phi、inttoptr を伝わる。すべての guest load と store の前に能力検査が入る。失敗は 101、102、103 で終わり、サイトを名指しする。既定の基質は <code>none</code> なので、普通のプログラムは以前と同じものを出す。</p>
+    <p class="body">境界も機能と同じだけはっきり書く。アドレスが <code>as u64</code> で洗われた後は能力が失われる。アドレス再利用後のダングリングはまだ捕まえられない。オブジェクト世代がポインタと一緒に運ばれる必要がある。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>両方の解釈器が読めるスナップショット</h2>
+    <p class="body">チェックポイントは内部の詳細だった。今は形式だ。両方の解釈器が同じ <code>LVMC</code> バイト列を書く —— 4 MiB のメモリ、32768 バイトのフレーム、深さ 32 —— そして互いのスナップショットから再開する。プログラムはブロック番号ではなく名前で運ばれる。二つの解析器はブロックの番号の付け方が違うからだ。コマンドラインもスナップショットの一部で、再開時に別のホスト引数を渡せる。</p>
+    <p class="body">復元のバグが見つかり、直った。ある基底がバイトオフセットで書かれ、ワードオフセットとして読まれていたので、再開後の最初の戻りでオブジェクト表全体が退役した。封印はコンパイラ出力ではなくサイドカーだ。成果物ハッシュ、サイトごとの台帳、保証と仮定を伴う基質プロファイル、ゼロ import 検証器、同じ成果物の創世減衰を運ぶ。schema 2 は両方の解釈器のバイト数と行数の価格、そして予算も運ぶ —— 8000 行、320 KiB、今日の測定は 7,936 行。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>故障が読めるようになる</h2>
+    <p class="body">プログラムが死ぬとき、面白い部分はたいてい信号ではない。LVM の故障は安定した最初の行の後に Lomenterr の形のブロックを出す。オブジェクト表の項目、オフセットと越え幅、退役した世代、サイト、助言。<code>llvm.trap</code> も同じ扱いだ。ネイティブ側には段階がある。ptrace 報告器は信号、<code>si_code</code>、アドレス、PC、RSP、任意でソース行を出す。<code>lomelf --fault-report</code> は成果物自身に代替スタックから報告させる。読み書きの方向、アドレス、PC/RSP、サイト、スタックオーバーフローのヒント。セルフホストリンカは同じ ELF をバイト単位で出す。小さな任意の一歩もある。<code>--fault-heal N</code> は 1 MiB 未満の未マップページをゼロマップし、同じ命令に戻る。予算付きで、任意。ページ 0 は既定で致命的のまま。</p>
+    <p class="body">鏡を作る途中で二つのバグが出た。<code>fn main</code> のエントリが括弧なしの <code>call i32 @main</code> として出され、その経路は一度もコンパイルされていなかった。関数のプロローグでの故障が、前の関数の最後のサイトに帰属することがあった。サイトは今、降ろされたコード長を持ち、検索は半開区間だ。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>公証人</h2>
+    <p class="body">監査は、監査者が監査対象の外にいるときだけ価値がある。LNotary は独立した成果物監査器で、Potato だけを読み、ツールチェーンの何も import しない —— コンパイラも、Potato モジュールも、LSPE も。systems 表、GC の梯子、LMS の段階と予算、LSPE 台帳、スイッチの自己整合を確かめる。次元、法則、内容アドレス指定の封印を持つ lawspace サイドカーを導出する。サイト表を検証して封印に結びつける。能力、予算、深さが縮むだけの同じ成果物の派生チェーンも検証する。LVM が有効な成果物でだけ働き、そうでなければ名前で理由を言う。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>時間の橋</h2>
+    <p class="body">ここが名前の値打ちのある部分だ。六つのプリミティブはどの基質でも同じ抽象機械だ。封印は、成果物がどの基質向けに作られたかを、保証と仮定とともに記録する。唯一の硬い判定が B5 だ。同じ IR を <code>sw_cap</code> で封印し、<code>hw_cap</code> で封印しても、バイトコードハッシュは同じ。これがハードウェアの世代交代を再コンパイルではなく再封印にする。</p>
+    <p class="body">現在のシリコンでは、六つのハードウェア原語のうち五つが欠けているか部分的だ。LVM 層は、次の世代を待たずにこの壁を越える方法だ。命令レベルのマーキングは機械の内部で消え、二つの境界検査は壁ではなくコストになり、書き込み権限は命令になり、正確なチェックポイントは実現可能になり、検証不能な ISA の壁は一層下がり、公理は「CPU が解釈器を正しく実行する」になる。信頼の鎖は四つ。バイトコードと封印、LVM-A モデル、二つの解釈器、ホスト ISA。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>更新の道</h2>
+    <p class="body">もう一つ、この話に属する開いた変更がある。ホットアップデートはこれまで走っている言語サーバーイメージだけを置き換えていた。<code>bin/</code> のリンカ、コンパイラ、CLI、ビルドツールはインストールに届かなかった。新しいペイロードはすべてのツールを運ぶ。リリースシード上の投影ツリーから作り、パックして署名する。更新器は生の Ed25519 署名とすべての SHA-512 ダイジェストを、ツールチェーンに同梱された標準ライブラリで検証し、非アクティブな世代を書き、それから <code>current</code> を切り替える。check、rollback、status がある。素の 0.1.5.1 インストールには一度きりのブートストラップが付く。更新器も固定鍵もないからだ。</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>まだやっていないこと</h2>
+    <p class="body">三つの変更は開いている。<code>sw_tag</code> は参照解釈器にだけある。実装間の再開は双子のフィクスチャでだけ証明され、実ファイル I/O も phi の途中の再開もない。能力の精度はセルフホスト側でアドレスから再構築される。ネイティブ診断は ELF のみで既定では切ってある。Windows PE は後の段階で、レポートは小さなプログラムで成果物が約 3.3 倍になる。修復は Linux の 1 MiB 未満の <code>SIGSEGV</code>/<code>SEGV_MAPERR</code> を予算付きで覆う。既定のビルドは以前と同じものを出す。</p>
+    <p class="body">2027 年の始まりに、あなたはこの時間の橋を使えるようになる。</p>
+    <p class="caption">次のノートでは何がマージされたかを書く。&mdash; <strong>Loment Dev Fujo</strong></p>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Loment は MIT OR Apache-2.0 の下で公開されている。制作: Fujo。</span>
+    <nav>
+      <a href="https://github.com/Loment-Lang/loment">ソース</a>
+      <a href="https://github.com/Loment-Lang/loment/releases/latest">リリース</a>
+      <a href="https://github.com/FujoJTOP/lompi">lompi</a>
+      <a href="https://loment.fandom.com/">Wiki</a>
+      <a href="https://github.com/Loment-Lang/loment/issues">イシュー</a>
+      <a class="mast" href="https://mastodon.social/@Loment" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z"/></svg>Mastodon</a>
+      <a class="mast" href="https://bsky.app/profile/loment.bsky.social" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364-3.136.521-5.919 1.517-2.244 5.449 3.944 4.011 5.42-1.005 6.237-3.242.653-1.79 1.03-2.81 1.03-2.81s.377 1.02 1.03 2.81c.817 2.237 2.293 7.253 6.237 3.242 3.675-3.932.892-4.928-2.244-5.449 2.67.296 5.568-.628 6.383-3.364.246-.829.624-5.789.624-6.479 0-.688-.139-1.86-.902-2.203-.659-.299-1.664-.621-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8z"/></svg>Bluesky</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

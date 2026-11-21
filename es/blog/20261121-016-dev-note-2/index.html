@@ -1,0 +1,165 @@
+<!doctype html>
+<!-- translated-from: blog/20261121-016-dev-note-2/index.html -->
+<!-- source-sha256: ab5dd666e410d618c812239ca6e12cbaf261ff471e5f270bef7c4c690358f4f0 -->
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>El puente en el tiempo — Loment</title>
+<meta name="description" content="La segunda nota de desarrollo de 0.1.6: LMS gana una ABI de fallos, LVM se convierte en una máquina con sustratos, los fallos se vuelven legibles, LNotary audita artefactos y LVM carga el puente en el tiempo.">
+<link rel="icon" href="../../../mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=JetBrains+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../../../style.css?v=20261117a">
+<link rel="alternate" hreflang="en" href="https://loment-lang.github.io/loment-site/blog/20261121-016-dev-note-2/">
+<link rel="alternate" hreflang="zh-Hans" href="https://loment-lang.github.io/loment-site/zh/blog/20261121-016-dev-note-2/">
+<link rel="alternate" hreflang="ja" href="https://loment-lang.github.io/loment-site/ja/blog/20261121-016-dev-note-2/">
+<link rel="alternate" hreflang="ru" href="https://loment-lang.github.io/loment-site/ru/blog/20261121-016-dev-note-2/">
+<link rel="alternate" hreflang="es" href="https://loment-lang.github.io/loment-site/es/blog/20261121-016-dev-note-2/">
+<link rel="alternate" hreflang="x-default" href="https://loment-lang.github.io/loment-site/blog/20261121-016-dev-note-2/">
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="../../">
+      <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true">
+        <rect width="64" height="64" rx="14" fill="#2f4bff"/>
+        <path d="M18 14h12v24h16v12H18z" fill="#fff"/>
+      </svg>
+      Loment
+    </a>
+        <nav>
+      <a href="../../start/">Aprender</a>
+      <a href="../" aria-current="page">Blog</a>
+      <a href="../../examples/">Ejemplos</a>
+      <a href="../../playground/">Probar</a>
+      <a href="../../standard/">Estándar</a>
+      <a href="../../releases/">Cronología</a>
+      <details class="navmenu" name="bar">
+        <summary>Sistemas</summary>
+        <ul>
+          <li><a href="../../lgc/">LGC</a></li>
+          <li><a href="../../lvm/">LVM</a></li>
+          <li><a href="../../lompi/">lompi</a></li>
+          <li><a href="../../libl/">LibL</a></li>
+          <li><a href="../../lspe/">LSPE</a></li>
+        </ul>
+      </details>
+      <a href="https://github.com/Loment-Lang/loment">GitHub</a>
+    </nav>
+    <details class="lang" name="bar">
+      <summary>ES</summary>
+      <ul>
+        <li><a href="../../../blog/20261121-016-dev-note-2/" hreflang="en">English</a></li>
+        <li><a href="../../../zh/blog/20261121-016-dev-note-2/" hreflang="zh-Hans">简体中文</a></li>
+        <li><a href="../../../ja/blog/20261121-016-dev-note-2/" hreflang="ja">日本語</a></li>
+        <li><a href="../../../ru/blog/20261121-016-dev-note-2/" hreflang="ru">Русский</a></li>
+        <li><a href="./" hreflang="es" aria-current="true">Español</a></li>
+      </ul>
+    </details>
+  </div>
+</header>
+
+<main id="main">
+<section class="head">
+  <div class="wrap">
+    <p class="eyebrow">Blog &middot; 2026-11-21</p>
+    <h1>El puente en el tiempo</h1>
+    <p class="lede">La seguridad de memoria merece tomarse en serio. Quienes trabajan en Loment han buscado formas de resolver el problema más difícil de la programación de sistemas, y la respuesta ha llegado como una actualización importante de LVM y LMS. Esta es la segunda nota de desarrollo de 0.1.6.</p>
+    <p class="limit"><strong>Esta nota trata de trabajo en revisión.</strong> Los tres cambios que describe están abiertos, sin fusionar; la versión estable sigue siendo 0.1.5.1. Lo que ya está en main se nombra como tal.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>La memoria es todo el tema</h2>
+    <p class="body">Un puntero vive más que su objeto, un índice cruza un límite, una generación no se comprueba, y el programa lee o escribe algo que no posee. El campo carga ese problema desde hace décadas. La respuesta de Loment nunca fue un solo mecanismo: LMS comprueba por niveles, los dominios de capacidad acotan la autoridad, el verificador de préstamos razona sobre tiempos de vida, la escalera de GC elige la recolección y LSPE audita el resultado. LVM es el motor sobre el que todo eso acaba corriendo.</p>
+    <p class="body">Una propuesta externa, PANGU &Omega;, llegó con una arquitectura de siete capas. La comparamos con el árbol: cinco capas ya tenían contrapartida y faltaban de verdad tres cosas. Esas tres se volvieron documentos, y los documentos se volvieron los cambios de abajo.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>LMS gana una ABI de fallos</h2>
+    <p class="body">La comprobación nativa de desbordamiento g1 terminaba en <code>__loment_abort</code>, que baja a <code>ud2</code>: SIGILL, código 132, sin nada que una herramienta pueda leer. Bajo <code>choose lms_pangu_true</code> ahora llama a <code>__loment_fault(1)</code> y sale con 101; los otros dos tipos de fallo toman 102 y 103. Cada fallo nombra su sitio como <code>fn:blk#idx</code>, la misma coordenada que informa el sustrato LVM. Un censo recorre cada load, store y read-modify-write atómico de invitado y anota esa coordenada. El compilador autoalojado emite el mismo texto de fallo, la semilla se regeneró y las secciones de fallo de las dos implementaciones son idénticas byte a byte.</p>
+    <p class="body">Del trabajo salió un error real: la clave de caché del IR dejaba los interruptores del usuario fuera del digest del fuente, así que cambiar una línea <code>choose</code> podía devolver un artefacto viejo. Está corregido.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>LVM se convierte en una máquina</h2>
+    <p class="body">LVM-A es una máquina abstracta con seis primitivas: sitio, comprobación de capacidad, comprobación de generación, fallo, punto de control, reanudación. Puede implementarse sobre cuatro sustratos: <code>sw_cap</code>, <code>sw_tag</code>, <code>hw_cap</code> y <code>hw_tag</code>. El primero llegó: una tabla de objetos con base, límite, generación, bit vivo y tipo; propagación de capacidades por valores SSA, bases GEP, parámetros, punteros almacenados, nodos phi e inttoptr; y una comprobación de capacidad antes de cada load y store de invitado. Un fallo sale con 101, 102 o 103 y nombra el sitio. El sustrato por defecto es <code>none</code>, así que los programas ordinarios emiten lo de antes.</p>
+    <p class="body">El límite se dice tan claro como la función: la capacidad se pierde tras lavar una dirección con <code>as u64</code>, y un puntero colgante tras reutilizar la dirección todavía no se atrapa, porque la generación del objeto tiene que viajar con el puntero.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Instantáneas que ambos intérpretes pueden leer</h2>
+    <p class="body">Los puntos de control eran un detalle interno. Ahora son un formato: los dos intérpretes escriben los mismos bytes <code>LVMC</code> —4 MiB de memoria, marcos de 32768 bytes, profundidad 32— y reanudan las instantáneas del otro. Los programas se llevan por nombre, no por número de bloque, porque los dos analizadores numeran los bloques de forma distinta. La línea de comandos es parte de la instantánea, y una reanudación puede recibir otro vector de argumentos del anfitrión.</p>
+    <p class="body">Se encontró y corrigió un error de restauración: una base se escribía como desplazamiento en bytes y se leía como desplazamiento en palabras, así que el primer retorno tras reanudar retiraba toda la tabla de objetos. El sello es un archivo lateral, no una salida del compilador: lleva el hash del artefacto, el registro por sitio, el perfil de sustrato con sus garantías y supuestos, un verificador con cero importaciones y la atenuación de génesis del mismo artefacto. El esquema 2 lleva también el precio en bytes y líneas de cada intérprete y un presupuesto: 8000 líneas y 320 KiB, medido hoy en 7936 líneas.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Los fallos se vuelven legibles</h2>
+    <p class="body">Cuando un programa muere, la parte interesante no suele ser la señal. Los fallos de LVM ahora imprimen un bloque con forma de Lomenterr tras la primera línea estable: entrada de la tabla de objetos, desplazamiento y exceso, generación retirada, sitio y consejo; <code>llvm.trap</code> recibe lo mismo. En el nivel nativo hay etapas. Un reportero ptrace da señal, <code>si_code</code>, dirección, PC, RSP y una línea de fuente opcional. <code>lomelf --fault-report</code> hace que el artefacto se reporte a sí mismo desde una pila alternativa, con la dirección de lectura o escritura, dirección, PC/RSP, sitio y una pista de desbordamiento de pila. El enlazador autoalojado produce el mismo ELF byte a byte. Un paso opcional va más lejos: <code>--fault-heal N</code> mapea a cero una página sin mapear por debajo de 1 MiB y vuelve a la misma instrucción, con presupuesto. La página cero sigue siendo fatal por defecto.</p>
+    <p class="body">Dos errores salieron al construir el espejo: las entradas <code>fn main</code> se emitían como <code>call i32 @main</code> sin paréntesis, un camino que nunca compiló, y un fallo en el prólogo de una función podía atribuirse al último sitio de la función anterior. Ahora los sitios llevan la longitud de su código bajado y la búsqueda es un intervalo semiabierto.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>El notario</h2>
+    <p class="body">Una auditoría solo vale algo si el auditor está fuera de lo que audita. LNotary es un auditor de artefactos separado que lee Potato y no importa nada del conjunto de herramientas: ni el compilador, ni el módulo Potato, ni LSPE. Comprueba la autoconsistencia de la tabla systems, la escalera de GC, los niveles y presupuestos de LMS, el registro de LSPE y los interruptores. Deriva un archivo lateral lawspace con dimensiones, leyes y un sello direccionado por contenido; verifica la tabla de sitios y la ata a ese sello; y verifica una cadena de derivación del mismo artefacto donde capacidades, presupuesto y profundidad solo se encogen. Solo está activo en artefactos con LVM habilitado, y lo dice por nombre en caso contrario.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>El puente en el tiempo</h2>
+    <p class="body">Aquí está la parte que merece el nombre. Las seis primitivas son la misma máquina abstracta en cada sustrato. Un sello registra para qué sustrato se construyó el artefacto, junto con sus garantías y supuestos. El único criterio duro es B5: el mismo IR sellado para <code>sw_cap</code> y sellado para <code>hw_cap</code> lleva el mismo hash de bytecode. Eso es lo que convierte un cambio de generación de hardware en un resellado en vez de una recompilación.</p>
+    <p class="body">Cinco de las seis primitivas de hardware faltan o son parciales en el silicio actual. El nivel LVM es cómo el lenguaje cruza ese muro sin esperar a la siguiente generación: el marcado a nivel de instrucción desaparece dentro de la máquina, las dos comprobaciones de límites se vuelven costos en vez de muros, la autoridad de escritura se vuelve una instrucción, los puntos de control exactos se vuelven factibles, y el muro de la ISA no verificable baja una capa, donde el axioma pasa a ser «la CPU ejecuta correctamente el intérprete». La cadena de confianza tiene cuatro eslabones: bytecode y sello, el modelo LVM-A, los dos intérpretes y la ISA del anfitrión.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>El camino de actualización</h2>
+    <p class="body">Otro cambio abierto pertenece a esta historia. Las actualizaciones en caliente antes solo reemplazaban la imagen del servidor de lenguaje en ejecución; el enlazador, el compilador, la CLI y las herramientas de compilación en <code>bin/</code> nunca llegaban a una instalación. La nueva carga lleva todas las herramientas, construidas desde el árbol de proyección sobre la semilla de la versión, empaquetadas y firmadas. El actualizador verifica una firma Ed25519 cruda y cada digest SHA-512 con la biblioteca estándar, escribe la generación inactiva y solo entonces cambia <code>current</code>. Hay check, rollback y status. Una instalación limpia de 0.1.5.1 recibe un bootstrap de una sola vez, porque no tiene actualizador ni clave fijada.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Lo que no está hecho</h2>
+    <p class="body">Los tres cambios están abiertos. <code>sw_tag</code> existe solo en el intérprete de referencia. La reanudación entre implementaciones está probada en fixtures gemelas, sin E/S de archivos real ni reanudación en medio de phi. La precisión de capacidades se reconstruye por dirección en el lado autoalojado. Los diagnósticos nativos son solo ELF y están apagados por defecto; la ruta Windows PE es una etapa posterior, y el informe cuesta unas 3,3 veces el tamaño del artefacto en un programa diminuto. La curación cubre <code>SIGSEGV</code>/<code>SEGV_MAPERR</code> de Linux por debajo de 1 MiB con presupuesto. Las compilaciones por defecto emiten lo de siempre.</p>
+    <p class="body">Al comienzo de 2027, podrás usar este puente en el tiempo.</p>
+    <p class="caption">La próxima nota dirá qué se fusionó. &mdash; <strong>Loment Dev Fujo</strong></p>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Loment se publica bajo la licencia MIT OR Apache-2.0. Programa de Fujo.</span>
+    <nav>
+      <a href="https://github.com/Loment-Lang/loment">Código fuente</a>
+      <a href="https://github.com/Loment-Lang/loment/releases/latest">Versiones</a>
+      <a href="https://github.com/FujoJTOP/lompi">lompi</a>
+      <a href="https://loment.fandom.com/">Wiki</a>
+      <a href="https://github.com/Loment-Lang/loment/issues">Incidencias</a>
+      <a class="mast" href="https://mastodon.social/@Loment" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z"/></svg>Mastodon</a>
+      <a class="mast" href="https://bsky.app/profile/loment.bsky.social" rel="me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364-3.136.521-5.919 1.517-2.244 5.449 3.944 4.011 5.42-1.005 6.237-3.242.653-1.79 1.03-2.81 1.03-2.81s.377 1.02 1.03 2.81c.817 2.237 2.293 7.253 6.237 3.242 3.675-3.932.892-4.928-2.244-5.449 2.67.296 5.568-.628 6.383-3.364.246-.829.624-5.789.624-6.479 0-.688-.139-1.86-.902-2.203-.659-.299-1.664-.621-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8z"/></svg>Bluesky</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>
