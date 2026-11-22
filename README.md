@@ -19,6 +19,7 @@ Español `/es/`。**英文是唯一的源**，其余四种是它的译文 ——
 | `playground/` | playground 的脚本与两套编译器快照：`beta/`（0.1.5.2.beta.2，跟 main）与 `stable/`（0.1.5.1）。各自带 `py/` 与 `manifest.json`，见该目录的 README |
 | `releases/index.html` | 时间线：从 0.1.1 到当前版的日期与一句话主题。**全站唯一写版本号的一页**，理由写在页上。**不再放逐版本的 New / Fixed 列表**，细节留在 GitHub 的发布页 |
 | `roadmap/index.html` | 路线图：0.1.5 起各版**为了什么**。**是计划不是承诺** —— 没有日期、没有一样现在能下载，页上明写 |
+| `progress/index.html` `progress.js` | 进展页：浏览器**直接读 GitHub API**，按本地时区显示每次合并的分钟级时间，并把合并归到功能里程碑；每 5 分钟自动刷新，无 token、无存储。要改功能清单只改 `progress.js` 里的 `FEATURES`；改脚本后把页面里的 `?v=` 日期加一版 |
 | `lgc/index.html` `lvm/index.html` `lompi/index.html` `libl/index.html` `lspe/index.html` | 五个系统各一页，**各带自己的状态行**（LVM 是"引擎不存在"，LibL 是"0.1.4.6 起随包发布"，LSPE 是"设计，不在任何发布里"） |
 | `style.css` | 全部样式。配色、字体、那个"边界"母题，以及按语言关掉的那几处拉丁排印习惯，都在文件头的注释里说明了理由 |
 | `examples/*.lomt` | `examples/` 上那四个程序的**源**，可重跑 |

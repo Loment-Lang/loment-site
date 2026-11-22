@@ -82,6 +82,7 @@ PAGES = ["index.html",
          "blog/20261118-016-dev-note-1/index.html",
          "blog/20261120-largest-expansion/index.html",
          "blog/20261121-016-dev-note-2/index.html",
+         "progress/index.html",
          "playground/index.html"]
 
 #: 语言切换器与 alternate 组不进"散文面"：它们是镶边，不是内容。
@@ -91,7 +92,7 @@ SKIP_CLASSES = {"codewrap", "lang"}
 #: 它是五种语言共用的一份（各自拷一份就是五份会漂的东西）。
 ROOT_ASSETS = {"style.css", "mark.svg", "lgc-paper.pdf",
                "timeline-rabbit.svg", "blog-rabbit-horizon.svg",
-               "playground/playground.js"}
+               "playground/playground.js", "progress.js"}
 
 VOID = {"area", "base", "br", "col", "embed", "hr", "img", "input",
         "link", "meta", "param", "source", "track", "wbr"}
